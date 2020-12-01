@@ -5,7 +5,7 @@
 { config, pkgs, ... }:
 
 let
-  sshPort = 55544;
+  sshPort = 5554;
   jitsiDomain = "chat.ppom.me";
   localAddress = "192.168.1.2";
   publicAddress = "88.160.19.71";
@@ -45,10 +45,13 @@ in
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    wget neovim git
+    wget git lftp
+    neovim 
+    fd ripgrep exa
     htop iftop ctop
     moreutils
     docker-compose
+    handbrake
   ];
 
   # nvim aliases
@@ -84,7 +87,6 @@ in
   # Fail2ban service
   services.fail2ban.enable = true;
   services.fail2ban.jails.sshd = ''
-[sshd]
 port = ${builtins.toString sshPort}
 enabled = true
 banaction = iptables-multiport
