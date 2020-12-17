@@ -22,6 +22,11 @@ in
   boot.loader.efi.canTouchEfiVariables = true;
   boot.tmpOnTmpfs = true;
 
+  fileSystems."/data" = {
+    device = "/dev/mapper/vg_data-lv_data";
+    fsType = "ext4";
+  };
+
   networking.hostName = "musi"; # Define your hostname.
   networking.useDHCP = false;
   networking.interfaces.enp6s0.useDHCP = true;
@@ -37,21 +42,32 @@ in
   };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.ppom = {
-    isNormalUser = true;
-    extraGroups = [ "docker" "wheel" ]; # Enable ‘sudo’ for the user.
+  users.users = {
+    ppom = {
+      isNormalUser = true;
+      extraGroups = [ "docker" "wheel" ]; # Enable ‘sudo’ for the user.
+    };
+    uploader = {
+      isNormalUser = true;
+      home = "/var/www/uploader";
+      group = "nginx";
+      openssh.authorizedKeys.keys = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC+QKvUjiZ4MnIzGaWJjVevXyEc8Ja3aORPE+gSYgBGwVOPK5SR9oQPyeBFQWjRuY9HeCarKoCWC4X7n0yg1hcYmFs4U7Tm1eb179+YYXIW2KPZOLrVBrAWzNTUPhcToo1/zsnLmFKbU/Kn/lt0YHo0pfDfRE1mFi2ORIEtyqg6nCeZkcb5DfunXG6lEejTm41aDoxs3UjqSBStP0GmX5ReVENRUxo0UzPcW1ImXLhD5A2BcOXvbaUp1lMWVfqY28gbYVDMbYyqDfMA3+yacXKoQcUwgDC9tKKzaxWuuYs/y+vVM01aARK7ol++9f5b1205LNDRVzzUIezrDZsWcggclcCaeKFy2rOBsVHj4wuMp9+M4NWF0NKetJsFOkas4BNUJXhSuGrhtvVeqQBtgtSt6gH7hRmPp/NZpG7OniK2g7Zm/jFte8aOPNWZL0iKv2fLNdPkgdx63MjgVDu5L1Z7I6kIvTBIRluLnzoOdsEWBm/9y0SacCsyRJKA2kPXfmc= ao@sona" ];
+      extraGroups = [];
+    };
   };
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     wget git lftp
-    neovim 
+    file srm lsof
+    neovim tmux
     fd ripgrep exa
     htop iftop ctop
-    moreutils
+    moreutils parted
     docker-compose
-    handbrake
+    handbrake ffmpeg-full
+    catimg
   ];
 
   # nvim aliases
@@ -115,7 +131,16 @@ bantime = 2400
             #proxyPass = "http://192.168.1.29:80";
           #};
         #};
+      #"boxdeppom.ppom.me" = {
+        #forceSSL = true;
+        #enableACME = true;
+        #locations = {
+          #"/" = {
+            #proxyPass = "http://192.168.1.254:80";
+          #};
+        #};
       #};
+
       "ppom.me" = {
         # makes it the default host
         default = true;
@@ -130,6 +155,20 @@ bantime = 2400
           };
         };
       };
+
+      "u.ppom.me" = {
+        # enable and force SSL with Let's Encrypt
+        forceSSL = true;
+        enableACME = true;
+        # locations
+        locations = {
+          "/" = {
+            index = "index.html";
+            root = "/var/www/uploader";
+          };
+        };
+      };
+
       "chat.ppom.me" = {
         forceSSL = true;
         enableACME = true;
@@ -157,6 +196,12 @@ bantime = 2400
       publicAddress = publicAddress;
     };
   };
+
+  #services.nextcloud = {
+    #hostname = "file2.ppom.me";
+    #https = true;
+    #maxUploadSize = "3G";
+  #};
 
   # Docker
   virtualisation.docker.enable = true;
