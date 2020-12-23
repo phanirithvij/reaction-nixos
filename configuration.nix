@@ -49,7 +49,7 @@ in
     };
     uploader = {
       isNormalUser = true;
-      home = "/var/www/uploader";
+      home = "/home/uploader";
       group = "nginx";
       openssh.authorizedKeys.keys = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC+QKvUjiZ4MnIzGaWJjVevXyEc8Ja3aORPE+gSYgBGwVOPK5SR9oQPyeBFQWjRuY9HeCarKoCWC4X7n0yg1hcYmFs4U7Tm1eb179+YYXIW2KPZOLrVBrAWzNTUPhcToo1/zsnLmFKbU/Kn/lt0YHo0pfDfRE1mFi2ORIEtyqg6nCeZkcb5DfunXG6lEejTm41aDoxs3UjqSBStP0GmX5ReVENRUxo0UzPcW1ImXLhD5A2BcOXvbaUp1lMWVfqY28gbYVDMbYyqDfMA3+yacXKoQcUwgDC9tKKzaxWuuYs/y+vVM01aARK7ol++9f5b1205LNDRVzzUIezrDZsWcggclcCaeKFy2rOBsVHj4wuMp9+M4NWF0NKetJsFOkas4BNUJXhSuGrhtvVeqQBtgtSt6gH7hRmPp/NZpG7OniK2g7Zm/jFte8aOPNWZL0iKv2fLNdPkgdx63MjgVDu5L1Z7I6kIvTBIRluLnzoOdsEWBm/9y0SacCsyRJKA2kPXfmc= ao@sona" ];
       extraGroups = [];
@@ -61,12 +61,14 @@ in
   environment.systemPackages = with pkgs; [
     wget git lftp
     file srm lsof
-    neovim tmux
+    neovim tmux fzf
     fd ripgrep exa
     htop iftop ctop
+    zip unzip
     moreutils parted
     docker-compose
     handbrake ffmpeg-full
+    mkvtoolnix
     catimg
   ];
 
@@ -141,6 +143,17 @@ bantime = 2400
         #};
       #};
 
+      "video.ppom.me" = {
+        forceSSL = true;
+        enableACME = true;
+        locations = {
+          "/" = {
+            proxyPass = "http://localhost:8001";
+            #return = "301 https://videold.ppom.me\$request_uri";
+          };
+        };
+      };
+
       "ppom.me" = {
         # makes it the default host
         default = true;
@@ -164,7 +177,8 @@ bantime = 2400
         locations = {
           "/" = {
             index = "index.html";
-            root = "/var/www/uploader";
+            root = "/data/uploader";
+            extraConfig = "autoindex on;";
           };
         };
       };
