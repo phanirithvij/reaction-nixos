@@ -46,32 +46,36 @@ in
   users.users = {
     ppom = {
       isNormalUser = true;
-      extraGroups = [ "docker" "wheel" ]; # Enable ‘sudo’ for the user.
+      extraGroups = [ "docker" "wheel" "users" ]; # Enable ‘sudo’ for the user.
     };
     uploader = {
       isNormalUser = true;
       home = "/home/uploader";
       group = "nginx";
       openssh.authorizedKeys.keys = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC+QKvUjiZ4MnIzGaWJjVevXyEc8Ja3aORPE+gSYgBGwVOPK5SR9oQPyeBFQWjRuY9HeCarKoCWC4X7n0yg1hcYmFs4U7Tm1eb179+YYXIW2KPZOLrVBrAWzNTUPhcToo1/zsnLmFKbU/Kn/lt0YHo0pfDfRE1mFi2ORIEtyqg6nCeZkcb5DfunXG6lEejTm41aDoxs3UjqSBStP0GmX5ReVENRUxo0UzPcW1ImXLhD5A2BcOXvbaUp1lMWVfqY28gbYVDMbYyqDfMA3+yacXKoQcUwgDC9tKKzaxWuuYs/y+vVM01aARK7ol++9f5b1205LNDRVzzUIezrDZsWcggclcCaeKFy2rOBsVHj4wuMp9+M4NWF0NKetJsFOkas4BNUJXhSuGrhtvVeqQBtgtSt6gH7hRmPp/NZpG7OniK2g7Zm/jFte8aOPNWZL0iKv2fLNdPkgdx63MjgVDu5L1Z7I6kIvTBIRluLnzoOdsEWBm/9y0SacCsyRJKA2kPXfmc= ao@sona" ];
-      extraGroups = [];
+      extraGroups = [ "users" ];
+    };
+    joris = {
+      isNormalUser = true;
+      openssh.authorizedKeys.keys = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDMwm/SE3y5gBkp19toGlXzar1XQdH6n7WAdg458QFSk1m2PSFd3BhAmfI5GxIwNnWXBW8KPQzGx1wJ92oTXaCXP0CTMNKm/DM5AhGqYsp/he5GI9rQNlogFo35zc6nSFgrDTB/P/4JgkTK5QRAXlSjyet1UkxgOnejnDnK7gsTvw== joris@joris-4DV-Kraken" ];
     };
   };
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
   environment.systemPackages = with pkgs; [
     wget git lftp
     file srm lsof
     neovim tmux fzf
-    fd ripgrep exa
+    fd ripgrep exa du-dust
     htop iftop ctop
     zip unzip
     moreutils parted
+    lm_sensors
     docker-compose
-    python3
+    python3 pydf
     handbrake ffmpeg-full
-    mkvtoolnix
+    mkvtoolnix dos2unix
     catimg
+    cpulimit
   ];
 
   # nvim aliases
@@ -92,7 +96,7 @@ in
   services.openssh.enable = true;
   services.openssh.ports = [ sshPort ];
   services.openssh.permitRootLogin = "no";
-  # Mosh extension
+  # Mosh extension (doesn't work: TODO)
   programs.mosh.enable = true;
 
   # Open ports in the firewall.
@@ -128,21 +132,6 @@ bantime = 2400
     recommendedGzipSettings = true;
     recommendedOptimisation = true;
     recommendedProxySettings = true;
-    # http {} Nextcloud recommandations
-    # https://github.com/nextcloud/docker/blob/master/.examples/docker-compose/with-nginx-proxy/postgres/fpm/web/nginx.conf
-    commonHttpConfig = ''
-      default_type  application/octet-stream;
-      log_format main  '$remote_addr - $remote_user [$time_local] "$request" '
-                      '$status $body_bytes_sent "$http_referer" '
-                      '"$http_user_agent" "$http_x_forwarded_for"';
-      set_real_ip_from  10.0.0.0/8;
-      set_real_ip_from  172.16.0.0/12;
-      set_real_ip_from  192.168.0.0/16;
-      real_ip_header    X-Real-IP;
-      upstream nextcloud-upstream {
-        server localhost:12000;
-      }
-    '';
     appendConfig = ''
       worker_processes auto;
     '';
@@ -170,101 +159,12 @@ bantime = 2400
       "nuage.ppom.me" = {
         forceSSL = true;
         enableACME = true;
-        root = "/data/nextcloud/html";
-        extraConfig = ''
-        add_header Referrer-Policy "no-referrer" always;
-        add_header X-Content-Type-Options "nosniff" always;
-        add_header X-Download-Options "noopen" always;
-        add_header X-Frame-Options "SAMEORIGIN" always;
-        add_header X-Permitted-Cross-Domain-Policies "none" always;
-        add_header X-Robots-Tag "none" always;
-        add_header X-XSS-Protection "1; mode=block" always;
-
-        fastcgi_hide_header X-Powered-By;
-
-        location = /robots.txt {
-            allow all;
-            log_not_found off;
-            access_log off;
-        }
-
-        rewrite ^/.well-known/host-meta /public.php?service=host-meta last;
-        rewrite ^/.well-known/host-meta.json /public.php?service=host-meta-json last;
-        rewrite ^/.well-known/webfinger /public.php?service=webfinger last;
-
-        location = /.well-known/carddav {
-            return 301 $scheme://$host:$server_port/remote.php/dav;
-        }
-        location = /.well-known/caldav {
-            return 301 $scheme://$host:$server_port/remote.php/dav;
-        }
-
-        # set max upload size
-        client_max_body_size 10G;
-        fastcgi_buffers 64 4K;
-
-        # Enable gzip but do not remove ETag headers
-        gzip on;
-        gzip_vary on;
-        gzip_comp_level 4;
-        gzip_min_length 256;
-        gzip_proxied expired no-cache no-store private no_last_modified no_etag auth;
-        gzip_types application/atom+xml application/javascript application/json application/ld+json application/manifest+json application/rss+xml application/vnd.geo+json application/vnd.ms-fontobject application/x-font-ttf application/x-web-app-manifest+json application/xhtml+xml application/xml font/opentype image/bmp image/svg+xml image/x-icon text/cache-manifest text/css text/plain text/vcard text/vnd.rim.location.xloc text/vtt text/x-component text/x-cross-domain-policy;
-
-        location / {
-            rewrite ^ /index.php;
-        }
-
-        location ~ ^\/(?:build|tests|config|lib|3rdparty|templates|data)\/ {
-            deny all;
-        }
-        location ~ ^\/(?:\.|autotest|occ|issue|indie|db_|console) {
-            deny all;
-        }
-
-        location ~ ^\/(?:index|remote|public|cron|core\/ajax\/update|status|ocs\/v[12]|updater\/.+|oc[ms]-provider\/.+)\.php(?:$|\/) {
-            fastcgi_split_path_info ^(.+?\.php)(\/.*|)$;
-            set $path_info $fastcgi_path_info;
-            try_files $fastcgi_script_name =404;
-            fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-            fastcgi_param PATH_INFO $path_info;
-            # fastcgi_param HTTPS on;
-
-            # Avoid sending the security headers twice
-            fastcgi_param modHeadersAvailable true;
-
-            # Enable pretty urls
-            fastcgi_param front_controller_active true;
-            fastcgi_pass nextcloud-upstream;
-            fastcgi_intercept_errors on;
-            fastcgi_request_buffering off;
-        }
-
-        location ~ ^\/(?:updater|oc[ms]-provider)(?:$|\/) {
-            try_files $uri/ =404;
-            index index.php;
-        }
-
-        # Adding the cache control header for js, css and map files
-        # Make sure it is BELOW the PHP block
-        location ~ \.(?:css|js|woff2?|svg|gif|map)$ {
-            try_files $uri /index.php$request_uri;
-            add_header Cache-Control "public, max-age=15778463";
-            add_header Referrer-Policy "no-referrer" always;
-            add_header X-Content-Type-Options "nosniff" always;
-            add_header X-Download-Options "noopen" always;
-            add_header X-Frame-Options "SAMEORIGIN" always;
-            add_header X-Permitted-Cross-Domain-Policies "none" always;
-            add_header X-Robots-Tag "none" always;
-            add_header X-XSS-Protection "1; mode=block" always;
-            access_log off;
-        }
-
-        location ~ \.(?:png|html|ttf|ico|jpg|jpeg|bcmap|mp4|webm)$ {
-            try_files $uri /index.php$request_uri;
-            access_log off;
-        }
-        '';
+        locations = {
+          "/" = {
+            index = "index.php";
+            proxyPass = "http://localhost:9000";
+          };
+        };
       };
 
       "video.ppom.me" = {
@@ -273,9 +173,50 @@ bantime = 2400
         locations = {
           "/" = {
             proxyPass = "http://localhost:8001";
-            #return = "301 https://videold.ppom.me\$request_uri";
           };
         };
+      };
+
+      "write.ppom.me" = {
+        forceSSL = true;
+        enableACME = true;
+        extraConfig = ''
+          location ^~ /loleaflet {
+            proxy_pass http://localhost:9980;
+            proxy_set_header Host $host;
+          }
+          # WOPI discovery URL
+          location ^~ /hosting/discovery {
+            proxy_pass http://localhost:9980;
+            proxy_set_header Host $host;
+          }
+          # Capabilities
+          location ^~ /hosting/capabilities {
+            proxy_pass http://localhost:9980;
+            proxy_set_header Host $host;
+          }
+          # main websocket
+          location ~ ^/lool/(.*)/ws$ {
+            proxy_pass http://localhost:9980;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "Upgrade";
+            proxy_set_header Host $host;
+            proxy_read_timeout 36000s;
+          }
+          # download, presentation and image upload
+          location ~ ^/lool {
+            proxy_pass http://localhost:9980;
+            proxy_set_header Host $host;
+          }
+          # Admin Console websocket
+          location ^~ /lool/adminws {
+            proxy_pass http://localhost:9980;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "Upgrade";
+            proxy_set_header Host $host;
+            proxy_read_timeout 36000s;
+          }
+        '';
       };
 
       "ppom.me" = {
@@ -284,7 +225,6 @@ bantime = 2400
         # enable and force SSL with Let's Encrypt
         forceSSL = true;
         enableACME = true;
-        # locations
         locations = {
           "/" = {
             index = "index.html";
@@ -336,26 +276,6 @@ bantime = 2400
     };
   };
 
-  # Nextcloud config
-  # https://jacobneplokh.com/how-to-setup-nextcloud-on-nixos/
-  # services.nextcloud = {
-    # enable = true; package = pkgs.nextcloud20; hostName = "nuage.ppom.me"; https = true; 
-    # autoUpdateApps = { enable = true; startAt = "05:00:00"; };
-    # config = { overwriteProtocol = "https";
-      # dbtype = "pgsql"; dbuser = "nextcloud"; dbhost = "/run/postgresql"; dbname = "nextcloud"; dbpassFile = "/var/nextcloud-db-pass";
-      # adminpassFile = "/var/nextcloud-admin-pass"; adminuser = "admin"; }; };
-  # systemd.services."nextcloud-setup" = { requires = ["postgresql.service"]; after = ["postgresql.service"]; };
-
-  # Currently only for Nextcloud
-  services.postgresql = {
-    enable = true;
-
-    ensureDatabases = [ "nextcloud" ];
-    ensureUsers = [
-     { name = "nextcloud"; ensurePermissions."DATABASE nextcloud" = "ALL PRIVILEGES"; }
-    ];
-  };
-
   # Vas-y je suis un fou
   services.tor = {
     enable = true;
@@ -369,12 +289,6 @@ bantime = 2400
       contactInfo = "parpaing@tuta.io";
     };
   };
-
-  #services.nextcloud = {
-    #hostname = "file2.ppom.me";
-    #https = true;
-    #maxUploadSize = "3G";
-  #};
 
   # Docker
   virtualisation.docker.enable = true;
