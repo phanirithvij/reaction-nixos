@@ -8,6 +8,7 @@ let
   sshPort = 5554;
   torPort = 143;
   jitsiDomain = "chat.ppom.me";
+  languagetoolDomain = "lang.ppom.me";
   localAddress = "192.168.1.2";
   publicAddress = "88.160.19.71";
 in
@@ -15,6 +16,7 @@ in
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ./languagetool.nix
     ];
 
   # Use the systemd-boot EFI boot loader.
@@ -248,7 +250,12 @@ bantime = 2400
         };
       };
 
-      "chat.ppom.me" = {
+      "${jitsiDomain}" = {
+        forceSSL = true;
+        enableACME = true;
+      };
+
+      "${languagetoolDomain}" = {
         forceSSL = true;
         enableACME = true;
       };
@@ -288,6 +295,12 @@ bantime = 2400
       bandwidthRate = 8 * 1024 * 1024; # 8 MB/s
       contactInfo = "parpaing@tuta.io";
     };
+  };
+
+  # Language Tool: see ./languagetool.nix
+  services.languagetool = {
+    enable = true;
+    domain = "lang.ppom.me";
   };
 
   # Docker
