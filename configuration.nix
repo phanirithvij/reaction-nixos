@@ -72,27 +72,32 @@ in
     zip unzip
     moreutils parted
     lm_sensors
-    docker-compose
+    docker-compose docui
     python3 pydf
+    youtube-dl
     handbrake ffmpeg-full
     mkvtoolnix dos2unix
     catimg
     cpulimit
   ];
 
-  # nvim aliases
   nixpkgs.overlays = [
     (self: super: {
       neovim = super.neovim.override {
         viAlias = true;
         vimAlias = true;
-	configure = {
+        configure = {
+          customRC = ''
+            set number termguicolors
+          '';
           packages.myVimPackage = with pkgs.vimPlugins; {
-            start = [ vim-nix gruvbox ];
-            opt = [ ];
-  }; }; }; }) ];
-
-  # List services that you want to enable:
+            start = [ vim-nix ];
+            opt = [];
+          };
+        };
+      };
+    })
+  ];
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
@@ -123,6 +128,14 @@ maxretry = 5
 findtime = 1200
 bantime = 2400
 '';
+
+  # Cron jobs
+  services.cron = {
+    enable = true;
+    systemCronJobs = [
+      ''*/5 * * * *      root    docker exec -u 33 nc_app php cron.php''
+    ];
+  };
 
   # Nginx
   services.nginx = {
@@ -158,10 +171,14 @@ bantime = 2400
         #};
       #};
 
-      "nuage.ppom.me" = {
+      "nuage.ppom.me" = let
+        dav = { return = "301 /remote.php/dav/"; };
+      in {
         forceSSL = true;
         enableACME = true;
         locations = {
+          "/.well-known/caldav" = dav;
+          "/.well-known/carddav" = dav;
           "/" = {
             index = "index.php";
             proxyPass = "http://localhost:9000";
