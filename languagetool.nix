@@ -19,7 +19,6 @@ in {
     users.users = {
       languagetool = {
         isSystemUser = true;
-        home = "/var/lib/languagetool";
         packages = with pkgs; [ adoptopenjdk-jre-bin ];
       };
     };
