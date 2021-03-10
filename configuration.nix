@@ -18,7 +18,7 @@ in
       ./hardware-configuration.nix
       ./languagetool.nix
       ./minecraft.nix
-      # ./streama.nix
+      ./streama.nix
     ];
 
   # Use the systemd-boot EFI boot loader.
@@ -185,16 +185,6 @@ bantime = 2400
           "/" = {
             index = "index.php";
             proxyPass = "http://localhost:9000";
-          };
-        };
-      };
-
-      "video.ppom.me" = {
-        forceSSL = true;
-        enableACME = true;
-        locations = {
-          "/" = {
-            proxyPass = "http://localhost:8001";
           };
         };
       };

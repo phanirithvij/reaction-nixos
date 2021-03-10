@@ -1,0 +1,40 @@
+{ lib, pkgs, ... }:
+with lib;
+let
+  domainName = "video.ppom.me";
+  localPort = "8001";
+  # user = "streama";
+in {
+  # Reverse proxy configuration
+  services.nginx.enable = true;
+  services.nginx.virtualHosts."${domainName}" = {
+      forceSSL = true;
+      enableACME = true;
+      locations = {
+        "/" = {
+          proxyPass = "http://localhost:${localPort}";
+        };
+      };
+  };
+  # User configuration
+  # users.users."${user}" = {
+      # isSystemUser = true;
+  # };
+  # Docker service configuration
+  virtualisation = {
+    docker.enable = true;
+    oci-containers.containers = {
+      streama = {
+        autoStart = true;
+        image = "streama:1.10.1";
+        # user = user;
+        ports = [ "${localPort}:8080" ];
+        volumes = [
+          "/data/streama/uploads:/data/uploads"
+          "/data/streama/movies:/data/movies"
+          "/data/streama/data:/app/streama"
+        ];
+      };
+    };
+  };
+}
