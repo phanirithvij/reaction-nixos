@@ -17,6 +17,8 @@ in
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ./languagetool.nix
+      ./minecraft.nix
+      # ./streama.nix
     ];
 
   # Use the systemd-boot EFI boot loader.
@@ -57,9 +59,10 @@ in
       openssh.authorizedKeys.keys = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC+QKvUjiZ4MnIzGaWJjVevXyEc8Ja3aORPE+gSYgBGwVOPK5SR9oQPyeBFQWjRuY9HeCarKoCWC4X7n0yg1hcYmFs4U7Tm1eb179+YYXIW2KPZOLrVBrAWzNTUPhcToo1/zsnLmFKbU/Kn/lt0YHo0pfDfRE1mFi2ORIEtyqg6nCeZkcb5DfunXG6lEejTm41aDoxs3UjqSBStP0GmX5ReVENRUxo0UzPcW1ImXLhD5A2BcOXvbaUp1lMWVfqY28gbYVDMbYyqDfMA3+yacXKoQcUwgDC9tKKzaxWuuYs/y+vVM01aARK7ol++9f5b1205LNDRVzzUIezrDZsWcggclcCaeKFy2rOBsVHj4wuMp9+M4NWF0NKetJsFOkas4BNUJXhSuGrhtvVeqQBtgtSt6gH7hRmPp/NZpG7OniK2g7Zm/jFte8aOPNWZL0iKv2fLNdPkgdx63MjgVDu5L1Z7I6kIvTBIRluLnzoOdsEWBm/9y0SacCsyRJKA2kPXfmc= ao@sona" ];
       extraGroups = [ "users" ];
     };
-    joris = {
+    marguerite = {
       isNormalUser = true;
-      openssh.authorizedKeys.keys = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDMwm/SE3y5gBkp19toGlXzar1XQdH6n7WAdg458QFSk1m2PSFd3BhAmfI5GxIwNnWXBW8KPQzGx1wJ92oTXaCXP0CTMNKm/DM5AhGqYsp/he5GI9rQNlogFo35zc6nSFgrDTB/P/4JgkTK5QRAXlSjyet1UkxgOnejnDnK7gsTvw== joris@joris-4DV-Kraken" ];
+      hashedPassword = "$6$XswnWW/UsZq7X/HG$tIrhDQCWH7IHvNmCxmOcsF87qXTQWhsJ5666aioHQ7jQdffdY0.pu/CQc/iIHsxdW4CMpzm3GHRDaqw1iu5NC1";
+      extraGroups = [ "users" ];
     };
   };
 
