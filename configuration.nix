@@ -91,9 +91,17 @@ in
         configure = {
           customRC = ''
             set number termguicolors
+            let g:mapleader = " "
+            nnoremap <leader>h :nohlsearch<Bar>:echo<CR>
           '';
           packages.myVimPackage = with pkgs.vimPlugins; {
-            start = [ vim-nix ];
+            start = [
+              vim-nix
+              vim-commentary
+              vim-surround
+              vim-repeat
+              vim-fugitive
+            ];
             opt = [];
           };
         };
@@ -131,14 +139,6 @@ findtime = 1200
 bantime = 2400
 '';
 
-  # Cron jobs
-  services.cron = {
-    enable = true;
-    systemCronJobs = [
-      ''*/5 * * * *      root    docker exec -u 33 nc_app php cron.php''
-    ];
-  };
-
   # Nginx
   services.nginx = {
     enable = true;
@@ -155,23 +155,6 @@ bantime = 2400
 
     # Hosts config
     virtualHosts = {
-      #"ebooks.cmercier.fr" = {
-        #forceSSL = true;
-        #enableACME = true;
-        #locations = {
-          #"/" = {
-            #proxyPass = "http://192.168.1.29:80";
-          #};
-        #};
-      #"boxdeppom.ppom.me" = {
-        #forceSSL = true;
-        #enableACME = true;
-        #locations = {
-          #"/" = {
-            #proxyPass = "http://192.168.1.254:80";
-          #};
-        #};
-      #};
 
       "ppom.me" = {
         # makes it the default host
