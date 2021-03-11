@@ -1,43 +1,32 @@
 { lib, pkgs, config, ... }:
 with lib;                      
 let
-  cfg = config.services.languagetool;
-  languagetoolPort = "${builtins.toString cfg.port}";
+  languagetoolPort = "8500";
+  languagetoolDomain = "lang.ppom.me";
 in {
-  options.services.languagetool = {
-    enable = mkEnableOption "languagetool";
-    domain = mkOption {
-      type = types.str;
-    };
-    port = mkOption {
-      type = types.int;
-      default = 8500;
+  users.users = {
+    languagetool = {
+      isSystemUser = true;
+      packages = with pkgs; [ adoptopenjdk-jre-bin ];
     };
   };
-
-  config = mkIf cfg.enable {
-    users.users = {
-      languagetool = {
-        isSystemUser = true;
-        packages = with pkgs; [ adoptopenjdk-jre-bin ];
-      };
+  systemd.services.languagetool = {
+    enable = true;
+    description = "Language Tool self-hosted server";
+    after = ["network.target"];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "simple";
+      User = "languagetool";
+      ExecStart = ''${pkgs.languagetool}/bin/languagetool-http-server --port ${languagetoolPort}  --allow-origin "*"'';
     };
-    systemd.services.languagetool = {
-      enable = true;
-      description = "Language Tool self-hosted server";
-      after = ["network.target"];
-      wantedBy = [ "multi-user.target" ];
-      serviceConfig = {
-        Type = "simple";
-        User = "languagetool";
-        ExecStart = ''${pkgs.languagetool}/bin/languagetool-http-server --port ${languagetoolPort}  --allow-origin "*"'';
-      };
-    };
-    services.nginx.virtualHosts."${cfg.domain}" = {
-      locations = {
-        "/" = {
-          proxyPass = "http://localhost:${languagetoolPort}";
-        };
+  };
+  services.nginx.virtualHosts."${languagetoolDomain}" = {
+    forceSSL = true;
+    enableACME = true;
+    locations = {
+      "/" = {
+        proxyPass = "http://localhost:${languagetoolPort}";
       };
     };
   };
