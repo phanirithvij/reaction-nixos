@@ -14,11 +14,12 @@ let
 in
 {
   imports =
-    [ # Include the results of the hardware scan.
+    [
       ./hardware-configuration.nix
       ./languagetool.nix
       ./minecraft.nix
       ./streama.nix
+      ./nextcloud.nix
     ];
 
   # Use the systemd-boot EFI boot loader.
@@ -173,63 +174,6 @@ bantime = 2400
           #};
         #};
       #};
-
-      "nuage.ppom.me" = let
-        dav = { return = "301 /remote.php/dav/"; };
-      in {
-        forceSSL = true;
-        enableACME = true;
-        locations = {
-          "/.well-known/caldav" = dav;
-          "/.well-known/carddav" = dav;
-          "/" = {
-            index = "index.php";
-            proxyPass = "http://localhost:9000";
-          };
-        };
-      };
-
-      "write.ppom.me" = {
-        forceSSL = true;
-        enableACME = true;
-        extraConfig = ''
-          location ^~ /loleaflet {
-            proxy_pass http://localhost:9980;
-            proxy_set_header Host $host;
-          }
-          # WOPI discovery URL
-          location ^~ /hosting/discovery {
-            proxy_pass http://localhost:9980;
-            proxy_set_header Host $host;
-          }
-          # Capabilities
-          location ^~ /hosting/capabilities {
-            proxy_pass http://localhost:9980;
-            proxy_set_header Host $host;
-          }
-          # main websocket
-          location ~ ^/lool/(.*)/ws$ {
-            proxy_pass http://localhost:9980;
-            proxy_set_header Upgrade $http_upgrade;
-            proxy_set_header Connection "Upgrade";
-            proxy_set_header Host $host;
-            proxy_read_timeout 36000s;
-          }
-          # download, presentation and image upload
-          location ~ ^/lool {
-            proxy_pass http://localhost:9980;
-            proxy_set_header Host $host;
-          }
-          # Admin Console websocket
-          location ^~ /lool/adminws {
-            proxy_pass http://localhost:9980;
-            proxy_set_header Upgrade $http_upgrade;
-            proxy_set_header Connection "Upgrade";
-            proxy_set_header Host $host;
-            proxy_read_timeout 36000s;
-          }
-        '';
-      };
 
       "ppom.me" = {
         # makes it the default host
