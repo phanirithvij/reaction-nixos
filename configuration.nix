@@ -6,10 +6,6 @@
 
 let
   sshPort = 5554;
-  torPort = 143;
-  jitsiDomain = "chat.ppom.me";
-  localAddress = "192.168.1.2";
-  publicAddress = "88.160.19.71";
 in
 {
   imports = [
@@ -18,6 +14,8 @@ in
     ./minecraft.nix
     ./streama.nix
     ./nextcloud.nix
+    ./jitsi.nix
+    ./tor.nix
   ];
 
   # Use the systemd-boot EFI boot loader.
@@ -120,24 +118,19 @@ in
   networking.firewall.enable = true;
   networking.firewall.allowedTCPPorts = [
     sshPort
-    torPort
     80 443 # web
-    4443 10000 # additional ports for Jitsi
-  ];
-  networking.firewall.allowedUDPPorts = [
-    4443 10000 # additional ports for Jitsi
   ];
 
   # Fail2ban service
   services.fail2ban.enable = true;
   services.fail2ban.jails.sshd = ''
-port = ${builtins.toString sshPort}
-enabled = true
-banaction = iptables-multiport
-maxretry = 5
-findtime = 1200
-bantime = 2400
-'';
+    port = ${builtins.toString sshPort}
+    enabled = true
+    banaction = iptables-multiport
+    maxretry = 5
+    findtime = 1200
+    bantime = 2400
+  '';
 
   # Nginx
   services.nginx = {
@@ -155,7 +148,6 @@ bantime = 2400
 
     # Hosts config
     virtualHosts = {
-
       "ppom.me" = {
         # makes it the default host
         default = true;
@@ -184,11 +176,6 @@ bantime = 2400
           };
         };
       };
-
-      "${jitsiDomain}" = {
-        forceSSL = true;
-        enableACME = true;
-      };
     };
   };
 
@@ -197,38 +184,6 @@ bantime = 2400
     acceptTerms = true;
     email = "paco@ecomail.io";
   };
-
-  # Jitsi meet config
-  services.jitsi-meet = {
-    enable = true;
-    hostName = "chat.ppom.me";
-    nginx.enable = true;
-  };
-  services.jitsi-videobridge = {
-    enable = true;
-    openFirewall = true;
-    nat = {
-      localAddress = localAddress;
-      publicAddress = publicAddress;
-    };
-  };
-
-  # Vas-y je suis un fou
-  services.tor = {
-    enable = true;
-    enableGeoIP = true;
-    relay = {
-      enable = true;
-      role = "relay";
-      port = torPort;
-      nickname = "parpaing";
-      bandwidthRate = 8 * 1024 * 1024; # 8 MB/s
-      contactInfo = "parpaing@tuta.io";
-    };
-  };
-
-  # Docker
-  virtualisation.docker.enable = true;
 
   # SMART daemon → disk health check
   services.smartd.enable = true;
