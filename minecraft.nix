@@ -48,6 +48,8 @@ in
       User = "${user}";
       ExecStart = "${pkgs.jre}/bin/java -jar ${jar}";
       WorkingDirectory="${directory}";
+      CPUWeight = "30";
+      CPUQuota  = "300%";
     };
   };
 }
