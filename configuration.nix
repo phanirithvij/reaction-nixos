@@ -160,6 +160,11 @@ in
             root = "/var/www/musi";
           };
         };
+        extraConfig = ''
+          if ($host = veloc.ppom.me) {
+            return 301 https://assos.utc.fr/veloc/$request_uri;
+          } #
+        '';
       };
 
       "u.ppom.me" = {
@@ -173,6 +178,28 @@ in
             root = "/data/uploader";
             extraConfig = "autoindex on;";
             #extraConfig = '' fancyindex on; fancyindex_exact_size off; '';
+          };
+        };
+      };
+
+      "veloc.ppom.me" = {
+        extraConfig = ''
+            return 301 https://assos.utc.fr/veloc/$request_uri;
+        '';
+        # enable and force SSL with Let's Encrypt
+        forceSSL = true;
+        enableACME = true;
+      };
+
+      "blog.ppom.me" = {
+        # enable and force SSL with Let's Encrypt
+        forceSSL = true;
+        enableACME = true;
+        # locations
+        locations = {
+          "/" = {
+            tryFiles = "$uri $uri.html $uri/ =404";
+            root = "/data/blog";
           };
         };
       };
