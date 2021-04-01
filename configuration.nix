@@ -10,11 +10,12 @@ in
 {
   imports = [
     ./hardware-configuration.nix
+    ./jitsi.nix
     ./languagetool.nix
     ./minecraft.nix
-    ./streama.nix
     ./nextcloud.nix
-    ./jitsi.nix
+    ./rzw.nix
+    ./streama.nix
     ./tor.nix
   ];
 
@@ -210,6 +211,11 @@ in
   security.acme = {
     acceptTerms = true;
     email = "paco@ecomail.io";
+  };
+
+  services.rzw = {
+    enable = true;
+    domain = "rzw.ppom.me";
   };
 
   # SMART daemon → disk health check
