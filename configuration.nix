@@ -215,7 +215,7 @@ in
 
   services.rzw = {
     enable = true;
-    domain = "rzw.ppom.me";
+    domain = "ruleze.world";
   };
 
   # SMART daemon → disk health check

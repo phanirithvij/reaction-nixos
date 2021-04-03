@@ -4,7 +4,7 @@ let
   cfg = config.services.rzw;
 in {
   options.services.rzw = {
-    enable = mkEnableOption "enable rzw";
+    enable = mkEnableOption "enable RuleZeWorld. Non pure, beware!";
     domain = mkOption {
       type = types.str;
       description = "Domain you want to use";
@@ -73,6 +73,8 @@ in {
       phpEnv."PATH" = lib.makeBinPath [ pkgs.php ];
     };
     services.nginx.virtualHosts."${cfg.domain}" = {
+      forceSSL = true;
+      enableACME = true;
       root = cfg.rootDir;
       locations = {
         "/" = {
