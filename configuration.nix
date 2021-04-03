@@ -9,6 +9,7 @@ let
 in
 {
   imports = [
+    ./chatserver.nix
     ./hardware-configuration.nix
     ./jitsi.nix
     ./languagetool.nix
