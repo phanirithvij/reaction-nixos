@@ -184,6 +184,17 @@ in
         };
       };
 
+      # "xn--morts_annonces-mkb.ppom.me" = {
+      #   forceSSL = true;
+      #   enableACME = true;
+      #   locations = {
+      #     "/" = {
+      #       index = "/data/uploader/morts_annoncees.mp4";
+      #       root = "/var/empty";
+      #     };
+      #   };
+      # };
+
       "veloc.ppom.me" = {
         extraConfig = ''
             return 301 https://assos.utc.fr/veloc/$request_uri;
