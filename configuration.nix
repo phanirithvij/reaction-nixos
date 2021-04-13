@@ -10,6 +10,7 @@ in
 {
   imports = [
     ./chatserver.nix
+    ./funkwhale.nix
     ./hardware-configuration.nix
     ./jitsi.nix
     ./languagetool.nix
@@ -18,7 +19,21 @@ in
     ./rzw.nix
     ./streama.nix
     ./tor.nix
+    ./websites.nix
   ];
+
+  services.rzw = {
+    enable = true;
+    domain = "ruleze.world";
+  };
+
+  services.funkwhale = {
+    enable = true;
+    domainName = "funk.ppom.me";
+    envFile = "/root/secrets/funkwhale.secrets";
+    musicDir = "/data/funkwhale/music";
+    dataDir = "/data/funkwhale/data";
+  };
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
@@ -132,11 +147,6 @@ in
     findtime = 1200
     bantime = 2400
   '';
-
-  services.rzw = {
-    enable = true;
-    domain = "ruleze.world";
-  };
 
   # SMART daemon → disk health check
   services.smartd.enable = true;
