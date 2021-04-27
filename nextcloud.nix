@@ -11,22 +11,41 @@ let
     port = "9980";
   };
 in
-{
+  {
   # Reverse proxy config
   services.nginx.virtualHosts = {
     "${app.domainName}" = let
-      dav = { return = "301 /remote.php/dav/"; };
+      dav = {
+        priority = 10;
+        return = "301 /remote.php/dav/";
+      };
+      r404 = { return = "404"; };
     in {
       forceSSL = true;
       enableACME = true;
       locations = {
         "/.well-known/caldav" = dav;
         "/.well-known/carddav" = dav;
+
         "/" = {
+          priority = 30;
           index = "index.php";
           proxyPass = "http://localhost:${app.port}";
         };
       };
+      extraConfig = ''
+        add_header Content-Security-Policy "" always;
+        # HTTP response headers borrowed from Nextcloud `.htaccess`
+        add_header Referrer-Policy                      "no-referrer"   always;
+        # add_header X-Content-Type-Options             "nosniff"       always;
+        add_header X-Download-Options                   "noopen"        always;
+        add_header X-Frame-Options                      "SAMEORIGIN"    always;
+        add_header X-Permitted-Cross-Domain-Policies    "none"          always;
+        add_header X-Robots-Tag                         "none"          always;
+        add_header X-XSS-Protection                     "1; mode=block" always;
+        # Remove X-Powered-By, which is an information leak
+        fastcgi_hide_header X-Powered-By;
+      '';
     };
 
     "${collabora.domainName}" = {
