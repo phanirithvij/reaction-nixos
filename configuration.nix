@@ -29,7 +29,7 @@ in
 
   services.funkwhale = {
     enable = true;
-    domainName = "funk.ppom.me";
+    domainName = "music.ppom.me";
     envFile = "/root/secrets/funkwhale.secrets";
     musicDir = "/data/funkwhale/music";
     dataDir = "/data/funkwhale/data";
@@ -85,6 +85,7 @@ in
     file srm lsof
     neovim tmux fzf
     fd ripgrep exa du-dust
+    pstree
     htop iftop ctop
     zip unzip
     moreutils parted
