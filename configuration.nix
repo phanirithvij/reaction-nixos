@@ -12,7 +12,7 @@ in
     ./chatserver.nix
     ./funkwhale.nix
     ./hardware-configuration.nix
-    ./jitsi.nix
+    # ./jitsi.nix
     ./languagetool.nix
     ./minecraft.nix
     ./nextcloud.nix
