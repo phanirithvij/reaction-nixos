@@ -7,6 +7,14 @@
 
   # Nginx
   services.nginx = {
+
+    package = (pkgs.nginx.override {
+      modules = with pkgs.nginxModules; [
+        # Add fancy index module
+        fancyindex
+      ];
+    });
+
     enable = true;
     enableReload = true;
     clientMaxBodySize = "15G";
@@ -33,6 +41,7 @@
             root = "/var/www/musi";
           };
         };
+        # Redirection for Véloc
         extraConfig = ''
           if ($host = veloc.ppom.me) {
             return 301 https://assos.utc.fr/veloc/$request_uri;
@@ -49,8 +58,11 @@
           "/" = {
             index = "index.html";
             root = "/data/uploader";
-            extraConfig = "autoindex on;";
-            #extraConfig = '' fancyindex on; fancyindex_exact_size off; '';
+            # extraConfig = "autoindex on;";
+            extraConfig = ''
+              fancyindex on;
+              fancyindex_exact_size off;
+            '';
           };
         };
       };
