@@ -1,6 +1,6 @@
 { config, pkgs, ... }:
 let
-  torPort = 143;
+  torPort = 22;
 in
 {
   # Open ports
