@@ -80,19 +80,11 @@ with lib;
       enableACME = true;
       locations = {
         "/" = {
+          proxyWebsockets = true;
+          proxyPass = "http://localhost:${builtins.toString cfg.hostPort}";
           extraConfig = ''
-            proxy_set_header Host $host;
-            proxy_set_header X-Real-IP $remote_addr;
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto $scheme;
-            proxy_set_header X-Forwarded-Host $host:$server_port;
             proxy_set_header X-Forwarded-Port $server_port;
             proxy_redirect off;
-
-            # websocket support
-            proxy_http_version 1.1;
-            proxy_set_header Upgrade $http_upgrade;
-            proxy_set_header Connection $connection_upgrade;
 
             client_max_body_size ${cfg.maxBodySize};
             proxy_pass http://localhost:${builtins.toString cfg.hostPort};
