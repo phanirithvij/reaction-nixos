@@ -8,12 +8,10 @@
   # Nginx
   services.nginx = {
 
-    package = (pkgs.nginx.override {
-      modules = with pkgs.nginxModules; [
-        # Add fancy index module
-        fancyindex
-      ];
-    });
+    additionnalModules = with pkgs.nginxModules; [
+      # Add fancy index module
+      fancyindex
+    ];
 
     enable = true;
     enableReload = true;
