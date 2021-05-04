@@ -14,6 +14,7 @@ in
     ./hardware-configuration.nix
     # ./jitsi.nix
     ./languagetool.nix
+    ./mail.nix
     ./minecraft.nix
     ./nextcloud.nix
     ./rzw.nix
