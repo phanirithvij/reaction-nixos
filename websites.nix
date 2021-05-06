@@ -30,8 +30,6 @@
     # Hosts config
     virtualHosts = {
       "ppom.me" = {
-        # makes it the default host
-        default = true;
         # enable and force SSL with Let's Encrypt
         forceSSL = true;
         enableACME = true;
@@ -41,11 +39,19 @@
             root = "/var/www/musi";
           };
         };
-        # Redirection for Véloc
+      };
+
+      "www.ppom.me" = {
+        # makes it the default host
+        default = true;
+        enableACME = true;
         extraConfig = ''
+          # Redirection for Véloc
           if ($host = veloc.ppom.me) {
             return 301 https://assos.utc.fr/veloc/$request_uri;
-          } #
+          }
+          # Standard redirection
+          return 301 https://ppom.me;
         '';
       };
 
