@@ -37,11 +37,6 @@ in
         add_header Content-Security-Policy "" always;
         # HTTP response headers borrowed from Nextcloud `.htaccess`
         add_header Referrer-Policy                      "no-referrer"   always;
-        # add_header X-Content-Type-Options             "nosniff"       always;
-        add_header X-Download-Options                   "noopen"        always;
-        add_header X-Frame-Options                      "SAMEORIGIN"    always;
-        add_header X-Permitted-Cross-Domain-Policies    "none"          always;
-        add_header X-Robots-Tag                         "none"          always;
         add_header X-XSS-Protection                     "1; mode=block" always;
         # Remove X-Powered-By, which is an information leak
         fastcgi_hide_header X-Powered-By;
@@ -99,6 +94,29 @@ in
     ];
   };
 
-  # TODO: docker config
+  # Fail2ban
+  # Not sure whether it is effective or not.
+  environment.etc."fail2ban/filter.d/nextcloud.conf".text = ''
+    [Definition]
+    _groupsre = (?:(?:,?\s*"\w+":(?:"[^"]+"|\w+))*)
+    failregex = ^\{%(_groupsre)s,?\s*"remoteAddr":"<HOST>"%(_groupsre)s,?\s*"message":"Login failed:
+                ^\{%(_groupsre)s,?\s*"remoteAddr":"<HOST>"%(_groupsre)s,?\s*"message":"Trusted domain error.
+    datepattern = ,?\s*"time"\s*:\s*"%%Y-%%m-%%d[T ]%%H:%%M:%%S(%%z)?"
+  '';
+  services.fail2ban = {
+    enable = true;
+    jails.nextcloud = ''
+      enabled = true
+      port = 80,443
+      protocol = tcp
+      filter = nextcloud
+      maxretry = 3
+      bantime = 600
+      findtime = 3600
+      logpath = /data/nextcloud/html/data/nextcloud.log
+    '';
+  };
+
+  # TODO: docker config → replace docker-compose with Nix
   virtualisation.docker.enable = true;
 }
