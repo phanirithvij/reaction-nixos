@@ -87,7 +87,6 @@ with lib;
             proxy_redirect off;
 
             client_max_body_size ${cfg.maxBodySize};
-            proxy_pass http://localhost:${builtins.toString cfg.hostPort};
           '';
         };
       };
