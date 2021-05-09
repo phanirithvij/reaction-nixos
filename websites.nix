@@ -84,6 +84,15 @@
       #   };
       # };
 
+      "xn--og8ha.ml" = {
+        locations = {
+          "/" = {
+            index = "index.html";
+            root = "/var/www/rainbow";
+          };
+        };
+      };
+
       "veloc.ppom.me" = {
         extraConfig = ''
             return 301 https://assos.utc.fr/veloc/$request_uri;
