@@ -141,6 +141,7 @@ in
 
   # Fail2ban service
   services.fail2ban.enable = true;
+  # Stick with default banaction, banaction-allports, bantime
   services.fail2ban.jails.sshd = ''
     port = ${builtins.toString sshPort}
     enabled = true
@@ -149,6 +150,9 @@ in
     findtime = 1200
     bantime = 2400
   '';
+
+  virtualisation.docker.enable = true;
+  boot.kernel.sysctl."net.ipv4.ip_forward" = true;
 
   # SMART daemon → disk health check
   services.smartd.enable = true;
