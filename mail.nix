@@ -5,6 +5,7 @@ let
   ecomailAddress = "paco@ecomail.io";
   personnalAddress = "paco@ppom.me";
   adminAddress = "admin@ppom.me";
+  poubelleAddress = "poubelle@ppom.me";
 in
 {
   imports = [
@@ -41,7 +42,7 @@ in
         quota = "2G";
       };
       # Catch all
-      "poubelle@ppom.me" = {
+      "${poubelleAddress}" = {
         hashedPasswordFile = "/var/secrets/mail/poubelle.secret";
         catchAll = [ "ppom.me" ];
         quota = "2G";
@@ -49,8 +50,8 @@ in
     };
 
     forwards = {
-      "${personnalAddress}" = ecomailAddress;
-      "${adminAddress}" = ecomailAddress;
+      "${personnalAddress}" = poubelleAddress;
+      "${adminAddress}" = poubelleAddress;
     };
 
     # Use Let's Encrypt certificates. Adds a virtual host to nginx.
