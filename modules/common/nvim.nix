@@ -1,14 +1,14 @@
 { lib, config, pkgs, ... }:
 {
-  imports = [ ppom.nix ];
+  imports = [ ./ppom.nix ];
 
   environment.systemPackages = [
-    neovim
-    python38Packages.pynvim
-  ] ++ if ppom.isDesktop then [
-    black
-    ccls
-  ] else [];
+    pkgs.neovim
+    pkgs.python38Packages.pynvim
+  ] ++ lib.optionals config.ppom.isDesktop [
+    pkgs.black
+    pkgs.ccls
+  ];
 
   nixpkgs.overlays = [
     (self: super: {
