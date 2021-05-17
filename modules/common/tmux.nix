@@ -1,8 +1,6 @@
 { lib, config, pkgs, ... }:
 {
-  imports = [
-    ./ppom.nix
-  ];
+  imports = [ ./ppom.nix ];
 
   config = {
     programs.tmux = {

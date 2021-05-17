@@ -5,6 +5,8 @@ let
 in
 {
   imports = [
+    ../common/all.nix
+
     ./chatserver.nix
     ./funkwhale.nix
     ./hardware-configuration.nix
@@ -79,7 +81,7 @@ in
   environment.systemPackages = with pkgs; [
     wget git lftp
     file srm lsof
-    neovim tmux fzf
+    tmux fzf
     fd ripgrep exa du-dust
     pstree
     htop iftop ctop
@@ -93,32 +95,6 @@ in
     mkvtoolnix dos2unix
     catimg
     cpulimit
-  ];
-
-  nixpkgs.overlays = [
-    (self: super: {
-      neovim = super.neovim.override {
-        viAlias = true;
-        vimAlias = true;
-        configure = {
-          customRC = ''
-            set number termguicolors
-            let g:mapleader = " "
-            nnoremap <leader>h :nohlsearch<Bar>:echo<CR>
-          '';
-          packages.myVimPackage = with pkgs.vimPlugins; {
-            start = [
-              vim-nix
-              vim-commentary
-              vim-surround
-              vim-repeat
-              vim-fugitive
-            ];
-            opt = [];
-          };
-        };
-      };
-    })
   ];
 
   # Enable the OpenSSH daemon.

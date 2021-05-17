@@ -127,10 +127,6 @@
       gource
       gti
     gnumake
-    neovim
-      python38Packages.pynvim
-      black
-      ccls
     #scilab
     ghc stack cabal-install # haskell
     h2 # H2 Database Editor
@@ -168,36 +164,6 @@
 
   nixpkgs.overlays = [
     (self: super: {
-      neovim = super.neovim.override {
-        # nvim aliases
-        viAlias = true;
-        vimAlias = true;
-        configure = {
-          customRC = ''
-            set number termguicolors
-            colorscheme gruvbox
-            let g:mapleader = " "
-            nnoremap <leader>h noh<CR>
-          '';
-          packages.myVimPackage = with pkgs.vimPlugins; {
-            start = [
-              vim-nix
-              # gruvbox # TODO override the "black" here 😎
-              (super.vimPlugins.gruvbox.overrideAttrs (oldAttrs: {
-                patches = [ ./true_black_gruvbox.patch ];
-              }))
-              vim-commentary
-              vim-surround
-              vim-repeat
-              vim-fugitive
-            ];
-            opt = [ ];
-          };
-	};
-      };
-      # add tmux plugins
-      tmux = super.tmux.override {
-      };
       # add rofi-emoji plugin
       rofi = super.rofi.override { plugins = [
         super.rofi-emoji

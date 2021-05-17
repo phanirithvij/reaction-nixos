@@ -1,8 +1,7 @@
 { lib, config, pkgs, ... }:
 {
   imports = [
-      ../common/ppom.nix
-      ../common/tmux.nix
+      ../common/all.nix
 
       ./direnv.nix
       ./hardware-configuration.nix
