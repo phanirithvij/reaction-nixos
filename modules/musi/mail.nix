@@ -46,6 +46,11 @@ in
         catchAll = [ "ppom.me" ];
         quota = "2G";
       };
+      # People
+      "lzn@ppom.me" = {
+        hashedPasswordFile = "/var/secrets/mail/lzn.secret";
+        quota = "2G";
+      };
     };
 
     forwards = {
