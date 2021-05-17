@@ -1,13 +1,14 @@
 { lib, config, pkgs, ... }:
 {
   imports = [
+      ../common/ppom.nix
+      ../common/tmux.nix
+
       ./direnv.nix
       ./hardware-configuration.nix
       ./mpd.nix
       ./nginx.nix
       ./packages.nix
-      ./ppom.nix
-      ./tmux.nix
       ./userunits.nix
     ];
 

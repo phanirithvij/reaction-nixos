@@ -184,7 +184,7 @@
               vim-nix
               # gruvbox # TODO override the "black" here 😎
               (super.vimPlugins.gruvbox.overrideAttrs (oldAttrs: {
-                patches = [ ./patches/true_black_gruvbox.patch ];
+                patches = [ ./true_black_gruvbox.patch ];
               }))
               vim-commentary
               vim-surround
