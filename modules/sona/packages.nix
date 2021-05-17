@@ -208,15 +208,13 @@
       signal-desktop = super.signal-desktop.override { spellcheckerLanguage = "fr_ANY"; };
 
       # add personnal scripts
-      ppom_config = super.callPackage /home/ao/prg/config {};
+      # ppom_config = super.callPackage /home/ao/prg/config {};
 
       # dwm override
       dwm = super.callPackage /home/ao/prg/dwm {};
 
-      # scilab = super.callPackage /home/ao/prg/nix/scilab {}; 
-
       # sudoku game
-      soude_au_cou = super.callPackage /home/ao/prg/rust/sudoku {}; 
+      # soude_au_cou = super.callPackage /home/ao/prg/rust/sudoku {}; 
 
       # go vtt2srt script
       vtt2srt = super.callPackage /home/ao/prg/nix/vtt2srt {}; 

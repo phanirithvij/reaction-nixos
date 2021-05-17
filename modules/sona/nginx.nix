@@ -2,6 +2,7 @@
 
 let
   name = "sona.local";
+  rootDirectory = "/home/hdd/ao/vid/";
 in {
   networking.firewall.allowedTCPPorts = [ 80 ];
 
@@ -38,7 +39,7 @@ in {
       default = true;
       # locations
       locations."/" = {
-        root = "/home/hdd/ao/vid/";
+        root = rootDirectory;
         extraConfig = ''
           fancyindex on;
           fancyindex_exact_size off;
