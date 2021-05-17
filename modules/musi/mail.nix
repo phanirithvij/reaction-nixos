@@ -1,5 +1,4 @@
 { config, pkgs, ... }:
-# TODO make the secrets
 
 let
   ecomailAddress = "paco@ecomail.io";

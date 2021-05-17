@@ -12,7 +12,6 @@ in
     ./chatserver.nix
     ./funkwhale.nix
     ./hardware-configuration.nix
-    # ./jitsi.nix
     ./languagetool.nix
     ./mail.nix
     ./minecraft.nix

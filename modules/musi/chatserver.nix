@@ -3,7 +3,7 @@ with lib;
 let
   serviceName = "chatserver";
   port = 10800;
-  package = (pkgs.callPackage ./packages/chat.nix {});
+  package = (pkgs.callPackage ../../pkgs/chat.nix {});
 in
 {
   ## User conf
