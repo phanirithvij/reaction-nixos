@@ -20,6 +20,10 @@ in
     ./websites.nix
   ];
 
+  ppom = {
+    isDesktop = false;
+  };
+
   services.rzw = {
     enable = true;
     domain = "ruleze.world";
