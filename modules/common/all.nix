@@ -5,4 +5,7 @@
     ./tmux.nix
     ./nvim.nix
   ];
+
+
+  environment.homeBinInPath = true;
 }

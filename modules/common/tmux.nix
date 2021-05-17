@@ -9,7 +9,6 @@
       customPaneNavigationAndResize = true;
       historyLimit = 20000;
       keyMode = "vi";
-      newSession = true;
       resizeAmount = 5;
       escapeTime = if config.ppom.isDesktop then 20 else 500;
       shortcut = if config.ppom.isDesktop then "q" else "b";

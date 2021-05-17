@@ -10,6 +10,13 @@
     pkgs.ccls
   ];
 
+  environment = {
+    variables = {
+      EDITOR = "nvim";
+      VISUAL = "nvim";
+    };
+  };
+
   nixpkgs.overlays = [
     (self: super: {
       neovim = super.neovim.override {
@@ -19,21 +26,23 @@
         configure = {
           customRC = ''
             set number termguicolors
-            colorscheme gruvbox
             let g:mapleader = " "
             nnoremap <leader>h noh<CR>
+          '' + lib.optionalString config.ppom.isDesktop ''
+            colorscheme gruvbox
           '';
           packages.myVimPackage = with pkgs.vimPlugins; {
             start = [
               vim-nix
-              # gruvbox # TODO override the "black" here 😎
-              (super.vimPlugins.gruvbox.overrideAttrs (oldAttrs: {
-                patches = [ ./true_black_gruvbox.patch ];
-              }))
               vim-commentary
               vim-surround
               vim-repeat
               vim-fugitive
+            ] ++ lib.optionals config.ppom.isDesktop [
+              # gruvbox # TODO override the "black" here 😎
+              (super.vimPlugins.gruvbox.overrideAttrs (oldAttrs: {
+                patches = [ ./true_black_gruvbox.patch ];
+              }))
             ];
             opt = [ ];
           };

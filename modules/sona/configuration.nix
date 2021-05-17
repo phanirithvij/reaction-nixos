@@ -118,11 +118,6 @@
   #   }
   # ];
 
-  programs.xss-lock = {
-    enable = true;
-    lockerCommand = "/run/wrappers/bin/slock";
-  };
-
   ### BEGIN UNFREE
   # Yeah, I'm not proud of that
   nixpkgs.config.allowUnfree = true;
@@ -189,15 +184,6 @@
   ### Services and packages
 
 
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  programs.gnupg.agent = {
-    enable = true;
-    enableSSHSupport = true;
-    pinentryFlavor = "gnome3";
-  };
-
   services.locate = {
     enable = true;
     interval = "hourly";
@@ -232,16 +218,11 @@
 
   services.tlp.enable = true;
 
-  # Udev rules
-  programs.light.enable = true;
 
   environment = {
     variables = {
-      EDITOR = "nvim";
-      VISUAL = "nvim";
       BROWSER = "firefox";
     };
-    homeBinInPath = true;
   };
 
   # Programs
@@ -257,6 +238,25 @@
     #steam.enable;
     wireshark.enable = true;
     adb.enable = true;
+
+    # Udev rules
+    light.enable = true;
+
+    bash = {
+      undistractMe.enable = true;
+    };
+
+    xss-lock = {
+      enable = true;
+      lockerCommand = "/run/wrappers/bin/slock";
+    };
+
+    gnupg.agent = {
+      enable = true;
+      enableSSHSupport = true;
+      pinentryFlavor = "gnome3";
+    };
+
   };
 
   # services.ipfs = {
