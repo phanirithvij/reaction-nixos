@@ -1,11 +1,14 @@
 { lib, config, pkgs, ... }:
+
+with config.ppom;
 {
   imports = [ ./ppom.nix ];
 
   environment.systemPackages = [
     pkgs.neovim
-    pkgs.python38Packages.pynvim
-  ] ++ lib.optionals config.ppom.isDesktop [
+  ] ++ lib.optionals isDesktop [
+    pkgs.nodejs
+    pkgs.ruby
     pkgs.black
     pkgs.ccls
   ];
@@ -20,6 +23,7 @@
   nixpkgs.overlays = [
     (self: super: {
       neovim = super.neovim.override {
+        withNodeJs = isDesktop;
         # nvim aliases
         viAlias = true;
         vimAlias = true;
@@ -28,8 +32,8 @@
             set number termguicolors
             let g:mapleader = " "
             nnoremap <leader>h noh<CR>
-          '' + lib.optionalString config.ppom.isDesktop ''
             colorscheme gruvbox
+          '' + lib.optionalString isDesktop ''
           '';
           packages.myVimPackage = with pkgs.vimPlugins; {
             start = [
@@ -38,11 +42,11 @@
               vim-surround
               vim-repeat
               vim-fugitive
-            ] ++ lib.optionals config.ppom.isDesktop [
-              # gruvbox # TODO override the "black" here 😎
+              # gruvbox
               (super.vimPlugins.gruvbox.overrideAttrs (oldAttrs: {
                 patches = [ ./true_black_gruvbox.patch ];
               }))
+            ] ++ lib.optionals isDesktop [
             ];
             opt = [ ];
           };

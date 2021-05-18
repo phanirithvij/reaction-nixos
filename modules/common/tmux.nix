@@ -10,6 +10,7 @@
       historyLimit = 20000;
       keyMode = "vi";
       resizeAmount = 5;
+      terminal = "screen-256color";
       escapeTime = if config.ppom.isDesktop then 20 else 500;
       shortcut = if config.ppom.isDesktop then "q" else "b";
 
