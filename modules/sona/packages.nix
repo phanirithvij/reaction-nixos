@@ -15,7 +15,7 @@
       tmuxPlugins.pain-control
     sshuttle # poor's man VPN
     sshfs-fuse # mount remote FS via SSH
-    moreutils # vipe, vidir
+    (lib.lowPrio moreutils) # vipe, vidir
     file # file types
     srm # secure rm
     lsof # list open files
@@ -136,7 +136,10 @@
     virt-manager
     # wireshark-qt
     # vscodium
-    python2 python38 python27Packages.pip python38Packages.pip
+    (lib.lowPrio python2)
+    (lib.lowPrio python27Packages.pip)
+    python38
+    python38Packages.pip
     # nodejs cargo
 
     # Sysadmin
