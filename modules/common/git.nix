@@ -1,6 +1,9 @@
 { config, pkgs, ... }:
 {
   environment.etc."gitconfig".text = ''
+    [user]
+        name = Paco
+        email = paco@ecomail.io
     [difftool]
         tool = vimdiff
         prompt = false
