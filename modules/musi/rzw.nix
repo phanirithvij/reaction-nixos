@@ -19,6 +19,11 @@ in {
       description = "Home of user";
       default = "/var/lib/rzw";
     };
+    secretFile = mkOption {
+      type = types.str;
+      description = "Home of user";
+      default = "/var/lib/rzw";
+    };
     rootDir = mkOption {
       type = types.str;
       description = "Root dir to serve";
@@ -92,6 +97,9 @@ in {
           '';
         };
       };
+      extraConfig = ''
+        add_header Strict-Transport-Security "max-age=31536000";
+      '';
     };
   };
 }

@@ -39,6 +39,10 @@
             root = "/var/www/musi";
           };
         };
+        extraConfig = ''
+          add_header Strict-Transport-Security "max-age=31536000";
+          add_header Content-Security-Policy "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'";
+        '';
       };
 
       "www.ppom.me" = {
@@ -71,6 +75,10 @@
             '';
           };
         };
+        extraConfig = ''
+          add_header Strict-Transport-Security "max-age=31536000";
+          add_header Content-Security-Policy "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'";
+        '';
       };
 
       # "xn--morts_annonces-mkb.ppom.me" = {
@@ -113,6 +121,10 @@
             root = "/data/blog";
           };
         };
+        extraConfig = ''
+          add_header Strict-Transport-Security "max-age=31536000";
+          add_header Content-Security-Policy "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'";
+        '';
       };
     };
   };

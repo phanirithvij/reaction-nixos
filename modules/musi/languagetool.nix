@@ -27,6 +27,9 @@ in {
     locations = {
       "/" = {
         proxyPass = "http://localhost:${languagetoolPort}";
+        extraConfig = ''
+          add_header Strict-Transport-Security "max-age=31536000";
+        '';
       };
     };
   };
