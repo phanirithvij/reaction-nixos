@@ -4,6 +4,7 @@
     ./ppom.nix
     ./tmux.nix
     ./nvim.nix
+    ./git.nix
   ];
 
 
