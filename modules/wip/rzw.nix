@@ -14,16 +14,10 @@ in {
       description = "System user's name";
       default = "rzw";
     };
-    userDir = mkOption {
-      type = types.str;
-      description = "Home of user";
-      default = "/var/lib/rzw";
-    };
-    # TODO : idk how to create those dir and file !!!!
     sqliteFile = mkOption {
       type = types.str;
       description = "Path to the sqlite file to use";
-      default = "${config.services.rzw.userDir}/rzw.db";
+      default = "/var/lib/rzw/rzw.db";
     };
     adminPasswordFile = mkOption {
       type = types.str;
@@ -58,6 +52,31 @@ in {
       # phpEnv."PATH" = lib.makeBinPath [ pkgs.php ];
       phpEnv."RZW_DB_FILE" = cfg.sqliteFile;
       phpEnv."RZW_ADMIN_PASSWORD_FILE" = cfg.adminPasswordFile
+    };
+    systemd.services."rzw-dir-exists" = {
+      enable = true;
+      description = "Ensures rzw's SQLite database exists";
+      requiredBy = [ "phpfpm-rzw.service" ];
+
+      unitConfig = {
+        ConditionPathExists = "!${cfg.sqliteFile}";
+      };
+
+      serviceConfig = {
+        Type = "oneshot";
+        User = "root";
+      };
+      script = ''
+        SQL="${cfg.sqliteFile}"
+        DIR="$(basename "$SQL")"
+
+        mkdir -p "$DIR"
+        chmod 755 "$DIR"
+
+        touch "$SQL"
+        chown ${cfg.user} "$SQL"
+        chmod 600 "$SQL"
+      '';
     };
     services.nginx.virtualHosts."${cfg.domain}" = {
       forceSSL = true;
