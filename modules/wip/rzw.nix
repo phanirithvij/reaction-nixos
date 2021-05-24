@@ -19,11 +19,7 @@ in {
       description = "Home of user";
       default = "/var/lib/rzw";
     };
-    rootDir = mkOption {
-      type = types.str;
-      description = "Root dir to serve";
-      default = "${config.services.rzw.userDir}/www";
-    };
+    # TODO : idk how to create those dir and file !!!!
     sqliteFile = mkOption {
       type = types.str;
       description = "Path to the sqlite file to use";
@@ -32,34 +28,16 @@ in {
     adminPasswordFile = mkOption {
       type = types.str;
       description = "Path to a file containing the admin password";
-      default = null;
-    };
-    adminPasswordHash = mkOption {
-      type = types.str;
-      description = ''Hash of the admin password. Get it with `php -r "echo password_hash('the_password_you_want', PASSWORD_DEFAULT);"`'';
-      default = null;
-    };
-    adminPasswordHashFile = mkOption {
-      type = types.str;
-      description = ''Path to a file containing the admin password hash. Get it with `php -r "echo password_hash('the_password_you_want', PASSWORD_DEFAULT);"`'';
-      default = null;
     };
   };
 
-  config = assert (cfg.adminPasswordFile != null && cfg.adminPasswordHash == null && cfg.adminPasswordHashFile == null) || (cfg.adminPasswordFile == null && cfg.adminPasswordHash != null && cfg.adminPasswordHashFile == null) || (cfg.adminPasswordFile == null && cfg.adminPasswordHash == null && cfg.adminPasswordHashFile != null);
-  mkIf cfg.enable
-  /* let
-    envFile = pkgs.writeText cfg.envFile ''
-      DB_PATH="${cfg.sqliteFile}"
-      ADMIN_PASSWD="${cfg.adminPasswordHash}"
-    '';
-  in */ {
+  config = mkIf cfg.enable {
     users = {
       users."${cfg.user}" = {
-          isSystemUser = true;
-          packages = with pkgs; [];
-          home = cfg.userDir;
-          group = cfg.user;
+        isSystemUser = true;
+        packages = with pkgs; [];
+        home = cfg.userDir;
+        group = cfg.user;
       };
       groups."${cfg.user}" = {};
     };
@@ -77,9 +55,9 @@ in {
         "php_admin_flag[log_errors]" = true;
         "catch_workers_output" = true;
       };
-      phpEnv."PATH" = lib.makeBinPath [ pkgs.php ];
-      phpEnv."RZW_DB_PATH" = cfg.sqliteFile;
-      phpEnv."RZW_ADMIN_PASSWORD" = ??;
+      # phpEnv."PATH" = lib.makeBinPath [ pkgs.php ];
+      phpEnv."RZW_DB_FILE" = cfg.sqliteFile;
+      phpEnv."RZW_ADMIN_PASSWORD_FILE" = cfg.adminPasswordFile
     };
     services.nginx.virtualHosts."${cfg.domain}" = {
       forceSSL = true;
