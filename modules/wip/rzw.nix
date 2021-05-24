@@ -2,9 +2,10 @@
 with lib;                      
 let
   cfg = config.services.rzw;
+  rzwPackage = callPackage ../../pkgs/rzw/default.nix;
 in {
   options.services.rzw = {
-    enable = mkEnableOption "enable RuleZeWorld. Non pure, beware!";
+    enable = mkEnableOption "enable RuleZeWorld";
     domain = mkOption {
       type = types.str;
       description = "Domain you want to use";
@@ -81,7 +82,7 @@ in {
     services.nginx.virtualHosts."${cfg.domain}" = {
       forceSSL = true;
       enableACME = true;
-      root = cfg.rootDir;
+      root = rzwPackage;
       locations = {
         "/" = {
           tryFiles = "$uri $uri.html $uri/ =404";
