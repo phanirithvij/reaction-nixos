@@ -42,6 +42,7 @@ with config.ppom;
               vim-surround
               vim-repeat
               vim-fugitive
+              vim-gitgutter
               # gruvbox
               (super.vimPlugins.gruvbox.overrideAttrs (oldAttrs: {
                 patches = [ ./true_black_gruvbox.patch ];
