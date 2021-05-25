@@ -8,24 +8,24 @@
 
 mkYarnPackage {
   pname = "rzw";
-  version = "unstable-2020-08-11";
+  version = "unstable-2021-05-24";
 
   src = fetchGit {
     url = "https://framagit.org/ppom/rzw";
-    rev = "36ca56f4d2f47580444bbac6cc544ae27fd264e5";
+    rev = "4bcf2b161b0c10ee93c32035d2eeade9af26afd7";
   };
-
-  patches = [ ./env.patch ];
 
   yarnNix = ./deps.nix;
 
   installPhase = ''
+    mkdir $out
     yarn --offline --frozen-lockfile build
-    cp -r deps/RuleZeWorld/public $out
+    cp -r deps/RuleZeWorld/public $out/
+    cp -r deps/RuleZeWorld/misc   $out/
   '' + (if (musicDir != null) then ''
-    ln -s ${musicDir} $out/music
+    ln -s ${musicDir} $out/public/music
   '' else ''
-    mkdir $out/music
+    mkdir $out/public/music
   '');
 
   distPhase = "echo [no distPhase]";

@@ -27,6 +27,7 @@ in
   services.rzw = {
     enable = true;
     domain = "ruleze.world";
+    adminPasswordFile = "/var/secrets/rzw-admin.secret";
   };
 
   services.funkwhale = {

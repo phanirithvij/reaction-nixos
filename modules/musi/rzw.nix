@@ -2,9 +2,10 @@
 with lib;                      
 let
   cfg = config.services.rzw;
+  rzwPackage = pkgs.callPackage ../../pkgs/rzw/default.nix {};
 in {
   options.services.rzw = {
-    enable = mkEnableOption "enable RuleZeWorld. Non pure, beware!";
+    enable = mkEnableOption "enable RuleZeWorld";
     domain = mkOption {
       type = types.str;
       description = "Domain you want to use";
@@ -16,48 +17,32 @@ in {
     };
     userDir = mkOption {
       type = types.str;
-      description = "Home of user";
+      description = "System user's home";
       default = "/var/lib/rzw";
     };
-    secretFile = mkOption {
+    musicDir = mkOption {
       type = types.str;
-      description = "Home of user";
-      default = "/var/lib/rzw";
+      description = "Public music directory. Must be readable by nginx";
+      default = "${cfg.userDir}/music";
     };
-    rootDir = mkOption {
+    sqliteFile = mkOption {
       type = types.str;
-      description = "Root dir to serve";
-      default = "${config.services.rzw.userDir}/www";
+      description = "Path to the sqlite file to use";
+      default = "${cfg.userDir}/rzw.db";
     };
-    # sqliteFile = mkOption {
-    #   type = types.str;
-    #   description = "Path to the sqlite file to use";
-    #   default = "${config.services.rzw.userDir}/rzw.db";
-    # };
-    # envFile = mkOption {
-    #   type = types.str;
-    #   description = "Path to the env file to use";
-    #   default = "${config.services.rzw.userDir}/rzw.env";
-    # };
-    # adminPasswordHash = mkOption {
-    #   type = types.str;
-    #   description = ''Hash of the admin password. Get it with `php -r "echo password_hash('the_password_you_want', PASSWORD_DEFAULT);"`'';
-    # };
+    adminPasswordFile = mkOption {
+      type = types.str;
+      description = "Path to a file containing the admin password";
+    };
   };
 
-  config = mkIf cfg.enable
-  /* let
-    envFile = pkgs.writeText cfg.envFile ''
-      DB_PATH="${cfg.sqliteFile}"
-      ADMIN_PASSWD="${cfg.adminPasswordHash}"
-    '';
-  in */ {
+  config = mkIf cfg.enable {
     users = {
       users."${cfg.user}" = {
-          isSystemUser = true;
-          packages = with pkgs; [];
-          home = cfg.userDir;
-          group = cfg.user;
+        isSystemUser = true;
+        packages = with pkgs; [];
+        home = cfg.userDir;
+        group = cfg.user;
       };
       groups."${cfg.user}" = {};
     };
@@ -74,13 +59,49 @@ in {
         "php_admin_value[error_log]" = "stderr";
         "php_admin_flag[log_errors]" = true;
         "catch_workers_output" = true;
+        # FIXME Warning! DEV only!
+        "php_flag[display_errors]" = true;
       };
-      phpEnv."PATH" = lib.makeBinPath [ pkgs.php ];
+      phpEnv = {
+        RZW_DB_FILE = cfg.sqliteFile;
+        RZW_ADMIN_PASSWORD_FILE = cfg.adminPasswordFile;
+      };
     };
+    systemd.services."rzw-init" = {
+      enable = true;
+      description = "Ensures rzw's SQLite database exists";
+      requiredBy = [ "phpfpm-rzw.service" ];
+
+      path = with pkgs; [ sqlite ];
+
+      # unitConfig = {
+      #   ConditionPathExists = "!${cfg.sqliteFile}";
+      # };
+
+      serviceConfig = {
+        Type = "oneshot";
+        User = "root";
+      };
+
+      script = ''
+        set -e
+        SQL="${cfg.sqliteFile}"
+        DIR="$(dirname "$SQL")"
+
+        [ -d "$DIR" ] || mkdir "$DIR"
+        chown "${cfg.user}" "$DIR"
+        chmod 755 "$DIR"
+
+        sqlite3 "$SQL" < ${rzwPackage}/misc/sqlite.init.sql
+        chown "${cfg.user}" "$SQL"
+        chmod 600 "$SQL"
+      '';
+    };
+
     services.nginx.virtualHosts."${cfg.domain}" = {
       forceSSL = true;
       enableACME = true;
-      root = cfg.rootDir;
+      root = "${rzwPackage.outPath}/public";
       locations = {
         "/" = {
           tryFiles = "$uri $uri.html $uri/ =404";
