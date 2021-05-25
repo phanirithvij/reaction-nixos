@@ -7,7 +7,7 @@
     wget # downloader
     curl # downloader
     bind
-    inetutils
+    (lib.lowPrio inetutils)
     lftp
     nmap # local network prober
     tmux
@@ -83,9 +83,6 @@
     ncpamixer # Pulseaudio TUI
     ponymix # Pulseaudio CLI
     rofi
-      rofi-emoji
-      rofi-mpd
-
     # GUI apps
     firefox
     thunderbird
