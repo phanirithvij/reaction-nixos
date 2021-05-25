@@ -42,7 +42,8 @@ in
     enable = true;
     description = "Minecraft server";
     after = ["network.target"];
-    wantedBy = [ "multi-user.target" ];
+    # wantedBy = [ "multi-user.target" ];
+    wantedBy = [];
     serviceConfig = {
       Type = "simple";
       User = "${user}";
