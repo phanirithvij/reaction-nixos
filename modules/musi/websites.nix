@@ -132,7 +132,7 @@
         };
         extraConfig = ''
           add_header Strict-Transport-Security "max-age=31536000";
-          add_header Content-Security-Policy "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'";
+          add_header Content-Security-Policy "default-src 'none'; img-src 'none'; script-src 'none'; style-src 'unsafe-inline'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'";
         '';
       };
     };
