@@ -96,9 +96,6 @@ in
     lm_sensors
     docker-compose docui
     python3 pydf
-    youtube-dl
-    handbrake ffmpeg-full
-    mkvtoolnix dos2unix
     catimg
     cpulimit
   ];

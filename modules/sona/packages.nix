@@ -34,7 +34,6 @@
     zip
       unzip
     unrar
-    dos2unix
     # gocr tesseract
     vmtouch # Virtual Memory Toucher
     exa fd du-dust ripgrep
@@ -145,13 +144,8 @@
     rdfind # find duplicates
 
     # Media
-    ffmpeg-full
-    mkvtoolnix
-    youtube-dl
-    handbrake
     subtitleeditor
     imagemagick
-    vtt2srt # VTT to SRT converter
     beets # MP3 tag editor
     # id3v2 kid3 # MP3 tag editors
     # python38Packages.pdftotext
@@ -181,9 +175,6 @@
 
       # sudoku game
       # soude_au_cou = super.callPackage /home/ao/prg/rust/sudoku {}; 
-
-      # go vtt2srt script
-      vtt2srt = super.callPackage /home/ao/prg/nix/vtt2srt {}; 
 
       # add -g/--progress to coreutils' cp and mv.
       adv_coreutils = (super.coreutils.overrideAttrs (oldAttrs: {
