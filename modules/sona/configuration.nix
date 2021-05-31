@@ -220,8 +220,10 @@
 
 
   environment = {
-    variables = {
+    variables = rec {
       BROWSER = "firefox";
+      LANG = "en_US.UTF-8";
+      LC_ALL = LANG;
     };
   };
 
@@ -243,7 +245,7 @@
     light.enable = true;
 
     bash = {
-      undistractMe.enable = true;
+      # undistractMe.enable = true;
     };
 
     xss-lock = {
@@ -284,7 +286,7 @@
   systemd.services.docker.wantedBy = lib.mkForce [];
 
   virtualisation.lxd.enable = true;
-  systemd.services.lxd.wantedBy = lib.mkForce [];
+  # systemd.services.lxd.wantedBy = lib.mkForce [];
 
   ppom = {
     isDesktop = true;
