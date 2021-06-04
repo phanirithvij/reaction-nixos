@@ -16,10 +16,21 @@
 
       extraConfig = ''
         bind ( copy-mode
-        bind ù split-window -h
         bind S new-session
+
+        # Swap window left/right
         bind -r "<" swap-window -d -t -1
 	bind -r ">" swap-window -d -t +1
+
+        # New windows and panes in the same directory
+        unbind '"'
+        unbind %
+        unbind c
+        bind '"' split-window    -c "#{pane_current_path}"
+        bind %   split-window -h -c "#{pane_current_path}"
+        # ù is more accessible on AZERTY
+        bind ù   split-window -h -c "#{pane_current_path}"
+        bind c   new-window      -c "#{pane_current_path}"
 
         ${if config.ppom.isDesktop then ''
         set -g status-style fg=#ffffff
