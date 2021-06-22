@@ -84,6 +84,15 @@ in
     };
   };
 
+  # Cron jobs
+  services.cron = {
+    enable = true;
+    systemCronJobs = [
+      ''5 0 * * *      ppom    uptime > ${config.users.users.ppom.home}/uptimes/$(date '+%y-%m-%d')''
+    ];
+  };
+
+
   environment.systemPackages = with pkgs; [
     wget git lftp
     file srm lsof
