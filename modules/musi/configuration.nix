@@ -13,7 +13,7 @@ in
     ./languagetool.nix
     ./mail.nix
     ./minecraft.nix
-    ./nextcloud.nix
+    ./nextcloud/default.nix
     ./rzw.nix
     ./streama.nix
     ./tor.nix
