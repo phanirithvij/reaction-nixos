@@ -8,6 +8,7 @@
       ./mpd.nix
       ./nginx.nix
       ./packages.nix
+      # ./phpmysql.nix
       # ./userunits.nix
     ];
 
