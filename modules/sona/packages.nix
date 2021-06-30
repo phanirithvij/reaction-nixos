@@ -46,7 +46,9 @@
     pass
     openvpn
     catimg lolcat figlet espeak-ng cowsay
-    subdl asciinema
+    subdl
+    asciinema # Terminal JSON recorder & player. Check asciinema.org
+    librespeed-cli # Speedtest
     bc python3
     shellcheck # bash linter
     # vmtouch # touch a file in virtual memory
@@ -59,6 +61,7 @@
     htop # process viewer
     iftop # connection viewer
     ddgr # DuckDuckGo CLI
+    ytfzf # Youtube scrapper ⨯ fzf
     fzf # fuzzy finder
     weechat # IRC client
 
@@ -97,7 +100,7 @@
     element-desktop
     pcmanfm
     evince
-    # libreoffice
+    libreoffice
     #filezilla
     mpv
     # clementine
