@@ -1,4 +1,7 @@
 { lib, config, pkgs, ... }:
+let
+  shortcut = if config.ppom.isDesktop then "q" else "b";
+in
 {
   imports = [ ./ppom.nix ];
 
@@ -12,10 +15,11 @@
       resizeAmount = 5;
       terminal = "screen-256color";
       escapeTime = if config.ppom.isDesktop then 20 else 500;
-      shortcut = if config.ppom.isDesktop then "q" else "b";
+      shortcut = shortcut;
 
       extraConfig = ''
-        bind ( copy-mode
+        bind q copy-mode
+        bind Q paste-buffer
         bind S new-session
 
         # Swap window left/right
