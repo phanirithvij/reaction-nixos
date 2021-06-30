@@ -10,4 +10,9 @@
 
 
   environment.homeBinInPath = true;
+
+  programs.thefuck = {
+    enable = true;
+    alias = "f";
+  };
 }
