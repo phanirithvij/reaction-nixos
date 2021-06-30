@@ -6,6 +6,7 @@
     ./nvim.nix
     ./git.nix
     ./video-packages.nix
+    ./environment.nix
   ];
 
 
