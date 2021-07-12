@@ -42,7 +42,7 @@
         };
         extraConfig = ''
           # do not even try connecting by HTTP
-          add_header Strict-Transport-Security "max-age=31536000";
+          # add_header Strict-Transport-Security "max-age=31536000";
           # allow only certain types of ways to load content
           add_header Content-Security-Policy "default-src 'none'; img-src 'none'; script-src 'none'; style-src 'unsafe-inline'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'";
           # do not allow to be framed inside another website
@@ -85,7 +85,7 @@
           };
         };
         extraConfig = ''
-          add_header Strict-Transport-Security "max-age=31536000";
+          # add_header Strict-Transport-Security "max-age=31536000";
           add_header Content-Security-Policy "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'";
         '';
       };
@@ -131,7 +131,7 @@
           };
         };
         extraConfig = ''
-          add_header Strict-Transport-Security "max-age=31536000";
+          # add_header Strict-Transport-Security "max-age=31536000";
           add_header Content-Security-Policy "default-src 'none'; img-src 'none'; script-src 'none'; style-src 'unsafe-inline'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'";
         '';
       };

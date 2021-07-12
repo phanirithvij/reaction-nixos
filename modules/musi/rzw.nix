@@ -119,7 +119,7 @@ in {
         };
       };
       extraConfig = ''
-        add_header Strict-Transport-Security "max-age=31536000";
+        # add_header Strict-Transport-Security "max-age=31536000";
       '';
     };
   };

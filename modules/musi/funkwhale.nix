@@ -92,7 +92,7 @@ with lib;
       };
       extraConfig = ''
         # HSTS
-        add_header Strict-Transport-Security "max-age=31536000";
+        # add_header Strict-Transport-Security "max-age=31536000";
         # Security header
         add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; object-src 'none'; media-src 'self' data:";
         # compression settings
