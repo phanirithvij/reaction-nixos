@@ -34,7 +34,7 @@ in
         };
       };
       extraConfig = ''
-        add_header Strict-Transport-Security "max-age=31536000";
+        # add_header Strict-Transport-Security "max-age=31536000";
         add_header Content-Security-Policy "" always;
         # HTTP response headers borrowed from Nextcloud `.htaccess`
         add_header Referrer-Policy                      "no-referrer"   always;
