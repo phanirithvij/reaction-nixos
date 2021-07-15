@@ -1,13 +1,18 @@
 { lib, config, pkgs, ... }:
 {
   environment.systemPackages = with pkgs; [
-    ffmpeg-full
-    mkvtoolnix
-    youtube-dl
-    handbrake
+    # CLI
+      ## network
+        mtr # interactive trace route
+      ## video
+      ffmpeg-full
+      mkvtoolnix
+      youtube-dl
+      handbrake
 
-    dos2unix
-    vtt2srt # VTT to SRT converter
+      ## text
+      dos2unix
+      vtt2srt # VTT to SRT converter
   ];
 
   nixpkgs.overlays = [
