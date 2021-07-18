@@ -29,6 +29,8 @@
     loader.systemd-boot.editor = false;
     loader.efi.canTouchEfiVariables = true;
     tmpOnTmpfs = true;
+    # add ntfs support
+    supportedFilesystems = [ "ntfs" ];
     # plymouth = { enable = true; logo = pkgs.fetchurl { url = "https://u.ppom.me/plymouth.png"; sha256 = "b2d44f5120e6528cec6dea9b6b8ad049e57b7f65670d8f05ca1c18b5a43c63d7"; }; };
   };
 
