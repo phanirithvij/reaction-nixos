@@ -4,53 +4,31 @@
 {
   environment.systemPackages = with pkgs; [
     # CLI
-    wget # downloader
-    curl # downloader
     bind
     (lib.lowPrio inetutils)
-    lftp
-    nmap # local network prober
     tmux
       tmuxPlugins.fingers
       tmuxPlugins.pain-control
     sshuttle # poor's man VPN
     sshfs-fuse # mount remote FS via SSH
     (lib.lowPrio moreutils) # vipe, vidir
-    file # file types
-    srm # secure rm
-    lsof # list open files
     sysstat
     tealdeer # tldr man pages
-    lm_sensors # CPU temp
     sequoia # modern OpenPGP implementation
-    gnupg # reference OpenPGP implementation
     tomb # useful wrapper around PGP and LUKS
     pinentry_curses # for tomb passwords on the terminal
     acpi # battery information
     powertop # power information
-    cpulimit
     pciutils # lspci
     libossp_uuid # uuid v4
-    zip
-      unzip
-    unrar
-    # gocr tesseract
     vmtouch # Virtual Memory Toucher
-    exa fd du-dust ripgrep
-      sl
-    pstree pydf jq parallel
+    sl
+    jq
     xsv # CSV's `jq`
-    nox
-    nix-du
-    patchelf
-    pass
+    parallel
     openvpn
-    catimg lolcat figlet espeak-ng cowsay
+    lolcat figlet espeak-ng cowsay
     subdl
-    asciinema # Terminal JSON recorder & player. Check asciinema.org
-    librespeed-cli # Speedtest
-    bc python3
-    shellcheck # bash linter
     # vmtouch # touch a file in virtual memory
     croc # CLI file transfer
 
@@ -58,11 +36,8 @@
     # elinks # web browser
     w3m # web browser
     asuka # gemini browser
-    htop # process viewer
-    iftop # connection viewer
     ddgr # DuckDuckGo CLI
     ytfzf # Youtube scrapper ⨯ fzf
-    fzf # fuzzy finder
     weechat # IRC client
 
     # Desktop environment
@@ -109,6 +84,7 @@
     deluge
     gparted
     appimage-run
+    # audacity, ardour or ocenaudio?
     # nextcloud-client
     # rssguard
 
@@ -129,7 +105,6 @@
     #scilab
     ghc stack cabal-install # haskell
     h2 # H2 Database Editor
-    sqlite-interactive # Heavy version with readline and completion support.
 
     docker
     virt-manager
@@ -137,14 +112,12 @@
     # vscodium
     (lib.lowPrio python2)
     (lib.lowPrio python27Packages.pip)
-    python38
     python38Packages.pip
     # nodejs cargo
 
     # Sysadmin
     # apache-directory-studio
     tdns-cli # dig alternative
-    rdfind # find duplicates
 
     # Media
     subtitleeditor
@@ -168,6 +141,7 @@
       ]; };
       
       # issue in the way the signal-desktop/default.nix transform the spellcheckLanguage. Should be "fr-any"
+      # see https://github.com/NixOS/nixpkgs/issues/113346
       signal-desktop = super.signal-desktop.override { spellcheckerLanguage = "fr_ANY"; };
 
       # add personnal scripts
