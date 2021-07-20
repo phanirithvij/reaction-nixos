@@ -14,10 +14,12 @@ in
     relay = {
       enable = true;
       role = "relay";
-      port = torPort;
-      nickname = "parpaing";
-      bandwidthRate = 10 * 1024 * 1024; # 10 MB/s
-      contactInfo = "parpaing@tuta.io";
+    };
+    settings = {
+      Nickname = "parpaing";
+      BandwidthRate = 10 * 1024 * 1024; # 10 MB/s
+      ContactInfo = "parpaing@tuta.io";
+      ORPort = torPort;
     };
   };
 }
