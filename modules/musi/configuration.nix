@@ -93,23 +93,6 @@ in
     ];
   };
 
-
-  environment.systemPackages = with pkgs; [
-    wget git lftp
-    file srm lsof
-    tmux fzf
-    fd ripgrep exa du-dust
-    pstree
-    htop iftop ctop
-    zip unzip
-    moreutils parted
-    lm_sensors
-    docker-compose docui
-    python3 pydf
-    catimg
-    cpulimit
-  ];
-
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
   services.openssh.ports = [ sshPort ];
