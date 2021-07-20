@@ -10,7 +10,8 @@ with lib;
       # Test backup of /etc/nixos
       etc_nixos = {
         paths = [ "/etc/nixos/" ];
-        startAt = "daily"; # How to specify at night?
+        # startAt = "daily"; # How to specify at night?
+        startAt = [ "*-*-* 02:30" ];
         prune.keep = {
           within = "1d"; # Keep all archives from the last day
           daily = 7;
@@ -19,13 +20,13 @@ with lib;
         };
         encryption = {
           mode = "repokey-blake2";
-          passCommand = "sudo cat /var/secrets/backups/etc_nixos/pass";
+          passCommand = "cat /var/secrets/backups/etc_nixos/pass";
         };
-        compression = "auto";
+        compression = "lz4";
         environment = {
-          BORG_RSH = "ssh -i /var/secrets/backups/etc_nixos/key";
+          BORG_RSH = "ssh -p ${toString (builtins.head config.services.openssh.ports)} -i /var/secrets/backups/etc_nixos/key";
         };
-        repo = "ssh://borg@localhost:${toString (builtins.head config.services.openssh.ports)}/path/to/repo";
+        repo = "borg@localhost:.";
       };
     };
 

@@ -7,6 +7,7 @@ in
   imports = [
     ../common/all.nix
 
+    ./backup.nix
     ./chatserver.nix
     ./funkwhale.nix
     ./hardware-configuration.nix
