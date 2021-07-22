@@ -74,7 +74,10 @@
     device = "/dev/sdc1";
     fsType = "auto";
     options = [ "defaults" "user" "rw" "utf8" "noauto" "umask=000" ];
-    };
+  };
+
+  # Only allow root and sudo users
+  nix.allowedUsers = [ "@wheel" ];
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
