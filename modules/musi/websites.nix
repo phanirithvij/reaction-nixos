@@ -64,6 +64,7 @@
             return 301 https://assos.utc.fr/veloc/$request_uri;
           }
           # Standard redirection
+          # Comment this line ↓ to resolve ACME challenge
           return 301 https://ppom.me;
         '';
       };
