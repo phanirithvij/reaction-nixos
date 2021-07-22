@@ -118,6 +118,9 @@ in
     bantime = 2400
   '';
 
+  # Only allow root to use nix
+  nix.allowedUsers = [ "root" ];
+
   virtualisation.docker.enable = true;
   boot.kernel.sysctl."net.ipv4.ip_forward" = true;
 
