@@ -48,7 +48,7 @@
     rdfind # find duplicates
     zip
     unzip
-    unrar
+    # unrar # unfree!
 
     ## security
     srm # secure rm
