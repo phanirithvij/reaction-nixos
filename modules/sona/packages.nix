@@ -29,23 +29,22 @@
     openvpn
     lolcat figlet espeak-ng cowsay
     subdl
-    # vmtouch # touch a file in virtual memory
     croc # CLI file transfer
+    nix-bundle # Bundle a derivation like AppImage
 
     # TUI
-    # elinks # web browser
     w3m # web browser
     asuka # gemini browser
     ddgr # DuckDuckGo CLI
     ytfzf # Youtube scrapper ⨯ fzf
-    weechat # IRC client
+    aerc # Email client
+    neovim-remote
 
     # Desktop environment
     alacritty # terminal
     st # backup terminal if OpenGL bugs
     conky # status bar
     feh # image viewer
-    # meh
     xorg.xrandr xorg.xev xorg.xkill xclip
     dunst # notification daemon
     libnotify # send notifications
@@ -53,32 +52,30 @@
     xdotool # programmatically move the mouse, type, etc.
     numlockx # set Num Lock
     xss-lock # for use with a screen locker
-    scrot # simple screenshots
     flameshot # advanced screenshots
     redshift # less 'blue' screen
     pavucontrol # Pulseaudio GUI
     ncpamixer # Pulseaudio TUI
     ponymix # Pulseaudio CLI
     rofi
+
     # GUI apps
     firefox
     thunderbird
     #chromium
-    # qutebrowser
     signal-desktop
+    code-server # VSCodium w/ in-browser client & server
     mumble
-    # qtox
     # anki
     drawio
-    #tor-browser-bundle-bin
-    #jitsi-meet-electron
+    tor-browser-bundle-bin
+    # jitsi-meet-electron
     element-desktop
     pcmanfm
     evince
     libreoffice
-    #filezilla
     mpv
-    # clementine
+    clementine
     gnome3.cheese
     gimp
     deluge
