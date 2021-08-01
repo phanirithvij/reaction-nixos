@@ -45,4 +45,5 @@ in
       paths = [ "/home/" "/root/" ];
       startAt = [ "*-*-* 01:30" ];
     };
+  };
 }
