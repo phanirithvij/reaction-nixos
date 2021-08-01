@@ -64,6 +64,7 @@ with lib;
           FUNKWHALE_PROTOCOL = "https";
           FUNKWHALE_API_IP = "127.0.0.1";
           FUNKWHALE_API_PORT = containerPort;
+          FUNKWHALE_WEB_WORKERS = "4";
           NESTED_PROXY = "1";
           NGINX_MAX_BODY_SIZE = cfg.maxBodySize;
         };
