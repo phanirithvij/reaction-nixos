@@ -124,7 +124,7 @@
     # python38Packages.pdftotext
     # Markdown to PDF
     pandoc
-      texlive.combined.scheme-medium
+      texlive.combined.scheme-full
 
     adv_coreutils # with patch, see below
   ];
