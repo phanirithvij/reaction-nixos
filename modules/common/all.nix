@@ -9,7 +9,6 @@
     ./environment.nix
   ];
 
-
   environment.homeBinInPath = true;
 
   programs.thefuck = {
