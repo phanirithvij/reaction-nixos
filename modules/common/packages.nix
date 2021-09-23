@@ -5,11 +5,10 @@
     moreutils
     tmux
     fzf # fuzzy finder
-    asciinema # Terminal JSON recorder & player. Check asciinema.org
 
     ## processus
     htop # process viewer
-    pstree
+    # pstree
     lsof # list open files
     cpulimit # limit process CPU usage
 
@@ -21,13 +20,37 @@
 
     ## protocols
     curl # HTTP client
-    wget # HTTP client
-    lftp # FTP client
 
     ## developpement
     git
     python3
     shellcheck # bash linter
+
+    ## files
+    file # file types
+    fd # find like
+    ripgrep # grep like
+    exa # ls like
+    du-dust # du like
+    pydf # df like
+
+    ## security
+    srm # secure rm
+    gnupg # reference OpenPGP implementation
+    pass
+
+  ] ++ lib.optionals ! config.ppom.isLight
+
+    asciinema # Terminal JSON recorder & player. Check asciinema.org
+    tiv # terminal image viewer
+    rdfind # find duplicates
+    zip
+    unzip
+    # unrar # unfree!
+
+    ## protocols
+    wget # HTTP client
+    lftp # FTP client
 
     ## database
     sqlite-interactive # Heavy version with readline and completion support.
@@ -35,25 +58,6 @@
     ## hardware
     lm_sensors # CPU temp
     parted # disk partition manager
-
-    ## files
-    file # file types
-    dos2unix
-    fd # find like
-    ripgrep # grep like
-    exa # ls like
-    du-dust # du like
-    pydf # df like
-    tiv # terminal image viewer
-    rdfind # find duplicates
-    zip
-    unzip
-    # unrar # unfree!
-
-    ## security
-    srm # secure rm
-    gnupg # reference OpenPGP implementation
-    pass
 
     ## containers
     ctop
@@ -74,7 +78,9 @@
     nox
     nix-du
     patchelf
+
   ];
+
 
   nixpkgs.overlays = [
     (self: super: {

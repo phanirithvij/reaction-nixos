@@ -298,6 +298,7 @@
 
   ppom = {
     isDesktop = true;
+    isLight = false;
   };
 
 }

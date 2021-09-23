@@ -23,6 +23,7 @@ in
 
   ppom = {
     isDesktop = false;
+    isLight = false;
   };
 
   services.rzw = {
