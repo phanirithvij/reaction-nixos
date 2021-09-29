@@ -60,14 +60,14 @@
     firewall.allowedUDPPorts = [];
   };
   # use FDN's DNS. Override Internet provider's DNS
-  environment.etc."resolv.conf".text = ''
-    nameserver 84.200.69.80
-    nameserver 2001:1608:10:25::1c04:b12f
-    nameserver 84.200.70.40 
-    nameserver 2001:1608:10:25::9249:d69b
-    #nameserver 80.67.169.12
-    #nameserver 80.67.169.40
-  '';
+  # environment.etc."resolv.conf".text = ''
+  #   nameserver 84.200.69.80
+  #   nameserver 2001:1608:10:25::1c04:b12f
+  #   nameserver 84.200.70.40
+  #   nameserver 2001:1608:10:25::9249:d69b
+  #   #nameserver 80.67.169.12
+  #   #nameserver 80.67.169.40
+  # '';
   # disable wait online
   systemd.services.NetworkManager-wait-online.enable = false;
 
