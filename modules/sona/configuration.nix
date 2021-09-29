@@ -111,6 +111,7 @@
     # configure LightDM
     displayManager = {
       lightdm.enable = true;
+      lightdm.greeter.enable = false;
       # autoLogin
       autoLogin.enable = true;
       autoLogin.user = "ao";
@@ -134,7 +135,7 @@
   # nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [ "steam" "nvidia" ];
 
   # Nvidia driver
-  services.xserver.videoDrivers = [ "nvidia" ];
+  # services.xserver.videoDrivers = [ "nvidia" ];
 
   # Steam related
   environment.systemPackages = [ pkgs.steam ];
@@ -183,7 +184,11 @@
   # system.autoUpgrade.allowReboot = false;
 
   # setuid wrapper for slock
-  security.wrappers.slock.source = "${pkgs.slock.out}/bin/slock";
+  security.wrappers.slock = {
+    source = "${pkgs.slock.out}/bin/slock";
+    owner = "root";
+    group = "root";
+  };
 
   security.apparmor = {
     enable = true;
