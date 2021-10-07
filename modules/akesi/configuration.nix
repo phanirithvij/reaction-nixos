@@ -4,50 +4,11 @@ let
   sshPort = 22;
 in
 {
-  environment.systemPackages = with pkgs; [
-    ## shell environnement
-    moreutils
-    tmux
-    fzf # fuzzy finder
-
-    ## processus
-    htop # process viewer
-    # pstree
-    lsof # list open files
-    cpulimit # limit process CPU usage
-
-    ## network
-    mtr # interactive trace route
-    iftop # connection viewer
-    nmap # local network prober
-    librespeed-cli # Speedtest
-
-    ## protocols
-    curl # HTTP client
-
-    ## developpement
-    git
-    python3
-    shellcheck # bash linter
-
-    ## files
-    file # file types
-    fd # find like
-    ripgrep # grep like
-    exa # ls like
-    du-dust # du like
-    pydf # df like
-
-    ## security
-    srm # secure rm
-    gnupg # reference OpenPGP implementation
-    pass
-  ];
-
   imports = [
     ../common/all.nix
 
     ./hardware-configuration.nix
+    ./wireguard.nix
   ];
 
   ppom = {
@@ -68,24 +29,7 @@ in
   users.users = {
     root = {
       openssh.authorizedKeys.keys = [
-        "#"
-        "# WARNING: Automatically generated file"
-        "# This file will be erased at every boot"
-        "# This file was generated with '/usr/sbin/scw-fetch-ssh-keys'"
-        "#"
-        "# To add a new key, you can:"
-        "#   -- Add keys on your Scaleway account https://cloud.scaleway.com/#/credentials"
-        "#   -- Add keys using server tags - https://cloud.scaleway.com/#/servers/b6531225-009c-48bf-96bf-61d2b5736832"
-        "ssh-rsa_XXXXXXXXXXX AUTHORIZED_KEY=ssh-rsa_YYYYYYYYYYYYYYY""
-        "#        - Be sure to replace all spaces with underscores"
-        "#        - $> sed 's/ /_/g' ~/.ssh/id_rsa.pub"
-        "#   -- Add the keys to '/root/.ssh/instance_keys' which will be imported"
-        "#"
-        "# And recreate your 'authorized_keys' file with the new keys:"
-        "ssh-keys --upgrade'"
-        "#"
         "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDCl1yCz1qhl+KDKJCP84GtRDZxiLIEAr5VbVXjlD/H7Gejy8eTYY2UG0N8LMrRUPS5+gE8UI3Ic3D6XGbnpfcknoEz5HdqoU2iNHEz8Jw1MOn1f5TaiR3pKrHd7mhxBfOgYqIBlqRVugp4+OMKb80mvLw6BN/H9QmX2BAT1uQj7btr2ub6LWDTzfIYq+eJod/0no3D6Dq9ygjMpMGc3L8iG9skiaCaLhUV+lfH6QKHqUQsJvHl4tjQtQ0NLNkn4aDgnIaJrIS2oIBkRcZ4ehKwFKzlguXqwoKggvjLbuaVCRQwyHmGInMPE4OXAJ/ZifWY10o/y6bZQQQYeMW9/+3t ao@sona"
-        "# Below your custom ssh keys from '/root/.ssh/instance_keys'"
       ];
     };
     ppom = {
@@ -113,7 +57,7 @@ in
     banaction = iptables-multiport
     maxretry = 5
     findtime = 1200
-    bantime = 2400
+    bantime = 4800
   '';
 
   # Only allow root to use nix
