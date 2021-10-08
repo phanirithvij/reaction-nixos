@@ -31,6 +31,8 @@
     subdl
     croc # CLI file transfer
     nix-bundle # Bundle a derivation like AppImage
+    inotify-tools # Linux filesystem watchdog
+    languagetool # Proofreading program
 
     # TUI
     w3m # web browser
@@ -53,16 +55,18 @@
     numlockx # set Num Lock
     xss-lock # for use with a screen locker
     flameshot # advanced screenshots
+    peek # GIF screenshots
     redshift # less 'blue' screen
     pavucontrol # Pulseaudio GUI
     ncpamixer # Pulseaudio TUI
     ponymix # Pulseaudio CLI
-    rofi
+    rofi # Menu chooser (dmenu like)
+    networkmanagerapplet # NM connection editor
 
     # GUI apps
     firefox
     thunderbird
-    #chromium
+    ungoogled-chromium
     signal-desktop
     code-server # VSCodium w/ in-browser client & server
     mumble
@@ -107,14 +111,17 @@
     virt-manager
     # wireshark-qt
     # vscodium
-    (lib.lowPrio python2)
-    (lib.lowPrio python27Packages.pip)
+    # (lib.lowPrio python2)
+    # (lib.lowPrio python27Packages.pip)
     python38Packages.pip
     # nodejs cargo
 
     # Sysadmin
     # apache-directory-studio
     tdns-cli # dig alternative
+
+    # Network
+    wireguard
 
     # Media
     subtitleeditor
@@ -123,8 +130,12 @@
     # id3v2 kid3 # MP3 tag editors
     # python38Packages.pdftotext
     # Markdown to PDF
+    yj # YAML to JSON etc.
     pandoc
       texlive.combined.scheme-full
+    pdftk # PDF Swiss knife
+    poppler # other PDF manipulations
+    multimarkdown # "from Markdown" exports
 
     adv_coreutils # with patch, see below
   ];
