@@ -152,6 +152,7 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.ao = {
     isNormalUser = true;
+    shell = pkgs.fish;
     # "wheel" enables ‘sudo’ for the user.
     extraGroups = [
       "wheel"
@@ -164,6 +165,8 @@
       "media"
     ];
   };
+
+  programs.fish.enable = true;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
