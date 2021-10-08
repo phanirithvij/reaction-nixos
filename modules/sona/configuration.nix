@@ -180,11 +180,7 @@
   # system.autoUpgrade.allowReboot = false;
 
   # setuid wrapper for slock
-  security.wrappers.slock = {
-    source = "${pkgs.slock.out}/bin/slock";
-    owner = "root";
-    group = "root";
-  };
+  programs.slock.enable = true;
 
   security.apparmor = {
     enable = true;
