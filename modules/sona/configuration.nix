@@ -202,11 +202,12 @@
     enable = true;
     systemCronJobs = [
       # ''0 22,0 * * *      root    cd /etc/nixos && git add -A && git commit -m "auto commit"''
-      # ''*/10 * * * *      ao      if ping framasoft.org; then down_detector.sh || mail 
+      # ''*/10 * * * *      ao      if ping framasoft.org; then down_detector.sh || mail
     ];
     cronFiles = [
       ''${pkgs.writeText "ao.crontab" ''
-        */2 * * * * ao /home/ao/bin/cron_check_battery
+        */2  * * * * ao
+        */15 * * * * ao /home/ao/bin/down_detector.sh &>> /home/ao/DOWN && file /home/ao/DOWN | grep empty && rm /home/ao/DOWN
       ''}''
     ];
   };
