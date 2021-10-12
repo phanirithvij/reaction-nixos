@@ -14,6 +14,7 @@ in
     ./languagetool.nix
     ./mail.nix
     ./minecraft.nix
+    ./monitoring.nix
     ./nextcloud/default.nix
     ./rzw.nix
     ./streama.nix
