@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, lib, ... }:
 let
   torPort = 22;
 in
@@ -22,4 +22,7 @@ in
       ORPort = torPort;
     };
   };
+
+  # Ou pas
+  systemd.services.tor.wantedBy = lib.mkForce [];
 }
