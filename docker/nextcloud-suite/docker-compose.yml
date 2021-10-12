@@ -9,7 +9,7 @@ networks:
 
 services:
   db:
-    image: postgres:alpine
+    image: postgres:13-alpine
     restart: always
     container_name: nc_pg
     volumes:
