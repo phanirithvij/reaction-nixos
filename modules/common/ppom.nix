@@ -5,6 +5,10 @@
       type = lib.types.bool;
       description = "Is it a desktop computer? true is desktop, false is server.";
     };
+    isLight = lib.mkOption {
+      type = lib.types.bool;
+      description = "Do you want a light setup? Changes common packages";
+    };
   };
 }
 

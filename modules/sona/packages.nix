@@ -29,23 +29,24 @@
     openvpn
     lolcat figlet espeak-ng cowsay
     subdl
-    # vmtouch # touch a file in virtual memory
     croc # CLI file transfer
+    nix-bundle # Bundle a derivation like AppImage
+    inotify-tools # Linux filesystem watchdog
+    languagetool # Proofreading program
 
     # TUI
-    # elinks # web browser
     w3m # web browser
     asuka # gemini browser
     ddgr # DuckDuckGo CLI
     ytfzf # Youtube scrapper ⨯ fzf
-    weechat # IRC client
+    aerc # Email client
+    neovim-remote
 
     # Desktop environment
     alacritty # terminal
     st # backup terminal if OpenGL bugs
     conky # status bar
     feh # image viewer
-    # meh
     xorg.xrandr xorg.xev xorg.xkill xclip
     dunst # notification daemon
     libnotify # send notifications
@@ -53,32 +54,32 @@
     xdotool # programmatically move the mouse, type, etc.
     numlockx # set Num Lock
     xss-lock # for use with a screen locker
-    scrot # simple screenshots
     flameshot # advanced screenshots
+    peek # GIF screenshots
     redshift # less 'blue' screen
     pavucontrol # Pulseaudio GUI
     ncpamixer # Pulseaudio TUI
     ponymix # Pulseaudio CLI
-    rofi
+    rofi # Menu chooser (dmenu like)
+    networkmanagerapplet # NM connection editor
+
     # GUI apps
     firefox
     thunderbird
-    #chromium
-    # qutebrowser
+    ungoogled-chromium
     signal-desktop
+    code-server # VSCodium w/ in-browser client & server
     mumble
-    # qtox
     # anki
     drawio
-    #tor-browser-bundle-bin
-    #jitsi-meet-electron
+    tor-browser-bundle-bin
+    # jitsi-meet-electron
     element-desktop
     pcmanfm
     evince
     libreoffice
-    #filezilla
     mpv
-    # clementine
+    clementine
     gnome3.cheese
     gimp
     deluge
@@ -110,14 +111,17 @@
     virt-manager
     # wireshark-qt
     # vscodium
-    (lib.lowPrio python2)
-    (lib.lowPrio python27Packages.pip)
+    # (lib.lowPrio python2)
+    # (lib.lowPrio python27Packages.pip)
     python38Packages.pip
     # nodejs cargo
 
     # Sysadmin
     # apache-directory-studio
     tdns-cli # dig alternative
+
+    # Network
+    wireguard
 
     # Media
     subtitleeditor
@@ -126,8 +130,12 @@
     # id3v2 kid3 # MP3 tag editors
     # python38Packages.pdftotext
     # Markdown to PDF
+    yj # YAML to JSON etc.
     pandoc
-      texlive.combined.scheme-medium
+      texlive.combined.scheme-full
+    pdftk # PDF Swiss knife
+    poppler # other PDF manipulations
+    multimarkdown # "from Markdown" exports
 
     adv_coreutils # with patch, see below
   ];

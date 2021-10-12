@@ -8,6 +8,7 @@
       ./mpd.nix
       ./nginx.nix
       ./packages.nix
+      ./vpnc.nix
       # ./phpmysql.nix
       # ./userunits.nix
     ];
@@ -59,14 +60,14 @@
     firewall.allowedUDPPorts = [];
   };
   # use FDN's DNS. Override Internet provider's DNS
-  environment.etc."resolv.conf".text = ''
-    nameserver 84.200.69.80
-    nameserver 2001:1608:10:25::1c04:b12f
-    nameserver 84.200.70.40 
-    nameserver 2001:1608:10:25::9249:d69b
-    #nameserver 80.67.169.12
-    #nameserver 80.67.169.40
-  '';
+  # environment.etc."resolv.conf".text = ''
+  #   nameserver 84.200.69.80
+  #   nameserver 2001:1608:10:25::1c04:b12f
+  #   nameserver 84.200.70.40
+  #   nameserver 2001:1608:10:25::9249:d69b
+  #   #nameserver 80.67.169.12
+  #   #nameserver 80.67.169.40
+  # '';
   # disable wait online
   systemd.services.NetworkManager-wait-online.enable = false;
 
@@ -78,6 +79,9 @@
 
   # Only allow root and sudo users
   nix.allowedUsers = [ "@wheel" ];
+  nix.autoOptimiseStore = true;
+  nix.daemonIONiceLevel = 7;
+  nix.daemonNiceLevel =   10;
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
@@ -107,6 +111,7 @@
     # configure LightDM
     displayManager = {
       lightdm.enable = true;
+      lightdm.greeter.enable = false;
       # autoLogin
       autoLogin.enable = true;
       autoLogin.user = "ao";
@@ -130,7 +135,7 @@
   # nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [ "steam" "nvidia" ];
 
   # Nvidia driver
-  services.xserver.videoDrivers = [ "nvidia" ];
+  # services.xserver.videoDrivers = [ "nvidia" ];
 
   # Steam related
   environment.systemPackages = [ pkgs.steam ];
@@ -147,6 +152,7 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.ao = {
     isNormalUser = true;
+    shell = pkgs.fish;
     # "wheel" enables ‘sudo’ for the user.
     extraGroups = [
       "wheel"
@@ -159,13 +165,8 @@
       "media"
     ];
   };
-  users.users.dumb = {
-    isNormalUser = true;
-    extraGroups = [
-      "networkmanager"
-      "video"
-    ];
-  };
+
+  programs.fish.enable = true;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
@@ -179,7 +180,7 @@
   # system.autoUpgrade.allowReboot = false;
 
   # setuid wrapper for slock
-  security.wrappers.slock.source = "${pkgs.slock.out}/bin/slock";
+  programs.slock.enable = true;
 
   security.apparmor = {
     enable = true;
@@ -201,11 +202,12 @@
     enable = true;
     systemCronJobs = [
       # ''0 22,0 * * *      root    cd /etc/nixos && git add -A && git commit -m "auto commit"''
-      # ''*/10 * * * *      ao      if ping framasoft.org; then down_detector.sh || mail 
+      # ''*/10 * * * *      ao      if ping framasoft.org; then down_detector.sh || mail
     ];
     cronFiles = [
       ''${pkgs.writeText "ao.crontab" ''
-        */2 * * * * ao /home/ao/bin/cron_check_battery
+        */2  * * * * ao
+        */15 * * * * ao /home/ao/bin/down_detector.sh &>> /home/ao/DOWN && file /home/ao/DOWN | grep empty && rm /home/ao/DOWN
       ''}''
     ];
   };
@@ -298,6 +300,7 @@
 
   ppom = {
     isDesktop = true;
+    isLight = false;
   };
 
 }
