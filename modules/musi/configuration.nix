@@ -93,10 +93,12 @@ in
   };
 
   # Cron jobs
-  services.cron = {
+  services.cron = let
+    uptimeCalc = (pkgs.writeScript "uptimeCalc.sh" ''uptime > ${config.users.users.ppom.home}/uptimes/$(date '+%y-%m-%d')'');
+  in {
     enable = true;
     systemCronJobs = [
-      ''5 0 * * *      ppom    uptime > ${config.users.users.ppom.home}/uptimes/$(date '+%y-%m-%d')''
+      ''5 0 * * *      ppom    ${uptimeCalc}''
     ];
   };
 
