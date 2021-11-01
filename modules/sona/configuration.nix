@@ -4,6 +4,7 @@
       ../common/all.nix
 
       ./direnv.nix
+      ./graphical.nix
       ./hardware-configuration.nix
       ./mpd.nix
       ./nginx.nix
@@ -99,27 +100,6 @@
     powertop.enable = true;
   };
 
-  # Enable the X11 windowing system.
-  services.xserver = {
-    enable = true;
-    enableCtrlAltBackspace = true;
-    layout = "fr";
-    # Enable touchpad support.
-    libinput.enable = true;
-    # use dwm
-    windowManager.dwm.enable = true;
-    # configure LightDM
-    displayManager = {
-      lightdm.enable = true;
-      lightdm.greeter.enable = false;
-      # autoLogin
-      autoLogin.enable = true;
-      autoLogin.user = "ao";
-    };
-    # The dots per inch of my screen.
-    dpi = 96;
-  };
-
   # systemd.automount = [
   #   {
   #     enable = true;
@@ -128,26 +108,6 @@
   #     };
   #   }
   # ];
-
-  ### BEGIN UNFREE
-  # Yeah, I'm not proud of that
-  nixpkgs.config.allowUnfree = true;
-  # nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [ "steam" "nvidia" ];
-
-  # Nvidia driver
-  # services.xserver.videoDrivers = [ "nvidia" ];
-
-  # Steam related
-  environment.systemPackages = [ pkgs.steam ];
-  hardware.opengl.driSupport32Bit = true;
-  hardware.opengl.extraPackages32 = with pkgs.pkgsi686Linux; [ libva ];
-  hardware.pulseaudio.support32Bit = true;
-  ### END UNFREE
-
-  # Fix of: Can't shutdown after having suspended the laptop by closing it.
-  # Fix found here: https://bugs.launchpad.net/ubuntu/+source/systemd/+bug/1441253
-  # Sounds like one of the systemd bugs that has never been fixed...
-  services.logind.lidSwitch = "suspend-then-hibernate";
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.ao = {
@@ -178,9 +138,6 @@
 
   # system.autoUpgrade.enable = true;
   # system.autoUpgrade.allowReboot = false;
-
-  # setuid wrapper for slock
-  programs.slock.enable = true;
 
   security.apparmor = {
     enable = true;
@@ -228,10 +185,8 @@
 
   services.tlp.enable = true;
 
-
   environment = {
     variables = rec {
-      BROWSER = "firefox";
       LANG = "en_US.UTF-8";
       LC_ALL = LANG;
     };
@@ -251,22 +206,9 @@
     wireshark.enable = true;
     adb.enable = true;
 
-    # Udev rules
-    light.enable = true;
-
-    bash = {
-      # undistractMe.enable = true;
-    };
-
-    xss-lock = {
-      enable = true;
-      lockerCommand = "/run/wrappers/bin/slock";
-    };
-
     gnupg.agent = {
       enable = true;
       enableSSHSupport = true;
-      pinentryFlavor = "gnome3";
     };
 
   };
@@ -280,10 +222,6 @@
   # services.magnetico.enable = true;
   # Port to be used for indexing DHT nodes. This port should be added to networking.firewall.allowedTCPPorts.
   # services.magnetico.crawler.port
-
-  # Flatpak
-  services.flatpak.enable = true;
-  xdg.portal.enable = true;
 
   # Virtualisation
   virtualisation.libvirtd.enable = true;
