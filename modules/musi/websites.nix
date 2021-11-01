@@ -12,6 +12,7 @@
       modules = with pkgs.nginxModules; [
         # Add fancy index module
         fancyindex
+        subsFilter
       ];
     });
 

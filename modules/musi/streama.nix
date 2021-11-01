@@ -11,6 +11,7 @@ in {
       forceSSL = true;
       enableACME = true;
       locations = {
+
         "/" = {
           proxyPass = "http://localhost:${localPort}";
           extraConfig = ''
@@ -21,12 +22,33 @@ in {
             add_header Access-Control-Allow-Origin "https://video.ppom.me";
           '';
         };
+
+        "/sub" = {
+          # Needs the subsFilter NGINX module?
+          root = "/data/streama/movies";
+          extraConfig = ''
+            # Remove the sub/ in the root dir
+            rewrite ^/sub(/.*)$ $1 break;
+            rewrite ^/sub       /  break;
+
+            # Show the files
+            fancyindex on;
+            fancyindex_exact_size off;
+
+            # Filter mkv/mp4/avi files
+            subs_filter '<tr>.*<a href="[^"]*.(mp4|mkv|avi)".*</tr>' ' ' r;
+          '';
+        };
+        "~ /sub.*\\.(mp4|mkv|avi)" = {
+          return = "403";
+        };
       };
   };
   # User configuration
   # users.users."${user}" = {
       # isSystemUser = true;
   # };
+
   # Docker service configuration
   virtualisation = {
     docker.enable = true;

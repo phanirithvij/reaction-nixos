@@ -13,6 +13,9 @@
 
   environment.homeBinInPath = true;
 
+  nix.daemonIONiceLevel = 7;
+  nix.daemonNiceLevel =   10;
+
   programs.thefuck = {
     enable = true;
     alias = "f";

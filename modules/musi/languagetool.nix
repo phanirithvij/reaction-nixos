@@ -19,6 +19,23 @@ in {
       Type = "simple";
       User = "languagetool";
       ExecStart = ''${pkgs.languagetool}/bin/languagetool-http-server --port ${languagetoolPort}  --allow-origin "*"'';
+      NoNewPrivileges = true;
+      ProtectSystem = "strict";
+      ProtectHome = true;
+      PrivateTmp = true;
+      PrivateDevices = true;
+      ProtectHostname = true;
+      ProtectClock = true;
+      ProtectKernelTunables = true;
+      ProtectKernelModules = true;
+      ProtectKernelLogs = true;
+      ProtectControlGroups = true;
+      RestrictAddressFamilies = [ "AF_UNIX" "AF_INET" "AF_INET6" ];
+      RestrictNamespaces = true;
+      LockPersonality = true;
+      RestrictSUIDSGID = true;
+      RemoveIPC = true;
+      PrivateMounts = true;
     };
   };
   services.nginx.virtualHosts."${languagetoolDomain}" = {
