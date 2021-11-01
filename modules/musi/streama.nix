@@ -29,6 +29,7 @@ in {
           extraConfig = ''
             # Remove the sub/ in the root dir
             rewrite ^/sub(/.*)$ $1 break;
+            rewrite ^/sub       /  break;
 
             # Show the files
             fancyindex on;
