@@ -80,8 +80,6 @@
   # Only allow root and sudo users
   nix.allowedUsers = [ "@wheel" ];
   nix.autoOptimiseStore = true;
-  nix.daemonIONiceLevel = 7;
-  nix.daemonNiceLevel =   10;
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
