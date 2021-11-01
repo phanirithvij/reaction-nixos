@@ -22,8 +22,9 @@
     pciutils # lspci
     libossp_uuid # uuid v4
     vmtouch # Virtual Memory Toucher
-    sl
-    jq
+    xonsh # Python x Bash = xon.sh
+    sl # You shouldn't type `sl`...
+    jq # JSON shell toolbox
     xsv # CSV's `jq`
     parallel
     openvpn
@@ -40,14 +41,18 @@
     ddgr # DuckDuckGo CLI
     ytfzf # Youtube scrapper ⨯ fzf
     aerc # Email client
-    neovim-remote
+    # neovim-remote
 
     # Desktop environment
     alacritty # terminal
     st # backup terminal if OpenGL bugs
     conky # status bar
     feh # image viewer
-    xorg.xrandr xorg.xev xorg.xkill xclip
+    xorg.xrandr # manage monitors
+    xorg.xev # log key and mouse events
+    xorg.xkill # kill an unresponsive window
+    xclip # X clipboard
+    autorandr # xrandr configurations memory
     dunst # notification daemon
     libnotify # send notifications
     qsudo # graphical sudo
@@ -85,6 +90,8 @@
     deluge
     gparted
     appimage-run
+    syncthing # ± P2P file synchronization
+    apache-directory-studio # LDAP client
     # audacity, ardour or ocenaudio?
     # nextcloud-client
     # rssguard
@@ -109,7 +116,7 @@
 
     docker
     virt-manager
-    # wireshark-qt
+    wireshark
     # vscodium
     # (lib.lowPrio python2)
     # (lib.lowPrio python27Packages.pip)
