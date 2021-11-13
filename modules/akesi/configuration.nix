@@ -8,6 +8,7 @@ in
     ../common/all.nix
 
     ./hardware-configuration.nix
+    ./webserver.nix
     ./wireguard.nix
   ];
 
