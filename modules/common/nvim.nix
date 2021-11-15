@@ -62,6 +62,8 @@ in
           '' + lib.optionalString isDesktop ''
             let g:languagetool_jar='${pkgs.languagetool}/share/languagetool-commandline.jar'
 
+            let g:vim_markdown_folding_disabled = 1
+
             " Function to source only if file exists {
             function! SourceIfExists(file)
               if filereadable(expand(a:file))
@@ -80,6 +82,7 @@ in
               vim-fugitive
               vim-gitgutter
               vim-unimpaired
+              vim-fish # doesn't work, why?
               # gruvbox
               (super.vimPlugins.gruvbox.overrideAttrs (oldAttrs: {
                 patches = [ ./true_black_gruvbox.patch ];
