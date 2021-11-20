@@ -1,0 +1,9 @@
+[[hosts.akesi]]
+publicKey = D7GuVBDF77tp369G5Mcvo8MBmHOvUAEGN6Ii3XgqXnc=
+ipv4 = 1
+type = server
+
+[[hosts.sona]]
+publicKey = UYjsvFMCc+yRBPxX4rHiuRx1jQd1WntClaAueNXNmh4=
+ipv4 = 2
+type = client
