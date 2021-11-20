@@ -92,17 +92,6 @@
         '';
       };
 
-      # "xn--morts_annonces-mkb.ppom.me" = {
-      #   forceSSL = true;
-      #   enableACME = true;
-      #   locations = {
-      #     "/" = {
-      #       index = "/data/uploader/morts_annoncees.mp4";
-      #       root = "/var/empty";
-      #     };
-      #   };
-      # };
-
       "xn--og8ha.ml" = {
         locations = {
           "/" = {
@@ -145,5 +134,10 @@
     acceptTerms = true;
     email = "paco@ecomail.io";
   };
+
+  # Workaround for cache files being sometimes owned by nobody
+  systemd.tmpfiles.rules = [
+    "Z '/var/cache/nginx' 0750 ${config.services.nginx.user} ${config.services.nginx.group} -"
+  ];
 
 }
