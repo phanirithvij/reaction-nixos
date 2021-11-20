@@ -55,7 +55,7 @@ in {
     oci-containers.containers = {
       streama = {
         autoStart = true;
-        image = "streama:1.10.1";
+        image = "streama:1.10.3";
         # user = user;
         ports = [ "${localPort}:8080" ];
         volumes = [

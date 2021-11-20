@@ -48,12 +48,13 @@ with lib;
     cfg = config.services.funkwhale;
     containerPort = "80";
   in mkIf cfg.enable {
+
     # Docker service configuration
     virtualisation = {
       docker.enable = true;
       oci-containers.containers.funkwhale = {
         autoStart = true;
-        image = "funkwhale/all-in-one:1.1";
+        image = "funkwhale/all-in-one:1.1.4";
         ports = [ "${builtins.toString cfg.hostPort}:${containerPort}" ];
         volumes = [
           "${cfg.dataDir}:/data"
@@ -74,6 +75,7 @@ with lib;
         ];
       };
     };
+
     # Reverse proxy configuration
     services.nginx.enable = true;
     services.nginx.virtualHosts."${cfg.domainName}" = {
