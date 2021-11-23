@@ -113,6 +113,9 @@
     #scilab
     ghc stack cabal-install # haskell
     h2 # H2 Database Editor
+    simple-http-server
+    gomod2nix
+    linx-server
 
     docker
     virt-manager
@@ -168,6 +171,9 @@
       # sudoku game
       # soude_au_cou = super.callPackage /home/ao/prg/rust/sudoku {}; 
 
+      # linx-server for development.
+      linx-server = super.callPackage ../../pkgs/linx-server {}; 
+
       # add -g/--progress to coreutils' cp and mv.
       adv_coreutils = (super.coreutils.overrideAttrs (oldAttrs: {
         doCheck = false;
@@ -180,6 +186,7 @@
       }));
 
     })
+    (import /home/ao/prg/nix/gomod2nix/overlay.nix)
   ];
 
   fonts.fonts = with pkgs; [
