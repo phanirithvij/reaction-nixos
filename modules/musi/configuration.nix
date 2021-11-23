@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 let
-  sshPort = 5554;
+  sshPort = 22;
 in
 {
   imports = [
