@@ -14,8 +14,7 @@
   environment.homeBinInPath = true;
 
   nix = {
-    # FIXME `nix search` doesn't work
-    extraOptions = ''experimental-features = nix-command'';
+    extraOptions = ''experimental-features = nix-command flakes'';
 
     # FIXME update to daemonIOSchedClass daemonIOSchedPriority
     # daemonIONiceLevel = 7;
