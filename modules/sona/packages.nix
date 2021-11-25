@@ -179,8 +179,8 @@
         doCheck = false;
         patches = oldAttrs.patches ++ [
           (super.fetchurl {
-            url = "https://raw.githubusercontent.com/jarun/advcpmv/master/advcpmv-0.8-8.32.patch";
-            sha256 = "0iz7p5a8wihnydccb40cjvwxhl8sz9lm7xcd57aqsr1xl7158ki9";
+            url = "https://raw.githubusercontent.com/jarun/advcpmv/master/advcpmv-0.9-9.0.patch";
+            sha256 = "sha256-k6Ii44DV8xjzh+ebSLW3ZHyyNlj0vuPgbHPIESCm4iM=";
           })
         ];
       }));
