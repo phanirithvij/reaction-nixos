@@ -7,12 +7,17 @@ let
 in
 {
   # enable NAT
-  networking.nat.enable = true;
-  networking.nat.externalInterface = externalInterface;
-  networking.nat.internalInterfaces = [ "wg0" ];
+  networking.nat = {
+    enable = true;
+    externalInterface = externalInterface;
+    internalInterfaces = [ "wg0" ];
+  };
 
   # Open WG port
-  networking.firewall.allowedUDPPorts = [ wgPort ];
+  networking.firewall = {
+    allowedTCPPorts = [ 53 wgPort ];
+    allowedUDPPorts = [ 53 wgPort ];
+  };
 
   # Enable routing
   boot.kernel.sysctl = {
@@ -20,22 +25,30 @@ in
     "net.ipv4.conf.default.forwarding" = lib.mkOverride 98 true;
   };
 
-  networking.wireguard.interfaces = {
+  services.dnsmasq = {
+    enable = true;
+    extraConfig = ''
+      interface=wg0
+    '';
+  };
+
+  networking.wg-quick.interfaces = {
     wg0 = {
       # Determines the IP address and subnet of the server's end of the tunnel interface.
-      ips = [ (genAddress 1) ];
+      address = [ (genAddress 1) ];
 
       listenPort = wgPort;
 
       # This allows the wireguard server to route your traffic to the internet and hence be like a VPN
-      # For this to work you have to set the dnsserver IP of your router (or dnsserver of choice) in your clients
-      postSetup = ''
-        ${pkgs.iptables}/bin/iptables -t nat -A POSTROUTING -s ${genAddress 0} -o ${externalInterface} -j MASQUERADE
+      postUp = ''
+        ${pkgs.iptables}/bin/iptables -A FORWARD -i wg0 -j ACCEPT
+        ${pkgs.iptables}/bin/iptables -t nat -A POSTROUTING -s ${genAddress 1} -o ${externalInterface} -j MASQUERADE
       '';
 
-      # This undoes the above command
-      postShutdown = ''
-        ${pkgs.iptables}/bin/iptables -t nat -D POSTROUTING -s ${genAddress 0} -o ${externalInterface} -j MASQUERADE
+      # Undo the above
+      preDown = ''
+        ${pkgs.iptables}/bin/iptables -D FORWARD -i wg0 -j ACCEPT
+        ${pkgs.iptables}/bin/iptables -t nat -D POSTROUTING -s ${genAddress 1} -o ${externalInterface} -j MASQUERADE
       '';
 
       privateKeyFile = "/var/secrets/wireguard/privatekey";
