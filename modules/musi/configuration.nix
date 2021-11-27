@@ -119,9 +119,9 @@ in
   services.fail2ban.enable = true;
   # Stick with default banaction, banaction-allports, bantime
   services.fail2ban.jails.sshd = ''
-    port = ${builtins.toString sshPort}
     enabled = true
-    banaction = iptables-multiport
+    port = ${builtins.toString sshPort}
+
     maxretry = 5
     findtime = 1200
     bantime = 2400

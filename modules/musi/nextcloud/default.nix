@@ -108,12 +108,16 @@ in
     jails.nextcloud = ''
       enabled = true
       port = 80,443
-      protocol = tcp
+
       filter = nextcloud
+      # Due to systemd backend as a default, we have to set this as pyinotify
+      # (auto doesn't work when systemd is default backend)
+      backend = pyinotify
+      logpath = /data/nextcloud/html/data/nextcloud.log
+
       maxretry = 3
       bantime = 600
       findtime = 3600
-      logpath = /data/nextcloud/html/data/nextcloud.log
     '';
   };
 
