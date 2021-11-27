@@ -24,12 +24,15 @@ in {
         };
 
         "/sub" = {
+          return = "301 /sub/";
+        };
+
+        "/sub/" = {
           # Needs the subsFilter NGINX module?
           root = "/data/streama/movies";
           extraConfig = ''
             # Remove the sub/ in the root dir
             rewrite ^/sub(/.*)$ $1 break;
-            rewrite ^/sub       /  break;
 
             # Show the files
             fancyindex on;
@@ -39,7 +42,7 @@ in {
             subs_filter '<tr>.*<a href="[^"]*.(mp4|mkv|avi)".*</tr>' ' ' r;
           '';
         };
-        "~ /sub.*\\.(mp4|mkv|avi)" = {
+        "~ /sub/.*\\.(mp4|mkv|avi)" = {
           return = "403";
         };
       };
