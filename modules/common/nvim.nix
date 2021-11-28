@@ -80,14 +80,13 @@ in
               vim-surround
               vim-repeat
               vim-fugitive
-              vim-gitgutter
               vim-unimpaired
-              vim-fish # doesn't work, why?
               # gruvbox
               (super.vimPlugins.gruvbox.overrideAttrs (oldAttrs: {
                 patches = [ ./true_black_gruvbox.patch ];
               }))
             ] ++ lib.optionals isDesktop [
+              vim-fish # doesn't work, why?
               vim-startify
               fzf-vim
               far-vim

@@ -39,7 +39,14 @@ in
   boot.cleanTmpDir = true;
 
   # Enable the OpenSSH daemon.
-  services.openssh.enable = true;
+  services.openssh = {
+    enable = true;
+    passwordAuthentication = false;
+    allowSFTP = false; # Don't set this if you need sftp
+    # challengeResponseAuthentication = false;
+    extraConfig = ''
+    '';
+  };
 
   # Open ports in the firewall.
   networking.firewall.enable = true;
@@ -59,6 +66,12 @@ in
 
   # Only allow root to use nix
   nix.allowedUsers = [ "root" ];
+
+  # Only allow paths from /nix/store to be executables
+  fileSystems."/".options = [ "noexec" ];
+
+  # prevent some potentials CVECs
+  security.sudo.execWheelOnly = true;
 
   services.locate = {
     enable = true;
