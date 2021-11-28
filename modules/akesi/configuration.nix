@@ -8,6 +8,7 @@ in
     ../common/all.nix
 
     ./hardware-configuration.nix
+    # ./openvpn.nix
     ./webserver.nix
     ./wireguard.nix
   ];
@@ -28,11 +29,6 @@ in
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users = {
-    root = {
-      openssh.authorizedKeys.keys = [
-        "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDCl1yCz1qhl+KDKJCP84GtRDZxiLIEAr5VbVXjlD/H7Gejy8eTYY2UG0N8LMrRUPS5+gE8UI3Ic3D6XGbnpfcknoEz5HdqoU2iNHEz8Jw1MOn1f5TaiR3pKrHd7mhxBfOgYqIBlqRVugp4+OMKb80mvLw6BN/H9QmX2BAT1uQj7btr2ub6LWDTzfIYq+eJod/0no3D6Dq9ygjMpMGc3L8iG9skiaCaLhUV+lfH6QKHqUQsJvHl4tjQtQ0NLNkn4aDgnIaJrIS2oIBkRcZ4ehKwFKzlguXqwoKggvjLbuaVCRQwyHmGInMPE4OXAJ/ZifWY10o/y6bZQQQYeMW9/+3t ao@sona"
-      ];
-    };
     ppom = {
       isNormalUser = true;
       extraGroups = [ "wheel" "users" ]; # Enable ‘sudo’ for the user.
