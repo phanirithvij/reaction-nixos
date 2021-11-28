@@ -31,7 +31,7 @@ services:
       - /var/secrets/nextcloud-suite/db.env
 
   app:
-    image: nextcloud:apache
+    image: nextcloud:22-apache
     restart: always
     container_name: nc_app
     ports:
