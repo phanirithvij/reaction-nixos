@@ -2,7 +2,7 @@
 {
   environment.etc."gitconfig".text = ''
     [user]
-        name = Paco
+        name = Paco${lib.optionalString (!config.ppom.isDesktop) " on ${config.networking.hostName}"}
         email = paco@ecomail.io
     [core]
         # Default ssh's askpass is a pain
