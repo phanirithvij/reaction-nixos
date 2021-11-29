@@ -121,9 +121,8 @@
     virt-manager
     wireshark
     # vscodium
-    # (lib.lowPrio python2)
-    # (lib.lowPrio python27Packages.pip)
-    python38Packages.pip
+    python39
+    python39Packages.pip
     # nodejs cargo
 
     # Sysadmin
@@ -137,8 +136,6 @@
     subtitleeditor
     imagemagick
     beets # MP3 tag editor
-    # id3v2 kid3 # MP3 tag editors
-    # python38Packages.pdftotext
     # Markdown to PDF
     yj # YAML to JSON etc.
     pandoc

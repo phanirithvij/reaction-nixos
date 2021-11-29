@@ -6,9 +6,11 @@
     tmux
     fzf # fuzzy finder
 
+    ## nix
+    nixos-option
+
     ## processus
     htop # process viewer
-    # pstree
     lsof # list open files
     cpulimit # limit process CPU usage
 
@@ -23,7 +25,7 @@
 
     ## developpement
     git
-    python3
+    # python3
     shellcheck # bash linter
 
     ## files
