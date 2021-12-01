@@ -2,22 +2,23 @@
 
 let
   wgPort = 123;
+  genAddress = number: "10.10.0.${toString number}/32";
   externalInterface = "ens3";
-  wireguardInterface = "wg0";
 in
 {
   # enable NAT
   networking.nat = {
     enable = true;
     externalInterface = externalInterface;
-    internalInterfaces = [ wireguardInterface ];
+    internalInterfaces = [ "wg0" ];
   };
 
   # Open WG port
   networking.firewall = {
     allowedTCPPorts = [ 53 wgPort ];
     allowedUDPPorts = [ 53 wgPort ];
-    trustedInterfaces = [ wireguardInterface ]; }; 
+  };
+
   # Enable routing
   boot.kernel.sysctl = {
     "net.ipv4.conf.all.forwarding" = lib.mkOverride 98 true;
@@ -27,35 +28,35 @@ in
   services.dnsmasq = {
     enable = true;
     extraConfig = ''
-      interface=${wireguardInterface}
+      interface=wg0
     '';
   };
 
   networking.wg-quick.interfaces = {
-    "${wireguardInterface}" = {
+    wg0 = {
       # Determines the IP address and subnet of the server's end of the tunnel interface.
-      address = [ "10.10.0.1/24" ];
+      address = [ (genAddress 1) ];
 
       listenPort = wgPort;
 
       # This allows the wireguard server to route your traffic to the internet and hence be like a VPN
       postUp = ''
-        ${pkgs.iptables}/bin/iptables -A FORWARD -i ${wireguardInterface} -j ACCEPT
-        ${pkgs.iptables}/bin/iptables -t nat -A POSTROUTING -s 10.10.0.0/24 -o ${externalInterface} -j MASQUERADE
+        ${pkgs.iptables}/bin/iptables -A FORWARD -i wg0 -j ACCEPT
+        ${pkgs.iptables}/bin/iptables -t nat -A POSTROUTING -s ${genAddress 1} -o ${externalInterface} -j MASQUERADE
       '';
 
       # Undo the above
       preDown = ''
-        ${pkgs.iptables}/bin/iptables -D FORWARD -i ${wireguardInterface} -j ACCEPT
-        ${pkgs.iptables}/bin/iptables -t nat -D POSTROUTING -s 10.10.0.0/24 -o ${externalInterface} -j MASQUERADE
+        ${pkgs.iptables}/bin/iptables -D FORWARD -i wg0 -j ACCEPT
+        ${pkgs.iptables}/bin/iptables -t nat -D POSTROUTING -s ${genAddress 1} -o ${externalInterface} -j MASQUERADE
       '';
 
-      privateKeyFile = "/var/secrets/wireguard/privatekey";
+      privateKeyFile = "...";
 
       peers = [
-        { # sona
-          publicKey = "UYjsvFMCc+yRBPxX4rHiuRx1jQd1WntClaAueNXNmh4=";
-          allowedIPs = [ "10.10.0.2/32" ];
+        { # desktop
+          publicKey = "...";
+          allowedIPs = [ (genAddress 2) ];
         }
       ];
     };
