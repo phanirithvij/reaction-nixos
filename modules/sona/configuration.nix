@@ -79,9 +79,19 @@
     options = [ "defaults" "user" "rw" "utf8" "noauto" "umask=000" ];
   };
 
-  # Only allow root and sudo users
-  nix.allowedUsers = [ "@wheel" ];
-  nix.autoOptimiseStore = true;
+  nix = {
+    # Only allow root and sudo users
+    allowedUsers = [ "@wheel" ];
+
+    autoOptimiseStore = true;
+    extraOptions = ''experimental-features = nix-command flakes'';
+
+    # FIXME update to daemonIOSchedClass daemonIOSchedPriority
+    # daemonIONiceLevel = 7;
+    # FIXME update to daemonCPUSchedPolicy
+    # daemonNiceLevel =   10;
+  };
+
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
