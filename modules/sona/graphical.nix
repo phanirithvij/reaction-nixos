@@ -79,4 +79,53 @@
 
   environment.variables.BROWSER = "firefox";
 
+  xdg.mime = let
+    mails = "thunderbird.desktop";
+    images = "feh.desktop";
+    videos = "mpv.desktop";
+    web = "firefox.desktop";
+    pdfs = "org.gnome.Evince.desktop;";
+    bittorrent = "deluge.desktop";
+    filemanager = "pcmanfm.desktop";
+  in {
+    defaultApplications = {
+      "inode/directory" = filemanager;
+      "application/pdf" = pdfs;
+      "image/jpeg" = images;
+      "image/jpg" = images;
+      "image/png" = images;
+      "image/gif" = web;
+      "video/ogg" = videos;
+      "video/mp4" = videos;
+      "video/webm" = videos;
+      "video/mkv" = videos;
+      "video/avi" = videos;
+      "text/html" = web;
+      "x-scheme-handler/http" = web;
+      "x-scheme-handler/https" = web;
+      "x-scheme-handler/mailto" = mails;
+      "message/rfc822" = mails;
+      "x-scheme-handler/feed" = mails;
+      "application/rss+xml" = mails;
+      "application/x-extension-rss" = mails;
+    };
+    addedAssociations = {
+      "application/x-bittorrent" = bittorrent;
+      "x-scheme-handler/mailto" = mails;
+      "message/rfc822" = mails;
+      "application/pdf" = pdfs;
+      "x-scheme-handler/feed" = mails;
+      "application/rss+xml" = mails;
+      "application/x-extension-rss" = mails;
+      "video/ogg" = videos;
+      "video/mp4" = videos;
+      "video/webm" = videos;
+      "video/mkv" = videos;
+      "video/avi" = videos;
+      "text/html" = web;
+      "x-scheme-handler/http" = web;
+      "x-scheme-handler/https" = web;
+    };
+  };
+
 }

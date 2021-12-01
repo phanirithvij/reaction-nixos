@@ -121,9 +121,8 @@
     virt-manager
     wireshark
     # vscodium
-    # (lib.lowPrio python2)
-    # (lib.lowPrio python27Packages.pip)
-    python38Packages.pip
+    python39
+    python39Packages.pip
     # nodejs cargo
 
     # Sysadmin
@@ -137,8 +136,6 @@
     subtitleeditor
     imagemagick
     beets # MP3 tag editor
-    # id3v2 kid3 # MP3 tag editors
-    # python38Packages.pdftotext
     # Markdown to PDF
     yj # YAML to JSON etc.
     pandoc
@@ -179,8 +176,8 @@
         doCheck = false;
         patches = oldAttrs.patches ++ [
           (super.fetchurl {
-            url = "https://raw.githubusercontent.com/jarun/advcpmv/master/advcpmv-0.8-8.32.patch";
-            sha256 = "0iz7p5a8wihnydccb40cjvwxhl8sz9lm7xcd57aqsr1xl7158ki9";
+            url = "https://raw.githubusercontent.com/jarun/advcpmv/master/advcpmv-0.9-9.0.patch";
+            sha256 = "sha256-k6Ii44DV8xjzh+ebSLW3ZHyyNlj0vuPgbHPIESCm4iM=";
           })
         ];
       }));

@@ -4,6 +4,7 @@
       ../common/all.nix
 
       ./direnv.nix
+      ./down-detector.nix
       ./graphical.nix
       ./hardware-configuration.nix
       ./mpd.nix
@@ -150,19 +151,11 @@
 
 
   services.locate = {
+    locate = pkgs.mlocate;
+    localuser = null; # accepts mlocate running as root
     enable = true;
     interval = "hourly";
-    prunePaths = [ "/tmp" "/var/tmp" "/var/cache" "/var/lock" "/var/run" "/var/spool" "/home/hdd/debian/etc" "/mnt" ];
-  };
-
-  # Cron jobs
-  services.cron = {
-    enable = true;
-    cronFiles = [
-      ''${pkgs.writeText "ao.crontab" ''
-        */15 * * * * ao /home/ao/bin/down_detector.sh &>> /home/ao/DOWN && file /home/ao/DOWN | grep empty && rm /home/ao/DOWN
-      ''}''
-    ];
+    prunePaths = [ "/tmp" "/var/tmp" "/var/cache" "/var/lock" "/var/run" "/var/spool" "/mnt" ];
   };
 
   services.atd.enable = true;

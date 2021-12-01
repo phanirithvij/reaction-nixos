@@ -13,8 +13,14 @@
 
   environment.homeBinInPath = true;
 
-  nix.daemonIONiceLevel = 7;
-  nix.daemonNiceLevel =   10;
+  nix = {
+    extraOptions = ''experimental-features = nix-command flakes'';
+
+    # FIXME update to daemonIOSchedClass daemonIOSchedPriority
+    # daemonIONiceLevel = 7;
+    # FIXME update to daemonCPUSchedPolicy
+    # daemonNiceLevel =   10;
+  };
 
   programs.thefuck = {
     enable = true;
