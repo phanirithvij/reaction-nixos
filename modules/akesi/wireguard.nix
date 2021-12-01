@@ -2,7 +2,6 @@
 
 let
   wgPort = 123;
-  genAddress = number: "10.10.10.${toString number}";
   externalInterface = "ens3";
   wireguardInterface = "wg0";
 in
@@ -56,7 +55,7 @@ in
       peers = [
         { # sona
           publicKey = "UYjsvFMCc+yRBPxX4rHiuRx1jQd1WntClaAueNXNmh4=";
-          allowedIPs = [ "10.10.0.2" ];
+          allowedIPs = [ "10.10.0.2/32" ];
         }
       ];
     };
