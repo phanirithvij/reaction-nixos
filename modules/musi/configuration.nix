@@ -8,12 +8,10 @@ in
     ../common/all.nix
 
     ./backup.nix
-    ./chatserver.nix
     ./funkwhale.nix
     ./hardware-configuration.nix
     ./languagetool.nix
     ./mail.nix
-    ./minecraft.nix
     ./monitoring.nix
     ./nextcloud/default.nix
     ./rzw.nix
