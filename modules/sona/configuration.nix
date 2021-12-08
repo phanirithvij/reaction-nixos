@@ -11,6 +11,7 @@
       ./nginx.nix
       ./packages.nix
       ./vpnc.nix
+      # ./wireguard.nix
       # ./phpmysql.nix
       # ./userunits.nix
     ];
