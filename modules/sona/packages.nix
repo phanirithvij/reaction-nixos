@@ -16,7 +16,8 @@
     tealdeer # tldr man pages
     sequoia # modern OpenPGP implementation
     tomb # useful wrapper around PGP and LUKS
-    pinentry_curses # for tomb passwords on the terminal
+    rbw # unofficial bitwarden CLI
+    pinentry-gnome # GUI password prompt (used by gpg-agent, installing it in global path for rbw & tomb)
     acpi # battery information
     powertop # power information
     pciutils # lspci
@@ -154,7 +155,13 @@
         super.rofi-emoji
         super.rofi-mpd
       ]; };
-      
+
+      rbw = super.rbw.override {
+        withFzf = true;
+        withRofi = true;
+        withPass = true;
+      };
+
       # issue in the way the signal-desktop/default.nix transform the spellcheckLanguage. Should be "fr-any"
       # see https://github.com/NixOS/nixpkgs/issues/113346
       signal-desktop = super.signal-desktop.override { spellcheckerLanguage = "fr_ANY"; };
