@@ -3,6 +3,8 @@
   imports = [
       ../common/all.nix
 
+      ./postgres.nix
+
       ./direnv.nix
       ./down-detector.nix
       ./graphical.nix
@@ -122,7 +124,7 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.ao = {
     isNormalUser = true;
-    shell = pkgs.fish;
+    shell = pkgs.xonsh;
     # "wheel" enables ‘sudo’ for the user.
     extraGroups = [
       "wheel"
@@ -137,6 +139,7 @@
   };
 
   programs.fish.enable = true;
+  programs.xonsh.enable = true;
   environment.pathsToLink = [
     "/share/fish"
   ];
