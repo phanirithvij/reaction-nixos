@@ -146,6 +146,7 @@
     multimarkdown # "from Markdown" exports
 
     adv_coreutils # with patch, see below
+    mediahandler # ⏯️
   ];
 
   nixpkgs.overlays = [
@@ -156,11 +157,17 @@
         super.rofi-mpd
       ]; };
 
-      rbw = super.rbw.override {
-        withFzf = true;
-        withRofi = true;
-        withPass = true;
-      };
+      rbw = (
+        (
+          super.rbw.override {
+            withFzf = true;
+            withRofi = true;
+            withPass = true;
+          }
+        ).overrideAttrs (oldAttrs: {
+        # add `rbw unlock` at the beginning of the `rbw-rofi` script
+        patches = oldAttrs.patches ++ [ ../../pkgs/rbw.patch ];
+      }));
 
       # issue in the way the signal-desktop/default.nix transform the spellcheckLanguage. Should be "fr-any"
       # see https://github.com/NixOS/nixpkgs/issues/113346
@@ -170,10 +177,13 @@
       # ppom_config = super.callPackage /home/ao/prg/config {};
 
       # dwm override
-      dwm = super.callPackage /home/ao/prg/dwm {};
+      dwm = super.callPackage ../../pkgs/dwm {};
 
       # sudoku game
       # soude_au_cou = super.callPackage /home/ao/prg/rust/sudoku {}; 
+
+      # media handler
+      mediahandler = super.callPackage ../../pkgs/mediahandler {}; 
 
       # linx-server for development.
       linx-server = super.callPackage ../../pkgs/linx-server {}; 
