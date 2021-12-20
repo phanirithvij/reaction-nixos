@@ -1,6 +1,35 @@
 { config, pkgs, ... }:
 
-{
+let
+  nginxPackage = (pkgs.nginx.override {
+    modules = with pkgs.nginxModules; [
+      # Add fancy index module
+      fancyindex
+      subsFilter
+    ];
+  });
+  reloadScript = pkgs.writeScriptBin "custom-reload-acme-www-ppom-me" ''
+    #!/${pkgs.bash}/bin/bash
+
+    real_path=/etc/static/nginx/nginx.conf
+    conf_path=/etc/nginx/nginx.conf
+
+    set -x
+
+    file=$(mktemp)
+    chmod 644 $file
+    sed 's%return 301 https://ppom.me;%#return 301 https://ppom.me;%' > $file < $real_path
+
+    rm $conf_path
+    cp $file $conf_path
+    systemctl reload nginx
+    systemctl start acme-www.ppom.me
+    sleep 20
+    rm $conf_path
+    ln -s $real_path $conf_path
+    systemctl reload nginx
+  '';
+in {
   networking.firewall.allowedTCPPorts = [
     80 443 # web
   ];
@@ -8,13 +37,7 @@
   # Nginx
   services.nginx = {
 
-    package = (pkgs.nginx.override {
-      modules = with pkgs.nginxModules; [
-        # Add fancy index module
-        fancyindex
-        subsFilter
-      ];
-    });
+    package = nginxPackage;
 
     enable = true;
     enableReload = true;
@@ -139,5 +162,20 @@
   systemd.tmpfiles.rules = [
     "Z '/var/cache/nginx' 0750 ${config.services.nginx.user} ${config.services.nginx.group} -"
   ];
+
+  systemd.timers.custom-reload-acme-www-ppom-me = {
+    wantedBy = [ "timers.target" ];
+    after = [ "network.target" ];
+    timerConfig = {
+      OnCalendar = "*-03,06,09,12-01 00:00:00";
+    };
+  };
+  systemd.services.custom-reload-acme-www-ppom-me = {
+    description = "Temporarily edit the nginx conf to update properly the Let's Encrypt certificate for www.ppom.me";
+    serviceConfig = {
+      ExecStart = "${reloadScript}/bin/custom-reload-acme-www-ppom-me";
+      # User = "root";
+    };
+  };
 
 }
