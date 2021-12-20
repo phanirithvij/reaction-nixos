@@ -26,7 +26,7 @@
     sl # You shouldn't type `sl`...
     jq # JSON shell toolbox
     xsv # CSV's `jq`
-    parallel
+    # parallel
     openvpn
     lolcat figlet espeak-ng cowsay
     subdl
@@ -119,7 +119,7 @@
 
     docker
     virt-manager
-    wireshark
+    # wireshark
     # vscodium
     python39
     python39Packages.pip

@@ -11,6 +11,7 @@
       ./nginx.nix
       ./packages.nix
       ./vpnc.nix
+      # ./wireguard.nix
       # ./phpmysql.nix
       # ./userunits.nix
     ];
@@ -128,7 +129,7 @@
       "networkmanager"
       "network"
       "video"
-      "wireshark"
+      # "wireshark"
       "docker"
       "adbusers"
       "media"
@@ -199,7 +200,7 @@
     # dev
     npm.enable = true;
     # other
-    wireshark.enable = true;
+    # wireshark.enable = true;
     adb.enable = true;
 
     gnupg.agent = {
@@ -224,7 +225,7 @@
   virtualisation.docker.enableOnBoot = false;
   systemd.services.docker.wantedBy = lib.mkForce [];
 
-  virtualisation.lxd.enable = true;
+  # virtualisation.lxd.enable = true;
   # systemd.services.lxd.wantedBy = lib.mkForce [];
 
   ppom = {

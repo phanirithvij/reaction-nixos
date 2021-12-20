@@ -10,7 +10,7 @@ let
   ];
   dns_test = "dns2.proxad.net";
   log_file = "/home/ao/DOWN";
-  down_detector = pkgs.writeScript "down_detector.sh" ''
+  down_detector = pkgs.writeScriptBin "down_detector.sh" ''
     #!${pkgs.bash}/bin/bash
 
     LOG_FILE="${log_file}"
@@ -58,7 +58,7 @@ in
   systemd.services.down_detector = {
     description = "check if some websites are down";
     serviceConfig = {
-      ExecStart = down_detector;
+      ExecStart = "${down_detector}/bin/down_detector.sh";
       User = "ao";
     };
   };

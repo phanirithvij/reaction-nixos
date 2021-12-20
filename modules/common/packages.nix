@@ -69,7 +69,7 @@
     ## video
     ffmpeg-full
     mkvtoolnix
-    youtube-dl
+    yt-dlp
     handbrake
 
     ## text
