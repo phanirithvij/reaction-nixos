@@ -3,6 +3,8 @@
   imports = [
       ../common/all.nix
 
+      ./postgres.nix
+
       ./direnv.nix
       ./down-detector.nix
       ./graphical.nix
