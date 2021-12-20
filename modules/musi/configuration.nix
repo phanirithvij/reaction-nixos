@@ -17,6 +17,7 @@ in
     ./rzw.nix
     ./streama.nix
     ./tor.nix
+    ./vaultwarden.nix
     ./websites.nix
   ];
 

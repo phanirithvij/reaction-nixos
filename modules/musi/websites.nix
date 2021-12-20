@@ -45,7 +45,7 @@
           # do not even try connecting by HTTP
           # add_header Strict-Transport-Security "max-age=31536000";
           # allow only certain types of ways to load content
-          add_header Content-Security-Policy "default-src 'none'; img-src 'none'; script-src 'none'; style-src 'unsafe-inline'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'";
+          # add_header Content-Security-Policy "default-src 'none'; img-src 'none'; script-src 'none'; style-src 'unsafe-inline'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'";
           # do not allow to be framed inside another website
           add_header X-Frame-Options "DENY";
           # only allow script and style handling if the MIME type is correct
