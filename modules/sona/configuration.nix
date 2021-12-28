@@ -10,7 +10,7 @@
       ./graphical.nix
       ./hardware-configuration.nix
       ./mpd.nix
-      ./nginx.nix
+      # ./nginx.nix
       ./packages.nix
       ./vpnc.nix
       # ./wireguard.nix
@@ -61,6 +61,7 @@
       5500 # Clementine
       58432 # SoulseekQT
       10080
+      8000 # simple-http-server
     ];
     firewall.allowedUDPPorts = [];
   };
