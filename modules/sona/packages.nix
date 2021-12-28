@@ -198,4 +198,8 @@
     proggyfonts
   ];
 
+  programs.thefuck = {
+    enable = true;
+    alias = "f";
+  };
 }

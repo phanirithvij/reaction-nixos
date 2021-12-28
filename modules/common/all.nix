@@ -21,9 +21,4 @@
     # FIXME update to daemonCPUSchedPolicy
     # daemonNiceLevel =   10;
   };
-
-  programs.thefuck = {
-    enable = true;
-    alias = "f";
-  };
 }
