@@ -8,6 +8,7 @@ in {
     languagetool = {
       isSystemUser = true;
       packages = with pkgs; [ adoptopenjdk-jre-bin ];
+      group = "languagetool";
     };
   };
   systemd.services.languagetool = {

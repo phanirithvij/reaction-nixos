@@ -11,6 +11,7 @@ in
     "${serviceName}" = {
       isSystemUser = true;
       packages = [ package ];
+      group = serviceName;
     };
   };
 

@@ -12,7 +12,7 @@ mkYarnPackage {
 
   src = fetchGit {
     url = "https://framagit.org/ppom/rzw";
-    rev = "4bcf2b161b0c10ee93c32035d2eeade9af26afd7";
+    rev = "bd8d081f0cbbf46ef81d33e3456bfbc41378d331";
   };
 
   yarnNix = ./deps.nix;

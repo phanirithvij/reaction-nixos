@@ -8,17 +8,16 @@ in
     ../common/all.nix
 
     ./backup.nix
-    ./chatserver.nix
     ./funkwhale.nix
     ./hardware-configuration.nix
     ./languagetool.nix
     ./mail.nix
-    ./minecraft.nix
     ./monitoring.nix
     ./nextcloud/default.nix
     ./rzw.nix
     ./streama.nix
     ./tor.nix
+    ./vaultwarden.nix
     ./websites.nix
   ];
 
@@ -119,9 +118,9 @@ in
   services.fail2ban.enable = true;
   # Stick with default banaction, banaction-allports, bantime
   services.fail2ban.jails.sshd = ''
-    port = ${builtins.toString sshPort}
     enabled = true
-    banaction = iptables-multiport
+    port = ${builtins.toString sshPort}
+
     maxretry = 5
     findtime = 1200
     bantime = 2400
@@ -140,6 +139,8 @@ in
   programs.iftop.enable = true;
 
   services.locate = {
+    locate = pkgs.mlocate;
+    localuser = null; # accepts mlocate running as root
     enable = true;
     interval = "daily";
     prunePaths = [ "/tmp" "/var/tmp" "/var/cache" "/var/lock" "/var/run" "/var/spool" "/var/lib/docker" ];

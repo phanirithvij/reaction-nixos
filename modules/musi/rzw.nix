@@ -59,8 +59,7 @@ in {
         "php_admin_value[error_log]" = "stderr";
         "php_admin_flag[log_errors]" = true;
         "catch_workers_output" = true;
-        # FIXME Warning! DEV only!
-        "php_flag[display_errors]" = true;
+        "php_flag[display_errors]" = false;
       };
       phpEnv = {
         RZW_DB_FILE = cfg.sqliteFile;
@@ -71,6 +70,7 @@ in {
       enable = true;
       description = "Ensures rzw's SQLite database exists";
       requiredBy = [ "phpfpm-rzw.service" ];
+      before = [ "phpfpm-rzw.service" ];
 
       path = with pkgs; [ sqlite ];
 
@@ -122,5 +122,25 @@ in {
         # add_header Strict-Transport-Security "max-age=31536000";
       '';
     };
+
+    # Fail2ban
+    environment.etc."fail2ban/filter.d/rzw.conf".text = ''
+      [INCLUDES]
+      before = common.conf
+
+      [Definition]
+      failregex = ^.*\[error\].*FastCGI sent in stderr: "PHP message: .*;(login|create_user);.*" while reading response header from upstream, client: <ADDR>, .* upstream: "fastcgi://unix:/run/phpfpm/rzw.sock:",.*$
+      ignoreregex =
+      journalmatch = _SYSTEMD_UNIT=nginx.service
+    '';
+    services.fail2ban.jails.rzw = ''
+      enabled = true
+      port = 80,443
+      filter = rzw
+
+      maxretry = 5
+      findtime = 3600
+      bantime = 7200
+    '';
   };
 }

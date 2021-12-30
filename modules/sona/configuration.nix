@@ -3,14 +3,17 @@
   imports = [
       ../common/all.nix
 
+      ./postgres.nix
+
       ./direnv.nix
       ./down-detector.nix
       ./graphical.nix
       ./hardware-configuration.nix
       ./mpd.nix
-      ./nginx.nix
+      # ./nginx.nix
       ./packages.nix
       ./vpnc.nix
+      # ./wireguard.nix
       # ./phpmysql.nix
       # ./userunits.nix
     ];
@@ -58,6 +61,7 @@
       5500 # Clementine
       58432 # SoulseekQT
       10080
+      8000 # simple-http-server
     ];
     firewall.allowedUDPPorts = [];
   };
@@ -79,9 +83,19 @@
     options = [ "defaults" "user" "rw" "utf8" "noauto" "umask=000" ];
   };
 
-  # Only allow root and sudo users
-  nix.allowedUsers = [ "@wheel" ];
-  nix.autoOptimiseStore = true;
+  nix = {
+    # Only allow root and sudo users
+    allowedUsers = [ "@wheel" ];
+
+    autoOptimiseStore = true;
+    extraOptions = ''experimental-features = nix-command flakes'';
+
+    # FIXME update to daemonIOSchedClass daemonIOSchedPriority
+    # daemonIONiceLevel = 7;
+    # FIXME update to daemonCPUSchedPolicy
+    # daemonNiceLevel =   10;
+  };
+
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
@@ -111,14 +125,14 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.ao = {
     isNormalUser = true;
-    shell = pkgs.fish;
+    shell = pkgs.xonsh;
     # "wheel" enables ‘sudo’ for the user.
     extraGroups = [
       "wheel"
       "networkmanager"
       "network"
       "video"
-      "wireshark"
+      # "wireshark"
       "docker"
       "adbusers"
       "media"
@@ -126,6 +140,7 @@
   };
 
   programs.fish.enable = true;
+  programs.xonsh.enable = true;
   environment.pathsToLink = [
     "/share/fish"
   ];
@@ -189,7 +204,7 @@
     # dev
     npm.enable = true;
     # other
-    wireshark.enable = true;
+    # wireshark.enable = true;
     adb.enable = true;
 
     gnupg.agent = {
@@ -214,7 +229,7 @@
   virtualisation.docker.enableOnBoot = false;
   systemd.services.docker.wantedBy = lib.mkForce [];
 
-  virtualisation.lxd.enable = true;
+  # virtualisation.lxd.enable = true;
   # systemd.services.lxd.wantedBy = lib.mkForce [];
 
   ppom = {

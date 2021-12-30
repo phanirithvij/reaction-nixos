@@ -15,6 +15,10 @@
   #   };
   # };
 
+  programs.xonsh.config = ''
+    aliases['n'] = ['cd', '/etc/nixos/modules']
+  '';
+
   programs.bash.interactiveShellInit = ''
     # load fzf key-bindings
     [ -f ${pkgs.fzf}/share/fzf/key-bindings.bash ] && source ${pkgs.fzf}/share/fzf/key-bindings.bash
