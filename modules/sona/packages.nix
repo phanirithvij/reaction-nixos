@@ -5,7 +5,6 @@
   environment.systemPackages = with pkgs; [
     # CLI
     bind
-    (lib.lowPrio inetutils)
     tmux
       tmuxPlugins.fingers
       tmuxPlugins.pain-control
@@ -215,4 +214,8 @@
     proggyfonts
   ];
 
+  programs.thefuck = {
+    enable = true;
+    alias = "f";
+  };
 }

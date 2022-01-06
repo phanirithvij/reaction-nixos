@@ -68,7 +68,7 @@ in
   nix.allowedUsers = [ "root" ];
 
   # Only allow paths from /nix/store to be executables
-  fileSystems."/".options = [ "noexec" ];
+  # fileSystems."/".options = [ "noexec" ];
 
   # prevent some potentials CVECs
   security.sudo.execWheelOnly = true;
