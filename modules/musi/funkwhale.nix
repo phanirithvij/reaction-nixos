@@ -2,7 +2,7 @@
 with lib;
 {
   options.services.funkwhale = {
-    enable = mkEnableOption "enable Funkwhale using Docker";
+    enable = mkEnableOption "enable Funkwhale using Docker AIO container";
 
     domainName = mkOption {
       type = types.str;
@@ -41,6 +41,13 @@ with lib;
       type = types.str;
       description = "Max upload size. Handled by nginx";
       default = "100M";
+    };
+
+    importCronEnable = mkEnableOption "Enable a daily job to update the library from disk";
+
+    importCronLibraryID = mkOption {
+      type = types.str;
+      description = "ID of the library to import";
     };
   };
 
@@ -124,5 +131,23 @@ with lib;
             text/x-cross-domain-policy;
       '';
     };
+
+    systemd.timers.update-funkwhale-library = (lib.optionalAttrs cfg.importCronEnable {
+      wantedBy = [ "timers.target" ];
+      after = [ "network.target" ];
+      timerConfig = {
+        OnCalendar = "daily";
+      };
+    });
+    systemd.services.update-funkwhale-library = (lib.optionalAttrs cfg.importCronEnable {
+      description = "Update the funkwhale library in place";
+      # faketty function found here: https://stackoverflow.com/questions/32910661
+      script = ''
+        faketty () {
+          ${pkgs.util-linux}/bin/script -qefc "$(printf "%q " "$@")"
+        }
+        faketty ${pkgs.docker}/bin/docker exec -it funkwhale manage import_files ${cfg.importCronLibraryID} /music --in-place --async --recursive --noinput;
+      '';
+    });
   };
 }
