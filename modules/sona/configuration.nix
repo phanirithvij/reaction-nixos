@@ -125,7 +125,7 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.ao = {
     isNormalUser = true;
-    shell = pkgs.xonsh;
+    shell = pkgs.fish;
     # "wheel" enables ‘sudo’ for the user.
     extraGroups = [
       "wheel"
