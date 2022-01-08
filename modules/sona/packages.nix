@@ -24,7 +24,7 @@
     libossp_uuid # uuid v4
     vmtouch # Virtual Memory Toucher
     xonsh # Python x Bash = xon.sh
-    sl # You shouldn't type `sl`...
+    # sl # You shouldn't type `sl`...
     jq # JSON shell toolbox
     xsv # CSV's `jq`
     # parallel
@@ -87,6 +87,7 @@
     mpv
     clementine
     gnome3.cheese
+    ocenaudio
     gimp
     deluge
     gparted
@@ -198,6 +199,10 @@
           })
         ];
       }));
+
+      mpv = super.wrapMpv super.mpv-unwrapped {
+        scripts = with super.mpvScripts; [ mpris thumbnail simple-mpv-webui youtube-quality ];
+      };
 
     })
     (import /home/ao/prg/nix/gomod2nix/overlay.nix)
