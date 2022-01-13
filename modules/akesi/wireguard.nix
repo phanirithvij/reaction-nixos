@@ -4,6 +4,8 @@ let
   wgPort = 123;
   externalInterface = "ens3";
   wireguardInterface = "wg0";
+  blocklistPath = "/var/cache/dnsmasq.blacklist.txt";
+  blocklistUrl = "https://raw.githubusercontent.com/notracking/hosts-blocklists/master/dnsmasq/dnsmasq.blacklist.txt";
 in
 {
   # enable NAT
@@ -29,7 +31,26 @@ in
     enable = true;
     extraConfig = ''
       interface=${wireguardInterface}
+
+      domain-needed # Won't forward request for "foo", only "foo.bar"
+      bogus-priv # Won't forward requests for local IP adresses
+      conf-file=${blocklistPath} # Block trackers
+
+      # log-queries
     '';
+  };
+  environment.systemPackages = [ pkgs.dnsmasq ];
+
+  systemd.timers.fetch_blocklist = {
+    wantedBy = [ "timers.target" ];
+    after = [ "network.target" ];
+    timerConfig = {
+      OnCalendar = "daily";
+    };
+  };
+  systemd.services.fetch_blocklist = {
+    description = "update DNSmasq's blocklist";
+    script = "${pkgs.curl}/bin/curl ${blocklistUrl} -o ${blocklistPath}";
   };
 
   networking.wg-quick.interfaces = {

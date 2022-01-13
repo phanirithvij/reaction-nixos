@@ -19,6 +19,7 @@
     iftop # connection viewer
     nmap # local network prober
     librespeed-cli # Speedtest
+    (lib.lowPrio inetutils)
 
     ## protocols
     curl # HTTP client

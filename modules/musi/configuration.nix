@@ -8,6 +8,7 @@ in
     ../common/all.nix
 
     ./backup.nix
+    ./clement.nix
     ./funkwhale.nix
     ./hardware-configuration.nix
     ./languagetool.nix
@@ -38,6 +39,8 @@ in
     envFile = "/root/secrets/funkwhale.secrets";
     musicDir = "/data/funkwhale/music";
     dataDir = "/data/funkwhale/data";
+    importCronEnable = true;
+    importCronLibraryID = "307d7f12-23df-49c1-9394-e39daf94047c";
   };
 
   # Use the systemd-boot EFI boot loader.

@@ -4,13 +4,12 @@ let
   languagetoolPort = "8500";
   languagetoolDomain = "lang.ppom.me";
 in {
-  users.users = {
-    languagetool = {
-      isSystemUser = true;
-      packages = with pkgs; [ adoptopenjdk-jre-bin ];
-      group = "languagetool";
-    };
+  users.users.languagetool = {
+    isSystemUser = true;
+    packages = with pkgs; [ adoptopenjdk-jre-bin ];
+    group = "languagetool";
   };
+  users.groups.languagetool = {};
   systemd.services.languagetool = {
     enable = true;
     description = "Language Tool self-hosted server";
