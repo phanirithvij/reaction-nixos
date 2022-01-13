@@ -71,6 +71,7 @@
     mkvtoolnix
     yt-dlp
     handbrake
+    gpac # MP4Box
 
     ## text
     dos2unix
