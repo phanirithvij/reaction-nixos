@@ -87,7 +87,8 @@
   nixpkgs.overlays = [
     (self: super: {
       # go vtt2srt script
-      vtt2srt = super.callPackage ../../pkgs/vtt2srt {}; 
+      vtt2srt = super.callPackage ../../pkgs/vtt2srt {};
+      toYaml = super.callPackage ../../pkgs/toYaml {};
     })
   ];
 }

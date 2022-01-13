@@ -1,6 +1,6 @@
 { config, pkgs, ... }:
 let
-  app = {
+  nextcloud = {
     dockerName = "nc_app";
     domainName = "nuage.ppom.me";
     port = "9000";
@@ -10,11 +10,15 @@ let
     domainName = "write.ppom.me";
     port = "9980";
   };
-in
-  {
+in {
+  environment.etc."generated/nextcloud-suite/docker-compose.yml".source = ./docker-compose.nix {
+    inherit nextcloud collabora;
+    toYaml = pkgs.toYaml
+  };
+
   # Reverse proxy config
   services.nginx.virtualHosts = {
-    "${app.domainName}" = let
+    "${nextcloud.domainName}" = let
       dav = {
         priority = 10;
         return = "301 /remote.php/dav/";
@@ -30,7 +34,7 @@ in
         "/" = {
           priority = 30;
           index = "index.php";
-          proxyPass = "http://localhost:${app.port}";
+          proxyPass = "http://localhost:${nextcloud.port}";
         };
       };
       extraConfig = ''
@@ -86,16 +90,18 @@ in
     };
   };
 
-  # Cron jobs
-  services.cron = {
-    enable = true;
-    systemCronJobs = [
-      ''*/5 * * * *      root    docker exec -u 33 ${app.dockerName} php cron.php''
-    ];
+  systemd.timers.nextcloud-run-cronjob = {
+    wantedBy = [ "timers.target" ];
+    after = [ "network.target" ];
+    timerConfig.OnCalendar = "*-*-* *:*/5:0";
+  };
+  systemd.services.nextcloud-run-cronjob = {
+    description = "Launch Nextcloud's regular job";
+    serviceConfig.ExecStart = "docker exec -u 33 ${nextcloud.dockerName} php cron.php";
   };
 
+
   # Fail2ban
-  # Not sure whether it is effective or not.
   environment.etc."fail2ban/filter.d/nextcloud.conf".text = ''
     [Definition]
     _groupsre = (?:(?:,?\s*"\w+":(?:"[^"]+"|\w+))*)
@@ -121,6 +127,5 @@ in
     '';
   };
 
-  # TODO: docker config → replace docker-compose with Nix
   virtualisation.docker.enable = true;
 }
