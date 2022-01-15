@@ -62,7 +62,7 @@
     after = [ "grapical.target" ];
     timerConfig = {
       # every 2 minutes
-      OnCalendar = "*-*-* *:*/2:00";
+      OnCalendar = "*-*-* *:0/2:00";
     };
   };
   systemd.services.notify-low-battery = {
@@ -72,20 +72,24 @@
         name = "check_battery";
         runtimeInputs = with pkgs; [ libnotify espeak pulseaudio ];
         text = ''
-        export DISPLAY=${"\$"}{DISPLAY:=":0"}
-        export XDG_RUNTIME_DIR=${"\$"}{XDG_RUNTIME_DIR:=/run/user/$(id -u)}
-        export DBUS_SESSION_BUS_ADDRESS=${"\$"}{DBUS_SESSION_BUS_ADDRESS:="unix:path=${"\$"}{XDG_RUNTIME_DIR}/bus"}
+          export DISPLAY=${"\$"}{DISPLAY:=":0"}
+          export XDG_RUNTIME_DIR=${"\$"}{XDG_RUNTIME_DIR:=/run/user/$(id -u)}
+          export DBUS_SESSION_BUS_ADDRESS=${"\$"}{DBUS_SESSION_BUS_ADDRESS:="unix:path=${"\$"}{XDG_RUNTIME_DIR}/bus"}
 
-        AC_ON="cat /sys/class/power_supply/AC/online"
-        BATTERY_PERCENT="$(cat /sys/class/power_supply/BAT0/capacity)"
-        BATTERY_MIN=12
+          AC_ON="cat /sys/class/power_supply/AC/online"
+          BATTERY_PERCENT="$(cat /sys/class/power_supply/BAT0/capacity)"
+          BATTERY_MIN=12
 
-        if [ "$($AC_ON)" -eq 0 ] && [ "$BATTERY_PERCENT" -le $BATTERY_MIN ]
-        then
+          if [ "$($AC_ON)" -eq 0 ] && [ "$BATTERY_PERCENT" -le $BATTERY_MIN ]
+          then
+                echo "Low battery detected" 1>&2
                 notify-send --urgency=critical --expire-time 3000 "Batterie faible" "$BATTERY_PERCENT% restants"
                 espeak -vfr -s120 --stdout 'Je nai plus beaucoup de batterie' | paplay
-        fi'';
-      }}/bin/check_battery";
+          else
+                echo "Not low not battery not detected" 1>&2
+          fi'';
+        }
+      }/bin/check_battery";
       User = "ao";
     };
   };
