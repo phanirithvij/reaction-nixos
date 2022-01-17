@@ -9,7 +9,6 @@
       ./down-detector.nix
       ./graphical.nix
       ./hardware-configuration.nix
-      ./mpd.nix
       # ./nginx.nix
       ./packages.nix
       ./vpnc.nix
