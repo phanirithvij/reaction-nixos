@@ -32,6 +32,7 @@
     subdl
     croc # CLI file transfer
     nix-bundle # Bundle a derivation like AppImage
+    comma # wrapper around `nix-index` && `nix run` to lauch a command without installing it
     inotify-tools # Linux filesystem watchdog
     languagetool # Proofreading program
 
