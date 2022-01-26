@@ -17,7 +17,7 @@ containing one of those:
 { config, pkgs, ... }:
 {
   imports = [
-    ./modules/musi/configuration.nix
+    ./modules/musi
   ];
 }
 ```
@@ -30,17 +30,6 @@ containing one of those:
 
 This repository resides [here](https://framagit.org/ppom/config/) and its `bin/` directory should be symlinked as `/home/ao/bin`.
 
-#### ppom's dwm
-
-ppom's [`dwm` fork](https://framagit.org/ppom/dwm) should reside here: `/home/ao/prg/dwm`.
-
-#### other packages
-
-vtt2srt is attended in `/home/ao/prg/nix/vtt2srt`.
-
 ### Musi
 
-TODO
-- rzw
-- nextcloud's docker-compose
-- static websites
+Funkwhale, Nextcloud, and Collabora run in Docker, which I'm not proud of.
