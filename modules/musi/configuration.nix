@@ -100,7 +100,7 @@ in
   in {
     enable = true;
     systemCronJobs = [
-      ''5 0 * * *      ppom    ${uptimeCalc}''
+      ''23 0 * * *      ppom    ${uptimeCalc}''
     ];
   };
 

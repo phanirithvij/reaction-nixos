@@ -1,16 +1,16 @@
 {
   toYaml
-, nextcloud
-, collabora
+  , nextcloud
+  , collabora
 }:
-toYaml {
-  version = "'3'";
+toYaml "docker-compose" {
+  version = "3";
   volumes = {
-    db = "";
-    backups = "";
+    db = null;
+    backups = null;
   };
   networks = {
-    proxy-tier = "";
+    proxy-tier = null;
   };
   services = {
     db = {
@@ -29,41 +29,41 @@ toYaml {
       links = [ "db" ];
       depends_on = [ "db" ];
       env_file = [ "/var/secrets/nextcloud-suite/db.env" ];
+    };
 
-      app = {
-        image = "nextcloud:22-apache";
-        restart = "always";
-        container_name = nextcloud.dockerName;
-        ports = [ "${app.port}:80" ];
-        volumes = [ "/data/nextcloud/html:/var/www/html" ];
-        env_file = [ "/var/secrets/nextcloud-suite/db.env" ];
-        depends_on = [ "db" ];
-      };
+    app = {
+      image = "nextcloud:22-apache";
+      restart = "always";
+      container_name = nextcloud.dockerName;
+      ports = [ "${nextcloud.port}:80" ];
+      volumes = [ "/data/nextcloud/html:/var/www/html" ];
+      env_file = [ "/var/secrets/nextcloud-suite/db.env" ];
+      depends_on = [ "db" ];
+    };
 
-      collabora = {
-        image = "collabora/code";
-        container_name = "collabora";
-        restart = "always";
-        volumes = [ "./loolwsd.xml:/etc/loolwsd/loolwsd.xml" ];
-        ports = [ "${collabora.port}:9980" ];
-        cap_add = [ "MKNOD" ];
-        environment = [
-          "domain=${nextcloud.domainName}"
-          "VIRTUAL_HOST=${collabora.domainName}"
-          "VIRTUAL_NETWORK=nginx-proxy"
-          "VIRTUAL_PORT=9980"
-          "DONT_GEN_SSL_CERT=true"
-        ];
-        networks = [ "proxy-tier" ];
-      };
+    collabora = {
+      image = "collabora/code";
+      container_name = "collabora";
+      restart = "always";
+      volumes = [ "./loolwsd.xml:/etc/loolwsd/loolwsd.xml" ];
+      ports = [ "${collabora.port}:9980" ];
+      cap_add = [ "MKNOD" ];
+      environment = [
+        "domain=${nextcloud.domainName}"
+        "VIRTUAL_HOST=${collabora.domainName}"
+        "VIRTUAL_NETWORK=nginx-proxy"
+        "VIRTUAL_PORT=9980"
+        "DONT_GEN_SSL_CERT=true"
+      ];
+      networks = [ "proxy-tier" ];
+    };
 
-      mail = {
-        image = "bytemark/smtp";
-        container_name = "nc_mail";
-        restart = "always";
-        ports = [ "25:25" ];
-        env_file = [ "/var/secrets/nextcloud-suite/mail.env" ];
-      };
+    mail = {
+      image = "bytemark/smtp";
+      container_name = "nc_mail";
+      restart = "always";
+      ports = [ "25:25" ];
+      env_file = [ "/var/secrets/nextcloud-suite/mail.env" ];
     };
   };
 }

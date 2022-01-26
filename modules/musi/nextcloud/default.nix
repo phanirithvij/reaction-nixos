@@ -10,11 +10,13 @@ let
     domainName = "write.ppom.me";
     port = "9980";
   };
+  composeGeneration = import ./docker-compose.nix;
 in {
-  environment.etc."generated/nextcloud-suite/docker-compose.yml".source = ./docker-compose.nix {
+  environment.etc."generated/nextcloud-suite/docker-compose.yml".source = (composeGeneration {
     inherit nextcloud collabora;
-    toYaml = pkgs.toYaml
-  };
+    toYaml = pkgs.toYaml;
+  });
+  environment.etc."generated/nextcloud-suite/loolwsd.xml".source = ./loolwsd.xml;
 
   # Reverse proxy config
   services.nginx.virtualHosts = {
