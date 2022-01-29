@@ -6,7 +6,6 @@ let
 in {
   users.users.languagetool = {
     isSystemUser = true;
-    packages = with pkgs; [ adoptopenjdk-jre-bin ];
     group = "languagetool";
   };
   users.groups.languagetool = {};
