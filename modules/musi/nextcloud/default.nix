@@ -16,7 +16,7 @@ in {
     inherit nextcloud collabora;
     toYaml = pkgs.toYaml;
   });
-  environment.etc."generated/nextcloud-suite/loolwsd.xml".source = ./loolwsd.xml;
+  environment.etc."generated/nextcloud-suite/coolwsd.xml".source = ./coolwsd.xml;
 
   # Reverse proxy config
   services.nginx.virtualHosts = {
@@ -49,46 +49,27 @@ in {
       '';
     };
 
-    "${collabora.domainName}" = {
+    "${collabora.domainName}" =
+      let 
+        normalProxy = {
+          proxyPass = "http://localhost:${collabora.port}";
+        };
+        wsProxy = {
+          proxyPass = "http://localhost:${collabora.port}";
+          proxyWebsockets = true;
+          extraConfig = "proxy_read_timeout 36000s;";
+        };
+      in {
       forceSSL = true;
       enableACME = true;
-      extraConfig = ''
-        location ^~ /loleaflet {
-          proxy_pass http://localhost:${collabora.port};
-          proxy_set_header Host $host;
-        }
-        # WOPI discovery URL
-        location ^~ /hosting/discovery {
-          proxy_pass http://localhost:${collabora.port};
-          proxy_set_header Host $host;
-        }
-        # Capabilities
-        location ^~ /hosting/capabilities {
-          proxy_pass http://localhost:${collabora.port};
-          proxy_set_header Host $host;
-        }
-        # main websocket
-        location ~ ^/lool/(.*)/ws$ {
-          proxy_pass http://localhost:${collabora.port};
-          proxy_set_header Upgrade $http_upgrade;
-          proxy_set_header Connection "Upgrade";
-          proxy_set_header Host $host;
-          proxy_read_timeout 36000s;
-        }
-        # download, presentation and image upload
-        location ~ ^/lool {
-          proxy_pass http://localhost:${collabora.port};
-          proxy_set_header Host $host;
-        }
-        # Admin Console websocket
-        location ^~ /lool/adminws {
-          proxy_pass http://localhost:${collabora.port};
-          proxy_set_header Upgrade $http_upgrade;
-          proxy_set_header Connection "Upgrade";
-          proxy_set_header Host $host;
-          proxy_read_timeout 36000s;
-        }
-      '';
+      locations = {
+        "^~ /browser" =              normalProxy;
+        "^~ /hosting/discovery" =    normalProxy;
+        "^~ /hosting/capabilities" = normalProxy;
+        "~ ^/cool/(.*)/ws$" =        wsProxy;
+        "~ ^/(c|l)ool" =             normalProxy;
+        "^~ /cool/adminws" =         wsProxy;
+      };
     };
   };
 

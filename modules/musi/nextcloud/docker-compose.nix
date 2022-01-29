@@ -45,7 +45,7 @@ toYaml "docker-compose" {
       image = "collabora/code";
       container_name = "collabora";
       restart = "always";
-      volumes = [ "./loolwsd.xml:/etc/loolwsd/loolwsd.xml" ];
+      volumes = [ "./coolwsd.xml:/etc/coolwsd/coolwsd.xml" ];
       ports = [ "${collabora.port}:9980" ];
       cap_add = [ "MKNOD" ];
       environment = [
