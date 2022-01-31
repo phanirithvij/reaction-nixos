@@ -90,6 +90,7 @@
     ocenaudio
     gimp
     deluge
+    nicotine-plus
     gparted
     appimage-run
     syncthing # ± P2P file synchronization
@@ -109,6 +110,7 @@
     # Development
     git
       gitAndTools.pass-git-helper
+      gitAndTools.git-filter-repo
       gource
       gti
     gnumake
