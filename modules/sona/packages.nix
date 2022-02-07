@@ -72,7 +72,7 @@
     # GUI apps
     firefox
     thunderbird
-    ungoogled-chromium
+    # ungoogled-chromium
     signal-desktop
     code-server # VSCodium w/ in-browser client & server
     mumble
@@ -119,6 +119,7 @@
     h2 # H2 Database Editor
     simple-http-server
     gomod2nix
+    alejandra # Nix formatter
     linx-server
 
     docker
