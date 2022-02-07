@@ -203,7 +203,7 @@
       }));
 
       mpv = super.wrapMpv super.mpv-unwrapped {
-        scripts = with super.mpvScripts; [ mpris thumbnail simple-mpv-webui youtube-quality ];
+        scripts = with super.mpvScripts; [ mpris simple-mpv-webui youtube-quality ];
       };
 
     })
