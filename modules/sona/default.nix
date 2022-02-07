@@ -3,8 +3,6 @@
   imports = [
       ../common/all.nix
 
-      ./postgres.nix
-
       ./direnv.nix
       ./down-detector.nix
       ./graphical.nix
@@ -83,10 +81,12 @@
   };
 
   nix = {
-    # Only allow root and sudo users
-    allowedUsers = [ "@wheel" ];
+    settings = {
+      allowed-users = [ "@wheel" ];
 
-    autoOptimiseStore = true;
+      # Only allow root and sudo users
+      auto-optimise-store = true;
+    };
     extraOptions = ''experimental-features = nix-command flakes'';
 
     # FIXME update to daemonIOSchedClass daemonIOSchedPriority
