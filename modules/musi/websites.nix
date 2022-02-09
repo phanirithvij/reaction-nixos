@@ -111,7 +111,7 @@ in {
         };
         extraConfig = ''
           # add_header Strict-Transport-Security "max-age=31536000";
-          add_header Content-Security-Policy "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'";
+          add_header Content-Security-Policy "default-src 'self' u.ppom.me;";
         '';
       };
 
