@@ -129,7 +129,6 @@ in {
 
   environment.systemPackages = [ pkgs.h2 ];
 
-  # Authentication issue
   systemd.timers.streama-backup = {
     description = "Make a SQL backup file of the Streama DB";
     wantedBy = [ "timers.target" ];
@@ -139,12 +138,11 @@ in {
     description = "Make a SQL backup file of the Streama DB";
     script = ''
       OUTPUT=/var/lib/streama/backup.sql
-      ${pkgs.h2}/bin/h2tool.sh org.h2.tools.Script -url "jdbc:h2:/var/lib/streama;AUTO_SERVER=TRUE" -user root -password "" -script $OUTPUT
+      ${pkgs.h2}/bin/h2tool.sh org.h2.tools.Script -url "jdbc:h2:/var/lib/streama/streama;AUTO_SERVER=TRUE" -user root -password "" -script $OUTPUT
       chmod 600 $OUTPUT
     '';
   };
 
-  # Authentication issue
   systemd.timers.streama-clean-duplicates = {
     description = "Clean duplicate viewing statuses on Streama";
     wantedBy = [ "timers.target" ];
@@ -152,14 +150,15 @@ in {
   };
   systemd.services.streama-clean-duplicates = {
     description = "Clean duplicate viewing statuses on Streama";
+    # Additional parenthesis added in the nested SELECT because of this: https://groups.google.com/g/h2-database/c/dBeNlTTXz-U
     script = ''
-      ${pkgs.h2}/bin/h2tool.sh org.h2.tools.RunScript -url "jdbc:h2:/var/lib/streama;AUTO_SERVER=TRUE" -user root -password "" -script ${
+      ${pkgs.h2}/bin/h2tool.sh org.h2.tools.RunScript -url "jdbc:h2:/var/lib/streama/streama;AUTO_SERVER=TRUE" -user root -password "" -script ${
         pkgs.writeScript
         "streama-clean-updates-script"
         ''
           DELETE FROM viewing_status
           WHERE (user_id, video_id, last_updated) NOT IN (
-            SELECT user_id, video_id, MAX(last_updated)
+            SELECT (user_id, video_id, MAX(last_updated))
             FROM viewing_status
             GROUP BY (video_id, user_id)
           );
