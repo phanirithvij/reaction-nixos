@@ -8,7 +8,7 @@ in stdenv.mkDerivation {
 
   src = fetchGit {
     url = "https://framagit.org/ppom/desktop-play-pause.git";
-    rev = "d14c45dbdba8f07d905c4f16b01f2d196fb4f389";
+    rev = "a03159da888d91a69b8e1f4d1b64b89e43b453b8";
   };
 
   installPhase = ''
