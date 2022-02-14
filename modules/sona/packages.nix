@@ -6,42 +6,45 @@
     # CLI
     bind
     tmux
-      tmuxPlugins.fingers
-      tmuxPlugins.pain-control
+      # tmuxPlugins.fingers TODO add them in tmux's path
+      # tmuxPlugins.pain-control
     sshuttle # poor's man VPN
     sshfs-fuse # mount remote FS via SSH
     (lib.lowPrio moreutils) # vipe, vidir
     sysstat
-    tealdeer # tldr man pages
-    sequoia # modern OpenPGP implementation
+    # tealdeer # tldr man pages
+    # sequoia # modern OpenPGP implementation
     tomb # useful wrapper around PGP and LUKS
     rbw # unofficial bitwarden CLI
     pinentry-gnome # GUI password prompt (used by gpg-agent, installing it in global path for rbw & tomb)
     acpi # battery information
     powertop # power information
-    pciutils # lspci
+    # pciutils # lspci
     libossp_uuid # uuid v4
-    vmtouch # Virtual Memory Toucher
-    xonsh # Python x Bash = xon.sh
+    # vmtouch # Virtual Memory Toucher
+    # xonsh # Python x Bash = xon.sh
     # sl # You shouldn't type `sl`...
-    jq # JSON shell toolbox
-    xsv # CSV's `jq`
+    # jq # JSON shell toolbox
+    # xsv # CSV's `jq`
     # parallel
     openvpn
-    lolcat figlet espeak-ng cowsay
-    subdl
-    croc # CLI file transfer
+    lolcat
+    figlet
+    espeak-ng
+    # cowsay
+    # subdl
+    # croc # CLI file transfer
     nix-bundle # Bundle a derivation like AppImage
     comma # wrapper around `nix-index` && `nix run` to lauch a command without installing it
     inotify-tools # Linux filesystem watchdog
-    languagetool # Proofreading program
+    # languagetool # Proofreading program
 
     # TUI
-    w3m # web browser
-    asuka # gemini browser
-    ddgr # DuckDuckGo CLI
+    # w3m # web browser
+    # asuka # gemini browser
+    # ddgr # DuckDuckGo CLI
     ytfzf # Youtube scrapper ⨯ fzf
-    aerc # Email client
+    # aerc # Email client
     # neovim-remote
 
     # Desktop environment
@@ -65,7 +68,7 @@
     redshift # less 'blue' screen
     pavucontrol # Pulseaudio GUI
     ncpamixer # Pulseaudio TUI
-    ponymix # Pulseaudio CLI
+    # ponymix # Pulseaudio CLI
     rofi # Menu chooser (dmenu like)
     networkmanagerapplet # NM connection editor
 
@@ -74,13 +77,13 @@
     thunderbird
     # ungoogled-chromium
     signal-desktop
-    code-server # VSCodium w/ in-browser client & server
+    # code-server # VSCodium w/ in-browser client & server
     mumble
     # anki
     drawio
-    tor-browser-bundle-bin
+    # tor-browser-bundle-bin
     # jitsi-meet-electron
-    element-desktop
+    # element-desktop
     pcmanfm
     evince
     libreoffice
@@ -92,7 +95,7 @@
     deluge
     nicotine-plus
     gparted
-    appimage-run
+    # appimage-run
     syncthing # ± P2P file synchronization
     apache-directory-studio # LDAP client
     # audacity, ardour or ocenaudio?
@@ -103,22 +106,22 @@
     # superTux superTuxKart
     vitetris
     # wine lutris
-    _2048-in-terminal
+    # _2048-in-terminal
     # blobby
     # soude_au_cou # my own game!
 
     # Development
     git
-      gitAndTools.pass-git-helper
+      # gitAndTools.pass-git-helper
       gitAndTools.git-filter-repo
-      gource
+      # gource
       gti
     gnumake
     #scilab
-    ghc stack cabal-install # haskell
+    # ghc stack cabal-install # haskell
     h2 # H2 Database Editor
     simple-http-server
-    gomod2nix
+    # gomod2nix
     alejandra # Nix formatter
     linx-server
 
@@ -140,16 +143,16 @@
     # Media
     subtitleeditor
     imagemagick
-    beets # MP3 tag editor
+    # beets # MP3 tag editor
     # Markdown to PDF
-    yj # YAML to JSON etc.
+    # yj # YAML to JSON etc.
     pandoc
       texlive.combined.scheme-full
     pdftk # PDF Swiss knife
     poppler # other PDF manipulations
     multimarkdown # "from Markdown" exports
 
-    adv_coreutils # with patch, see below
+    # adv_coreutils # with patch, see below
     mediahandler # ⏯️
   ];
 
@@ -193,15 +196,15 @@
       linx-server = super.callPackage ../../pkgs/linx-server {}; 
 
       # add -g/--progress to coreutils' cp and mv.
-      adv_coreutils = (super.coreutils.overrideAttrs (oldAttrs: {
-        doCheck = false;
-        patches = oldAttrs.patches ++ [
-          (super.fetchurl {
-            url = "https://raw.githubusercontent.com/jarun/advcpmv/master/advcpmv-0.9-9.0.patch";
-            sha256 = "sha256-k6Ii44DV8xjzh+ebSLW3ZHyyNlj0vuPgbHPIESCm4iM=";
-          })
-        ];
-      }));
+      # adv_coreutils = (super.coreutils.overrideAttrs (oldAttrs: {
+      #   doCheck = false;
+      #   patches = oldAttrs.patches ++ [
+      #     (super.fetchurl {
+      #       url = "https://raw.githubusercontent.com/jarun/advcpmv/master/advcpmv-0.9-9.0.patch";
+      #       sha256 = "sha256-k6Ii44DV8xjzh+ebSLW3ZHyyNlj0vuPgbHPIESCm4iM=";
+      #     })
+      #   ];
+      # }));
 
       mpv = super.wrapMpv super.mpv-unwrapped {
         scripts = with super.mpvScripts; [ mpris simple-mpv-webui youtube-quality ];
@@ -223,8 +226,8 @@
     proggyfonts
   ];
 
-  programs.thefuck = {
-    enable = true;
-    alias = "f";
-  };
+  # programs.thefuck = {
+  #   enable = true;
+  #   alias = "f";
+  # };
 }
