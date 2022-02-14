@@ -45,6 +45,7 @@
   ] ++ lib.optionals (! config.ppom.isLight) [
 
     asciinema # Terminal JSON recorder & player. Check asciinema.org
+    lookatme # Terminal MarkDown viewer
     tiv # terminal image viewer
     rdfind # find duplicates
     zip
