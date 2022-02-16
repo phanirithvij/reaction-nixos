@@ -204,7 +204,7 @@
     npm.enable = true;
     # other
     # wireshark.enable = true;
-    adb.enable = true;
+    # adb.enable = true;
 
     gnupg.agent = {
       enable = true;
