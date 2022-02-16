@@ -3,11 +3,12 @@
   environment.systemPackages = with pkgs; [
     ## shell environnement
     moreutils
-    tmux
+    tmux # terminal multiplexer
     fzf # fuzzy finder
 
     ## nix
-    nixos-option
+    nixos-option # print the actual value of a NixOS option
+    nvd # print versions and changes of packages across nix closures
 
     ## processus
     htop # process viewer
