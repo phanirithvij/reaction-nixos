@@ -15,6 +15,12 @@
     # sequoia # modern OpenPGP implementation
     tomb # useful wrapper around PGP and LUKS
     rbw # unofficial bitwarden CLI
+    (lib.hiPrio (pkgs.writeScriptBin "rbw-rofi" ''
+      set -eu
+      set -o pipefail
+      rbw unlock
+      rbw ls --fields folder,name,user | sed 's/\t/\//g' | sort | rofi -dmenu | sed 's/^[^\/]*\///' | sed 's/\// /' | xargs -r rbw get | xclip -l 1 -selection clipboard
+    ''))
     pinentry-gnome # GUI password prompt (used by gpg-agent, installing it in global path for rbw & tomb)
     acpi # battery information
     powertop # power information
@@ -163,17 +169,11 @@
         super.rofi-mpd
       ]; };
 
-      rbw = (
-        (
-          super.rbw.override {
-            withFzf = true;
-            withRofi = true;
-            withPass = true;
-          }
-        ).overrideAttrs (oldAttrs: {
-        # add `rbw unlock` at the beginning of the `rbw-rofi` script
-        patches = oldAttrs.patches ++ [ ../../pkgs/rbw.patch ];
-      }));
+      rbw = (super.rbw.override {
+        withFzf = true;
+        withRofi = true;
+        withPass = true;
+      });
 
       # issue in the way the signal-desktop/default.nix transform the spellcheckLanguage. Should be "fr-any"
       # see https://github.com/NixOS/nixpkgs/issues/113346
