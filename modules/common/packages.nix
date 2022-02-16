@@ -15,6 +15,7 @@
     cpulimit # limit process CPU usage
 
     ## network
+    bind # dig
     mtr # interactive trace route
     iftop # connection viewer
     nmap # local network prober

@@ -4,7 +4,6 @@
 {
   environment.systemPackages = with pkgs; [
     # CLI
-    bind
     tmux
       # tmuxPlugins.fingers TODO add them in tmux's path
       # tmuxPlugins.pain-control
