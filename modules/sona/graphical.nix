@@ -48,14 +48,14 @@
   programs.slock.enable = true;
 
   # Cron jobs
-  services.cron = {
-    enable = true;
-    cronFiles = [
-      ''${pkgs.writeText "ao.crontab" ''
-        */30 * * * * ao /home/ao/bin/change_wallpaper.fish
-      ''}''
-    ];
-  };
+  # services.cron = {
+  #   enable = true;
+  #   cronFiles = [
+  #     ''${pkgs.writeText "ao.crontab" ''
+  #       */30 * * * * ao /home/ao/bin/change_wallpaper.fish
+  #     ''}''
+  #   ];
+  # };
 
   systemd.timers.notify-low-battery = {
     wantedBy = [ "timers.target" ];
