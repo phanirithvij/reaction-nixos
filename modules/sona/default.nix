@@ -3,13 +3,10 @@
   imports = [
       ../common/all.nix
 
-      ./postgres.nix
-
       ./direnv.nix
       ./down-detector.nix
       ./graphical.nix
       ./hardware-configuration.nix
-      ./mpd.nix
       # ./nginx.nix
       ./packages.nix
       ./vpnc.nix
@@ -84,10 +81,12 @@
   };
 
   nix = {
-    # Only allow root and sudo users
-    allowedUsers = [ "@wheel" ];
+    settings = {
+      allowed-users = [ "@wheel" ];
 
-    autoOptimiseStore = true;
+      # Only allow root and sudo users
+      auto-optimise-store = true;
+    };
     extraOptions = ''experimental-features = nix-command flakes'';
 
     # FIXME update to daemonIOSchedClass daemonIOSchedPriority
@@ -205,7 +204,7 @@
     npm.enable = true;
     # other
     # wireshark.enable = true;
-    adb.enable = true;
+    # adb.enable = true;
 
     gnupg.agent = {
       enable = true;

@@ -99,6 +99,7 @@ in
               vim-svelte
               rust-vim
               vim-markdown
+              mkdir-nvim
             ];
             opt = [ ];
           };

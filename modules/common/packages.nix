@@ -3,11 +3,12 @@
   environment.systemPackages = with pkgs; [
     ## shell environnement
     moreutils
-    tmux
+    tmux # terminal multiplexer
     fzf # fuzzy finder
 
     ## nix
-    nixos-option
+    nixos-option # print the actual value of a NixOS option
+    nvd # print versions and changes of packages across nix closures
 
     ## processus
     htop # process viewer
@@ -15,6 +16,7 @@
     cpulimit # limit process CPU usage
 
     ## network
+    bind # dig
     mtr # interactive trace route
     iftop # connection viewer
     nmap # local network prober
@@ -45,6 +47,7 @@
   ] ++ lib.optionals (! config.ppom.isLight) [
 
     asciinema # Terminal JSON recorder & player. Check asciinema.org
+    lookatme # Terminal MarkDown viewer
     tiv # terminal image viewer
     rdfind # find duplicates
     zip

@@ -1,6 +1,6 @@
 # ppom's configuration
 
-Two nixos configuration reside here.
+Three nixos configuration reside here.
 To use them, add a top-level `configuration.nix`
 containing one of those:
 
@@ -8,7 +8,16 @@ containing one of those:
 { config, pkgs, ... }:
 {
   imports = [
-    ./modules/sona/configuration.nix
+    ./modules/sona
+  ];
+}
+```
+
+```nix
+{ config, pkgs, ... }:
+{
+  imports = [
+    ./modules/akesi
   ];
 }
 ```
