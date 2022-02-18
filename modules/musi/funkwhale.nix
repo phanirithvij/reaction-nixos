@@ -103,8 +103,8 @@ with lib;
       extraConfig = ''
         # HSTS
         # add_header Strict-Transport-Security "max-age=31536000";
-        # Security header
-        add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; object-src 'none'; media-src 'self' data:";
+        # Security
+        proxy_cookie_path / "/; Secure; SameSite=strict";
         # compression settings
         gzip on;
         gzip_comp_level    5;
