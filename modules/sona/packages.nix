@@ -48,6 +48,7 @@
     # w3m # web browser
     # asuka # gemini browser
     # ddgr # DuckDuckGo CLI
+    lookatme # Terminal MarkDown viewer
     ytfzf # Youtube scrapper ⨯ fzf
     # aerc # Email client
     # neovim-remote
