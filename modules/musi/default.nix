@@ -7,6 +7,7 @@ in
   imports = [
     ../common/all.nix
 
+    ./anpa.nix # container
     ./backup.nix
     ./clement.nix
     ./funkwhale.nix
@@ -80,16 +81,6 @@ in
       home = "/home/uploader";
       group = "nginx";
       openssh.authorizedKeys.keys = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC+QKvUjiZ4MnIzGaWJjVevXyEc8Ja3aORPE+gSYgBGwVOPK5SR9oQPyeBFQWjRuY9HeCarKoCWC4X7n0yg1hcYmFs4U7Tm1eb179+YYXIW2KPZOLrVBrAWzNTUPhcToo1/zsnLmFKbU/Kn/lt0YHo0pfDfRE1mFi2ORIEtyqg6nCeZkcb5DfunXG6lEejTm41aDoxs3UjqSBStP0GmX5ReVENRUxo0UzPcW1ImXLhD5A2BcOXvbaUp1lMWVfqY28gbYVDMbYyqDfMA3+yacXKoQcUwgDC9tKKzaxWuuYs/y+vVM01aARK7ol++9f5b1205LNDRVzzUIezrDZsWcggclcCaeKFy2rOBsVHj4wuMp9+M4NWF0NKetJsFOkas4BNUJXhSuGrhtvVeqQBtgtSt6gH7hRmPp/NZpG7OniK2g7Zm/jFte8aOPNWZL0iKv2fLNdPkgdx63MjgVDu5L1Z7I6kIvTBIRluLnzoOdsEWBm/9y0SacCsyRJKA2kPXfmc= ao@sona" ];
-      extraGroups = [ "users" ];
-    };
-    marguerite = {
-      isNormalUser = true;
-      hashedPassword = "$6$XswnWW/UsZq7X/HG$tIrhDQCWH7IHvNmCxmOcsF87qXTQWhsJ5666aioHQ7jQdffdY0.pu/CQc/iIHsxdW4CMpzm3GHRDaqw1iu5NC1";
-      extraGroups = [ "users" ];
-    };
-    rdelaage = {
-      isNormalUser = true;
-      openssh.authorizedKeys.keys = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDF8SKnbtxnN6L1RapClrlbfvGjIzr5DQWFjLmPKUsSPKg2i09S4tAeiIMDkGzJrsoqKaBg4I07bdjIf6piUPqcvASFJJkPC8PEuFn18j56VK1bkXH3/dHroLWvVhl3Lnt3WtFDoQ45At9oaDU5nUE63WZp5Sp1PcmMjKHMuBibAc+BBG8M2N6+qt7JU0IPc2fXqqKj5FZ65zPDIC5sGZ8tAwFmqxiqxHzw72NJcE00UMiBjCEvs0gdNeG/EhrPKTM6rzioXBQefWtsUttseIUN0xHJ6qdMRXaPB8j5aqskCr862WxrMIkkP8zC3V8MwFl6GL5tGJN+42fcDFoMes/xgBVV++wMtInSM/McWBsCD7sBhSfolTtFiiCbnC8qjJwG/yyvsnKHtyvGS58TZSFt58Ets2XiN8uzM+VSmqIDrn7zj9dMiFIH5XWU596+mWwoq0cY9w3s3LBzDO/yDUziRs4qsTX8Sai434PZV7ml5YPc3mlrX8A8/kLaAiLW7ps= rdelaage@rdelaage01" ];
       extraGroups = [ "users" ];
     };
   };
