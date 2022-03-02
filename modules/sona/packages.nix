@@ -150,7 +150,7 @@
     # Media
     subtitleeditor
     imagemagick
-    # beets # MP3 tag editor
+    beets # MP3 tag editor
     # Markdown to PDF
     # yj # YAML to JSON etc.
     pandoc
