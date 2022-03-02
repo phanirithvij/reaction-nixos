@@ -93,7 +93,8 @@
     pcmanfm
     evince
     libreoffice
-    mpv
+    mpv-no-scripts
+    mpv-with-scripts
     clementine
     gnome3.cheese
     ocenaudio
@@ -206,7 +207,23 @@
       #   ];
       # }));
 
-      mpv = super.wrapMpv super.mpv-unwrapped {
+      mpv-no-scripts = pkgs.stdenv.mkDerivation {
+        version = "yay";
+        pname = "mpv-no-scripts";
+
+        buildInputs = [ pkgs.mpv ];
+
+        src = pkgs.mpv;
+
+        installPhase = ''
+          mkdir -p $out/bin
+          ln -s $src/bin/mpv $out/bin/mpvnoscripts
+        '';
+
+        meta = pkgs.mpv.meta;
+      };
+
+      mpv-with-scripts = super.wrapMpv super.mpv-unwrapped {
         scripts = with super.mpvScripts; [ mpris simple-mpv-webui youtube-quality ];
       };
 

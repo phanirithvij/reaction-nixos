@@ -70,7 +70,7 @@
     serviceConfig = {
       ExecStart = "${pkgs.writeShellApplication {
         name = "check_battery";
-        runtimeInputs = with pkgs; [ libnotify espeak pulseaudio ];
+        runtimeInputs = with pkgs; [ libnotify espeak pulseaudio mpv-no-scripts ];
         text = ''
           export DISPLAY=${"\$"}{DISPLAY:=":0"}
           export XDG_RUNTIME_DIR=${"\$"}{XDG_RUNTIME_DIR:=/run/user/$(id -u)}
@@ -84,7 +84,7 @@
           then
                 echo "Low battery detected" 1>&2
                 notify-send --urgency=critical --expire-time 3000 "Batterie faible" "$BATTERY_PERCENT% restants"
-                espeak -vfr -s120 --stdout 'Je nai plus beaucoup de batterie' | paplay
+                mpvnoscripts /home/"$(id -un)"/.local/files/titi.aac
           else
                 echo "Not low not battery not detected" 1>&2
           fi'';
