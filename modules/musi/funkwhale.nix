@@ -149,5 +149,12 @@ with lib;
         faketty ${pkgs.docker}/bin/docker exec -it funkwhale manage import_files ${cfg.importCronLibraryID} /music --in-place --async --recursive --noinput;
       '';
     });
+    security.doas.extraRules = (lib.optionals cfg.importCronEnable [{
+      users = [ "ppom" ];
+      cmd = "systemctl";
+      args = [ "start" "update-funkwhale-library.service" ];
+      runAs = "root";
+      noPass = true;
+    }]);
   };
 }
