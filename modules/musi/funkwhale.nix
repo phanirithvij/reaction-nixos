@@ -73,8 +73,11 @@ with lib;
           FUNKWHALE_API_IP = "127.0.0.1";
           FUNKWHALE_API_PORT = containerPort;
           FUNKWHALE_WEB_WORKERS = "4";
+          THROTTLING_RATES = "subsonic=5000/h";
           NESTED_PROXY = "1";
+          REVERSE_PROXY_TYPE = "nginx";
           NGINX_MAX_BODY_SIZE = cfg.maxBodySize;
+          MUSIC_DIRECTORY_SERVE_PATH = cfg.musicDir;
         };
         extraOptions = [
           # Only used to store the secret
