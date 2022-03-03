@@ -72,6 +72,12 @@ in
             endfunction
             " }
             call SourceIfExists("~/.config/nvim/init.vim")
+
+            " Language plugins put in opt below
+            # autocmd FileType rust :packadd phpCompletion
+
+            " Coc.nvim stuff (keep it minimal!)
+            command! -nargs=0 Format :call CocActionAsync('format')
           '';
           packages.myVimPackage = with pkgs.vimPlugins; {
             start = [
@@ -93,7 +99,8 @@ in
               LanguageTool-nvim
               vim-grammarous
               unicode-vim
-              # coc-nvim
+              coc-nvim
+              coc-json
               # manuals:
               undoquit-vim
               vim-svelte
