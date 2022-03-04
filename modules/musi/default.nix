@@ -10,7 +10,7 @@ in
     ./anpa.nix # container
     ./backup.nix
     ./clement.nix
-    ./funkwhale.nix
+    ./funkwhale/default.nix
     ./hardware-configuration.nix
     ./languagetool.nix
     ./mail.nix
@@ -36,6 +36,7 @@ in
 
   services.funkwhale = {
     enable = true;
+    funkwhaleVersion = "1.1.4";
     domainName = "music.ppom.me";
     envFile = "/root/secrets/funkwhale.secrets";
     musicDir = "/data/funkwhale/music";
