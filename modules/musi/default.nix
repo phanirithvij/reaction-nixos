@@ -38,7 +38,6 @@ in
     enable = true;
     funkwhaleVersion = "1.1.4";
     domainName = "music.ppom.me";
-    envFile = "/root/secrets/funkwhale.secrets";
     musicDir = "/data/funkwhale/music";
     dataDir = "/data/funkwhale/data";
     importCronEnable = true;

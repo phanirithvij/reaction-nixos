@@ -4,18 +4,17 @@
   , celeryConcurrency ? 8
 }:
 let
-  containerPort = 80;
   pythonEnv = {
     # We're in production lol
     DJANGO_SETTINGS_MODULE = "config.settings.production";
     # Error reporting
-    RAVEN_ENABLED = "true";
-    RAVEN_DSN = "https://44332e9fdd3d42879c7d35bf8562c6a4:0062dc16a22b41679cd5765e5342f716@sentry.eliotberriot.com/5";
+    # RAVEN_ENABLED = "true";
+    # RAVEN_DSN = "https://44332e9fdd3d42879c7d35bf8562c6a4:0062dc16a22b41679cd5765e5342f716@sentry.eliotberriot.com/5";
     # Basic shit
     FUNKWHALE_HOSTNAME = cfg.domainName;
     FUNKWHALE_PROTOCOL = "https";
     FUNKWHALE_API_IP = "127.0.0.1";
-    FUNKWHALE_API_PORT = containerPort;
+    FUNKWHALE_API_PORT = cfg.hostPort;
     FUNKWHALE_WEB_WORKERS = "4";
     THROTTLING_RATES = "subsonic=5000/h";
     LOG_LEVEL = "error";
@@ -37,7 +36,7 @@ in toYaml "docker-compose" {
       restart = "unless-stopped";
       image = "funkwhale/funkwhale:${cfg.funkwhaleVersion}";
       network_mode = "host";
-      env_file = [ cfg.envFile ];
+      env_file = [ cfg.pythonSecretFile ];
       command = "celery -A funkwhale_api.taskapp worker -l INFO --concurrency=${builtins.toString celeryConcurrency}";
       environment = {
         C_FORCE_ROOT = "true";
@@ -52,7 +51,7 @@ in toYaml "docker-compose" {
       restart = "unless-stopped";
       image = "funkwhale/funkwhale:${cfg.funkwhaleVersion}";
       network_mode = "host";
-      env_file = [ cfg.envFile ];
+      env_file = [ cfg.pythonSecretFile ];
       environment = pythonEnv;
       command = "celery -A funkwhale_api.taskapp beat --pidfile= -l INFO";
     };
@@ -61,7 +60,7 @@ in toYaml "docker-compose" {
       restart = "unless-stopped";
       image = "funkwhale/funkwhale:${cfg.funkwhaleVersion}";
       network_mode = "host";
-      env_file = [ cfg.envFile ];
+      env_file = [ cfg.pythonSecretFile ];
       environment = pythonEnv;
       volumes = [
         "${cfg.musicDir}:/music:ro"
@@ -69,7 +68,6 @@ in toYaml "docker-compose" {
         "${cfg.staticDir}:${pythonEnv.STATIC_ROOT}"
         "${cfg.frontendPath}:/frontend"
       ];
-      ports = [ "${builtins.toString cfg.hostPort}:${builtins.toString containerPort}" ];
     };
   };
 }

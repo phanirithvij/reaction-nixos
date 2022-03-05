@@ -17,26 +17,16 @@ with lib;
       description = "Funkwhale version on Docker hub";
     };
 
+    # TODO fix this. the option doesn't work, i didn't manage to change the port number (always 5000)
     hostPort = mkOption {
       type = types.int;
       description = "Port to expose on the host";
-      default = 8020;
+      default = 5000;
     };
 
     musicDir = mkOption {
       type = types.str;
       description = "Path to your music directory";
-    };
-
-    envFile = mkOption {
-      type = types.str;
-      description = ''
-        Env file which will store the Django secret key
-        Example:
-        ```
-        DJANGO_SECRET_KEY=password!
-        ```
-      '';
     };
 
     dataDir = mkOption {
@@ -51,11 +41,13 @@ with lib;
       default = "100M";
     };
 
+    # TODO rename options (not a cron)
+    # TODO add systemd time option
     importCronEnable = mkEnableOption "Enable a daily job to update the library from disk";
 
     importCronLibraryID = mkOption {
       type = types.str;
-      description = "ID of the library to import";
+      description = "ID of the library to import to";
     };
   };
 
@@ -73,6 +65,7 @@ with lib;
     mediaDir = "${cfg.dataDir}/media";
     staticDir = "${cfg.dataDir}/static";
   in mkIf cfg.enable {
+    # TODO make assertion on cron import
 
     # docker-compose generation
     environment.etc."generated/funkwhale/docker-compose.yml".source = (composeGeneration {
@@ -83,22 +76,36 @@ with lib;
       };
     });
 
+    # TODO downgrade the containers user to funkwhale.
+    # Even celery tells it shouldn't run as root!
+    users = {
+      users.funkwhale = {
+        isSystemUser = true;
+        packages = with pkgs; [];
+        group = "funkwhale";
+      };
+      groups.funkwhale = {};
+    };
+
     systemd.services.funkwhale-init = {
       enable = true;
       description = "Secret generation for Funkwhale";
       wantedBy = [ "multi-user.target" ];
-      after = [ "postgresql.service" ];
+      before = [ "redis.service" "postgresql.service" ];
       serviceConfig = {
         Type = "oneshot";
         User = "root";
       };
-      path = [ pkgs.postgresql ];
+      path = [ pkgs.libressl ];
+      # TODO reload redis?
       script = with localVars; ''
         genPasswd() {
-          tr -cd '[:alnum:]' < /dev/urandom | fold -w30 | head -n1
+          # tr -cd '[:alnum:]' < /dev/urandom | fold -w30 | head -n1
+          openssl rand -base64 32 | tr -cd '[:alnum:]'
         }
-        if test -z ${localVars.pythonSecretFile}
+        if test '!' -f ${localVars.pythonSecretFile}
         then
+          echo Generating secrets…
           REDIS_PASSWORD=$(genPasswd)
           POSTGRES_PASSWORD=$(genPasswd)
           DJANGO_PASSWORD=$(genPasswd)
@@ -107,22 +114,47 @@ with lib;
           mkdir -p $(dirname ${pythonSecretFile})
           touch ${redisSecretFile} ${postgresSecretFile} ${pythonSecretFile}
           chmod 640 ${redisSecretFile} ${postgresSecretFile} ${pythonSecretFile}
-          chown root:funkwhale ${redisSecretFile} ${postgresSecretFile} ${pythonSecretFile}
+          chown root:funkwhale ${pythonSecretFile}
+          chown root:redis ${redisSecretFile}
+          chown root:postgres ${postgresSecretFile}
+
           echo $REDIS_PASSWORD > ${redisSecretFile}
           echo $POSTGRES_PASSWORD > ${postgresSecretFile}
           cat > ${pythonSecretFile} <<EOF
         CACHE_URL=redis://:$REDIS_PASSWORD@localhost:${builtins.toString redisPort}/0
         DJANGO_SECRET_KEY=$DJANGO_PASSWORD
-        DATABASE_URL=postgresql://funkwhale:$POSTGRES_PASSWORD@localhost:${builtins.toString config.services.postgresql.port}/funkwhale
+        DATABASE_URL=postgresql://root:$POSTGRES_PASSWORD@localhost:${builtins.toString config.services.postgresql.port}/funkwhale
         EOF
-          psql -c "ALTER USER funkwhale WITH PASSWORD \'$POSTGRES_PASSWORD\';"
         fi
+        '';
+    };
+
+    # TODO fix permission issues:
+    # - Switch to password authentication (not based on system user)
+    # - Downgrade the role. For now the root role is used and is a postgresql superuser.
+    systemd.services.funkwhale-postgres-password = {
+      enable = true;
+      description = "Secret generation for Funkwhale, part 2";
+      wantedBy = [ "multi-user.target" ];
+      requires = [ "postgresql.service" "funkwhale-init.service" ];
+      after = [ "postgresql.service" "funkwhale-init.service" ];
+      serviceConfig = {
+        Type = "oneshot";
+        User = "postgres";
+      };
+      path = [ pkgs.postgresql ];
+      script = with localVars; ''
+        POSTGRES_PASSWORD=$(cat ${postgresSecretFile})
+        psql -c "ALTER USER funkwhale WITH PASSWORD '$POSTGRES_PASSWORD';"
+        psql -c "ALTER USER root      WITH PASSWORD '$POSTGRES_PASSWORD';"
+        psql funkwhale -c "CREATE EXTENSION IF NOT EXISTS 'unaccent';"
+        psql funkwhale -c "CREATE EXTENSION IF NOT EXISTS 'citext';"
+
         '';
     };
     
     services.redis = {
       enable = true;
-      maxclients = 3;
       port = localVars.redisPort;
       requirePassFile = localVars.redisSecretFile;
     };
@@ -130,10 +162,20 @@ with lib;
     services.postgresql = {
       enable = true;
       ensureDatabases = [ "funkwhale" ];
-      ensureUsers = [ {
-        name = "funkwhale";
-        ensurePermissions = { "DATABASE funkwhale" = "ALL PRIVILEGES"; };
-      } ];
+      ensureUsers = [
+        {
+          name = "funkwhale";
+          ensurePermissions = { "DATABASE funkwhale" = "ALL PRIVILEGES"; };
+        }
+        {
+          name = "root";
+          ensurePermissions = { "DATABASE funkwhale" = "ALL PRIVILEGES"; };
+        }
+      ];
+      identMap = ''
+        funkwhale root funkwhale
+        funkwhale funkwhale funkwhale
+      '';
     };
 
     # Reverse proxy configuration
@@ -202,18 +244,20 @@ with lib;
         "/media/" = {
           alias = "${mediaDir}/";
         };
+        # TODO check the log on these paths to be sure it's really used
         "/_protected/media/" = {
           extraConfig = "internal;";
-          alias = "${mediaDir}";
+          alias = "${mediaDir}/";
         };
         "/_protected/music/" = {
           extraConfig = "internal;";
-          alias = "${cfg.musicDir}";
+          alias = "${cfg.musicDir}/";
         };
         "/staticfiles/" = {
-          alias = "${staticDir}";
+          alias = "${staticDir}/";
         };
       };
+      # TODO upgrade the security settings
       extraConfig = ''
         add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; object-src 'none'; media-src 'self' data:";
         add_header Referrer-Policy "strict-origin-when-cross-origin";
