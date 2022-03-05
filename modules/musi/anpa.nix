@@ -2,8 +2,11 @@
 let
   myPort = 8476;
   myUsers = [
-    { name = "tanina"; ssh = "taninaSSH"; }
     { name = "anpa"; ssh = "anpaSSH"; }
+    {
+      name = "tanina";
+      ssh = "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAntIo1HtgaMr8Z1UqqUeUurXd/TRXLJY+ecCqO7MFzmg7Nhjm7JTrW4hi6Tzje61HRWnSKClBwkoB6xowEp7xSx2tYXSZ6IoAdKjHHSfR+oWO7EkEsOBY+L1wBTkKqpXoPXE+D1Vq2AfAcaBvHOg/k2yuXFlsrqraK76Wrm1R+x1jMR/5IzpPneCl96xLPakwivuqTOzdx/4Zrpm7bHa52ayuuUJnWZJ9pDCc4lUblNiYDK7P2W/AdHEW+CTm+/v0lbjazBRaElkzrSxw+q/LegxhwE4y8M/NcKN8kqm7GDvv/uE7a6RU5JBw8MC5y/++/s4B2rPjGkq1vzA8xYGCFQ== rsa-key-20220220";
+    }
     {
       name = "rdelaage";
       ssh = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDF8SKnbtxnN6L1RapClrlbfvGjIzr5DQWFjLmPKUsSPKg2i09S4tAeiIMDkGzJrsoqKaBg4I07bdjIf6piUPqcvASFJJkPC8PEuFn18j56VK1bkXH3/dHroLWvVhl3Lnt3WtFDoQ45At9oaDU5nUE63WZp5Sp1PcmMjKHMuBibAc+BBG8M2N6+qt7JU0IPc2fXqqKj5FZ65zPDIC5sGZ8tAwFmqxiqxHzw72NJcE00UMiBjCEvs0gdNeG/EhrPKTM6rzioXBQefWtsUttseIUN0xHJ6qdMRXaPB8j5aqskCr862WxrMIkkP8zC3V8MwFl6GL5tGJN+42fcDFoMes/xgBVV++wMtInSM/McWBsCD7sBhSfolTtFiiCbnC8qjJwG/yyvsnKHtyvGS58TZSFt58Ets2XiN8uzM+VSmqIDrn7zj9dMiFIH5XWU596+mWwoq0cY9w3s3LBzDO/yDUziRs4qsTX8Sai434PZV7ml5YPc3mlrX8A8/kLaAiLW7ps= rdelaage@rdelaage01";
