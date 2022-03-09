@@ -132,27 +132,26 @@ with lib;
     # TODO fix permission issues:
     # - Switch to password authentication (not based on system user)
     # - Downgrade the role. For now the root role is used and is a postgresql superuser.
-    systemd.services.funkwhale-postgres-password = {
-      enable = true;
-      description = "Secret generation for Funkwhale, part 2";
-      wantedBy = [ "multi-user.target" ];
-      requires = [ "postgresql.service" "funkwhale-init.service" ];
-      after = [ "postgresql.service" "funkwhale-init.service" ];
-      serviceConfig = {
-        Type = "oneshot";
-        User = "postgres";
-      };
-      path = [ pkgs.postgresql ];
-      script = with localVars; ''
-        POSTGRES_PASSWORD=$(cat ${postgresSecretFile})
-        psql -c "ALTER USER funkwhale WITH PASSWORD '$POSTGRES_PASSWORD';"
-        psql -c "ALTER USER root      WITH PASSWORD '$POSTGRES_PASSWORD';"
-        psql funkwhale -c "CREATE EXTENSION IF NOT EXISTS 'unaccent';"
-        psql funkwhale -c "CREATE EXTENSION IF NOT EXISTS 'citext';"
+    # systemd.services.funkwhale-postgres-password = {
+    #   enable = true;
+    #   description = "Secret generation for Funkwhale, part 2";
+    #   wantedBy = [ "multi-user.target" ];
+    #   requires = [ "postgresql.service" "funkwhale-init.service" ];
+    #   after = [ "postgresql.service" "funkwhale-init.service" ];
+    #   serviceConfig = {
+    #     Type = "oneshot";
+    #     User = "postgres";
+    #   };
+    #   path = [ pkgs.postgresql ];
+    #   script = with localVars; ''
+    #     POSTGRES_PASSWORD=$(cat ${postgresSecretFile})
+    #     psql -c "ALTER USER funkwhale WITH PASSWORD '$POSTGRES_PASSWORD';"
+    #     psql -c "ALTER USER root      WITH PASSWORD '$POSTGRES_PASSWORD';"
+    #     psql funkwhale -c "CREATE EXTENSION IF NOT EXISTS 'unaccent';"
+    #     psql funkwhale -c "CREATE EXTENSION IF NOT EXISTS 'citext';"
+    #     '';
+    # };
 
-        '';
-    };
-    
     services.redis = {
       enable = true;
       port = localVars.redisPort;
