@@ -59,6 +59,8 @@ in
             let g:mapleader = " "
             nnoremap <leader>h noh<CR>
             colorscheme gruvbox
+
+            au TextYankPost * silent! lua vim.highlight.on_yank {on_visual=false}
           '' + lib.optionalString isDesktop ''
             let g:languagetool_jar='${pkgs.languagetool}/share/languagetool-commandline.jar'
 
@@ -74,7 +76,7 @@ in
             call SourceIfExists("~/.config/nvim/init.vim")
 
             " Language plugins put in opt below
-            # autocmd FileType rust :packadd phpCompletion
+            " autocmd FileType php :packadd phpCompletion
 
             " Coc.nvim stuff (keep it minimal!)
             command! -nargs=0 Format :call CocActionAsync('format')
