@@ -98,14 +98,20 @@ in {
         forceSSL = true;
         enableACME = true;
         # locations
+        root = "/data/uploader";
         locations = {
           "/" = {
             index = "index.html";
-            root = "/data/uploader";
-            # extraConfig = "autoindex on;";
             extraConfig = ''
               fancyindex on;
               fancyindex_exact_size off;
+            '';
+          };
+          "/QueeRcode/" = {
+            index = "index.html";
+            extraConfig = ''
+              add_header Content-Security-Policy "default-src 'self' 'unsafe-inline';";
+              # add_header Content-Security-Policy "";
             '';
           };
         };
