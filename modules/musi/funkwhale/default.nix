@@ -262,5 +262,30 @@ with lib;
         add_header Referrer-Policy "strict-origin-when-cross-origin";
       '';
     };
+
+    systemd.timers.update-funkwhale-library = (lib.optionalAttrs cfg.importCronEnable {
+      wantedBy = [ "timers.target" ];
+      after = [ "network.target" ];
+      timerConfig = {
+        OnCalendar = "daily";
+      };
+    });
+    systemd.services.update-funkwhale-library = (lib.optionalAttrs cfg.importCronEnable {
+      description = "Update the funkwhale library in place";
+      # faketty function found here: https://stackoverflow.com/questions/32910661
+      script = ''
+        faketty () {
+          ${pkgs.util-linux}/bin/script -qefc "$(printf "%q " "$@")"
+        }
+        faketty ${pkgs.docker}/bin/docker exec -it funkwhale_api_1 python manage.py import_files ${cfg.importCronLibraryID} /music --in-place --async --recursive --noinput;
+      '';
+    });
+    security.doas.extraRules = (lib.optionals cfg.importCronEnable [{
+      users = [ "ppom" ];
+      cmd = "systemctl";
+      args = [ "start" "update-funkwhale-library.service" ];
+      runAs = "root";
+      noPass = true;
+    }]);
   };
 }
