@@ -63,6 +63,7 @@
     ## hardware
     lm_sensors # CPU temp
     parted # disk partition manager
+    testdisk # file & disc recovery
 
     ## containers
     ctop
