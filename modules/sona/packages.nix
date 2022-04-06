@@ -4,16 +4,13 @@
 {
   environment.systemPackages = with pkgs; [
     # CLI
-    tmux
-      # tmuxPlugins.fingers TODO add them in tmux's path
-      # tmuxPlugins.pain-control
     sshuttle # poor's man VPN
     sshfs-fuse # mount remote FS via SSH
     (lib.lowPrio moreutils) # vipe, vidir
     sysstat
     # tealdeer # tldr man pages
     # sequoia # modern OpenPGP implementation
-    tomb # useful wrapper around PGP and LUKS
+    tomb # LUKS wrapper
     rbw # unofficial bitwarden CLI
     (lib.hiPrio (pkgs.writeScriptBin "rbw-rofi" ''
       set -eu
