@@ -37,7 +37,7 @@
     # subdl
     # croc # CLI file transfer
     nix-bundle # Bundle a derivation like AppImage
-    comma # wrapper around `nix-index` && `nix run` to lauch a command without installing it
+    comma # wrapper around `nix-index` && `nix run` to launch a command without installing it
     inotify-tools # Linux filesystem watchdog
     # languagetool # Proofreading program
 
@@ -94,15 +94,13 @@
     mpv-with-scripts
     clementine
     gnome3.cheese
-    ocenaudio
+    # ocenaudio # test ardour?
     gimp
     deluge
     nicotine-plus
     gparted
-    # appimage-run
     syncthing # ± P2P file synchronization
     apache-directory-studio # LDAP client
-    # audacity, ardour or ocenaudio?
     # nextcloud-client
     # rssguard
 
@@ -120,6 +118,7 @@
       gitAndTools.git-filter-repo
       # gource
       gti
+      # git-filter-repo
     gnumake
     #scilab
     # ghc stack cabal-install # haskell
@@ -127,10 +126,13 @@
     simple-http-server
     # gomod2nix
     alejandra # Nix formatter
-    linx-server
+    zola # static site generator
+    jq # JSON pipe
+    # gcc-wrapper
+    # linx-server
 
     docker
-    virt-manager
+    # virt-manager # unstable fails to build
     # wireshark
     # vscodium
     python39
@@ -142,7 +144,7 @@
     tdns-cli # dig alternative
 
     # Network
-    wireguard
+    wireguard-tools
 
     # Media
     subtitleeditor
@@ -224,14 +226,14 @@
     (import /home/ao/prg/nix/gomod2nix/overlay.nix)
   ];
 
-  fonts.fonts = with pkgs; [
+  fonts.fonts = with pkgs; with xorg; [
     noto-fonts
     noto-fonts-cjk
     noto-fonts-emoji
     liberation_ttf
     fira-code
     fira-code-symbols
-    mplus-outline-fonts
+    # mplus-outline-fonts
     dina-font
     proggyfonts
   ];
