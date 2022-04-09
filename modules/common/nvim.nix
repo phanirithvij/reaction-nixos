@@ -103,6 +103,7 @@ in
               unicode-vim
               coc-nvim
               coc-json
+              coc-html
               # manuals:
               undoquit-vim
               vim-svelte
