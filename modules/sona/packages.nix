@@ -4,8 +4,8 @@
 {
   environment.systemPackages = with pkgs; [
     # CLI
-    sshuttle # poor's man VPN
-    sshfs-fuse # mount remote FS via SSH
+    # sshuttle # poor's man VPN
+    # sshfs-fuse # mount remote FS via SSH
     (lib.lowPrio moreutils) # vipe, vidir
     sysstat
     # tealdeer # tldr man pages
@@ -20,7 +20,7 @@
     ''))
     pinentry-gnome # GUI password prompt (used by gpg-agent, installing it in global path for rbw & tomb)
     acpi # battery information
-    powertop # power information
+    # powertop # power information
     # pciutils # lspci
     libossp_uuid # uuid v4
     # vmtouch # Virtual Memory Toucher
@@ -30,14 +30,14 @@
     # xsv # CSV's `jq`
     # parallel
     openvpn
-    lolcat
-    figlet
-    espeak-ng
+    # lolcat
+    # figlet
+    # espeak-ng
     # cowsay
     # subdl
     # croc # CLI file transfer
-    nix-bundle # Bundle a derivation like AppImage
-    comma # wrapper around `nix-index` && `nix run` to launch a command without installing it
+    # nix-bundle # Bundle a derivation like AppImage
+    # comma # wrapper around `nix-index` && `nix run` to launch a command without installing it
     inotify-tools # Linux filesystem watchdog
     # languagetool # Proofreading program
 
@@ -56,24 +56,24 @@
     conky # status bar
     feh # image viewer
     xorg.xrandr # manage monitors
-    xorg.xev # log key and mouse events
+    # xorg.xev # log key and mouse events
     xorg.xkill # kill an unresponsive window
     xclip # X clipboard
     autorandr # xrandr configurations memory
     dunst # notification daemon
     libnotify # send notifications
-    qsudo # graphical sudo
+    # qsudo # graphical sudo
     xdotool # programmatically move the mouse, type, etc.
     numlockx # set Num Lock
     xss-lock # for use with a screen locker
     flameshot # advanced screenshots
     peek # GIF screenshots
     redshift # less 'blue' screen
-    pavucontrol # Pulseaudio GUI
+    # pavucontrol # Pulseaudio GUI
     ncpamixer # Pulseaudio TUI
     # ponymix # Pulseaudio CLI
     rofi # Menu chooser (dmenu like)
-    networkmanagerapplet # NM connection editor
+    # networkmanagerapplet # NM connection editor
 
     # GUI apps
     firefox
@@ -81,9 +81,9 @@
     # ungoogled-chromium
     signal-desktop
     # code-server # VSCodium w/ in-browser client & server
-    mumble
+    # mumble
     # anki
-    drawio
+    # drawio
     # tor-browser-bundle-bin
     # jitsi-meet-electron
     # element-desktop
@@ -98,7 +98,7 @@
     gimp
     deluge
     nicotine-plus
-    gparted
+    # gparted
     syncthing # ± P2P file synchronization
     apache-directory-studio # LDAP client
     # nextcloud-client
@@ -115,17 +115,16 @@
     # Development
     git
       # gitAndTools.pass-git-helper
-      gitAndTools.git-filter-repo
+      # gitAndTools.git-filter-repo
       # gource
       gti
-      # git-filter-repo
     gnumake
     #scilab
     # ghc stack cabal-install # haskell
-    h2 # H2 Database Editor
+    # h2 # H2 Database Editor
     simple-http-server
     # gomod2nix
-    alejandra # Nix formatter
+    # alejandra # Nix formatter
     zola # static site generator
     jq # JSON pipe
     # gcc-wrapper
@@ -147,16 +146,16 @@
     wireguard-tools
 
     # Media
-    subtitleeditor
+    # subtitleeditor
     imagemagick
     beets # MP3 tag editor
     # Markdown to PDF
     # yj # YAML to JSON etc.
-    pandoc
-      texlive.combined.scheme-full
-    pdftk # PDF Swiss knife
-    poppler # other PDF manipulations
-    multimarkdown # "from Markdown" exports
+    # pandoc
+      # texlive.combined.scheme-full # 3GB 😬
+    # pdftk # PDF Swiss knife
+    # poppler # other PDF manipulations
+    # multimarkdown # "from Markdown" exports
 
     # adv_coreutils # with patch, see below
     mediahandler # ⏯️

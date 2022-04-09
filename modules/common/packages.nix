@@ -17,10 +17,10 @@
 
     ## network
     bind # dig
-    mtr # interactive trace route
+    # mtr # interactive trace route
     iftop # connection viewer
     nmap # local network prober
-    librespeed-cli # Speedtest
+    # librespeed-cli # Speedtest
     (lib.lowPrio inetutils)
 
     ## protocols
@@ -61,7 +61,7 @@
     sqlite-interactive # Heavy version with readline and completion support.
 
     ## hardware
-    lm_sensors # CPU temp
+    # lm_sensors # CPU temp
     parted # disk partition manager
     testdisk # file & disc recovery
 
@@ -75,16 +75,16 @@
     mkvtoolnix
     yt-dlp
     handbrake
-    gpac # MP4Box
+    # gpac # MP4Box
 
     ## text
     dos2unix
     vtt2srt # VTT to SRT converter
 
     ## nixeries
-    nox
+    # nox
     nix-du
-    patchelf
+    # patchelf
 
   ];
 
