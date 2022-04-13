@@ -103,12 +103,14 @@ in
               unicode-vim
               coc-nvim
               coc-json
+              coc-html
               # manuals:
               undoquit-vim
               vim-svelte
               rust-vim
               vim-markdown
               mkdir-nvim
+              copilot-vim # 😈
             ];
             opt = [ ];
           };

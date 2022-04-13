@@ -4,6 +4,8 @@ let
 in
 {
   imports = [ ./ppom.nix ];
+  # tmuxPlugins.fingers TODO add them in tmux's path
+  # tmuxPlugins.pain-control
 
   config = {
     programs.tmux = {
@@ -41,6 +43,10 @@ in
         set -g status-style bg=#444444
 
         set -g detach-on-destroy off # since tmux 3.2. Love it.
+
+        # Neovim said this
+        set-option -sa terminal-overrides ',xterm-256color:RGB'
+        set-option -g focus-events on
         '' else ''
         ''}
       '';
