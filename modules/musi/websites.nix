@@ -178,7 +178,7 @@ in {
     wantedBy = [ "timers.target" ];
     after = [ "network.target" ];
     timerConfig = {
-      OnCalendar = "*-03,06,09,12-01 00:00:00";
+      OnCalendar = "*-*-01 00:00:00";
     };
   };
   systemd.services.custom-reload-acme-www-ppom-me = {
