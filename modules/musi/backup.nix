@@ -24,6 +24,12 @@ let
   };
 in
 {
+  services.postgresqlBackup = {
+    enable = true;
+    # every 2 hours, it only costs 2s of CPU time for now
+    startAt = "*-*-* 0/2:15";
+  };
+
   services.borgbackup = {
     jobs = backup {
       name = "etc_nixos";

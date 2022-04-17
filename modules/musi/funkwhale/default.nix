@@ -177,6 +177,9 @@ with lib;
       '';
     };
 
+    # Rest of postgresqlBackup in musi/backup.nix
+    services.postgresqlBackup.databases = [ "funkwhale" ];
+
     # Reverse proxy configuration
     services.nginx.enable = true;
     services.nginx.virtualHosts."${cfg.domainName}" = {
