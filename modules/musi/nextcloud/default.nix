@@ -99,9 +99,9 @@ in {
       port = 80,443
 
       filter = nextcloud
-      # Due to systemd backend as a default, we have to set this as pyinotify
+      # Due to systemd backend as a default, we have to set this as polling
       # (auto doesn't work when systemd is default backend)
-      backend = pyinotify
+      backend = polling
       logpath = /data/nextcloud/html/data/nextcloud.log
 
       maxretry = 3
