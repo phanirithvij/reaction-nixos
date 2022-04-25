@@ -74,6 +74,7 @@
     # ponymix # Pulseaudio CLI
     rofi # Menu chooser (dmenu like)
     # networkmanagerapplet # NM connection editor
+    deepl-translate-cli
 
     # GUI apps
     firefox
@@ -193,6 +194,9 @@
 
       # linx-server for development.
       linx-server = super.callPackage ../../pkgs/linx-server {}; 
+
+      # deepl cli
+      deepl-translate-cli = super.callPackage ../../pkgs/deepl-translate-cli {}; 
 
       # add -g/--progress to coreutils' cp and mv.
       # adv_coreutils = (super.coreutils.overrideAttrs (oldAttrs: {
