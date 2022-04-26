@@ -6,7 +6,7 @@ stdenv.mkDerivation {
 
   src = fetchGit {
     url = "https://framagit.org/ppom/dwm.git";
-    rev = "1dc9c5372c5009a738a52064eb044181638db8fe";
+    rev = "9b72354943d1fc5a98095e1beae8c944082ece29";
   };
 
   buildInputs = [ libX11 libXinerama libXft ];
