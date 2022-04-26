@@ -4,8 +4,10 @@ let
   domainName = "video.ppom.me";
   localPort = "8001";
   dbPath = "/var/lib/streama/streama";
-  # FIXME impure: idk how to download it reliably
-  jarFile = /data/streama/data/streama-1.10.4.jar;
+  jarFile = pkgs.fetchurl {
+    url = "https://github.com/streamaserver/streama/releases/download/v1.10.4/streama-1.10.4.jar";
+    sha256 = "sha256:0bnsnwimx1mdxq7jh8z5wg7wh0g8gixkb99qmi9pbm7lhfvil1x1";
+  };
   config = pkgs.writeText "application.yml" ''
     environments:
         production:

@@ -89,12 +89,12 @@ in
               vim-repeat
               vim-fugitive
               vim-unimpaired
+              vim-fish
               # gruvbox
               (super.vimPlugins.gruvbox.overrideAttrs (oldAttrs: {
                 patches = [ ./true_black_gruvbox.patch ];
               }))
             ] ++ lib.optionals isDesktop [
-              vim-fish # doesn't work, why?
               vim-startify
               fzf-vim
               far-vim

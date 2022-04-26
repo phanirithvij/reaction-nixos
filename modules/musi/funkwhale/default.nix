@@ -177,6 +177,9 @@ with lib;
       '';
     };
 
+    # Rest of postgresqlBackup in musi/backup.nix
+    services.postgresqlBackup.databases = [ "funkwhale" ];
+
     # Reverse proxy configuration
     services.nginx.enable = true;
     services.nginx.virtualHosts."${cfg.domainName}" = {
@@ -188,7 +191,7 @@ with lib;
           add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; object-src 'none'; media-src 'self' data:";
           add_header Referrer-Policy "strict-origin-when-cross-origin";
           add_header Service-Worker-Allowed "/";
-          add_header X-Frame-Options "ALLOW";
+          add_header X-Frame-Options "DENY";
           add_header Pragma public;
           add_header Cache-Control "public, must-revalidate, proxy-revalidate";
           expires 30d;
@@ -205,6 +208,7 @@ with lib;
           proxy_http_version 1.1;
           proxy_set_header Upgrade $http_upgrade;
           proxy_set_header Connection $connection_upgrade;
+          proxy_cookie_path / "/; Secure; HttpOnly; SameSite=strict";
         '';
         proxyUrl = "http://localhost:${builtins.toString cfg.hostPort}";
       in {
@@ -212,8 +216,9 @@ with lib;
           proxyWebsockets = true;
           proxyPass = proxyUrl;
           extraConfig = ''
-            proxy_set_header X-Forwarded-Port $server_port;
+            proxy_set_header X-Forwarded-Port $http_x_forwarded_port;
             proxy_redirect off;
+            proxy_cookie_path / "/; Secure; SameSite=strict";
             client_max_body_size ${cfg.maxBodySize};
           '';
         };
