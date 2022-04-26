@@ -150,6 +150,16 @@ in {
         enableACME = true;
       };
 
+      "mobitest.ppom.me" = {
+        locations = {
+          "/" = {
+            proxyPass = "http://localhost:4000";
+          };
+        };
+        forceSSL = true;
+        enableACME = true;
+      };
+
       "blog.ppom.me" = {
         # enable and force SSL with Let's Encrypt
         forceSSL = true;
