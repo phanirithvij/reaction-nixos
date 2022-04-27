@@ -160,6 +160,17 @@ in {
         enableACME = true;
       };
 
+      "music.ppom.me" = {
+        locations = {
+          "/to" = {
+            root = "/var/www/music/";
+            index = "index.html";
+          };
+        };
+        forceSSL = true;
+        enableACME = true;
+      };
+
       "blog.ppom.me" = {
         # enable and force SSL with Let's Encrypt
         forceSSL = true;
