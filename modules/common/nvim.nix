@@ -102,9 +102,10 @@ in
               vim-grammarous
               unicode-vim
               coc-nvim
+              coc-rls # Rust
               coc-json
               coc-html
-              # manuals:
+              # coc-xml
               undoquit-vim
               vim-svelte
               rust-vim
