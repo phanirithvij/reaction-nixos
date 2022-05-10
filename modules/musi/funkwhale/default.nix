@@ -43,11 +43,19 @@ with lib;
 
     # TODO rename options (not a cron)
     # TODO add systemd time option
+    # TODO support multiple jobs
     importCronEnable = mkEnableOption "Enable a daily job to update the library from disk";
 
     importCronLibraryID = mkOption {
       type = types.str;
       description = "ID of the library to import to";
+    };
+
+    # TODO
+    importContainerPath = mkOption {
+      type = types.str;
+      description = "Path to the library in the container. Defaults to /music";
+      default = "/music";
     };
   };
 
@@ -282,7 +290,7 @@ with lib;
         faketty () {
           ${pkgs.util-linux}/bin/script -qefc "$(printf "%q " "$@")"
         }
-        faketty ${pkgs.docker}/bin/docker exec -it funkwhale_api_1 python manage.py import_files ${cfg.importCronLibraryID} /music --in-place --async --recursive --noinput;
+        faketty ${pkgs.docker}/bin/docker exec -it funkwhale_api_1 python manage.py import_files ${cfg.importCronLibraryID} /music/beet --in-place --async --recursive --noinput;
       '';
     });
     security.doas.extraRules = (lib.optionals cfg.importCronEnable [{
