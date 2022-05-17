@@ -20,7 +20,7 @@
     # mtr # interactive trace route
     iftop # connection viewer
     nmap # local network prober
-    # librespeed-cli # Speedtest
+    librespeed-cli # Speedtest
     tcpdump
     (lib.lowPrio inetutils)
 
