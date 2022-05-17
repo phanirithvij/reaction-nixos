@@ -1,7 +1,11 @@
 # This configuration file is designed to only contain package-related entries.
 { lib, config, pkgs, ... }:
 
-{
+let 
+  f-mpv-with-scripts = super: super.wrapMpv super.mpv-unwrapped {
+    scripts = with super.mpvScripts; [ mpris youtube-quality ];
+  };
+in {
   environment.systemPackages = with pkgs; [
     # CLI
     # sshuttle # poor's man VPN
@@ -225,9 +229,9 @@
         meta = pkgs.mpv.meta;
       };
 
-      mpv-with-scripts = super.wrapMpv super.mpv-unwrapped {
-        scripts = with super.mpvScripts; [ mpris youtube-quality ];
-      };
+      mpv-with-scripts = f-mpv-with-scripts super;
+
+      ytfzf = super.ytfzf.override { mpv = f-mpv-with-scripts super; };
 
     })
     (import /home/ao/prg/nix/gomod2nix/overlay.nix)
