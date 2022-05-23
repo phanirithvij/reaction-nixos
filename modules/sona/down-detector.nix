@@ -4,8 +4,8 @@ let
     "https://ppom.me"
     "https://video.ppom.me"
     "https://music.ppom.me"
-    "https://blog.ppom.me"
-    "https://u.ppom.me"
+    # "https://blog.ppom.me"
+    # "https://u.ppom.me"
     "https://nuage.ppom.me"
   ];
   dns_test = "dns2.proxad.net";
@@ -27,7 +27,7 @@ let
 
         for site in $SITES
         do
-            ${pkgs.curl}/bin/curl -s -o /dev/null "$site"
+            ${pkgs.curl}/bin/curl --retry 3 --retry-all-errors --fail --silent -o /dev/null "$site"
             STATUS=$?
             if [[ $STATUS -ne 0 ]]
             then

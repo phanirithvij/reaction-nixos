@@ -8,6 +8,7 @@ let
       subsFilter
     ];
   });
+  nginxLogPath = "/var/log/nginx/access.log";
   reloadScript = pkgs.writeScriptBin "custom-reload-acme-www-ppom-me" ''
     #!/${pkgs.bash}/bin/bash
 
@@ -50,6 +51,13 @@ in {
     appendConfig = ''
       worker_processes auto;
     '';
+    commonHttpConfig = ''
+      log_format withhost '$remote_addr - $remote_user [$time_local] '
+                       '$host '
+                       '"$request" $status $bytes_sent '
+                       '"$http_referer" "$http_user_agent"';
+      access_log ${nginxLogPath} withhost;
+    '';
 
     # Hosts config
     virtualHosts = {
@@ -67,14 +75,14 @@ in {
         extraConfig = ''
           # do not even try connecting by HTTP
           # add_header Strict-Transport-Security "max-age=31536000";
-          # allow only certain types of ways to load content
-          # add_header Content-Security-Policy "default-src 'none'; img-src 'none'; script-src 'none'; style-src 'unsafe-inline'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'";
           # do not allow to be framed inside another website
           add_header X-Frame-Options "DENY";
           # only allow script and style handling if the MIME type is correct
           add_header X-Content-Type-Options "nosniff";
           # tell browsers to only send https://domain.name as Referer
           add_header Referrer-Policy "strict-origin";
+          # CSP
+          add_header Content-Security-Policy "default-src 'self'; frame-ancestors: 'none';";
         '';
       };
 
@@ -98,20 +106,29 @@ in {
         forceSSL = true;
         enableACME = true;
         # locations
+        root = "/data/uploader";
         locations = {
           "/" = {
             index = "index.html";
-            root = "/data/uploader";
-            # extraConfig = "autoindex on;";
             extraConfig = ''
               fancyindex on;
               fancyindex_exact_size off;
             '';
           };
+          "/QueeRcode/" = {
+            index = "index.html";
+            extraConfig = ''
+              add_header Content-Security-Policy "default-src 'self' 'unsafe-inline'; frame-ancestors 'none';";
+              add_header X-Content-Type-Options "nosniff";
+              add_header X-Frame-Options "DENY";
+            '';
+          };
         };
         extraConfig = ''
           # add_header Strict-Transport-Security "max-age=31536000";
-          add_header Content-Security-Policy "default-src 'self' u.ppom.me;";
+          add_header Content-Security-Policy "default-src 'self'; frame-ancestors 'none'; style-src 'self' 'unsafe-inline'";
+          add_header X-Content-Type-Options "nosniff";
+          add_header X-Frame-Options "DENY";
         '';
       };
 
@@ -133,6 +150,27 @@ in {
         enableACME = true;
       };
 
+      "mobitest.ppom.me" = {
+        locations = {
+          "/" = {
+            proxyPass = "http://localhost:4000";
+          };
+        };
+        forceSSL = true;
+        enableACME = true;
+      };
+
+      "music.ppom.me" = {
+        locations = {
+          "/to" = {
+            root = "/var/www/music/";
+            index = "index.html";
+          };
+        };
+        forceSSL = true;
+        enableACME = true;
+      };
+
       "blog.ppom.me" = {
         # enable and force SSL with Let's Encrypt
         forceSSL = true;
@@ -147,6 +185,8 @@ in {
         extraConfig = ''
           # add_header Strict-Transport-Security "max-age=31536000";
           add_header Content-Security-Policy "default-src 'none'; img-src 'none'; script-src 'none'; style-src 'unsafe-inline'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'";
+          add_header X-Content-Type-Options "nosniff";
+          add_header X-Frame-Options "DENY";
         '';
       };
     };
@@ -167,7 +207,7 @@ in {
     wantedBy = [ "timers.target" ];
     after = [ "network.target" ];
     timerConfig = {
-      OnCalendar = "*-03,06,09,12-01 00:00:00";
+      OnCalendar = "*-*-01 00:00:00";
     };
   };
   systemd.services.custom-reload-acme-www-ppom-me = {
@@ -177,5 +217,42 @@ in {
       # User = "root";
     };
   };
+
+  # Can't make it work, hard to debug why
+  # environment.etc."fail2ban/filter.d/nginx.conf".text = ''
+  #     [INCLUDES]
+  #     before = common.conf
+
+  #     [Definition]
+  #     failregex = ^<HOST>.*"(GET|POST).*" (404|444|403|400) .*$
+  #     ignoreregex =
+  #     # Due to systemd backend as a default, we have to set this as polling
+  #     # (auto doesn't work when systemd is default backend)
+  #     backend = polling
+  #     logpath = ${nginxLogPath}
+  # '';
+  # services.fail2ban.jails.nginx = ''
+  #     enabled = true
+  #     port = 80,443
+  #     filter = nginx
+
+  #     maxretry = 40
+  #     findtime = 60
+  #     bantime = 7200
+  # '';
+
+  # services.fail2ban.jails.nginx-http-auth = ''
+  #     enabled = true
+  #     port = 80,443
+  #     filter = nginx-http-auth
+  #     # Due to systemd backend as a default, we have to set this as polling
+  #     # (auto doesn't work when systemd is default backend)
+  #     backend = polling
+  #     logpath = ${nginxLogPath}
+
+  #     maxretry = 5
+  #     findtime = 60
+  #     bantime = 7200
+  # '';
 
 }

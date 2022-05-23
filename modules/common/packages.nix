@@ -17,10 +17,11 @@
 
     ## network
     bind # dig
-    mtr # interactive trace route
+    # mtr # interactive trace route
     iftop # connection viewer
     nmap # local network prober
     librespeed-cli # Speedtest
+    tcpdump
     (lib.lowPrio inetutils)
 
     ## protocols
@@ -45,10 +46,11 @@
     pass
 
   ] ++ lib.optionals (! config.ppom.isLight) [
+    fish # Friendly interactive shell
 
     asciinema # Terminal JSON recorder & player. Check asciinema.org
     tiv # terminal image viewer
-    rdfind # find duplicates
+    # rdfind # find duplicates # FIXME broken on unstable on 2022-04-27
     zip
     unzip
     # unrar # unfree!
@@ -56,13 +58,15 @@
     ## protocols
     wget # HTTP client
     lftp # FTP client
+    httping # ping an URL.
 
     ## database
     sqlite-interactive # Heavy version with readline and completion support.
 
     ## hardware
-    lm_sensors # CPU temp
+    # lm_sensors # CPU temp
     parted # disk partition manager
+    testdisk # file & disc recovery
 
     ## containers
     ctop
@@ -74,16 +78,16 @@
     mkvtoolnix
     yt-dlp
     handbrake
-    gpac # MP4Box
+    # gpac # MP4Box
 
     ## text
     dos2unix
     vtt2srt # VTT to SRT converter
 
     ## nixeries
-    nox
+    # nox
     nix-du
-    patchelf
+    # patchelf
 
   ];
 

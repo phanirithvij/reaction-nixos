@@ -4,6 +4,8 @@ let
 in
 {
   imports = [ ./ppom.nix ];
+  # tmuxPlugins.fingers TODO add them in tmux's path
+  # tmuxPlugins.pain-control
 
   config = {
     programs.tmux = {
@@ -16,6 +18,12 @@ in
       terminal = "screen-256color";
       escapeTime = if config.ppom.isDesktop then 20 else 500;
       shortcut = shortcut;
+
+      plugins = with pkgs.tmuxPlugins; [
+        cpu
+        sidebar
+        tmux-thumbs
+      ];
 
       extraConfig = ''
         bind q copy-mode
@@ -41,6 +49,10 @@ in
         set -g status-style bg=#444444
 
         set -g detach-on-destroy off # since tmux 3.2. Love it.
+
+        # Neovim said this
+        set-option -sa terminal-overrides ',xterm-256color:RGB'
+        set-option -g focus-events on
         '' else ''
         ''}
       '';

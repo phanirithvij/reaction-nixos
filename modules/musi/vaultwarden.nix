@@ -1,7 +1,7 @@
 { lib, config, pkgs, ... }:
 let 
   domain = "ppom.me";
-  suffix = "/7fa3bCNZvm1HOi";
+  suffix = "/vault";
   rocketPort = 8060;
   websocketPort = 8061;
 in {

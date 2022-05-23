@@ -132,27 +132,26 @@ with lib;
     # TODO fix permission issues:
     # - Switch to password authentication (not based on system user)
     # - Downgrade the role. For now the root role is used and is a postgresql superuser.
-    systemd.services.funkwhale-postgres-password = {
-      enable = true;
-      description = "Secret generation for Funkwhale, part 2";
-      wantedBy = [ "multi-user.target" ];
-      requires = [ "postgresql.service" "funkwhale-init.service" ];
-      after = [ "postgresql.service" "funkwhale-init.service" ];
-      serviceConfig = {
-        Type = "oneshot";
-        User = "postgres";
-      };
-      path = [ pkgs.postgresql ];
-      script = with localVars; ''
-        POSTGRES_PASSWORD=$(cat ${postgresSecretFile})
-        psql -c "ALTER USER funkwhale WITH PASSWORD '$POSTGRES_PASSWORD';"
-        psql -c "ALTER USER root      WITH PASSWORD '$POSTGRES_PASSWORD';"
-        psql funkwhale -c "CREATE EXTENSION IF NOT EXISTS 'unaccent';"
-        psql funkwhale -c "CREATE EXTENSION IF NOT EXISTS 'citext';"
+    # systemd.services.funkwhale-postgres-password = {
+    #   enable = true;
+    #   description = "Secret generation for Funkwhale, part 2";
+    #   wantedBy = [ "multi-user.target" ];
+    #   requires = [ "postgresql.service" "funkwhale-init.service" ];
+    #   after = [ "postgresql.service" "funkwhale-init.service" ];
+    #   serviceConfig = {
+    #     Type = "oneshot";
+    #     User = "postgres";
+    #   };
+    #   path = [ pkgs.postgresql ];
+    #   script = with localVars; ''
+    #     POSTGRES_PASSWORD=$(cat ${postgresSecretFile})
+    #     psql -c "ALTER USER funkwhale WITH PASSWORD '$POSTGRES_PASSWORD';"
+    #     psql -c "ALTER USER root      WITH PASSWORD '$POSTGRES_PASSWORD';"
+    #     psql funkwhale -c "CREATE EXTENSION IF NOT EXISTS 'unaccent';"
+    #     psql funkwhale -c "CREATE EXTENSION IF NOT EXISTS 'citext';"
+    #     '';
+    # };
 
-        '';
-    };
-    
     services.redis = {
       enable = true;
       port = localVars.redisPort;
@@ -178,6 +177,9 @@ with lib;
       '';
     };
 
+    # Rest of postgresqlBackup in musi/backup.nix
+    services.postgresqlBackup.databases = [ "funkwhale" ];
+
     # Reverse proxy configuration
     services.nginx.enable = true;
     services.nginx.virtualHosts."${cfg.domainName}" = {
@@ -189,7 +191,7 @@ with lib;
           add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; object-src 'none'; media-src 'self' data:";
           add_header Referrer-Policy "strict-origin-when-cross-origin";
           add_header Service-Worker-Allowed "/";
-          add_header X-Frame-Options "ALLOW";
+          add_header X-Frame-Options "DENY";
           add_header Pragma public;
           add_header Cache-Control "public, must-revalidate, proxy-revalidate";
           expires 30d;
@@ -206,6 +208,7 @@ with lib;
           proxy_http_version 1.1;
           proxy_set_header Upgrade $http_upgrade;
           proxy_set_header Connection $connection_upgrade;
+          proxy_cookie_path / "/; Secure; HttpOnly; SameSite=strict";
         '';
         proxyUrl = "http://localhost:${builtins.toString cfg.hostPort}";
       in {
@@ -213,8 +216,9 @@ with lib;
           proxyWebsockets = true;
           proxyPass = proxyUrl;
           extraConfig = ''
-            proxy_set_header X-Forwarded-Port $server_port;
+            proxy_set_header X-Forwarded-Port $http_x_forwarded_port;
             proxy_redirect off;
+            proxy_cookie_path / "/; Secure; SameSite=strict";
             client_max_body_size ${cfg.maxBodySize};
           '';
         };
@@ -263,5 +267,30 @@ with lib;
         add_header Referrer-Policy "strict-origin-when-cross-origin";
       '';
     };
+
+    systemd.timers.update-funkwhale-library = (lib.optionalAttrs cfg.importCronEnable {
+      wantedBy = [ "timers.target" ];
+      after = [ "network.target" ];
+      timerConfig = {
+        OnCalendar = "daily";
+      };
+    });
+    systemd.services.update-funkwhale-library = (lib.optionalAttrs cfg.importCronEnable {
+      description = "Update the funkwhale library in place";
+      # faketty function found here: https://stackoverflow.com/questions/32910661
+      script = ''
+        faketty () {
+          ${pkgs.util-linux}/bin/script -qefc "$(printf "%q " "$@")"
+        }
+        faketty ${pkgs.docker}/bin/docker exec -it funkwhale_api_1 python manage.py import_files ${cfg.importCronLibraryID} /music --in-place --async --recursive --noinput;
+      '';
+    });
+    security.doas.extraRules = (lib.optionals cfg.importCronEnable [{
+      users = [ "ppom" ];
+      cmd = "systemctl";
+      args = [ "start" "update-funkwhale-library.service" ];
+      runAs = "root";
+      noPass = true;
+    }]);
   };
 }

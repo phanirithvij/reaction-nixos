@@ -35,6 +35,9 @@
     # add ntfs support
     supportedFilesystems = [ "ntfs" ];
     # plymouth = { enable = true; logo = pkgs.fetchurl { url = "https://u.ppom.me/plymouth.png"; sha256 = "b2d44f5120e6528cec6dea9b6b8ad049e57b7f65670d8f05ca1c18b5a43c63d7"; }; };
+
+    # The 5.15 mainline has a "dim brightness" bug for me
+    kernelPackages = pkgs.linuxKernel.packages.linux_5_10;
   };
 
   # Networking
@@ -208,7 +211,6 @@
 
     gnupg.agent = {
       enable = true;
-      enableSSHSupport = true;
     };
 
   };

@@ -59,6 +59,8 @@ in
             let g:mapleader = " "
             nnoremap <leader>h noh<CR>
             colorscheme gruvbox
+
+            au TextYankPost * silent! lua vim.highlight.on_yank {on_visual=false}
           '' + lib.optionalString isDesktop ''
             let g:languagetool_jar='${pkgs.languagetool}/share/languagetool-commandline.jar'
 
@@ -72,6 +74,12 @@ in
             endfunction
             " }
             call SourceIfExists("~/.config/nvim/init.vim")
+
+            " Language plugins put in opt below
+            " autocmd FileType php :packadd phpCompletion
+
+            " Coc.nvim stuff (keep it minimal!)
+            command! -nargs=0 Format :call CocActionAsync('format')
           '';
           packages.myVimPackage = with pkgs.vimPlugins; {
             start = [
@@ -81,25 +89,29 @@ in
               vim-repeat
               vim-fugitive
               vim-unimpaired
+              vim-fish
               # gruvbox
               (super.vimPlugins.gruvbox.overrideAttrs (oldAttrs: {
                 patches = [ ./true_black_gruvbox.patch ];
               }))
             ] ++ lib.optionals isDesktop [
-              vim-fish # doesn't work, why?
               vim-startify
               fzf-vim
               far-vim
               LanguageTool-nvim
               vim-grammarous
               unicode-vim
-              # coc-nvim
-              # manuals:
+              coc-nvim
+              coc-rls # Rust
+              coc-json
+              coc-html
+              # coc-xml
               undoquit-vim
               vim-svelte
               rust-vim
               vim-markdown
               mkdir-nvim
+              copilot-vim # 😈
             ];
             opt = [ ];
           };
