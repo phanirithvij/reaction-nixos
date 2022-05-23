@@ -9,6 +9,7 @@ in
 
     ./hardware-configuration.nix
     # ./openvpn.nix
+    ./pompeani.art.nix
     # ./turn.nix
     ./webserver.nix
     ./wireguard.nix
