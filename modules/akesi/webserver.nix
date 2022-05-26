@@ -1,12 +1,28 @@
-{ config, pkgs, ... }:
+{ lib, config, pkgs, ... }:
 {
+  networking.firewall.allowedTCPPorts = [ 80 443 ];
+
   services.nginx = {
     enable = true;
-    virtualHosts."vps-30fe5ba1.vps.ovh.net" = {
+    enableReload = true;
+    recommendedTlsSettings = true;
+    recommendedGzipSettings = true;
+    recommendedOptimisation = true;
+    recommendedProxySettings = true;
+
+    virtualHosts."akesi.ppom.me" = {
       default = true;
-      locations."/".root = "/var/www/";
+      enableACME = true;
+      forceSSL = true;
+      locations."/".root = pkgs.writeTextDir "index.html" ''
+        Succeedly wiped /
+      '';
     };
   };
-  # TEST ONLY
-  networking.firewall.allowedTCPPorts = [ 80 ];
+
+  # Let's Encrypt config
+  security.acme = {
+    acceptTerms = true;
+    defaults.email = "paco@ecomail.io";
+  };
 }
