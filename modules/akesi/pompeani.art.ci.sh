@@ -35,7 +35,7 @@ then
 	exit 1
 fi
 
-cp -r public/* "$OUTPUT_DIR"
+rsync -av --delete public/* "$OUTPUT_DIR"
 
 if test "$VERSION" = "test"
 then

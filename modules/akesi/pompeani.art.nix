@@ -66,7 +66,7 @@ let
       serviceConfig = {
         ExecStart = "${pkgs.writeShellApplication {
           name = "ci";
-          runtimeInputs = with pkgs; [ git zola fd ];
+          runtimeInputs = with pkgs; [ git zola fd rsync ];
           text = builtins.readFile ./pompeani.art.ci.sh;
         }}/bin/ci ${version}";
         User = "art";
