@@ -111,7 +111,6 @@ in
               rust-vim
               vim-markdown
               mkdir-nvim
-              copilot-vim # 😈
             ];
             opt = [ ];
           };
