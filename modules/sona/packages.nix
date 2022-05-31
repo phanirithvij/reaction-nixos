@@ -52,7 +52,7 @@ in {
     # w3m # web browser
     # asuka # gemini browser
     # ddgr # DuckDuckGo CLI
-    lookatme # Terminal MarkDown viewer
+    # lookatme # Terminal MarkDown viewer, unmaintained?
     ytfzf # Youtube scrapper ⨯ fzf
     # aerc # Email client
     # neovim-remote
@@ -178,11 +178,11 @@ in {
         super.rofi-mpd
       ]; };
 
-      rbw = (super.rbw.override {
-        withFzf = true;
-        withRofi = true;
-        withPass = true;
-      });
+      # rbw = (super.rbw.override {
+      #   withFzf = true;
+      #   withRofi = true;
+      #   withPass = true;
+      # });
 
       # issue in the way the signal-desktop/default.nix transform the spellcheckLanguage. Should be "fr-any"
       # see https://github.com/NixOS/nixpkgs/issues/113346

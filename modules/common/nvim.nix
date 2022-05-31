@@ -101,10 +101,10 @@ in
               LanguageTool-nvim
               vim-grammarous
               unicode-vim
-              coc-nvim
-              coc-rls # Rust
-              coc-json
-              coc-html
+              # coc-nvim # Switch to 22.05, breaks for now
+              # coc-rls # Rust
+              # coc-json
+              # coc-html
               # coc-xml
               undoquit-vim
               vim-svelte
