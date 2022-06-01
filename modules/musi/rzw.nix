@@ -109,7 +109,7 @@ in {
         "/login" = {
           return = "301 https://$host";
         };
-        "~ \.php$" = {
+        "~ \\.php$" = {
           extraConfig = ''
             fastcgi_split_path_info ^(.+\.php)(/.+)$;
             fastcgi_pass unix:${config.services.phpfpm.pools.rzw.socket};
