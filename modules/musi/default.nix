@@ -9,7 +9,6 @@ in
 
     ./anpa.nix # container
     ./backup.nix
-    ./clement.nix
     ./funkwhale/default.nix
     ./hardware-configuration.nix
     ./languagetool.nix
