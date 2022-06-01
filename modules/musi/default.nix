@@ -16,7 +16,6 @@ in
     ./mail.nix
     ./monitoring.nix
     ./nextcloud/default.nix
-    ./rzw.nix
     ./streama.nix
     ./tor.nix
     ./vaultwarden.nix
