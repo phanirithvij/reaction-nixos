@@ -27,12 +27,6 @@ in
     isLight = false;
   };
 
-  services.rzw = {
-    enable = true;
-    domain = "ruleze.world";
-    adminPasswordFile = "/var/secrets/rzw-admin.secret";
-  };
-
   services.funkwhale = {
     enable = true;
     funkwhaleVersion = "1.2.3";
