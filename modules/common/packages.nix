@@ -20,7 +20,8 @@
     # mtr # interactive trace route
     iftop # connection viewer
     nmap # local network prober
-    # librespeed-cli # Speedtest
+    librespeed-cli # Speedtest
+    tcpdump
     (lib.lowPrio inetutils)
 
     ## protocols
@@ -50,7 +51,7 @@
 
     asciinema # Terminal JSON recorder & player. Check asciinema.org
     tiv # terminal image viewer
-    rdfind # find duplicates
+    # rdfind # find duplicates # FIXME broken on unstable on 2022-04-27
     zip
     unzip
     # unrar # unfree!
@@ -58,6 +59,7 @@
     ## protocols
     wget # HTTP client
     lftp # FTP client
+    httping # ping an URL.
 
     ## database
     sqlite-interactive # Heavy version with readline and completion support.

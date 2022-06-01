@@ -9,6 +9,8 @@ in
 
     ./hardware-configuration.nix
     # ./openvpn.nix
+    ./pompeani.art.nix
+    # ./turn.nix
     ./webserver.nix
     ./wireguard.nix
   ];
@@ -20,12 +22,21 @@ in
 
   networking.hostName = "akesi"; # Define your hostname.
   networking.firewall.allowPing = true;
+  networking.firewall.enable = true;
 
-  # Set your time zone.
   time.timeZone = "Europe/Paris";
-
-  # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
+
+  boot.cleanTmpDir = true;
+
+  # Only allow root to use nix
+  nix.settings.allowed-users = [ "root" ];
+
+  # Only allow paths from /nix/store to be executables
+  # fileSystems."/".options = [ "noexec" ];
+
+  # prevent some potentials CVECs
+  security.sudo.execWheelOnly = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users = {
@@ -36,21 +47,15 @@ in
     };
   };
 
-  boot.cleanTmpDir = true;
-
   # Enable the OpenSSH daemon.
   services.openssh = {
     enable = true;
     passwordAuthentication = false;
-    allowSFTP = false; # Don't set this if you need sftp
+    allowSFTP = false;
     # challengeResponseAuthentication = false;
     extraConfig = ''
     '';
   };
-
-  # Open ports in the firewall.
-  networking.firewall.enable = true;
-  networking.firewall.allowedTCPPorts = [ ];
 
   # Fail2ban service
   services.fail2ban.enable = true;
@@ -64,20 +69,9 @@ in
     bantime = 4800
   '';
 
-  # Only allow root to use nix
-  nix.allowedUsers = [ "root" ];
-
-  # Only allow paths from /nix/store to be executables
-  # fileSystems."/".options = [ "noexec" ];
-
-  # prevent some potentials CVECs
-  security.sudo.execWheelOnly = true;
-
   services.locate = {
     enable = true;
     interval = "daily";
     prunePaths = [ "/tmp" "/var/tmp" "/var/cache" "/var/lock" "/var/run" "/var/spool" "/var/lib/docker" ];
   };
-
 }
-

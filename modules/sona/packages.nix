@@ -1,14 +1,18 @@
 # This configuration file is designed to only contain package-related entries.
 { lib, config, pkgs, ... }:
 
-{
+let 
+  f-mpv-with-scripts = super: super.wrapMpv super.mpv-unwrapped {
+    scripts = with super.mpvScripts; [ mpris youtube-quality ];
+  };
+in {
   environment.systemPackages = with pkgs; [
     # CLI
     # sshuttle # poor's man VPN
     # sshfs-fuse # mount remote FS via SSH
     (lib.lowPrio moreutils) # vipe, vidir
     sysstat
-    # tealdeer # tldr man pages
+    tealdeer # tldr man pages
     # sequoia # modern OpenPGP implementation
     tomb # LUKS wrapper
     rbw # unofficial bitwarden CLI
@@ -26,7 +30,7 @@
     # vmtouch # Virtual Memory Toucher
     # xonsh # Python x Bash = xon.sh
     # sl # You shouldn't type `sl`...
-    # jq # JSON shell toolbox
+    jq # JSON shell toolbox
     # xsv # CSV's `jq`
     # parallel
     openvpn
@@ -40,12 +44,15 @@
     # comma # wrapper around `nix-index` && `nix run` to launch a command without installing it
     inotify-tools # Linux filesystem watchdog
     # languagetool # Proofreading program
+    trash-cli
+    deepl-translate-cli # CLI to use deepl. With a shell wrapper around it, it's fast to use
+    signalbackup-tools # Manipulate Signal smartphone backups.
 
     # TUI
     # w3m # web browser
     # asuka # gemini browser
     # ddgr # DuckDuckGo CLI
-    lookatme # Terminal MarkDown viewer
+    # lookatme # Terminal MarkDown viewer, unmaintained?
     ytfzf # Youtube scrapper ⨯ fzf
     # aerc # Email client
     # neovim-remote
@@ -74,18 +81,18 @@
     # ponymix # Pulseaudio CLI
     rofi # Menu chooser (dmenu like)
     # networkmanagerapplet # NM connection editor
-    deepl-translate-cli
+
 
     # GUI apps
     firefox
     thunderbird
-    # ungoogled-chromium
+    ungoogled-chromium
     signal-desktop
     # code-server # VSCodium w/ in-browser client & server
     # mumble
     # anki
     # drawio
-    # tor-browser-bundle-bin
+    tor-browser-bundle-bin
     # jitsi-meet-electron
     # element-desktop
     pcmanfm
@@ -104,6 +111,7 @@
     apache-directory-studio # LDAP client
     # nextcloud-client
     # rssguard
+    klavaro # learn to type efficiently
 
     # Games
     # superTux superTuxKart
@@ -127,9 +135,9 @@
     # gomod2nix
     # alejandra # Nix formatter
     zola # static site generator
-    jq # JSON pipe
     # gcc-wrapper
     # linx-server
+    sqlitebrowser
 
     docker
     # virt-manager # unstable fails to build
@@ -170,11 +178,11 @@
         super.rofi-mpd
       ]; };
 
-      rbw = (super.rbw.override {
-        withFzf = true;
-        withRofi = true;
-        withPass = true;
-      });
+      # rbw = (super.rbw.override {
+      #   withFzf = true;
+      #   withRofi = true;
+      #   withPass = true;
+      # });
 
       # issue in the way the signal-desktop/default.nix transform the spellcheckLanguage. Should be "fr-any"
       # see https://github.com/NixOS/nixpkgs/issues/113346
@@ -221,9 +229,9 @@
         meta = pkgs.mpv.meta;
       };
 
-      mpv-with-scripts = super.wrapMpv super.mpv-unwrapped {
-        scripts = with super.mpvScripts; [ mpris youtube-quality ];
-      };
+      mpv-with-scripts = f-mpv-with-scripts super;
+
+      ytfzf = super.ytfzf.override { mpv = f-mpv-with-scripts super; };
 
     })
     (import /home/ao/prg/nix/gomod2nix/overlay.nix)

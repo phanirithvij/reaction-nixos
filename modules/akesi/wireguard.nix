@@ -39,7 +39,7 @@ in
       # log-queries
     '';
   };
-  environment.systemPackages = [ pkgs.dnsmasq ];
+  environment.systemPackages = [ pkgs.dnsmasq pkgs.tcpdump ];
 
   systemd.timers.fetch_blocklist = {
     wantedBy = [ "timers.target" ];
