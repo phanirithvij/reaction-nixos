@@ -160,7 +160,7 @@ with lib;
     #     '';
     # };
 
-    services.redis = {
+    services.redis.servers.funkwhale = {
       enable = true;
       port = localVars.redisPort;
       requirePassFile = localVars.redisSecretFile;
