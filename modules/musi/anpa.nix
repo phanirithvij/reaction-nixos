@@ -13,6 +13,11 @@ let
       ssh = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDF8SKnbtxnN6L1RapClrlbfvGjIzr5DQWFjLmPKUsSPKg2i09S4tAeiIMDkGzJrsoqKaBg4I07bdjIf6piUPqcvASFJJkPC8PEuFn18j56VK1bkXH3/dHroLWvVhl3Lnt3WtFDoQ45At9oaDU5nUE63WZp5Sp1PcmMjKHMuBibAc+BBG8M2N6+qt7JU0IPc2fXqqKj5FZ65zPDIC5sGZ8tAwFmqxiqxHzw72NJcE00UMiBjCEvs0gdNeG/EhrPKTM6rzioXBQefWtsUttseIUN0xHJ6qdMRXaPB8j5aqskCr862WxrMIkkP8zC3V8MwFl6GL5tGJN+42fcDFoMes/xgBVV++wMtInSM/McWBsCD7sBhSfolTtFiiCbnC8qjJwG/yyvsnKHtyvGS58TZSFt58Ets2XiN8uzM+VSmqIDrn7zj9dMiFIH5XWU596+mWwoq0cY9w3s3LBzDO/yDUziRs4qsTX8Sai434PZV7ml5YPc3mlrX8A8/kLaAiLW7ps= rdelaage@rdelaage01";
       uid = 2002;
     }
+    {
+      name = "akesi";
+      ssh = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC08+b5KB8zco6O2AwJNXCgrq1tnECP5ySkTBG4GCyg0+OLa/j/TWDr3EqWvOKcY7cH9Mlc7bwLVCPgYrdjYkmwK/6DLYm129utEZx3g3jkIE53xicD3VEv6ahh/ElTm/wqrPtpCPL8GDL8+nMEJw1w7kVQPdFRVt50570AtFSN8zKapyyOJx2L0F+ek/i4reYdZrSrLv0GOovWEz3+vUesiqsB3y8AlMwTOdgevhaCmM/7cdLMTHoYjqs5dOo8nvDKqaqYjOd3OpckRYUmmgK4+cR35DB8QF9Rrt+GEh8uqYApA7BcFNDnttUQPUU+I2HcHtFoY/QQMj/E5sfImcSiI1TlAwgV6J0kjXWbkydxojr4YXCyVFRYm6t9kcJQsO7A/82VzQgRLKNWw9OwEIMzhNXyt/z0DaQ7wf2kXG96Ms80DAZj8DfLuBMiQauEidj/0Jfv0ERIWUz0i6RyTnZIvRJIjZPTgvk8Vm6rJ0QX3HubGG+zOMB+ql8TB0CSLhU= root@akesi";
+      uid = 2003;
+    }
   ];
   transitDir   = user: "/data/user-uploads/${user.name}";
   containerDir = user: "/home/${user.name}/upload-here";
