@@ -25,6 +25,8 @@ git checkout "$VERSION"
 
 git pull
 
+fd big.jpg -x bash -c "test -e {//}/small.jpg || convert -resize '600x1200>' {} {//}/small.jpg"
+
 sed -i 's#^base_url.*#base_url = "'"$BASE_URL"'"#' config.toml
 
 zola build
