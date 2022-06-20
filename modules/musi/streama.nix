@@ -52,28 +52,30 @@ in {
           '';
         };
 
-        "/sub" = {
-          return = "301 /sub/";
-        };
+        # "/sub" = {
+        #   return = "301 /sub/";
+        # };
 
-        "/sub/" = {
-          # Needs the subsFilter NGINX module
-          root = "/data/streama/movies";
-          extraConfig = ''
-            # Remove the sub/ in the root dir
-            rewrite ^/sub(/.*)$ $1 break;
+        # "/sub/" = {
+        #   # Needs the subsFilter NGINX module # FIXME doesn't compile on 22.05
+        #   root = "/data/streama/movies";
+        #   extraConfig = ''
+        #     # Remove the sub/ in the root dir
+        #     rewrite ^/sub(/.*)$ $1 break;
 
-            # Show the files
-            fancyindex on;
-            fancyindex_exact_size off;
+        #     # Show the files
+        #     fancyindex on;
+        #     fancyindex_exact_size off;
 
-            # Filter mkv/mp4/avi files
-            subs_filter '<tr>.*<a href="[^"]*.(mp4|mkv|avi)".*</tr>' ' ' r;
-          '';
-        };
-        "~ /sub/.*\\.(mp4|mkv|avi)" = {
-          return = "403";
-        };
+        #     # Filter mkv/mp4/avi files
+        #     subs_filter '<tr>.*<a href="[^"]*.(mp4|mkv|avi)".*</tr>' ' ' r;
+        #   '';
+        # };
+
+        # "~ /sub/.*\\.(mp4|mkv|avi)" = {
+        #   return = "403";
+        # };
+
       };
   };
 
