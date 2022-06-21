@@ -138,6 +138,7 @@ in {
     # gcc-wrapper
     # linx-server
     sqlitebrowser
+    mmctl # mattermost control (for Picasoft's server management)
 
     docker
     # virt-manager # unstable fails to build
