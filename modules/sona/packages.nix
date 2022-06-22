@@ -122,6 +122,7 @@ in {
     # _2048-in-terminal
     # blobby
     # soude_au_cou # my own game!
+    soweli # my own game!
 
     # Development
     git
@@ -196,6 +197,9 @@ in {
 
       # deepl cli
       deepl-translate-cli = super.callPackage ../../pkgs/deepl-translate-cli {}; 
+
+      # soweli
+      soweli = super.callPackage ../../pkgs/soweli {};
 
       # add -g/--progress to coreutils' cp and mv.
       # adv_coreutils = (super.coreutils.overrideAttrs (oldAttrs: {
