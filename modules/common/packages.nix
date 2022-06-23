@@ -47,6 +47,7 @@
 
   ] ++ lib.optionals (! config.ppom.isLight) [
     fish # Friendly interactive shell
+    python3
 
     asciinema # Terminal JSON recorder & player. Check asciinema.org
     tiv # terminal image viewer

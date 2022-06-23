@@ -3,7 +3,7 @@
   # Enable the X11 windowing system.
   services.xserver = {
     enable = true;
-    enableCtrlAltBackspace = true;
+    # enableCtrlAltBackspace = true;
     layout = "fr";
     # Enable touchpad support.
     libinput.enable = true;

@@ -9,14 +9,12 @@ in
 
     ./anpa.nix # container
     ./backup.nix
-    ./clement.nix
     ./funkwhale/default.nix
     ./hardware-configuration.nix
     ./languagetool.nix
     ./mail.nix
     ./monitoring.nix
     ./nextcloud/default.nix
-    ./rzw.nix
     ./streama.nix
     ./tor.nix
     ./vaultwarden.nix
@@ -26,12 +24,6 @@ in
   ppom = {
     isDesktop = false;
     isLight = false;
-  };
-
-  services.rzw = {
-    enable = true;
-    domain = "ruleze.world";
-    adminPasswordFile = "/var/secrets/rzw-admin.secret";
   };
 
   services.funkwhale = {

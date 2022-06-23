@@ -9,7 +9,7 @@ in {
   environment.systemPackages = with pkgs; [
     # CLI
     # sshuttle # poor's man VPN
-    # sshfs-fuse # mount remote FS via SSH
+    sshfs-fuse # mount remote FS via SSH
     (lib.lowPrio moreutils) # vipe, vidir
     sysstat
     tealdeer # tldr man pages
@@ -31,12 +31,13 @@ in {
     # xonsh # Python x Bash = xon.sh
     # sl # You shouldn't type `sl`...
     jq # JSON shell toolbox
-    # xsv # CSV's `jq`
+    pup # jq for HTML
+    # xsv # jq for CSV
     # parallel
     openvpn
     # lolcat
     # figlet
-    # espeak-ng
+    espeak-ng
     # cowsay
     # subdl
     # croc # CLI file transfer
@@ -52,7 +53,7 @@ in {
     # w3m # web browser
     # asuka # gemini browser
     # ddgr # DuckDuckGo CLI
-    lookatme # Terminal MarkDown viewer
+    # lookatme # Terminal MarkDown viewer, unmaintained?
     ytfzf # Youtube scrapper ⨯ fzf
     # aerc # Email client
     # neovim-remote
@@ -63,7 +64,7 @@ in {
     conky # status bar
     feh # image viewer
     xorg.xrandr # manage monitors
-    # xorg.xev # log key and mouse events
+    xorg.xev # log key and mouse events
     xorg.xkill # kill an unresponsive window
     xclip # X clipboard
     autorandr # xrandr configurations memory
@@ -76,26 +77,26 @@ in {
     flameshot # advanced screenshots
     peek # GIF screenshots
     redshift # less 'blue' screen
-    # pavucontrol # Pulseaudio GUI
+    pavucontrol # Pulseaudio GUI
     ncpamixer # Pulseaudio TUI
     # ponymix # Pulseaudio CLI
     rofi # Menu chooser (dmenu like)
-    # networkmanagerapplet # NM connection editor
+    networkmanagerapplet # NM connection editor
 
 
     # GUI apps
-    firefox
-    thunderbird
-    ungoogled-chromium
-    signal-desktop
+    firefox # Best browser ever
+    thunderbird # Mail, CalDav, XMPP & Matrix client
+    ungoogled-chromium # Alternative browser
+    signal-desktop # Signal Messaging client
     # code-server # VSCodium w/ in-browser client & server
-    # mumble
+    mumble # Mumble VoIP client
     # anki
     # drawio
     tor-browser-bundle-bin
     # jitsi-meet-electron
     # element-desktop
-    pcmanfm
+    pcmanfm # File Browser
     evince
     libreoffice
     mpv-no-scripts
@@ -103,12 +104,13 @@ in {
     clementine
     gnome3.cheese
     # ocenaudio # test ardour?
-    gimp
-    deluge
-    nicotine-plus
-    # gparted
+    gimp # GNU Image Manipulation Program
+    deluge # BitTorrent peer
+    nicotine-plus # Soulseek client
+    gparted
     syncthing # ± P2P file synchronization
     apache-directory-studio # LDAP client
+    ferdi # Web client for apps (Mattermost, Nextcloud, Telegram…)
     # nextcloud-client
     # rssguard
     klavaro # learn to type efficiently
@@ -120,17 +122,16 @@ in {
     # _2048-in-terminal
     # blobby
     # soude_au_cou # my own game!
+    soweli # my own game!
 
     # Development
     git
-      # gitAndTools.pass-git-helper
       # gitAndTools.git-filter-repo
       # gource
       gti
     gnumake
-    #scilab
     # ghc stack cabal-install # haskell
-    # h2 # H2 Database Editor
+    h2 # H2 Database Editor
     simple-http-server
     # gomod2nix
     # alejandra # Nix formatter
@@ -138,6 +139,7 @@ in {
     # gcc-wrapper
     # linx-server
     sqlitebrowser
+    mmctl # mattermost control (for Picasoft's server management)
 
     docker
     # virt-manager # unstable fails to build
@@ -148,7 +150,6 @@ in {
     # nodejs cargo
 
     # Sysadmin
-    # apache-directory-studio
     tdns-cli # dig alternative
 
     # Network
@@ -178,18 +179,9 @@ in {
         super.rofi-mpd
       ]; };
 
-      rbw = (super.rbw.override {
-        withFzf = true;
-        withRofi = true;
-        withPass = true;
-      });
-
       # issue in the way the signal-desktop/default.nix transform the spellcheckLanguage. Should be "fr-any"
       # see https://github.com/NixOS/nixpkgs/issues/113346
       signal-desktop = super.signal-desktop.override { spellcheckerLanguage = "fr_ANY"; };
-
-      # add personnal scripts
-      # ppom_config = super.callPackage /home/ao/prg/config {};
 
       # dwm override
       dwm = super.callPackage ../../pkgs/dwm {};
@@ -205,6 +197,9 @@ in {
 
       # deepl cli
       deepl-translate-cli = super.callPackage ../../pkgs/deepl-translate-cli {}; 
+
+      # soweli
+      soweli = super.callPackage ../../pkgs/soweli {};
 
       # add -g/--progress to coreutils' cp and mv.
       # adv_coreutils = (super.coreutils.overrideAttrs (oldAttrs: {
@@ -248,9 +243,4 @@ in {
     dina-font
     proggyfonts
   ];
-
-  # programs.thefuck = {
-  #   enable = true;
-  #   alias = "f";
-  # };
 }
