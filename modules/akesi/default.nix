@@ -20,6 +20,11 @@ in
     isLight = true;
   };
 
+  system.stateVersion = "22.05";
+
+  system.autoUpgrade.enable = true;
+  system.autoUpgrade.allowReboot = false;
+
   networking.hostName = "akesi"; # Define your hostname.
   networking.firewall.allowPing = true;
   networking.firewall.enable = true;
