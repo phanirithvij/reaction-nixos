@@ -11,6 +11,7 @@ in
     # ./openvpn.nix
     ./pompeani.art.nix
     # ./turn.nix
+    ./torrent.nix
     ./webserver.nix
     ./wireguard.nix
   ];
