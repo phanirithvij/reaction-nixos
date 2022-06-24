@@ -87,6 +87,12 @@ in recursiveMerge [
     services.fail2ban = {
       enable = true;
     };
+
+    services.nginx.virtualHosts."www.pompeani.art" = {
+      enableACME = true;
+      forceSSL = true;
+      locations."/".return = "301 https://pompeani.art$request_uri";
+    };
   }
   (conf "test")
   (conf "master")
