@@ -27,7 +27,11 @@ git pull
 
 # Generates small.jpg when it doesn't exist or is older than big.jpg
 # shellcheck disable=SC2016
-fd big.jpg -x bash -c 'test -e "{//}/small.jpg" && test $(stat -c %Y -- "{}") -lt $(stat -c %Y "{//}/small.jpg") || convert -resize "600x1200>" "{}" "{//}/small.jpg"'
+fd big.jpg -x bash -c 'test -e "{//}/big.webp"   && test $(stat -c %Y -- "{}") -lt $(stat -c %Y "{//}/big.webp")   || convert -resize "600x1200>" "{}" "{//}/big.webp"'
+# shellcheck disable=SC2016
+fd big.jpg -x bash -c 'test -e "{//}/small.webp" && test $(stat -c %Y -- "{}") -lt $(stat -c %Y "{//}/small.webp") || convert -resize "600x1200>" "{}" "{//}/small.webp"'
+# shellcheck disable=SC2016
+# fd big.jpg -x bash -c 'test -e "{//}/small.jpg"  && test $(stat -c %Y -- "{}") -lt $(stat -c %Y "{//}/small.jpg")  || convert -resize "600x1200>" "{}" "{//}/small.jpg"'
 
 sed -i 's#^base_url.*#base_url = "'"$BASE_URL"'"#' config.toml
 
