@@ -27,7 +27,10 @@ let
     services.nginx.virtualHosts."${domain version}" = {
       enableACME = true;
       forceSSL = true;
-      locations."/".root = root version;
+      locations = {
+        "/".root = root version;
+        "^[^.]+[^/]$".return = "301 $request_uri/";
+      };
     };
 
     # Fail2ban hack to launch build
