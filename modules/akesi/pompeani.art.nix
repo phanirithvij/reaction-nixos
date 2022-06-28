@@ -30,6 +30,10 @@ let
       locations = {
         "/".root = root version;
         "^[^.]+[^/]$".return = "301 $request_uri/";
+        # "~* \\.webp$".extraConfig = ''
+        #   expires 30d;
+        #   add_header Vary Accept-Encoding;
+        # '';
       };
     };
 
