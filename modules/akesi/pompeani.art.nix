@@ -1,23 +1,10 @@
 { lib, config, pkgs, ... }:
 let
-  # Found here: https://stackoverflow.com/questions/54504685
-  recursiveMerge = attrList:
-  let f = attrPath:
-    lib.zipAttrsWith (n: values:
-      if lib.tail values == []
-        then lib.head values
-      else if lib.all lib.isList values
-        then lib.unique (lib.concatLists values)
-      else if lib.all lib.isAttrs values
-        then f (attrPath ++ [n]) values
-      else lib.last values
-    );
-  in f [] attrList;
-
+  recursiveMerge = sets: builtins.foldl' (s1: s2: lib.recursiveUpdate s1 s2) {} sets;
 
   root    = version: "/var/www/pompeani.art-${version}";
   domain  = version: if version == "test" then "test.pompeani.art" else "pompeani.art";
-  conf    = version: {
+  confFor = version: {
 
     systemd.tmpfiles.rules = [
       "d ${root version} 755 art art -"
@@ -98,6 +85,6 @@ in recursiveMerge [
       locations."/".return = "301 https://pompeani.art$request_uri";
     };
   }
-  (conf "test")
-  (conf "master")
+  (confFor "test")
+  (confFor "master")
 ]
