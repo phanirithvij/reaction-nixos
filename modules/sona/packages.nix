@@ -159,6 +159,7 @@ in {
     # subtitleeditor
     imagemagick
     beets # MP3 tag editor
+    cdparanoia # CD ripper, `cdparanoia -B`
     # Markdown to PDF
     # yj # YAML to JSON etc.
     # pandoc
