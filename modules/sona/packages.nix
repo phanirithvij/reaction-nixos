@@ -70,7 +70,7 @@ in {
     autorandr # xrandr configurations memory
     dunst # notification daemon
     libnotify # send notifications
-    # qsudo # graphical sudo
+    qsudo # graphical sudo
     xdotool # programmatically move the mouse, type, etc.
     numlockx # set Num Lock
     xss-lock # for use with a screen locker
@@ -142,7 +142,7 @@ in {
     mmctl # mattermost control (for Picasoft's server management)
 
     docker
-    # virt-manager # unstable fails to build
+    virt-manager # unstable fails to build
     # wireshark
     # vscodium
     python39
