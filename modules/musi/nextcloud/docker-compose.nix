@@ -32,7 +32,7 @@ toYaml "docker-compose" {
     };
 
     app = {
-      image = "nextcloud:23-apache";
+      image = "nextcloud:24-apache";
       restart = "always";
       container_name = nextcloud.dockerName;
       ports = [ "${nextcloud.port}:80" ];
