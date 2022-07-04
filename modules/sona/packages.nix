@@ -70,7 +70,7 @@ in {
     autorandr # xrandr configurations memory
     dunst # notification daemon
     libnotify # send notifications
-    # qsudo # graphical sudo
+    qsudo # graphical sudo
     xdotool # programmatically move the mouse, type, etc.
     numlockx # set Num Lock
     xss-lock # for use with a screen locker
@@ -122,6 +122,7 @@ in {
     # _2048-in-terminal
     # blobby
     # soude_au_cou # my own game!
+    soweli # my own game!
 
     # Development
     git
@@ -138,9 +139,10 @@ in {
     # gcc-wrapper
     # linx-server
     sqlitebrowser
+    mmctl # mattermost control (for Picasoft's server management)
 
     docker
-    # virt-manager # unstable fails to build
+    virt-manager # unstable fails to build
     # wireshark
     # vscodium
     python39
@@ -157,6 +159,7 @@ in {
     # subtitleeditor
     imagemagick
     beets # MP3 tag editor
+    cdparanoia # CD ripper, `cdparanoia -B`
     # Markdown to PDF
     # yj # YAML to JSON etc.
     # pandoc
@@ -195,6 +198,9 @@ in {
 
       # deepl cli
       deepl-translate-cli = super.callPackage ../../pkgs/deepl-translate-cli {}; 
+
+      # soweli
+      soweli = super.callPackage ../../pkgs/soweli {};
 
       # add -g/--progress to coreutils' cp and mv.
       # adv_coreutils = (super.coreutils.overrideAttrs (oldAttrs: {

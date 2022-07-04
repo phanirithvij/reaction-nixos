@@ -1,23 +1,10 @@
 { lib, config, pkgs, ... }:
 let
-  # Found here: https://stackoverflow.com/questions/54504685
-  recursiveMerge = attrList:
-  let f = attrPath:
-    lib.zipAttrsWith (n: values:
-      if lib.tail values == []
-        then lib.head values
-      else if lib.all lib.isList values
-        then lib.unique (lib.concatLists values)
-      else if lib.all lib.isAttrs values
-        then f (attrPath ++ [n]) values
-      else lib.last values
-    );
-  in f [] attrList;
-
+  recursiveMerge = sets: builtins.foldl' (s1: s2: lib.recursiveUpdate s1 s2) {} sets;
 
   root    = version: "/var/www/pompeani.art-${version}";
   domain  = version: if version == "test" then "test.pompeani.art" else "pompeani.art";
-  conf    = version: {
+  confFor = version: {
 
     systemd.tmpfiles.rules = [
       "d ${root version} 755 art art -"
@@ -27,7 +14,14 @@ let
     services.nginx.virtualHosts."${domain version}" = {
       enableACME = true;
       forceSSL = true;
-      locations."/".root = root version;
+      locations = {
+        "/".root = root version;
+        "^[^.]+[^/]$".return = "301 $request_uri/";
+        # "~* \\.webp$".extraConfig = ''
+        #   expires 30d;
+        #   add_header Vary Accept-Encoding;
+        # '';
+      };
     };
 
     # Fail2ban hack to launch build
@@ -66,7 +60,7 @@ let
       serviceConfig = {
         ExecStart = "${pkgs.writeShellApplication {
           name = "ci";
-          runtimeInputs = with pkgs; [ git zola fd rsync ];
+          runtimeInputs = with pkgs; [ git zola fd rsync bash imagemagick ];
           text = builtins.readFile ./pompeani.art.ci.sh;
         }}/bin/ci ${version}";
         User = "art";
@@ -84,7 +78,13 @@ in recursiveMerge [
     services.fail2ban = {
       enable = true;
     };
+
+    services.nginx.virtualHosts."www.pompeani.art" = {
+      enableACME = true;
+      forceSSL = true;
+      locations."/".return = "301 https://pompeani.art$request_uri";
+    };
   }
-  (conf "test")
-  (conf "master")
+  (confFor "test")
+  (confFor "master")
 ]

@@ -7,6 +7,7 @@
     ./git.nix
     ./packages.nix
     ./environment.nix
+    ./ssh.nix
   ];
 
   i18n.supportedLocales = [ "en_US.UTF-8/UTF-8" "fr_FR.UTF-8/UTF-8" ];
