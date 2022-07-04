@@ -1,8 +1,4 @@
 { config, pkgs, ... }:
-
-let
-  sshPort = 22;
-in
 {
   imports = [
     ../common/all.nix
@@ -24,6 +20,11 @@ in
   ppom = {
     isDesktop = false;
     isLight = false;
+    ssh = {
+      enable = true;
+      port = 22;
+      hardened = false;
+    };
   };
 
   services.funkwhale = {
@@ -87,35 +88,10 @@ in
     ];
   };
 
-  # Enable the OpenSSH daemon.
-  services.openssh.enable = true;
-  services.openssh.ports = [ sshPort ];
-  services.openssh.permitRootLogin = "no";
-  # Mosh extension (doesn't work: TODO)
-  programs.mosh.enable = true;
-
-  # Open ports in the firewall.
-  networking.firewall.enable = true;
-  networking.firewall.allowedTCPPorts = [
-    sshPort
-  ];
-
   # Doas
   security.doas = {
     enable = true;
   };
-
-  # Fail2ban service
-  services.fail2ban.enable = true;
-  # Stick with default banaction, banaction-allports, bantime
-  services.fail2ban.jails.sshd = ''
-    enabled = true
-    port = ${builtins.toString sshPort}
-
-    maxretry = 5
-    findtime = 1200
-    bantime = 2400
-  '';
 
   # Only allow root to use nix
   nix.allowedUsers = [ "root" ];
