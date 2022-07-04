@@ -1,7 +1,7 @@
 {
   toYaml
   , nextcloud
-  , collabora
+  # , collabora
 }:
 toYaml "docker-compose" {
   version = "3";
@@ -41,22 +41,22 @@ toYaml "docker-compose" {
       depends_on = [ "db" ];
     };
 
-    collabora = {
-      image = "collabora/code";
-      container_name = "collabora";
-      restart = "always";
-      volumes = [ "./coolwsd.xml:/etc/coolwsd/coolwsd.xml" ];
-      ports = [ "${collabora.port}:9980" ];
-      cap_add = [ "MKNOD" ];
-      environment = [
-        "domain=${nextcloud.domainName}"
-        "VIRTUAL_HOST=${collabora.domainName}"
-        "VIRTUAL_NETWORK=nginx-proxy"
-        "VIRTUAL_PORT=9980"
-        "DONT_GEN_SSL_CERT=true"
-      ];
-      networks = [ "proxy-tier" ];
-    };
+    # collabora = {
+    #   image = "collabora/code";
+    #   container_name = "collabora";
+    #   restart = "always";
+    #   volumes = [ "./coolwsd.xml:/etc/coolwsd/coolwsd.xml" ];
+    #   ports = [ "${collabora.port}:9980" ];
+    #   cap_add = [ "MKNOD" ];
+    #   environment = [
+    #     "domain=${nextcloud.domainName}"
+    #     "VIRTUAL_HOST=${collabora.domainName}"
+    #     "VIRTUAL_NETWORK=nginx-proxy"
+    #     "VIRTUAL_PORT=9980"
+    #     "DONT_GEN_SSL_CERT=true"
+    #   ];
+    #   networks = [ "proxy-tier" ];
+    # };
 
     mail = {
       image = "bytemark/smtp";
