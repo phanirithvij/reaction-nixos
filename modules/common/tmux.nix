@@ -22,7 +22,7 @@ in
       plugins = with pkgs.tmuxPlugins; [
         cpu
         sidebar
-        tmux-thumbs
+        # tmux-thumbs
       ];
 
       extraConfig = ''
