@@ -29,7 +29,7 @@
 
   services.funkwhale = {
     enable = true;
-    funkwhaleVersion = "1.2.3";
+    funkwhaleVersion = "1.2.5";
     domainName = "music.ppom.me";
     musicDir = "/data/funkwhale/music";
     dataDir = "/data/funkwhale/data";

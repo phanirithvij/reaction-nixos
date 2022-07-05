@@ -5,7 +5,7 @@ let
     modules = with pkgs.nginxModules; [
       # Add fancy index module
       fancyindex
-      subsFilter
+      # subsFilter # doesn't compile on 22.05
     ];
   });
   nginxLogPath = "/var/log/nginx/access.log";
