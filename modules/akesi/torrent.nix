@@ -1,4 +1,3 @@
-
 { lib, config, pkgs, ... }:
 
 let
@@ -11,20 +10,29 @@ in
 {
   services.transmission = {
     enable = true;
-    # openPeerPort = true;
-    # openRPCPort = true;
+    openPeerPorts = true;
+    # openRPCPort = true; # FIXME uncomment
     performanceNetParameters = true;
     # credentialsFile = "/var/secrets/transmission/auth.json";
     settings = {
       incomplete-dir = "${sshMountPath}/downloading";
       download-dir = "${sshMountPath}/upload-here";
-      # rpc-bind-adresses = "0.0.0.0";
-      # watch-dir = ...
-      # watch-dir-enabled = true;
+      watch-dir = "${sshMountPath}/dot.torrents";
+      watch-dir-enabled = true;
+      # rpc-bind-address = "0.0.0.0";
+      # rpc-username = "ppom";
+      # rpc_authentication_required = false;
     };
   };
 
-  environment.systemPackages = with pkgs; [ sshfs ];
+  # Où j'en suis :
+  # Je n'arrive pas à me connecter en RPC avec transmission-remote-gtk. J'ai commenté ce qui est relatif à rpc. penser à ajouter ssl ensuite.
+  # Je passe par le dossier d'uploads
+
+  environment.systemPackages = with pkgs; [
+    sshfs
+    stig
+  ];
 
   # systemd.tmpfiles.rules = [
   #   "d ${sshMountPath} 750 transmission transmission -"
@@ -51,8 +59,8 @@ in
       mountConfig = {
         TimeoutSec = 20;
       };
-      wantedBy = [ "deluged.service" ];
-      before = [ "deluged.service" ];
+      wantedBy = [ "transmission.service" ];
+      before = [ "transmission.service" ];
     }
   ];
 }

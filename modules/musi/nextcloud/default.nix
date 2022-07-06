@@ -5,15 +5,16 @@ let
     domainName = "nuage.ppom.me";
     port = "9000";
   };
-  collabora = {
-    dockerName = "collabora";
-    domainName = "write.ppom.me";
-    port = "9980";
-  };
+  # collabora = {
+  #   dockerName = "collabora";
+  #   domainName = "write.ppom.me";
+  #   port = "9980";
+  # };
   composeGeneration = import ./docker-compose.nix;
 in {
   environment.etc."generated/nextcloud-suite/docker-compose.yml".source = (composeGeneration {
-    inherit nextcloud collabora;
+    # inherit nextcloud collabora;
+    inherit nextcloud;
     toYaml = pkgs.toYaml;
   });
   environment.etc."generated/nextcloud-suite/coolwsd.xml".source = ./coolwsd.xml;
@@ -49,28 +50,28 @@ in {
       '';
     };
 
-    "${collabora.domainName}" =
-      let 
-        normalProxy = {
-          proxyPass = "http://localhost:${collabora.port}";
-        };
-        wsProxy = {
-          proxyPass = "http://localhost:${collabora.port}";
-          proxyWebsockets = true;
-          extraConfig = "proxy_read_timeout 36000s;";
-        };
-      in {
-      forceSSL = true;
-      enableACME = true;
-      locations = {
-        "^~ /browser" =              normalProxy;
-        "^~ /hosting/discovery" =    normalProxy;
-        "^~ /hosting/capabilities" = normalProxy;
-        "~ ^/cool/(.*)/ws$" =        wsProxy;
-        "~ ^/(c|l)ool" =             normalProxy;
-        "^~ /cool/adminws" =         wsProxy;
-      };
-    };
+    # "${collabora.domainName}" =
+    #   let 
+    #     normalProxy = {
+    #       proxyPass = "http://localhost:${collabora.port}";
+    #     };
+    #     wsProxy = {
+    #       proxyPass = "http://localhost:${collabora.port}";
+    #       proxyWebsockets = true;
+    #       extraConfig = "proxy_read_timeout 36000s;";
+    #     };
+    #   in {
+    #   forceSSL = true;
+    #   enableACME = true;
+    #   locations = {
+    #     "^~ /browser" =              normalProxy;
+    #     "^~ /hosting/discovery" =    normalProxy;
+    #     "^~ /hosting/capabilities" = normalProxy;
+    #     "~ ^/cool/(.*)/ws$" =        wsProxy;
+    #     "~ ^/(c|l)ool" =             normalProxy;
+    #     "^~ /cool/adminws" =         wsProxy;
+    #   };
+    # };
   };
 
   systemd.timers.nextcloud-run-cronjob = {
