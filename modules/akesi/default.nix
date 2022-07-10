@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ../common/all.nix
+    ../common
 
     ./hardware-configuration.nix
     # ./openvpn.nix

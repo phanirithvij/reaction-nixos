@@ -1,5 +1,7 @@
 { lib, config, pkgs, ... }:
-{
+let
+  cfg = config.ppom.ssh;
+in {
   options.ppom = {
     ssh = {
       enable = lib.mkEnableOption "enable sshd config & fail2ban";
@@ -16,9 +18,7 @@
     };
   };
 
-  config = let
-    cfg = config.ppom.ssh;
-    in lib.mkIf cfg.enable {
+  config = lib.mkIf cfg.enable {
     services.openssh = lib.recursiveUpdate {
       enable = true;
       ports = [ cfg.port ];
