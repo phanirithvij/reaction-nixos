@@ -11,6 +11,7 @@
     ./mail.nix
     ./monitoring.nix
     ./nextcloud/default.nix
+    ./plausible.nix
     ./streama.nix
     ./tor.nix
     ./vaultwarden.nix
