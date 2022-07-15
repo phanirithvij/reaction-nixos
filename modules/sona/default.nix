@@ -1,7 +1,7 @@
 { lib, config, pkgs, ... }:
 {
   imports = [
-      ../common/all.nix
+      ../common
 
       ./direnv.nix
       ./down-detector.nix
@@ -236,6 +236,7 @@
   ppom = {
     isDesktop = true;
     isLight = false;
+    ssh.hardened = false;
   };
 
 }

@@ -3,7 +3,7 @@ let
   nextcloud = {
     dockerName = "nc_app";
     domainName = "nuage.ppom.me";
-    port = "9000";
+    port = "7000";
   };
   # collabora = {
   #   dockerName = "collabora";

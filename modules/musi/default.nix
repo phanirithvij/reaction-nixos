@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 {
   imports = [
-    ../common/all.nix
+    ../common
 
     ./anpa.nix # container
     ./backup.nix
@@ -11,6 +11,7 @@
     ./mail.nix
     ./monitoring.nix
     ./nextcloud/default.nix
+    ./plausible.nix
     ./streama.nix
     ./tor.nix
     ./vaultwarden.nix
@@ -29,7 +30,7 @@
 
   services.funkwhale = {
     enable = true;
-    funkwhaleVersion = "1.2.5";
+    funkwhaleVersion = "1.2.7";
     domainName = "music.ppom.me";
     musicDir = "/data/funkwhale/music";
     dataDir = "/data/funkwhale/data";
