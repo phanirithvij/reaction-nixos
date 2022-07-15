@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 {
   imports = [
-    ../common/all.nix
+    ../common
 
     ./anpa.nix # container
     ./backup.nix
