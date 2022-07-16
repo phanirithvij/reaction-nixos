@@ -37,8 +37,16 @@
 
   boot.cleanTmpDir = true;
 
-  # Only allow root to use nix
-  nix.settings.allowed-users = [ "root" ];
+  nix = {
+    settings.allowed-users = [ "root" ];
+    gc = {
+      automatic = true;
+      options = "--delete-older-than 15d";
+    };
+    optimise = {
+      automatic = true;
+    };
+  };
 
   # Only allow paths from /nix/store to be executables
   # fileSystems."/".options = [ "noexec" ];
