@@ -33,7 +33,7 @@ in {
 
   # Ensure permissions on host
   systemd.tmpfiles.rules = (builtins.map
-    (user: "d ${transitDir user} - - - -")
+    (user: "d ${transitDir user} 750 ${builtins.toString user.uid} users - -")
     myUsers
   );
 
