@@ -51,7 +51,7 @@
 
     asciinema # Terminal JSON recorder & player. Check asciinema.org
     tiv # terminal image viewer
-    # rdfind # find duplicates # FIXME broken on unstable on 2022-04-27
+    rdfind # find duplicates
     zip
     unzip
     # unrar # unfree!
