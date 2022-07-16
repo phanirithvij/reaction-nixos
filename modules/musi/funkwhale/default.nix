@@ -290,7 +290,7 @@ with lib;
         faketty () {
           ${pkgs.util-linux}/bin/script -qefc "$(printf "%q " "$@")"
         }
-        faketty ${pkgs.docker}/bin/docker exec -it funkwhale_api_1 python manage.py import_files ${cfg.importCronLibraryID} /music/beet --in-place --async --recursive --noinput;
+        faketty ${pkgs.docker}/bin/docker exec -it funkwhale-api-1 python manage.py import_files ${cfg.importCronLibraryID} /music/beet --in-place --async --recursive --noinput;
       '';
     });
     security.doas.extraRules = (lib.optionals cfg.importCronEnable [{
