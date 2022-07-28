@@ -181,10 +181,6 @@ in {
         super.rofi-mpd
       ]; };
 
-      # issue in the way the signal-desktop/default.nix transform the spellcheckLanguage. Should be "fr-any"
-      # see https://github.com/NixOS/nixpkgs/issues/113346
-      signal-desktop = super.signal-desktop.override { spellcheckerLanguage = "fr_ANY"; };
-
       # dwm override
       dwm = super.callPackage ../../pkgs/dwm {};
 
