@@ -71,7 +71,6 @@
 
     ## containers
     ctop
-    docker-compose
     docui
 
     ## video
