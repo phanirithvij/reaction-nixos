@@ -2,6 +2,7 @@
 { lib, config, pkgs, ... }:
 
 let 
+  unstable = import <nixos-unstable> {};
   f-mpv-with-scripts = super: super.wrapMpv super.mpv-unwrapped {
     scripts = with super.mpvScripts; [ mpris youtube-quality ];
   };
@@ -86,7 +87,7 @@ in {
 
     # GUI apps
     firefox # Best browser ever
-    thunderbird # Mail, CalDav, XMPP & Matrix client
+    unstable.thunderbird # Mail, CalDav, XMPP & Matrix client
     ungoogled-chromium # Alternative browser
     signal-desktop # Signal Messaging client
     # code-server # VSCodium w/ in-browser client & server
