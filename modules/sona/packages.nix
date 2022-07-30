@@ -166,7 +166,7 @@ in {
     # yj # YAML to JSON etc.
     pandoc
       texlive.combined.scheme-full # 3GB 😬
-    # pdftk # PDF Swiss knife
+    pdftk # PDF Swiss knife
     # poppler # other PDF manipulations
     # multimarkdown # "from Markdown" exports
 
