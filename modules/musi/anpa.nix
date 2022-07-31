@@ -32,6 +32,7 @@ in {
   boot.kernelModules = [ "veth" ];
 
   # Ensure permissions on host
+  # FIXME must launch `systemd-tmpfiles --create` from time to time to fix permissions
   systemd.tmpfiles.rules = (builtins.map
     (user: "d ${transitDir user} 750 ${builtins.toString user.uid} users - -")
     myUsers
