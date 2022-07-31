@@ -26,8 +26,16 @@
     # [ -f ${pkgs.fzf}/share/fzf/completion.bash ] && source ${pkgs.fzf}/share/fzf/completion.bash
 
     # custom functions
-    function nix-dir()  { echo "$(dirname "$(realpath "$(which "$1")")")"/..; }
+    function nix-dir()  { echo "$(dirname "$(dirname "$(realpath "$(which "$1")")")")"; }
     function nix-cd()   { cd "$(nix-dir "$1")"; }
     function nix-pkgs() { cd /nix/var/nix/profiles/per-user/root/channels/nixos; }
+    function nix()      { command nix --offline "$@"; }
+  '';
+
+  programs.fish.interactiveShellInit = ''
+    function nix-dir; echo (dirname (dirname (realpath (which $argv[1])))); end
+    function nix-cd; cd (nix-dir $argv[1]); end
+    function nix-pkgs; cd /nix/var/nix/profiles/per-user/root/channels/nixos; end
+    function nix; command nix --offline $argv; end
   '';
 }
