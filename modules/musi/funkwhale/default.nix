@@ -84,6 +84,9 @@ with lib;
       };
     });
 
+    environment.etc."generated/funkwhale/merge-funkwhale-artists.py".source = ./merge-funkwhale-artists.py;
+
+
     # TODO downgrade the containers user to funkwhale.
     # Even celery tells it shouldn't run as root!
     users = {

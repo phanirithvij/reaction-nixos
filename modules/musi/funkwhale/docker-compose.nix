@@ -67,6 +67,7 @@ in toYaml "docker-compose" {
         "${cfg.mediaDir}:/${pythonEnv.MEDIA_ROOT}"
         "${cfg.staticDir}:${pythonEnv.STATIC_ROOT}"
         "${cfg.frontendPath}:/frontend"
+        "./merge-funkwhale-artists.py:/app/merge-funkwhale-artists.py:ro"
       ];
     };
   };
