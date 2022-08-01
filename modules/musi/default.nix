@@ -8,6 +8,7 @@
     ./funkwhale/default.nix
     ./hardware-configuration.nix
     ./languagetool.nix
+    ./log.nix
     ./mail.nix
     ./monitoring.nix
     ./nextcloud/default.nix
