@@ -81,14 +81,15 @@
     };
   };
 
-  # Cron jobs
-  services.cron = let
-    uptimeCalc = (pkgs.writeScript "uptimeCalc.sh" ''uptime > ${config.users.users.ppom.home}/uptimes/$(date '+%y-%m-%d')'');
-  in {
-    enable = true;
-    systemCronJobs = [
-      ''23 0 * * *      ppom    ${uptimeCalc}''
-    ];
+  systemd.timers.uptime-calc = {
+    description = "Saves uptime";
+    wantedBy = [ "timers.target" ];
+    timerConfig.OnCalendar = "23:00:00";
+  };
+  systemd.services.uptime-calc = {
+    description = "Saves uptime";
+    serviceConfig.User = "ppom";
+    script = ''uptime > ${config.users.users.ppom.home}/uptimes/$(date '+%y-%m-%d')'';
   };
 
   # Doas
