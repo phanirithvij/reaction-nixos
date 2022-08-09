@@ -54,6 +54,7 @@
     rdfind # find duplicates
     zip
     unzip
+    trash-cli
     # unrar # unfree!
 
     ## protocols

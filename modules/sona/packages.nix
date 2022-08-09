@@ -46,7 +46,6 @@ in {
     # comma # wrapper around `nix-index` && `nix run` to launch a command without installing it
     inotify-tools # Linux filesystem watchdog
     # languagetool # Proofreading program
-    trash-cli
     deepl-translate-cli # CLI to use deepl. With a shell wrapper around it, it's fast to use
     signalbackup-tools # Manipulate Signal smartphone backups.
 
