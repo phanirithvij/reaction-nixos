@@ -153,7 +153,13 @@ in {
       "music.ppom.me" = {
         locations = {
           "/to" = {
-            root = "/var/www/music/";
+            root = pkgs.fetchFromGitLab {
+              domain = "framagit.org";
+              owner = "ppom";
+              repo = "funkwhale.to";
+              rev = "7184399d62cb7ccae16354ac4126938ce63adaa8";
+              sha256 = "sha256-NzPA5xJB04IQ9n9+dpMYSI7k9VKORgbdZyjyPiyVL1M=";
+            };
             index = "index.html";
           };
         };
