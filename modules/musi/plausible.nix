@@ -29,9 +29,9 @@ in {
   };
 
   # clickhouse eats too much
-  systemd.services.clickhouse.serviceConfig = {
-    CPUWeight = 20;
-    StartupCPUWeight = 100;
-  };
+  # systemd.services.clickhouse.serviceConfig = {
+  #   CPUWeight = 20;
+  #   StartupCPUWeight = 100;
+  # };
 }
 
