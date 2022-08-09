@@ -158,7 +158,8 @@ in {
     wireguard-tools
 
     # Media
-    # subtitleeditor
+    subedit
+    # subtitleeditor (broken)
     imagemagick
     beets # MP3 tag editor
     cdparanoia # CD ripper, `cdparanoia -B`
@@ -199,6 +200,9 @@ in {
 
       # soweli
       soweli = super.callPackage ../../pkgs/soweli {};
+
+      # subedit
+      subedit = super.callPackage ../../pkgs/subedit {};
 
       # add -g/--progress to coreutils' cp and mv.
       # adv_coreutils = (super.coreutils.overrideAttrs (oldAttrs: {
