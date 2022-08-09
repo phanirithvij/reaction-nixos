@@ -27,5 +27,11 @@ in {
     enableACME = true;
     locations."/".proxyPass = "http://localhost:${builtins.toString port}";
   };
+
+  # clickhouse eats too much
+  systemd.services.clickhouse.serviceConfig = {
+    CPUWeight = 20;
+    StartupCPUWeight = 100;
+  };
 }
 
