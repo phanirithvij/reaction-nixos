@@ -5,6 +5,7 @@
 
     ./anpa.nix # container
     ./backup.nix
+    ./converter/default.nix
     ./funkwhale/default.nix
     ./hardware-configuration.nix
     ./languagetool.nix
