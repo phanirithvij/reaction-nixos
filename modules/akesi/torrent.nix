@@ -19,6 +19,8 @@ in
       download-dir = "${sshMountPath}/upload-here";
       watch-dir = "${sshMountPath}/dot.torrents";
       watch-dir-enabled = true;
+      speed-limit-up = 2 * 1024; # KB/s
+      speed-limit-up-enabled = true;
       # rpc-bind-address = "0.0.0.0";
       # rpc-username = "ppom";
       # rpc_authentication_required = false;
