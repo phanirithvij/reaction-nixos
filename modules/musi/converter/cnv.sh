@@ -16,7 +16,7 @@ do
 		continue
 	fi
 
-	realpath "$1" > "$BASE-$NUM-$(basename "$1")"
+	realpath "$1" > "$BASE-$NUM-$(basename "$1").task"
 
 	NUM=$((NUM + 1))
 	shift
