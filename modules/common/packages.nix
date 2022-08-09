@@ -84,6 +84,7 @@
     ## text
     dos2unix
     vtt2srt # VTT to SRT converter
+    subedit # Subtitle Editor
 
     ## nixeries
     # nox
@@ -98,6 +99,7 @@
       # go vtt2srt script
       vtt2srt = super.callPackage ../../pkgs/vtt2srt {};
       toYaml = super.callPackage ../../pkgs/toYaml {};
+      subedit = super.callPackage ../../pkgs/subedit {};
     })
   ];
 }
