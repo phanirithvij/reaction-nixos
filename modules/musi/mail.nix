@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ lib, config, pkgs, ... }:
 
 let
   ecomailAddress = "paco@ecomail.io";
@@ -61,4 +61,6 @@ in
     # Use Let's Encrypt certificates. Adds a virtual host to nginx.
     certificateScheme = 3;
   };
+
+  systemd.services.postfix.enable = lib.mkForce false;
 }
