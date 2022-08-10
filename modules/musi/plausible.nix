@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ lib, config, pkgs, ... }:
 let
   domain = "stats.ppom.me";
   port = 8000;
@@ -33,5 +33,15 @@ in {
   #   CPUWeight = 20;
   #   StartupCPUWeight = 100;
   # };
+
+  environment.etc."clickhouse-server/config.d/logging.xml".text = ''
+    <clickhouse>
+      <logger>
+        <level>notice</level>
+      </logger>
+    </clickhouse>
+  '';
+
+  systemd.services.clickhouse.serviceConfig.ExecStart = lib.mkForce "${config.services.clickhouse.package}/bin/clickhouse-server --config-file=/etc/clickhouse-server/config.xml";
 }
 
