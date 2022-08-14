@@ -23,5 +23,7 @@
         helper = cache --timeout=${builtins.toString (4 * 60 * 60)}
     [pull]
         rebase = false
+    [commit]
+        verbose = true
   '';
 }
