@@ -29,11 +29,12 @@ in {
   };
 
   # clickhouse eats too much
-  # systemd.services.clickhouse.serviceConfig = {
-  #   CPUWeight = 20;
-  #   StartupCPUWeight = 100;
-  # };
+  systemd.services.clickhouse.serviceConfig = {
+    CPUWeight = 20;
+    StartupCPUWeight = 100;
+  };
 
+  # See PR #186667
   environment.etc."clickhouse-server/config.d/logging.xml".text = ''
     <clickhouse>
       <logger>
@@ -42,6 +43,10 @@ in {
     </clickhouse>
   '';
 
+  # See PR #186660
   systemd.services.clickhouse.serviceConfig.ExecStart = lib.mkForce "${config.services.clickhouse.package}/bin/clickhouse-server --config-file=/etc/clickhouse-server/config.xml";
+
+  # See PR #186674
+  systemd.services.plausible.after = [ "clickhouse.service" ];
 }
 
