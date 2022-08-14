@@ -99,7 +99,7 @@ in {
       '';
       NoNewPrivileges = true;
       ProtectSystem = "strict";
-      ReadWritePaths = [ "/var/lib/streama" ];
+      ReadWritePaths = [ "/var/lib/streama" "/data/streama/uploads" ];
       ProtectHome = true;
       PrivateTmp = true;
       PrivateDevices = true;
