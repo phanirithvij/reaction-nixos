@@ -56,7 +56,7 @@ do
 	DEST="$OUT_DIRECTORY/$NAME.$NUM.mp4" 
 	unset NUM NAME
 
-	LOG_FILE="$LOG_DIRECTORY/$(basename "$TASK")-$(basename "$DEST").log"
+	LOG_FILE="$LOG_DIRECTORY/$(basename "$TASK").log"
 
 	if test ! -f "$FILE"
 	then
