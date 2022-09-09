@@ -65,6 +65,7 @@ in
             let g:languagetool_jar='${pkgs.languagetool}/share/languagetool-commandline.jar'
 
             let g:vim_markdown_folding_disabled = 1
+            let g:vim_markdown_toc_autofit = 1
 
             " Function to source only if file exists {
             function! SourceIfExists(file)
@@ -90,6 +91,7 @@ in
               vim-fugitive
               vim-unimpaired
               vim-fish
+              undoquit-vim
               # gruvbox
               (super.vimPlugins.gruvbox.overrideAttrs (oldAttrs: {
                 patches = [ ./true_black_gruvbox.patch ];
@@ -102,14 +104,14 @@ in
               vim-grammarous
               unicode-vim
               # coc-nvim # Switch to 22.05, breaks for now
-              # coc-rls # Rust
-              # coc-json
-              # coc-html
-              # coc-xml
-              undoquit-vim
+                # coc-rls # Rust
+                # coc-json
+                # coc-html
+                # coc-xml
               vim-svelte
               rust-vim
               vim-markdown
+                tabular # used by vim-markdown
               mkdir-nvim
             ];
             opt = [ ];
