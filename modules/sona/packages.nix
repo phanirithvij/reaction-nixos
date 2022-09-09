@@ -17,11 +17,13 @@ in {
     # sequoia # modern OpenPGP implementation
     tomb # LUKS wrapper
     rbw # unofficial bitwarden CLI
-    (lib.hiPrio (pkgs.writeScriptBin "rbw-rofi" ''
+    (lib.hiPrio (pkgs.writeScriptBin "rbw-rofi"
+    # `-l 2` because `-l 1` broke, idk why
+    ''
       set -eu
       set -o pipefail
       rbw unlock
-      rbw ls --fields folder,name,user | sed 's/\t/\//g' | sort | rofi -dmenu | sed 's/^[^\/]*\///' | sed 's/\// /' | xargs -r rbw get | xclip -l 1 -selection clipboard
+      rbw ls --fields folder,name,user | sed 's/\t/\//g' | sort | rofi -dmenu | sed 's/^[^\/]*\///' | sed 's/\// /' | xargs -r rbw get | xclip -l 2 -selection clipboard
     ''))
     pinentry-gnome # GUI password prompt (used by gpg-agent, installing it in global path for rbw & tomb)
     acpi # battery information
