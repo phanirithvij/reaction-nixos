@@ -194,6 +194,8 @@
 
   services.tlp.enable = true;
 
+  programs.kdeconnect.enable = true;
+
   environment = {
     variables = rec {
       LANG = "en_US.UTF-8";
