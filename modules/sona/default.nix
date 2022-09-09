@@ -56,14 +56,17 @@
     networkmanager.enable = true;
     networkmanager.wifi.powersave = true;
 
-    firewall.enable = true;
-    firewall.allowedTCPPorts = [
-      5500 # Clementine
-      58432 # SoulseekQT
-      10080
-      8000 # simple-http-server
-    ];
-    firewall.allowedUDPPorts = [];
+    firewall = {
+      enable = true;
+      allowedTCPPorts = [
+        5500 # Clementine
+        58432 # SoulseekQT
+        10080
+        3901 # Garage
+        8000 # simple-http-server
+      ];
+      allowedUDPPorts = [];
+    };
   };
   # use FDN's DNS. Override Internet provider's DNS
   # environment.etc."resolv.conf".text = ''
