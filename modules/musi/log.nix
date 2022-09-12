@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 {
   services.journald.extraConfig = ''
-    SystemMaxUse=12G
+    SystemMaxUse=6G
     MaxRetentionSec=1month
   '';
 }
