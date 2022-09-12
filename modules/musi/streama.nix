@@ -137,6 +137,12 @@ in {
 
   environment.systemPackages = [ pkgs.h2 ];
 
+  nixpkgs.overlays = [
+    (self: super: {
+      h2 = super.callPackage ../../pkgs/h2 {};
+    })
+  ];
+
   systemd.timers.streama-backup = {
     description = "Make a SQL backup file of the Streama DB";
     wantedBy = [ "timers.target" ];
