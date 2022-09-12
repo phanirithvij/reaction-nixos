@@ -22,6 +22,11 @@ let
       ];
       uid = 2003;
     }
+    {
+      name = "bertille";
+      ssh = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDQoTXXtmp4TxSzZOTjldYPpr7eNSd/6HUuJVoKEVZ45LbsTT+7rcg6tCPVqpj82wxqhMHqTxuRvGnzu0j9kxxmrr/8g+WvQGiY9HQ/NrDyYOItDv/mExMqOjaJeM36mefKzd+g4UlsHT9xdL6wB9940XzuAvsz9XQKFGf/Rfc6rSH87SHJGn2BCqXEdHyfA3MSfhnBZ8CJNaNP3b4t3QXCQ+dzghsVnP4x9hJ9Fa1csLWB7UCxXnpWcYeEJmb/Gf6VtDWntJ8KuURZe+pYtWcpFv+tMFvo0G9elphJ1wx8HbGq2S7g1fA8kuzBjvjL5YEHn4oAvNJKDnXAehZGC2wWcepUYr+caeIJRe8Bu/qDSGVGjD0vtcnPNvKSS2t3UWjEtnUmBaqOIiHVRrrrvUA1Z/A2I1/Rvujy9cV6E3tiht+UcfQ9Maq/QsTfHxIiECDYeDZxSMJ/EulL9Rp1QACMYY36L1oDWwjHphpI1scIa0wC4dBMKVa1LLFpRq0ccx2O36j7b/QwXIB53nJbVW3nwzV3Yza9R+WoMTtE1BtRHf0f+VCbmvIR7QwvcW4L3yWwRzxI5Yap4CftKncu+fthuF1Sdby/olWEryGaVYiTLKq2xUGzweytaIT3ab1UK2i02I/TWLDQFviQdZfVxGDzgloP6vdnjBZIFjWA2+0ABQ== bertille@pc" ];
+      uid = 2004;
+    }
   ];
   transitDir   = user: "/data/user-uploads/${user.name}";
   containerDir = user: "/home/${user.name}/upload-here";
