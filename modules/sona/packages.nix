@@ -40,7 +40,7 @@ in {
     openvpn
     # lolcat
     # figlet
-    espeak-ng
+    # espeak-ng
     # cowsay
     # subdl
     # croc # CLI file transfer
@@ -131,7 +131,7 @@ in {
     git
       # gitAndTools.git-filter-repo
       # gource
-      gti
+      # gti
     gnumake
     # ghc stack cabal-install # haskell
     h2 # H2 Database Editor
@@ -145,12 +145,13 @@ in {
     mmctl # mattermost control (for Picasoft's server management)
 
     docker
-    virt-manager # unstable fails to build
+    # virt-manager
     # wireshark
     # vscodium
     python39
-    python39Packages.pip
+    # python39Packages.pip
     # nodejs cargo
+    rustup
 
     # Sysadmin
     tdns-cli # dig alternative
@@ -162,11 +163,11 @@ in {
     # subtitleeditor (broken)
     imagemagick
     beets # MP3 tag editor
-    cdparanoia # CD ripper, `cdparanoia -B`
+    # cdparanoia # CD ripper, `cdparanoia -B`
     # Markdown to PDF
     # yj # YAML to JSON etc.
-    pandoc
-      texlive.combined.scheme-full # 3GB 😬
+    # pandoc
+      # texlive.combined.scheme-full # 3GB 😬
     pdftk # PDF Swiss knife
     # poppler # other PDF manipulations
     # multimarkdown # "from Markdown" exports
