@@ -7,6 +7,7 @@ TODO_DIRECTORY="$RUNTIME_DIRECTORY/todo"
 
 BASE="$TODO_DIRECTORY/task-$(date '+%y-%m-%d_%H:%M:%S')"
 NUM=1
+NUMNO="$#"
 
 while test -n "$1"
 do
@@ -16,7 +17,7 @@ do
 		continue
 	fi
 
-	realpath "$1" > "$BASE-$NUM-$(basename "$1").task"
+	realpath "$1" > "$BASE-$(seq -w $NUM $NUMNO | head -n1 )-$(basename "$1").task"
 
 	NUM=$((NUM + 1))
 	shift
