@@ -180,7 +180,7 @@ in {
         };
         extraConfig = ''
           # add_header Strict-Transport-Security "max-age=31536000";
-          add_header Content-Security-Policy "default-src 'none'; img-src 'none'; script-src 'none'; style-src 'unsafe-inline'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'";
+          add_header Content-Security-Policy "default-src 'self' u.ppom.me; img-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'";
           add_header X-Content-Type-Options "nosniff";
           add_header X-Frame-Options "DENY";
         '';
