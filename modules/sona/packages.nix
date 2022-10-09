@@ -135,7 +135,6 @@ in {
     gnumake
     # ghc stack cabal-install # haskell
     h2 # H2 Database Editor
-    simple-http-server
     # gomod2nix
     # alejandra # Nix formatter
     zola # static site generator

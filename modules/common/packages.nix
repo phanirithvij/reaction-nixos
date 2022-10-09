@@ -61,6 +61,7 @@
     wget # HTTP client
     lftp # FTP client
     httping # ping an URL.
+    simple-http-server
 
     ## database
     sqlite-interactive # Heavy version with readline and completion support.
