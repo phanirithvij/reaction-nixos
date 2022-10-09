@@ -42,6 +42,15 @@ in {
     (user: "d ${transitDir user} 750 ${builtins.toString user.uid} users - -")
     myUsers
   );
+  systemd.timers.systemd-tmpfiles-create = {
+    wantedBy = [ "timers.target" ];
+    description = "FIXME must launch `systemd-tmpfiles --create` from time to time to fix permissions";
+    timerConfig.OnCalendar = "*:0/15:0";
+  };
+  systemd.services.systemd-tmpfiles-create = {
+    description = "FIXME must launch `systemd-tmpfiles --create` from time to time to fix permissions";
+    serviceConfig.ExecStart = "${pkgs.systemd}/bin/systemd-tmpfiles --create";
+  };
 
   # Nat to give internet access
   # networking.nat.enable = true;
