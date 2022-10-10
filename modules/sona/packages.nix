@@ -144,6 +144,7 @@ in {
     mmctl # mattermost control (for Picasoft's server management)
 
     docker
+    docker-compose
     # virt-manager
     # wireshark
     # vscodium
