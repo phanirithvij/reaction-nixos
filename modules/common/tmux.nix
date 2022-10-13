@@ -19,12 +19,6 @@ in
       escapeTime = if config.ppom.isDesktop then 20 else 500;
       shortcut = shortcut;
 
-      plugins = with pkgs.tmuxPlugins; [
-        cpu
-        sidebar
-        # tmux-thumbs
-      ];
-
       extraConfig = ''
         bind q copy-mode
         bind Q paste-buffer
