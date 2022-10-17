@@ -8,6 +8,7 @@
     ./converter/default.nix
     ./funkwhale/default.nix
     ./hardware-configuration.nix
+    ./ghbot.nix
     ./languagetool.nix
     ./log.nix
     ./mail.nix
