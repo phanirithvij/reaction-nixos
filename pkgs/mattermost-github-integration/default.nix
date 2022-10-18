@@ -1,4 +1,4 @@
-{ lib, stdenv, fetchFromGitHub, python3 }:
+{ lib, stdenv, fetchFromGitHub, python3, configPath ? "/etc/mattermostgithub/config.py" }:
 let 
   pp = python3.withPackages(ps: with ps; [ requests pillow gunicorn flask ]);
 in stdenv.mkDerivation {
@@ -16,7 +16,7 @@ in stdenv.mkDerivation {
     mkdir $out $out/bin
     cp -r $src $out/src
     chmod +w $out/src $out/src/mattermostgithub
-    ln -s /etc/mattermostgithub/config.py $out/src/mattermostgithub/config.py
+    ln -s ${configPath} $out/src/mattermostgithub/config.py
     # touch $out/src/mattermostgithub/config.py
     cat > $out/bin/mattermostgithub <<EOF
 
