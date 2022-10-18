@@ -107,6 +107,7 @@ in {
     gnome3.cheese
     # ocenaudio # test ardour?
     gimp # GNU Image Manipulation Program
+    inkskape # Vector Image Editor
     deluge # BitTorrent peer
     nicotine-plus # Soulseek client
     gparted
