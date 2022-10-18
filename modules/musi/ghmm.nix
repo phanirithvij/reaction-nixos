@@ -1,23 +1,22 @@
 { lib, pkgs, ... }:
 let
-  configPath = "/var/lib/githubmattermost/config.py";
-  githubmattermost = pkgs.callPackage ../../pkgs/mattermost-github-integration { inherit configPath };
+  configPath = "/var/lib/mattermostgithub/config.py";
+  mattermostgithub = pkgs.callPackage ../../pkgs/mattermost-github-integration { inherit configPath; };
 
   domainName = "ppom.me";
   path = "/GHBot";
   localPort = "4587";
 
-  mattermostSecretPath = "/var/secrets/githubmattermost/mattermost.secret";
-  githubSecretPath = "/var/secrets/githubmattermost/github.secret";
+  mattermostSecretPath = "/var/secrets/mattermostgithub/mattermost.secret";
+  githubSecretPath = "/var/secrets/mattermostgithub/github.secret";
   config = {
     mattermost = "https://team.picasoft.net";
-    username = "Github";
+    username = "github";
     iconUrl = "https://u.ppom.me/github.png";
     channel = "mobiliportail";
   };
 
 in {
-  # Reverse proxy configuration
   services.nginx.enable = true;
   services.nginx.virtualHosts."${domainName}" = {
       forceSSL = true;
@@ -27,21 +26,21 @@ in {
       };
   };
 
-  users.users.githubmattermost = {
+  users.users.mattermostgithub = {
     isSystemUser = true;
-    group = "githubmattermost";
+    group = "mattermostgithub";
   };
-  users.groups.githubmattermost = {};
+  users.groups.mattermostgithub = {};
 
-  systemd.services.githubmattermost = {
+  systemd.services.mattermostgithub = {
     enable = true;
     description = "GitHub integration for Mattermost";
     wantedBy = [ "multi-user.target" ];
     after = [ "network.target" ];
     serviceConfig = {
       Type = "simple";
-      User = "githubmattermost";
-      ExecStart = ''${githubmattermost}/bin/githubmattermost'';
+      User = "mattermostgithub";
+      ExecStart = ''${mattermostgithub}/bin/mattermostgithub'';
       NoNewPrivileges = true;
       ProtectSystem = "strict";
       ReadWritePaths = [];
@@ -62,11 +61,12 @@ in {
       PrivateMounts = true;
     };
   };
-  systemd.services."githubmattermost-init" = {
+
+  systemd.services."mattermostgithub-init" = {
     enable = true;
-    description = "Creates githubmattermost config file";
-    requiredBy = [ "githubmattermost.service" ];
-    before = [ "githubmattermost.service" ];
+    description = "Creates mattermostgithub config file";
+    requiredBy = [ "mattermostgithub.service" ];
+    before = [ "mattermostgithub.service" ];
     serviceConfig = {
       Type = "oneshot";
       User = "root";
@@ -75,11 +75,11 @@ in {
       set -e
       DIR="$(dirname "${configPath}")"
       [ -d "$DIR" ] || mkdir "$DIR"
-      chown githubmattermost"$DIR"
+      chown mattermostgithub "$DIR"
       chmod 700 "$DIR"
 
-      mattermostSecret = "$(cat "${mattermostSecretPath}")"
-      githubSecret = "$(cat "${githubSecretPath}")"
+      mattermostSecret="$(cat "${mattermostSecretPath}")"
+      githubSecret="$(cat "${githubSecretPath}")"
 
       cat > "${configPath}" <<EOF
       USERNAME = "${config.username}"

@@ -1,4 +1,4 @@
-{ lib, stdenv, fetchFromGitHub, python3, configPath ? "/etc/mattermostgithub/config.py" }:
+{ lib, stdenv, fetchFromGitHub, python3, runtimeShell, configPath ? "/etc/mattermostgithub/config.py" }:
 let 
   pp = python3.withPackages(ps: with ps; [ requests pillow gunicorn flask ]);
 in stdenv.mkDerivation {
@@ -12,16 +12,18 @@ in stdenv.mkDerivation {
     sha256 = "sha256-uE1Kj6CEMLL6II8580Yfu0Kag7e6d9iABbE8yRXzTEM=";
   };
 
+  # TODO upstream an option in config that does this
+  patches = [ ./verify-ssl.patch ];
+
   installPhase = ''
     mkdir $out $out/bin
-    cp -r $src $out/src
+    cp -r . $out/src
     chmod +w $out/src $out/src/mattermostgithub
     ln -s ${configPath} $out/src/mattermostgithub/config.py
     # touch $out/src/mattermostgithub/config.py
     cat > $out/bin/mattermostgithub <<EOF
-
+    #!${runtimeShell}
     ${pp}/bin/python $out/src/server.py
-
     EOF
     chmod +x $out/bin/mattermostgithub
   '';
