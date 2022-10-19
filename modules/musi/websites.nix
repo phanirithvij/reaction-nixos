@@ -214,6 +214,8 @@ in {
     };
   };
 
+  systemd.services."acme-www.ppom.me".serviceConfig.OnFailure = "custom-reload-acme-www-ppom-me";
+
   # Can't make it work, hard to debug why
   # environment.etc."fail2ban/filter.d/nginx.conf".text = ''
   #     [INCLUDES]
