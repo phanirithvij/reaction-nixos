@@ -28,6 +28,8 @@ in {
     locations."/".proxyPass = "http://localhost:${builtins.toString port}";
   };
 
+  services.postgresqlBackup.databases = [ "plausible" ];
+
   # clickhouse eats too much
   systemd.services.clickhouse.serviceConfig = {
     CPUWeight = 20;
