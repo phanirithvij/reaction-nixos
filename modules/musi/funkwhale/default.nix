@@ -29,10 +29,10 @@ with lib;
       description = "Path to your music directory";
     };
 
-    dataDir = mkOption {
+    mediaDir = mkOption {
       type = types.str;
-      description = "Path to the data directory. Can also be a docker volume";
-      default = "funkwhale_data";
+      description = "Path to the data directory";
+      default = "/var/lib/funkwhale/media";
     };
 
     maxBodySize = mkOption {
@@ -61,107 +61,149 @@ with lib;
 
   config = let
     cfg = config.services.funkwhale;
-    localVars = {
+
+    localVars = let 
+      secretsDir = "/var/lib/funkwhale/secrets";
+    in {
       redisPort = 8325;
-      redisSecretFile = "/var/lib/funkwhale/secrets/redis.secret";
-      postgresSecretFile = "/var/lib/funkwhale/secrets/postgres.secret";
-      pythonSecretFile = "/var/lib/funkwhale/secrets/env.secret";
+      inherit secretsDir;
+      redisSecretFile = "${secretsDir}/redis.secret";
+      postgresSecretFile = "${secretsDir}/postgres.secret";
+      pythonSecretFile = "${secretsDir}/env.secret";
       # filled by the API container, served by host NGINX
-      frontendPath = "/var/lib/funkwhale/frontend";
+      frontendDir = "/var/lib/funkwhale/frontend";
+      staticDir = "/var/lib/funkwhale/static";
     };
-    composeGeneration = import ./docker-compose.nix;
-    mediaDir = "${cfg.dataDir}/media";
-    staticDir = "${cfg.dataDir}/static";
+
+    pythonEnv = {
+      # We're in production lol
+      DJANGO_SETTINGS_MODULE = "config.settings.production";
+      # Basic shit
+      FUNKWHALE_HOSTNAME = cfg.domainName;
+      FUNKWHALE_PROTOCOL = "https";
+      FUNKWHALE_API_IP = "127.0.0.1";
+      FUNKWHALE_API_PORT = toString cfg.hostPort;
+      FUNKWHALE_WEB_WORKERS = "4";
+      THROTTLING_RATES = "subsonic=5000/h";
+      LOG_LEVEL = "error";
+      NESTED_PROXY = "1";
+      REVERSE_PROXY_TYPE = "nginx";
+      NGINX_MAX_BODY_SIZE = cfg.maxBodySize;
+      MUSIC_DIRECTORY_SERVE_PATH = cfg.musicDir;
+      MUSIC_DIRECTORY_PATH = "/music";
+      STATIC_ROOT = "/static";
+      MEDIA_ROOT = "/media";
+      # DEFAULT_FROM_EMAIL = "noreply@yourdomain";
+    };
+
+    dockerServiceOverrides = {
+      after = [ "funkwhale-init.service" ];
+    };
+
   in mkIf cfg.enable {
     # TODO make assertion on cron import
 
-    # docker-compose generation
-    environment.etc."generated/funkwhale/docker-compose.yml".source = (composeGeneration {
-      toYaml = pkgs.toYaml;
-      cfg = cfg // {
-        inherit mediaDir staticDir;
-        inherit (localVars) pythonSecretFile frontendPath;
-      };
-    });
-
-    environment.etc."generated/funkwhale/merge-funkwhale-artists.py".source = ./merge-funkwhale-artists.py;
-
-
-    # TODO downgrade the containers user to funkwhale.
-    # Even celery tells it shouldn't run as root!
     users = {
       users.funkwhale = {
         isSystemUser = true;
-        packages = with pkgs; [];
         group = "funkwhale";
+        uid = 988;
       };
-      groups.funkwhale = {};
+      groups.funkwhale = {
+        gid = 984;
+      };
     };
 
-    systemd.services.funkwhale-init = {
-      enable = true;
-      description = "Secret generation for Funkwhale";
-      wantedBy = [ "multi-user.target" ];
-      before = [ "redis.service" "postgresql.service" ];
-      serviceConfig = {
-        Type = "oneshot";
-        User = "root";
-      };
-      path = [ pkgs.libressl ];
-      # TODO reload redis?
-      script = with localVars; ''
-        genPasswd() {
-          # tr -cd '[:alnum:]' < /dev/urandom | fold -w30 | head -n1
-          openssl rand -base64 32 | tr -cd '[:alnum:]'
-        }
-        if test '!' -f ${localVars.pythonSecretFile}
-        then
-          echo Generating secrets…
-          REDIS_PASSWORD=$(genPasswd)
-          POSTGRES_PASSWORD=$(genPasswd)
-          DJANGO_PASSWORD=$(genPasswd)
-          mkdir -p $(dirname ${redisSecretFile})
-          mkdir -p $(dirname ${postgresSecretFile})
-          mkdir -p $(dirname ${pythonSecretFile})
-          touch ${redisSecretFile} ${postgresSecretFile} ${pythonSecretFile}
-          chmod 640 ${redisSecretFile} ${postgresSecretFile} ${pythonSecretFile}
-          chown root:funkwhale ${pythonSecretFile}
-          chown root:redis ${redisSecretFile}
-          chown root:postgres ${postgresSecretFile}
+    systemd.services = {
+      funkwhale-init = {
+        enable = true;
+        description = "Secret generation for Funkwhale";
+        wantedBy = [ "multi-user.target" ];
+        after = [ "postgresql.service" ];
+        before = [ "redis.service" ];
+        serviceConfig = {
+          Type = "oneshot";
+          User = "root";
+        };
+        path = [ pkgs.libressl pkgs.postgresql ];
+        # TODO reload redis?
+        script = with localVars; ''
+          mkdir -p /var/lib/funkwhale/static /var/lib/funkwhale/secrets
+          chown funkwhale:funkwhale /var/lib/funkwhale /var/lib/funkwhale/static
+          chown root:root ${localVars.secretsDir}
+          chmod 755 /var/lib/funkwhale /var/lib/funkwhale/static ${localVars.secretsDir}
 
-          echo $REDIS_PASSWORD > ${redisSecretFile}
-          echo $POSTGRES_PASSWORD > ${postgresSecretFile}
-          cat > ${pythonSecretFile} <<EOF
-        CACHE_URL=redis://:$REDIS_PASSWORD@localhost:${builtins.toString redisPort}/0
-        DJANGO_SECRET_KEY=$DJANGO_PASSWORD
-        DATABASE_URL=postgresql://root:$POSTGRES_PASSWORD@localhost:${builtins.toString config.services.postgresql.port}/funkwhale
-        EOF
-        fi
+          genPasswd() {
+            # tr -cd '[:alnum:]' < /dev/urandom | fold -w30 | head -n1
+            openssl rand -base64 32 | tr -cd '[:alnum:]'
+          }
+
+          if test '!' -f ${pythonSecretFile}
+          then
+            echo Generating secrets…
+            REDIS_PASSWORD=$(genPasswd)
+            POSTGRES_PASSWORD=$(genPasswd)
+            DJANGO_PASSWORD=$(genPasswd)
+            touch ${redisSecretFile} ${postgresSecretFile} ${pythonSecretFile}
+            chmod 640 ${redisSecretFile} ${postgresSecretFile} ${pythonSecretFile}
+            chown root:funkwhale ${pythonSecretFile}
+            chown root:redis-funkwhale ${redisSecretFile}
+            chown root:postgres ${postgresSecretFile}
+
+            /run/wrappers/bin/su -c \
+              "psql -c \"ALTER USER funkwhale WITH PASSWORD '$POSTGRES_PASSWORD';\"" \
+              postgres
+
+            echo $REDIS_PASSWORD > ${redisSecretFile}
+            echo $POSTGRES_PASSWORD > ${postgresSecretFile}
+            cat > ${pythonSecretFile} <<EOF
+          CACHE_URL=redis://:$REDIS_PASSWORD@localhost:${toString redisPort}/0
+          DJANGO_SECRET_KEY=$DJANGO_PASSWORD
+          DATABASE_URL=postgresql://funkwhale:$POSTGRES_PASSWORD@localhost:${toString config.services.postgresql.port}/funkwhale
+          EOF
+          fi
         '';
+      };
+      docker-funkwhale-api = dockerServiceOverrides;
+      docker-funkwhale-celeryworker = dockerServiceOverrides;
+      docker-funkwhale-celerybeat = dockerServiceOverrides;
     };
 
-    # TODO fix permission issues:
-    # - Switch to password authentication (not based on system user)
-    # - Downgrade the role. For now the root role is used and is a postgresql superuser.
-    # systemd.services.funkwhale-postgres-password = {
-    #   enable = true;
-    #   description = "Secret generation for Funkwhale, part 2";
-    #   wantedBy = [ "multi-user.target" ];
-    #   requires = [ "postgresql.service" "funkwhale-init.service" ];
-    #   after = [ "postgresql.service" "funkwhale-init.service" ];
-    #   serviceConfig = {
-    #     Type = "oneshot";
-    #     User = "postgres";
-    #   };
-    #   path = [ pkgs.postgresql ];
-    #   script = with localVars; ''
-    #     POSTGRES_PASSWORD=$(cat ${postgresSecretFile})
-    #     psql -c "ALTER USER funkwhale WITH PASSWORD '$POSTGRES_PASSWORD';"
-    #     psql -c "ALTER USER root      WITH PASSWORD '$POSTGRES_PASSWORD';"
-    #     psql funkwhale -c "CREATE EXTENSION IF NOT EXISTS 'unaccent';"
-    #     psql funkwhale -c "CREATE EXTENSION IF NOT EXISTS 'citext';"
-    #     '';
-    # };
+    virtualisation.oci-containers = {
+      backend = "docker";
+
+      containers = let
+        commonOptions = {
+          autoStart = true;
+          image = "funkwhale/funkwhale:${cfg.funkwhaleVersion}";
+          extraOptions = [ "--network" "host" ]; # to connect to postgresql
+          environmentFiles = [ localVars.pythonSecretFile ];
+          environment = pythonEnv;
+          user = "${toString config.users.users.funkwhale.uid}:${toString config.users.groups.funkwhale.gid}";
+        };
+        commonVolumes = [
+            "${cfg.musicDir}:/music:ro"
+            "${cfg.mediaDir}:/${pythonEnv.MEDIA_ROOT}"
+        ];
+      in {
+        funkwhale-celeryworker = commonOptions // {
+          cmd = [ "celery" "-A" "funkwhale_api.taskapp" "worker" "-l" "INFO" "--concurrency=8" ];
+          volumes = commonVolumes;
+        };
+
+        funkwhale-celerybeat = commonOptions // {
+          cmd = [ "celery" "-A" "funkwhale_api.taskapp" "beat" "--pidfile=" "-l" "INFO" "-s" "/tmp/celerybeat-schedule" ];
+        };
+
+        funkwhale-api = commonOptions // {
+          volumes = commonVolumes ++ [
+            "${localVars.frontendDir}:/frontend"
+            "${localVars.staticDir}:${pythonEnv.STATIC_ROOT}"
+            "${./merge-funkwhale-artists.py}:/app/merge-funkwhale-artists.py:ro"
+          ];
+        };
+      };
+    };
 
     services.redis.servers.funkwhale = {
       enable = true;
@@ -177,15 +219,7 @@ with lib;
           name = "funkwhale";
           ensurePermissions = { "DATABASE funkwhale" = "ALL PRIVILEGES"; };
         }
-        {
-          name = "root";
-          ensurePermissions = { "DATABASE funkwhale" = "ALL PRIVILEGES"; };
-        }
       ];
-      identMap = ''
-        funkwhale root funkwhale
-        funkwhale funkwhale funkwhale
-      '';
     };
 
     # Rest of postgresqlBackup in musi/backup.nix
@@ -196,7 +230,7 @@ with lib;
     services.nginx.virtualHosts."${cfg.domainName}" = {
       forceSSL = true;
       enableACME = true;
-      root = localVars.frontendPath;
+      root = localVars.frontendDir;
       locations = let
         frontConfigs = ''
           add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; object-src 'none'; media-src 'self' data:";
@@ -221,7 +255,7 @@ with lib;
           proxy_set_header Connection $connection_upgrade;
           proxy_cookie_path / "/; Secure; HttpOnly; SameSite=strict";
         '';
-        proxyUrl = "http://localhost:${builtins.toString cfg.hostPort}";
+        proxyUrl = "http://localhost:${toString cfg.hostPort}";
       in {
         "/" = {
           proxyWebsockets = true;
@@ -234,11 +268,11 @@ with lib;
           '';
         };
         "/front/" = {
-          alias = "${localVars.frontendPath}/";
+          alias = "${localVars.frontendDir}/";
           extraConfig = frontConfigs;
         };
         "=/front/embed.html" = {
-          alias = "${localVars.frontendPath}/embed.html";
+          alias = "${localVars.frontendDir}/embed.html";
           extraConfig = frontConfigs;
         };
         "/federation/" = {
@@ -257,19 +291,19 @@ with lib;
           '' + proxyBackConfigs;
         };
         "/media/" = {
-          alias = "${mediaDir}/";
+          alias = "${cfg.mediaDir}/";
         };
         # TODO check the log on these paths to be sure it's really used
         "/_protected/media/" = {
           extraConfig = "internal;";
-          alias = "${mediaDir}/";
+          alias = "${cfg.mediaDir}/";
         };
         "/_protected/music/" = {
           extraConfig = "internal;";
           alias = "${cfg.musicDir}/";
         };
         "/staticfiles/" = {
-          alias = "${staticDir}/";
+          alias = "${localVars.staticDir}/";
         };
       };
       # TODO upgrade the security settings
