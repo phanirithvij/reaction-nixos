@@ -6,6 +6,28 @@ let
   f-mpv-with-scripts = super: super.wrapMpv super.mpv-unwrapped {
     scripts = with super.mpvScripts; [ mpris youtube-quality ];
   };
+  # `-l 2` because `-l 1` broke, idk why
+  my-rbw-rofi = (pkgs.writeScriptBin "rbw-rofi" ''
+    set -eu
+    set -o pipefail
+    rbw unlock
+    rbw ls --fields folder,name,user | sed 's/\t/\//g' | sort | rofi -dmenu | sed 's/^[^\/]*\///' | sed 's/\// /' | xargs -r rbw get | xclip -l 2 -selection clipboard
+  '');
+  passrofi = (pkgs.writeScriptBin "passrofi" ''
+    #${pkgs.runtimeShell}
+    shopt -s nullglob globstar
+
+    prefix=$\{PASSWORD_STORE_DIR-~/.password-store}
+    password_files=( "$prefix"/**/*.gpg )
+    password_files=( "${"\$"}{password_files[@]#"$prefix"/}" )
+    password_files=( "${"\$"}{password_files[@]%.gpg}" )
+
+    password=$(printf '%s\n' "${"\$"}{password_files[@]}" | ${pkgs.rofi}/bin/rofi -dmenu "$@")
+
+    [[ -n $password ]] || exit
+
+    ${pkgs.pass}/bin/pass show -c "$password" 2>/dev/null
+  '');
 in {
   environment.systemPackages = with pkgs; [
     # CLI
@@ -17,15 +39,10 @@ in {
     # sequoia # modern OpenPGP implementation
     tomb # LUKS wrapper
     rbw # unofficial bitwarden CLI
-    (lib.hiPrio (pkgs.writeScriptBin "rbw-rofi"
-    # `-l 2` because `-l 1` broke, idk why
-    ''
-      set -eu
-      set -o pipefail
-      rbw unlock
-      rbw ls --fields folder,name,user | sed 's/\t/\//g' | sort | rofi -dmenu | sed 's/^[^\/]*\///' | sed 's/\// /' | xargs -r rbw get | xclip -l 2 -selection clipboard
-    ''))
+    (lib.hiPrio my-rbw-rofi)
     pinentry-gnome # GUI password prompt (used by gpg-agent, installing it in global path for rbw & tomb)
+    pass # password-store
+    passrofi
     acpi # battery information
     # powertop # power information
     # pciutils # lspci
@@ -107,7 +124,7 @@ in {
     gnome3.cheese
     # ocenaudio # test ardour?
     gimp # GNU Image Manipulation Program
-    inkskape # Vector Image Editor
+    inkscape # Vector Image Editor
     deluge # BitTorrent peer
     nicotine-plus # Soulseek client
     gparted
@@ -140,7 +157,6 @@ in {
     # alejandra # Nix formatter
     zola # static site generator
     # gcc-wrapper
-    # linx-server
     sqlitebrowser
     mmctl # mattermost control (for Picasoft's server management)
 
@@ -165,13 +181,11 @@ in {
     imagemagick
     beets # MP3 tag editor
     # cdparanoia # CD ripper, `cdparanoia -B`
-    # Markdown to PDF
     # yj # YAML to JSON etc.
     # pandoc
       # texlive.combined.scheme-full # 3GB 😬
     pdftk # PDF Swiss knife
     # poppler # other PDF manipulations
-    # multimarkdown # "from Markdown" exports
 
     # adv_coreutils # with patch, see below
     mediahandler # ⏯️
@@ -188,31 +202,13 @@ in {
       # dwm override
       dwm = super.callPackage ../../pkgs/dwm {};
 
-      # sudoku game
       # soude_au_cou = super.callPackage /home/ao/prg/rust/sudoku {}; 
 
-      # media handler
       mediahandler = super.callPackage ../../pkgs/mediahandler {}; 
 
-      # linx-server for development.
-      linx-server = super.callPackage ../../pkgs/linx-server {}; 
-
-      # deepl cli
       deepl-translate-cli = super.callPackage ../../pkgs/deepl-translate-cli {}; 
 
-      # soweli
       soweli = super.callPackage ../../pkgs/soweli {};
-
-      # add -g/--progress to coreutils' cp and mv.
-      # adv_coreutils = (super.coreutils.overrideAttrs (oldAttrs: {
-      #   doCheck = false;
-      #   patches = oldAttrs.patches ++ [
-      #     (super.fetchurl {
-      #       url = "https://raw.githubusercontent.com/jarun/advcpmv/master/advcpmv-0.9-9.0.patch";
-      #       sha256 = "sha256-k6Ii44DV8xjzh+ebSLW3ZHyyNlj0vuPgbHPIESCm4iM=";
-      #     })
-      #   ];
-      # }));
 
       mpv-no-scripts = pkgs.stdenv.mkDerivation {
         version = "yay";

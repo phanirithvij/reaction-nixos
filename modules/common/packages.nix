@@ -43,7 +43,6 @@
     ## security
     srm # secure rm
     gnupg # reference OpenPGP implementation
-    pass
 
   ] ++ lib.optionals (! config.ppom.isLight) [
     fish # Friendly interactive shell
