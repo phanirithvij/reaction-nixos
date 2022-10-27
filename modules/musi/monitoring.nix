@@ -31,8 +31,52 @@ let
     ${pkgs.gawk}/bin/awk '! / 0$/ { print $1 }' $DATA_FILE | \
     ${pkgs.findutils}/bin/xargs -d'\n' -I'{}' date -d'@{}'
   '';
-in
-{
+
+  monitPort = "2812";
+  monitMail = "paco@ecomail.io";
+  monitBasicAuthFile = "/var/secrets/basic_auth_nginx/monit";
+
+  systemdCheck = ''${pkgs.writeShellApplication {
+    name = "systemctl-status-ok";
+    runtimeInputs = [ pkgs.systemd ];
+    text = ''
+      systemctl list-units --failed | grep -q "0 loaded units listed"
+      exit $?
+    '';
+  }}/bin/systemctl-status-ok'';
+in {
+  services.monit = let
+  in {
+    enable = true;
+    config = ''
+      # General Settings
+      SET DAEMON 30 # Run checks every 30s
+      SET HTTPD PORT ${monitPort} ADDRESS 127.0.0.1 SIGNATURE DISABLE ALLOW MD5 ${monitBasicAuthFile}
+
+      # Mail alerts
+      SET ALERT ${monitMail} WITH REMINDER ON 120 CYCLES # Every 10min
+      SET MAILSERVER localhost
+
+      # Standard Checks
+      CHECK SYSTEM musi
+      CHECK NETWORK musi-ethernet INTERFACE enp6s0
+
+      # System D failed service check
+      CHECK PROGRAM systemctl-status PATH ${systemdCheck} TIMEOUT 2 SECONDS
+        IF STATUS != 0 THEN ALERT
+    '';
+  };
+
+  services.nginx.virtualHosts."ppom.me" = {
+    forceSSL = true;
+    enableACME = true;
+    locations."/monit/" = {
+      # trailing / indicates that the "/monit/" prefix should be removed
+      proxyPass = "http://localhost:${monitPort}/";
+      # extraConfig = ''auth_basic "Credentials"; auth_basic_user_file ${monitBasicAuthFile};'';
+    };
+  };
+
   services.vnstat.enable = true;
 
   environment.etc."vnstat.conf".text = ''
@@ -69,4 +113,3 @@ in
     serviceConfig.ExecStart = "${check}/bin/check_co.sh";
   };
 }
-
