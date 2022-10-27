@@ -1,66 +1,201 @@
 { lib, config, pkgs, ... }:
 
 let
-  ecomailAddress = "paco@ecomail.io";
-  personnalAddress = "paco@ppom.me";
-  adminAddress = "admin@ppom.me";
-  poubelleAddress = "poubelle@ppom.me";
+  ecomailAddress = "ppom@ecomail.io";
+  primaryDomain = "mail.ppom.me";
+  acmeDir = "/var/lib/acme/${primaryDomain}";
 in
 {
-  imports = [
-    (builtins.fetchTarball {
-      # Pick a commit from the branch you are interested in
-      url = "https://gitlab.com/simple-nixos-mailserver/nixos-mailserver/-/archive/f535d8123c4761b2ed8138f3d202ea710a334a1d/nixos-mailserver-f535d8123c4761b2ed8138f3d202ea710a334a1d.tar.gz";
-      # And set its hash
-      sha256 = "sha256:0csx2i8p7gbis0n5aqpm57z5f9cd8n9yabq04bg1h4mkfcf7mpl6";
-    })
-  ];
-
-  mailserver = {
-    enable = true;
-    fqdn = "mail.ppom.me";
-    domains = [ "ppom.me" ];
-
-    # A list of all login accounts. To create the password hashes, use
-    # nix run nixpkgs.apacheHttpd -c htpasswd -nbB "" "super secret password" | cut -d: -f2
-    loginAccounts = {
-      # Me
-      "${personnalAddress}" = {
-        hashedPasswordFile = "/var/secrets/mail/paco.secret";
-        quota = "3G";
-      };
-      # Send only
-      "no-reply@ppom.me" = {
-        hashedPasswordFile = "/var/secrets/mail/no-reply.secret";
-        sendOnly = true;
-      };
-      # Official one
-      "${adminAddress}" = {
-        hashedPasswordFile = "/var/secrets/mail/admin.secret";
-        aliases = ["abuse@ppom.me" "postmaster@ppom.me"];
-        quota = "2G";
-      };
-      # Catch all
-      "${poubelleAddress}" = {
-        hashedPasswordFile = "/var/secrets/mail/poubelle.secret";
-        catchAll = [ "ppom.me" ];
-        quota = "2G";
-      };
-      # People
-      "lzn@ppom.me" = {
-        hashedPasswordFile = "/var/secrets/mail/lzn.secret";
-        quota = "2G";
-      };
+  services.nginx.virtualHosts = {
+    "mail.ppom.me" = {
+      enableACME = true;
+      forceSSL = true;
     };
-
-    forwards = {
-      "${personnalAddress}" = poubelleAddress;
-      "${adminAddress}" = poubelleAddress;
+    "mta-sts.ppom.me" = {
+      enableACME = true;
+      forceSSL = true;
+      locations."/.well-known/".root = pkgs.writeTextDir "mta-sts.txt" ''
+        version: STSv1
+        mode: enforce
+        max_age: 604800
+        mx: mail.ppom.me
+      '';
     };
-
-    # Use Let's Encrypt certificates. Adds a virtual host to nginx.
-    certificateScheme = 3;
   };
 
-  systemd.services.postfix.enable = lib.mkForce false;
+  # TODO more fine-grained control
+  users.groups.nginx.members = [ "maddy" ];
+
+  services.maddy = {
+    inherit primaryDomain;
+    enable = true;
+    openFirewall = true;
+    hostname = "ppom.me";
+    config = ''
+      tls file ${acmeDir}/cert.pem ${acmeDir}/key.pem
+
+      # ----------------------------------------------------------------------------
+      # Local storage & authentication
+
+      # pass_table provides local hashed passwords storage for authentication of
+      # users. It can be configured to use any "table" module, in default
+      # configuration a table in SQLite DB is used.
+      # Table can be replaced to use e.g. a file for passwords. Or pass_table module
+      # can be replaced altogether to use some external source of credentials (e.g.
+      # PAM, /etc/shadow file).
+      #
+      # If table module supports it (sql_table does) - credentials can be managed
+      # using 'maddyctl creds' command.
+
+      auth.pass_table local_authdb {
+          table sql_table {
+              driver sqlite3
+              dsn credentials.db
+              table_name passwords
+          }
+      }
+
+      # imapsql module stores all indexes and metadata necessary for IMAP using a
+      # relational database. It is used by IMAP endpoint for mailbox access and
+      # also by SMTP & Submission endpoints for delivery of local messages.
+      #
+      # IMAP accounts, mailboxes and all message metadata can be inspected using
+      # imap-* subcommands of maddyctl utility.
+
+      storage.imapsql local_mailboxes {
+          driver sqlite3
+          dsn imapsql.db
+      }
+
+      # ----------------------------------------------------------------------------
+      # SMTP endpoints + message routing
+
+      table.chain local_rewrites {
+          optional_step regexp "(.+)\+(.+)@(.+)" "$1@$3"
+          optional_step static {
+              entry postmaster postmaster@$(primary_domain)
+          }
+      }
+
+      msgpipeline local_routing {
+          # Insert handling for special-purpose local domains here.
+          # e.g.
+          # destination lists.example.org {
+          #     deliver_to lmtp tcp://127.0.0.1:8024
+          # }
+
+          destination postmaster $(local_domains) {
+              modify {
+                  replace_rcpt &local_rewrites
+              }
+
+              deliver_to &local_mailboxes
+          }
+
+          default_destination {
+              reject 550 5.1.1 "User doesn't exist"
+          }
+      }
+
+      smtp tcp://0.0.0.0:25 {
+          limits {
+              # Up to 20 msgs/sec across max. 10 SMTP connections.
+              all rate 20 1s
+              all concurrency 10
+          }
+
+          dmarc yes
+          check {
+              require_mx_record
+              dkim
+              spf
+          }
+
+          source $(local_domains) {
+              reject 501 5.1.8 "Use Submission for outgoing SMTP"
+          }
+          default_source {
+              destination postmaster $(local_domains) {
+                  deliver_to &local_routing
+              }
+              default_destination {
+                  reject 550 5.1.1 "User doesn't exist"
+              }
+          }
+      }
+
+      submission tls://0.0.0.0:465 tcp://0.0.0.0:587 {
+          limits {
+              # Up to 50 msgs/sec across any amount of SMTP connections.
+              all rate 50 1s
+          }
+
+          auth &local_authdb
+
+          source $(local_domains) {
+              check {
+                  authorize_sender {
+                      prepare_email &local_rewrites
+                      user_to_email identity
+                  }
+              }
+
+              destination postmaster $(local_domains) {
+                  deliver_to &local_routing
+              }
+              default_destination {
+                  modify {
+                      dkim $(primary_domain) $(local_domains) default
+                  }
+                  deliver_to &remote_queue
+              }
+          }
+          default_source {
+              reject 501 5.1.8 "Non-local sender domain"
+          }
+      }
+
+      target.remote outbound_delivery {
+          limits {
+              # Up to 20 msgs/sec across max. 10 SMTP connections
+              # for each recipient domain.
+              destination rate 20 1s
+              destination concurrency 10
+          }
+          mx_auth {
+              # dane
+              mtasts {
+                  cache fs
+                  fs_dir mtasts_cache/
+              }
+              local_policy {
+                  min_tls_level encrypted
+                  min_mx_level none
+              }
+          }
+      }
+
+      target.queue remote_queue {
+          target &outbound_delivery
+
+          autogenerated_msg_domain $(primary_domain)
+          bounce {
+              destination postmaster $(local_domains) {
+                  deliver_to &local_routing
+              }
+              default_destination {
+                  reject 550 5.0.0 "Refusing to send DSNs to non-local addresses"
+              }
+          }
+      }
+
+      # ----------------------------------------------------------------------------
+      # IMAP endpoints
+
+      imap tls://0.0.0.0:993 tcp://0.0.0.0:143 {
+          auth &local_authdb
+          storage &local_mailboxes
+      }
+    '';
+  };
 }
