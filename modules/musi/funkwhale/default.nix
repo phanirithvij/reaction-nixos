@@ -40,23 +40,6 @@ with lib;
       description = "Max upload size. Handled by nginx";
       default = "100M";
     };
-
-    # TODO rename options (not a cron)
-    # TODO add systemd time option
-    # TODO support multiple jobs
-    importCronEnable = mkEnableOption "Enable a daily job to update the library from disk";
-
-    importCronLibraryID = mkOption {
-      type = types.str;
-      description = "ID of the library to import to";
-    };
-
-    # TODO
-    importContainerPath = mkOption {
-      type = types.str;
-      description = "Path to the library in the container. Defaults to /music";
-      default = "/music";
-    };
   };
 
   config = let
@@ -101,7 +84,6 @@ with lib;
     };
 
   in mkIf cfg.enable {
-    # TODO make assertion on cron import
 
     users = {
       users.funkwhale = {
@@ -164,6 +146,7 @@ with lib;
           fi
         '';
       };
+
       docker-funkwhale-api = dockerServiceOverrides;
       docker-funkwhale-celeryworker = dockerServiceOverrides;
       docker-funkwhale-celerybeat = dockerServiceOverrides;
@@ -312,30 +295,5 @@ with lib;
         add_header Referrer-Policy "strict-origin-when-cross-origin";
       '';
     };
-
-    systemd.timers.update-funkwhale-library = (lib.optionalAttrs cfg.importCronEnable {
-      wantedBy = [ "timers.target" ];
-      after = [ "network.target" ];
-      timerConfig = {
-        OnCalendar = "daily";
-      };
-    });
-    systemd.services.update-funkwhale-library = (lib.optionalAttrs cfg.importCronEnable {
-      description = "Update the funkwhale library in place";
-      # faketty function found here: https://stackoverflow.com/questions/32910661
-      script = ''
-        faketty () {
-          ${pkgs.util-linux}/bin/script -qefc "$(printf "%q " "$@")"
-        }
-        faketty ${pkgs.docker}/bin/docker exec -it funkwhale-api-1 python manage.py import_files ${cfg.importCronLibraryID} /music/beet --in-place --async --recursive --noinput;
-      '';
-    });
-    security.doas.extraRules = (lib.optionals cfg.importCronEnable [{
-      users = [ "ppom" ];
-      cmd = "systemctl";
-      args = [ "start" "update-funkwhale-library.service" ];
-      runAs = "root";
-      noPass = true;
-    }]);
   };
 }

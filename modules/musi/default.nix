@@ -37,8 +37,6 @@
     domainName = "music.ppom.me";
     musicDir = "/data/funkwhale/music";
     mediaDir = "/data/funkwhale/data/media";
-    importCronEnable = true;
-    importCronLibraryID = "307d7f12-23df-49c1-9394-e39daf94047c";
   };
 
   # Use the systemd-boot EFI boot loader.
