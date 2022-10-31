@@ -33,7 +33,8 @@ let
   '';
 
   monitPort = "2812";
-  monitMail = "paco@ecomail.io";
+  monitDestinationMail = "paco@ecomail.io";
+  monitFromMail = "monitoring@ppom.me";
   monitBasicAuthFile = "/var/secrets/basic_auth_nginx/monit";
 
   systemdCheck = ''${pkgs.writeShellApplication {
@@ -54,8 +55,9 @@ in {
       SET HTTPD PORT ${monitPort} ADDRESS 127.0.0.1 SIGNATURE DISABLE ALLOW MD5 ${monitBasicAuthFile}
 
       # Mail alerts
-      SET ALERT ${monitMail} WITH REMINDER ON 120 CYCLES # Every 10min
+      SET ALERT ${monitDestinationMail} WITH REMINDER ON 120 CYCLES # Every 10min
       SET MAILSERVER localhost
+      SET MAIL-FORMAT { from: ${monitFromMail} }
 
       # Standard Checks
       CHECK SYSTEM musi
@@ -64,6 +66,10 @@ in {
       # System D failed service check
       CHECK PROGRAM systemctl-status PATH ${systemdCheck} TIMEOUT 2 SECONDS
         IF STATUS != 0 THEN ALERT
+
+      # TEST. Will fail because /data is a directory.
+      # CHECK PROGRAM test PATH /data
+      #   IF STATUS != 0 THEN ALERT
     '';
   };
 
