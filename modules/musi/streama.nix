@@ -3,7 +3,7 @@ with lib;
 let
   domainName = "video.ppom.me";
   localPort = "8001";
-  dbPath = "/var/lib/streama/streama";
+  dbPath = "jdbc:h2:/var/lib/streama/streama;AUTO_SERVER=TRUE";
   jarFile = pkgs.fetchurl {
     url = "https://github.com/streamaserver/streama/releases/download/v1.10.4/streama-1.10.4.jar";
     sha256 = "sha256:0bnsnwimx1mdxq7jh8z5wg7wh0g8gixkb99qmi9pbm7lhfvil1x1";
@@ -13,7 +13,7 @@ let
         production:
             dataSource:
                 driverClassName:  'org.h2.Driver'
-                url: jdbc:h2:${dbPath};MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE;AUTO_SERVER=TRUE
+                url: ${dbPath};MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE
                 username: root
                 password:
             server:
@@ -152,7 +152,7 @@ in {
     description = "Make a SQL backup file of the Streama DB";
     script = ''
       OUTPUT=/var/lib/streama/backup.sql
-      ${pkgs.h2}/bin/h2tool.sh org.h2.tools.Script -url "jdbc:h2:/var/lib/streama/streama;AUTO_SERVER=TRUE" -user root -password "" -script $OUTPUT
+      ${pkgs.h2}/bin/h2tool.sh org.h2.tools.Script -url "${dbPath}" -user root -password "" -script $OUTPUT
       chmod 600 $OUTPUT
     '';
   };
@@ -166,7 +166,7 @@ in {
     description = "Clean duplicate viewing statuses on Streama";
     # Additional parenthesis added in the nested SELECT because of this: https://groups.google.com/g/h2-database/c/dBeNlTTXz-U
     script = ''
-      ${pkgs.h2}/bin/h2tool.sh org.h2.tools.RunScript -url "jdbc:h2:/var/lib/streama/streama;AUTO_SERVER=TRUE" -user root -password "" -script ${
+      ${pkgs.h2}/bin/h2tool.sh org.h2.tools.RunScript -url "${dbPath}" -user root -password "" -script ${
         pkgs.writeScript
         "streama-clean-updates-script"
         ''
