@@ -42,7 +42,12 @@ let
     runtimeInputs = [ pkgs.systemd ];
     text = ''
       systemctl list-units --failed | grep -q "0 loaded units listed"
-      exit $?
+      if test $? = 0
+      then
+        exit 0
+      fi
+      systemctl list-units --failed
+      exit 1
     '';
   }}/bin/systemctl-status-ok'';
 in {
@@ -66,6 +71,10 @@ in {
       # System D failed service check
       CHECK PROGRAM systemctl-status PATH ${systemdCheck} TIMEOUT 2 SECONDS
         IF STATUS != 0 THEN ALERT
+
+      # Uploader index.html must be present
+      CHECK FILE uploader-index PATH /data/uploader/index.html
+        START = "${pkgs.coreutils}/bin/touch /data/uploader/index.html"
 
       # TEST. Will fail because /data is a directory.
       # CHECK PROGRAM test PATH /data
