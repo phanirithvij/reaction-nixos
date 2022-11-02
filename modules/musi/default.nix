@@ -80,15 +80,11 @@
     };
   };
 
-  systemd.timers.uptime-calc = {
-    description = "Saves uptime";
-    wantedBy = [ "timers.target" ];
-    timerConfig.OnCalendar = "23:00:00";
-  };
   systemd.services.uptime-calc = {
     description = "Saves uptime";
     serviceConfig.User = "ppom";
     script = ''uptime > ${config.users.users.ppom.home}/uptimes/$(date '+%y-%m-%d')'';
+    startAt = "23:00:00";
   };
 
   # Doas

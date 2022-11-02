@@ -47,19 +47,12 @@ in
 {
   environment.systemPackages = [ down_detector ];
 
-  systemd.timers.down_detector = {
-    wantedBy = [ "timers.target" ];
-    after = [ "network.target" ];
-    timerConfig = {
-      # OnCalendar = "*-*-* *:*:00";
-      OnCalendar = "minutely";
-    };
-  };
   systemd.services.down_detector = {
     description = "check if some websites are down";
     serviceConfig = {
       ExecStart = "${down_detector}/bin/down_detector.sh";
       User = "ao";
     };
+    startAt = "minutely";
   };
 }

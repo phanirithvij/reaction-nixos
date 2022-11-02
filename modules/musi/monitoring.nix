@@ -115,14 +115,10 @@ in {
 
   environment.systemPackages = [ check print ];
 
-  systemd.timers.check-co = {
-    description = "Check if internet connection is up";
-    wantedBy = [ "timers.target" ];
-    timerConfig.OnCalendar = "minutely";
-  };
   systemd.services.check-co = {
     description = "Check if internet connection is up";
     serviceConfig.User = "ppom";
     serviceConfig.ExecStart = "${check}/bin/check_co.sh";
+    startAt = "minutely";
   };
 }

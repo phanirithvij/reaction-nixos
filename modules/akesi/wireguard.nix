@@ -41,16 +41,10 @@ in
   };
   environment.systemPackages = [ pkgs.dnsmasq pkgs.tcpdump ];
 
-  systemd.timers.fetch_blocklist = {
-    wantedBy = [ "timers.target" ];
-    after = [ "network.target" ];
-    timerConfig = {
-      OnCalendar = "daily";
-    };
-  };
   systemd.services.fetch_blocklist = {
     description = "update DNSmasq's blocklist";
     script = "${pkgs.curl}/bin/curl ${blocklistUrl} -o ${blocklistPath}";
+    startAt = "daily";
   };
 
   networking.wg-quick.interfaces = {

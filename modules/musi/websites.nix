@@ -9,7 +9,7 @@ let
     ];
   });
   nginxLogPath = "/var/log/nginx/access.log";
-  reloadScript = pkgs.writeScriptBin "custom-reload-acme-www-ppom-me" ''
+  reloadScript = pkgs.writeScript "custom-reload-acme-www-ppom-me" ''
     #!/${pkgs.runtimeShell}
 
     real_path=/etc/static/nginx/nginx.conf
@@ -203,15 +203,14 @@ in {
     wantedBy = [ "timers.target" ];
     after = [ "network.target" ];
     timerConfig = {
-      OnCalendar = "*-*-01 00:00:00";
     };
   };
   systemd.services.custom-reload-acme-www-ppom-me = {
     description = "Temporarily edit the nginx conf to update properly the Let's Encrypt certificate for www.ppom.me";
     serviceConfig = {
-      ExecStart = "${reloadScript}/bin/custom-reload-acme-www-ppom-me";
-      # User = "root";
+      ExecStart = reloadScript;
     };
+    startAt = "*-*-01 00:00:00";
   };
 
   systemd.services."acme-www.ppom.me".serviceConfig.OnFailure = "custom-reload-acme-www-ppom-me";

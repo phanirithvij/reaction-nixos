@@ -57,14 +57,6 @@
   #   ];
   # };
 
-  systemd.timers.notify-low-battery = {
-    wantedBy = [ "timers.target" ];
-    after = [ "grapical.target" ];
-    timerConfig = {
-      # every 2 minutes
-      OnCalendar = "*-*-* *:0/2:00";
-    };
-  };
   systemd.services.notify-low-battery = {
     description = "Notify on low battery with sound and notification";
     serviceConfig = {
@@ -92,6 +84,7 @@
       }/bin/check_battery";
       User = "ao";
     };
+    startAt = "*-*-* *:0/2:00";
   };
 
   # Programs

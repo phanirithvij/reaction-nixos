@@ -143,11 +143,6 @@ in {
     })
   ];
 
-  systemd.timers.streama-backup = {
-    description = "Make a SQL backup file of the Streama DB";
-    wantedBy = [ "timers.target" ];
-    timerConfig.OnCalendar = "daily";
-  };
   systemd.services.streama-backup = {
     description = "Make a SQL backup file of the Streama DB";
     script = ''
@@ -155,13 +150,9 @@ in {
       ${pkgs.h2}/bin/h2tool.sh org.h2.tools.Script -url "${dbPath}" -user root -password "" -script $OUTPUT
       chmod 600 $OUTPUT
     '';
+    startAt = "daily";
   };
 
-  systemd.timers.streama-clean-duplicates = {
-    description = "Clean duplicate viewing statuses on Streama";
-    wantedBy = [ "timers.target" ];
-    timerConfig.OnCalendar = "daily";
-  };
   systemd.services.streama-clean-duplicates = {
     description = "Clean duplicate viewing statuses on Streama";
     # Additional parenthesis added in the nested SELECT because of this: https://groups.google.com/g/h2-database/c/dBeNlTTXz-U
@@ -179,5 +170,6 @@ in {
         ''
       }
     '';
+    startAt = "daily";
   };
 }

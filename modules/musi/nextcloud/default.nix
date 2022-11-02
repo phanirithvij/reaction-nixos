@@ -74,14 +74,10 @@ in {
     # };
   };
 
-  systemd.timers.nextcloud-run-cronjob = {
-    wantedBy = [ "timers.target" ];
-    after = [ "network.target" ];
-    timerConfig.OnCalendar = "*-*-* *:0/5:0";
-  };
   systemd.services.nextcloud-run-cronjob = {
     description = "Launch Nextcloud's regular job";
     serviceConfig.ExecStart = "${pkgs.docker}/bin/docker exec -u 33 ${nextcloud.dockerName} php cron.php";
+    startAt = "*-*-* *:0/5:0";
   };
 
 
