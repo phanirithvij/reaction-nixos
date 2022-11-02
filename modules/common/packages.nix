@@ -9,6 +9,7 @@
     ## nix
     nixos-option # print the actual value of a NixOS option
     nvd # print versions and changes of packages across nix closures
+    nix-diff # prints differences between two derivations, ex: `nix-diff /nix/var/nix/profiles/system-{n,n+1}-link`
 
     ## processus
     htop # process viewer
