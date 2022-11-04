@@ -8,6 +8,8 @@ let
     sha256 = "sha256-78awjXg50xjUYNQZKAnkCgVBxs+OMKfkOPjCqIH+YrY=";
   };
 
+  # TODO build the app w/ https://nixos.org/manual/nixpkgs/stable/#dotnet
+
 in stdenv.mkDerivation {
   inherit pname src version;
 
