@@ -2,12 +2,16 @@
 
 let
   ecomailAddress = "ppom@ecomail.io";
-  primaryDomain = "mail.ppom.me";
-  acmeDir = "/var/lib/acme/${primaryDomain}";
+  hostname = "mail.ppom.me";
+  primaryDomain = "ppom.me";
+  acmeDir = "/var/lib/acme/${hostname}";
+  # TODO reference all ports in a centralized file
+  # autoconfigPort = "6548";
+  # autoconfigDomain = "autoconfig.ppom.me";
 in
 {
   services.nginx.virtualHosts = {
-    "mail.ppom.me" = {
+    ${primaryDomain} = {
       enableACME = true;
       forceSSL = true;
     };
@@ -18,35 +22,54 @@ in
         version: STSv1
         mode: enforce
         max_age: 604800
-        mx: mail.ppom.me
+        mx: ${primaryDomain}
       '';
     };
+    # Autoconfig steps were found here: https://nixos.wiki/wiki/Maddy
+    # DNS entry: _autodiscover._tcp SRV 0 0 443 autoconfig
+    # FIXME waiting for NixOS 22.05 to have this module
+    # ${autoconfigDomain} = {
+    #   enableACME = true;
+    #   forceSSL = true;
+    #   locations."/".proxyPass = "http://localhost:${autoconfigPort}";
+    # };
   };
 
-  # TODO more fine-grained control
-  users.groups.nginx.members = [ "maddy" ];
+  # services.go-autoconfig = {
+  #   enable = true;
+  #   settings = {
+  #     service_addr = ":1323";
+  #     domain = autoconfigDomain;
+  #     imap = {
+  #       server = hostname;
+  #       port = 993;
+  #     };
+  #     smtp = {
+  #       server = hostname;
+  #       port = 587;
+  #     };
+  #   };
+  # };
+
+  users.users.maddy.extraGroups = [ config.security.acme.certs."${primaryDomain}".group ];
+
+
+  networking.firewall.allowedTCPPorts = [
+    25 # SMTP
+    143 # IMAP, STARTTLS
+    993 # IMAP, SSL/TLS
+    587 # SMTP, SSL/TLS
+    465 # SMTP, STARTTLS
+  ];
 
   services.maddy = {
-    inherit primaryDomain;
+    inherit primaryDomain hostname;
     enable = true;
     openFirewall = true;
-    hostname = "ppom.me";
     config = ''
       tls file ${acmeDir}/cert.pem ${acmeDir}/key.pem
 
-      # ----------------------------------------------------------------------------
-      # Local storage & authentication
-
-      # pass_table provides local hashed passwords storage for authentication of
-      # users. It can be configured to use any "table" module, in default
-      # configuration a table in SQLite DB is used.
-      # Table can be replaced to use e.g. a file for passwords. Or pass_table module
-      # can be replaced altogether to use some external source of credentials (e.g.
-      # PAM, /etc/shadow file).
-      #
-      # If table module supports it (sql_table does) - credentials can be managed
-      # using 'maddyctl creds' command.
-
+      # Store accounts with sqlite
       auth.pass_table local_authdb {
           table sql_table {
               driver sqlite3
@@ -55,66 +78,66 @@ in
           }
       }
 
-      # imapsql module stores all indexes and metadata necessary for IMAP using a
-      # relational database. It is used by IMAP endpoint for mailbox access and
-      # also by SMTP & Submission endpoints for delivery of local messages.
-      #
-      # IMAP accounts, mailboxes and all message metadata can be inspected using
-      # imap-* subcommands of maddyctl utility.
-
+      # Store mails with sqlite
       storage.imapsql local_mailboxes {
           driver sqlite3
           dsn imapsql.db
       }
 
-      # ----------------------------------------------------------------------------
-      # SMTP endpoints + message routing
+      # table.chain local_rewrites {
+      # # Handle 'user+alias@domain' delivery to 'user@domain'
+      #     optional_step regexp "(.+)\+(.+)@(.+)" "$1@$3"
+      #     optional_step static {
+      #         entry postmaster postmaster@$(primary_domain)
+      #     }
+      # }
 
-      table.chain local_rewrites {
-          optional_step regexp "(.+)\+(.+)@(.+)" "$1@$3"
-          optional_step static {
-              entry postmaster postmaster@$(primary_domain)
-          }
-      }
-
+      # Handle local domains
       msgpipeline local_routing {
-          # Insert handling for special-purpose local domains here.
-          # e.g.
-          # destination lists.example.org {
-          #     deliver_to lmtp tcp://127.0.0.1:8024
-          # }
-
           destination postmaster $(local_domains) {
               modify {
-                  replace_rcpt &local_rewrites
-              }
+                  # replace_rcpt &local_rewrites
 
+                  # FIXME
+                  # Postmaster as a catch-all address
+                  # replace_rcpt regex ".*" "postmaster@$(primary_domain)"
+              }
               deliver_to &local_mailboxes
           }
-
+          # Should not happen
           default_destination {
-              reject 550 5.1.1 "User doesn't exist"
+              reject 550 5.1.1 "Who?"
           }
       }
 
       smtp tcp://0.0.0.0:25 {
           limits {
-              # Up to 20 msgs/sec across max. 10 SMTP connections.
-              all rate 20 1s
+              all rate 10 1s
               all concurrency 10
           }
 
-          dmarc yes
-          check {
-              require_mx_record
-              dkim
-              spf
-          }
-
+          # Allow submission for local accounts
           source $(local_domains) {
-              reject 501 5.1.8 "Use Submission for outgoing SMTP"
+              check {
+                command test {source_ip} = 127.0.0.1 -o {source_ip} = ::1 {
+                  run_on conn
+                  code 1 reject 550 5.1.1 "Only localhost can use local accounts on port 25"
+                }
+              }
+              default_destination {
+                  modify {
+                      dkim $(primary_domain) $(local_domains) default
+                  }
+                  deliver_to &remote_queue
+              }
           }
           default_source {
+              # dmarc yes # FIXME!
+              check {
+                  require_mx_record
+                  dkim
+                  spf
+              }
               destination postmaster $(local_domains) {
                   deliver_to &local_routing
               }
@@ -126,20 +149,16 @@ in
 
       submission tls://0.0.0.0:465 tcp://0.0.0.0:587 {
           limits {
-              # Up to 50 msgs/sec across any amount of SMTP connections.
-              all rate 50 1s
+              all rate 10 1s
           }
-
           auth &local_authdb
-
           source $(local_domains) {
               check {
                   authorize_sender {
-                      prepare_email &local_rewrites
+                      # prepare_email &local_rewrites
                       user_to_email identity
                   }
               }
-
               destination postmaster $(local_domains) {
                   deliver_to &local_routing
               }
@@ -157,9 +176,7 @@ in
 
       target.remote outbound_delivery {
           limits {
-              # Up to 20 msgs/sec across max. 10 SMTP connections
-              # for each recipient domain.
-              destination rate 20 1s
+              destination rate 10 1s
               destination concurrency 10
           }
           mx_auth {
@@ -177,7 +194,6 @@ in
 
       target.queue remote_queue {
           target &outbound_delivery
-
           autogenerated_msg_domain $(primary_domain)
           bounce {
               destination postmaster $(local_domains) {
@@ -188,9 +204,6 @@ in
               }
           }
       }
-
-      # ----------------------------------------------------------------------------
-      # IMAP endpoints
 
       imap tls://0.0.0.0:993 tcp://0.0.0.0:143 {
           auth &local_authdb
