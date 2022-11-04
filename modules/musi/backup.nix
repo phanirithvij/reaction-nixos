@@ -1,7 +1,7 @@
 { lib, pkgs, config, ... }:
 with lib;
 let
-  backup = { name, paths, startAt ? "daily" }: {
+  backup = { name, paths, startAt ? "daily", extraArgs ? {} }: {
     "${name}" = {
         paths = paths;
         startAt = startAt;
@@ -20,7 +20,7 @@ let
           BORG_RSH = "ssh -i /var/secrets/backups/${name}/sshkey";
         };
         repo = "ppom@node.cmercier.fr:/pacobackup/${name}";
-    };
+    } // extraArgs;
   };
 in
 {
@@ -40,6 +40,10 @@ in
       name = "var";
       paths = [ "/var/" ];
       startAt = [ "*-*-* 01:00" ];
+      extraArgs = {
+        preHook = "systemctl stop clickhouse.service";
+        postHook = "systemctl start clickhouse.service";
+      };
     }
     // backup {
       name = "data";
