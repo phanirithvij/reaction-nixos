@@ -8,7 +8,7 @@ let
   '';
 
   check = pkgs.writeScriptBin "check_co.sh" ''
-    #!${pkgs.bash}/bin/bash
+    #!${pkgs.runtimeShell}
 
     ${VARS}
 
@@ -22,7 +22,7 @@ let
   '';
 
   print = pkgs.writeScriptBin "print_co.sh" ''
-    #!${pkgs.bash}/bin/bash
+    #!${pkgs.runtimeShell}
 
     ${VARS}
 
@@ -37,19 +37,17 @@ let
   monitFromMail = "monitoring@ppom.me";
   monitBasicAuthFile = "/var/secrets/basic_auth_nginx/monit";
 
-  systemdCheck = ''${pkgs.writeShellApplication {
-    name = "systemctl-status-ok";
-    runtimeInputs = [ pkgs.systemd ];
-    text = ''
-      systemctl list-units --failed | grep -q "0 loaded units listed"
+  systemdCheck = pkgs.writeScript "systemctl-status-ok" ''
+      #!${pkgs.runtimeShell}
+
+      ${pkgs.systemd}/bin/systemctl list-units --failed | grep -q "0 loaded units listed"
       if test $? = 0
       then
         exit 0
       fi
-      systemctl list-units --failed
+      ${pkgs.systemd}/bin/systemctl list-units --failed
       exit 1
     '';
-  }}/bin/systemctl-status-ok'';
 in {
   services.monit = let
   in {

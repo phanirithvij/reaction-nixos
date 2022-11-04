@@ -10,7 +10,7 @@ let
   });
   nginxLogPath = "/var/log/nginx/access.log";
   reloadScript = pkgs.writeScriptBin "custom-reload-acme-www-ppom-me" ''
-    #!/${pkgs.bash}/bin/bash
+    #!/${pkgs.runtimeShell}
 
     real_path=/etc/static/nginx/nginx.conf
     conf_path=/etc/nginx/nginx.conf

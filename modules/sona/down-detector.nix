@@ -11,7 +11,7 @@ let
   dns_test = "dns2.proxad.net";
   log_file = "/home/ao/DOWN";
   down_detector = pkgs.writeScriptBin "down_detector.sh" ''
-    #!${pkgs.bash}/bin/bash
+    #!${pkgs.runtimeShell}
 
     LOG_FILE="${log_file}"
 
