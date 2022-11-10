@@ -63,6 +63,8 @@ in
             au TextYankPost * silent! lua vim.highlight.on_yank {on_visual=false}
           '' + lib.optionalString isDesktop ''
             let g:languagetool_jar='${pkgs.languagetool}/share/languagetool-commandline.jar'
+            let g:languagetool_server_command='${pkgs.languagetool}/bin/languagetool-http-server'
+            nmap <space>l :LanguageToolSetUp<CR>:sleep 2<CR>:LanguageToolCheck<CR>
 
             let g:vim_markdown_folding_disabled = 1
             let g:vim_markdown_toc_autofit = 1
