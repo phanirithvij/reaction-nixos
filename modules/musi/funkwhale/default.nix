@@ -2,43 +2,67 @@
 # docker network create -d bridge --subnet 192.168.0.0/24 --gateway 192.168.0.1 mynet
 # containers on this network will access to the host, for example to connect to a database
 { lib, pkgs, config, ... }:
-with lib;
 {
-  options.services.funkwhale = {
+  options.services.funkwhale = with lib; with types; {
     enable = mkEnableOption "enable Funkwhale using docker-compose";
 
     domainName = mkOption {
-      type = types.str;
+      type = str;
       description = "Domain you want to use";
     };
 
     funkwhaleVersion = mkOption {
-      type = types.str;
+      type = str;
       description = "Funkwhale version on Docker hub";
     };
 
     # TODO fix this. the option doesn't work, i didn't manage to change the port number (always 5000)
     hostPort = mkOption {
-      type = types.int;
+      type = int;
       description = "Port to expose on the host";
       default = 5000;
     };
 
     musicDir = mkOption {
-      type = types.str;
+      type = str;
       description = "Path to your music directory";
     };
 
     mediaDir = mkOption {
-      type = types.str;
+      type = str;
       description = "Path to the data directory";
       default = "/var/lib/funkwhale/media";
     };
 
     maxBodySize = mkOption {
-      type = types.str;
+      type = str;
       description = "Max upload size. Handled by nginx";
       default = "100M";
+    };
+
+    autoScan = {
+      enable = mkOption {
+        type = bool;
+        default = false;
+        description = "enable regular scan of subscribed libraries";
+      };
+
+      passwordFile = mkOption {
+        type = str;
+        description = mdDoc ''
+          An env file containing the generated token in the user's settings.
+          Needs permissions `read:follows` and `write:libraries`.
+          ```bash
+          TOKEN=the-generated-token
+          ```
+        '';
+      };
+
+      startAt = mkOption {
+        type = str;
+        description = mdDoc "When to launch the scans. Must be in the format described in `systemd.time`";
+        default = "weekly";
+      };
     };
   };
 
@@ -83,7 +107,14 @@ with lib;
       after = [ "funkwhale-init.service" ];
     };
 
-  in mkIf cfg.enable {
+  in lib.mkIf cfg.enable {
+
+    assertions = [
+      {
+        assertion = cfg.autoScan.enable -> (cfg.autoScan.passwordFile != null && cfg.autoScan.startAt != null);
+        message = "if you enable autoScan, you must set its parameters";
+      }
+    ];
 
     users = {
       users.funkwhale = {
@@ -294,6 +325,31 @@ with lib;
         add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; object-src 'none'; media-src 'self' data:";
         add_header Referrer-Policy "strict-origin-when-cross-origin";
       '';
+    };
+
+    systemd.services.funkwhale-scan = lib.mkIf cfg.autoScan.enable {
+      serviceConfig = {
+        Environment = [
+          "BASE_URL=https://${cfg.domainName}/api/v1"
+        ];
+        EnvironmentFile = cfg.autoScan.passwordFile;
+        ExecStart = pkgs.writeScript "funkwhale-scan" ''
+          #!${pkgs.runtimeShell}
+          set -e
+
+          REQUEST=$(${pkgs.curl}/bin/curl -s --oauth2-bearer "$TOKEN" "$BASE_URL/federation/follows/library/all")
+          LIBRARIES=$(echo $REQUEST | ${pkgs.jq}/bin/jq -r '.results[].library')
+          COUNT=$(echo $REQUEST | ${pkgs.jq}/bin/jq -r '.count')
+
+          echo "$COUNT libraries"
+          for LIB in $LIBRARIES
+          do
+              printf "$LIB → "
+              ${pkgs.curl}/bin/curl --no-progress-meter --oauth2-bearer "$TOKEN" -X POST "$BASE_URL/federation/libraries/$LIB/scan" | ${pkgs.jq}/bin/jq -r '.status'
+          done
+        '';
+      };
+      startAt = cfg.autoScan.startAt;
     };
   };
 }

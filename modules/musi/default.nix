@@ -37,6 +37,11 @@
     domainName = "music.ppom.me";
     musicDir = "/data/funkwhale/music";
     mediaDir = "/data/funkwhale/data/media";
+    autoScan = {
+      enable = true;
+      passwordFile = "/var/secrets/funkwhale/scanToken";
+      startAt = "*-*-02/2 20:00"; # systemd.time: every 2 days at 20:00
+    };
   };
 
   # Use the systemd-boot EFI boot loader.
