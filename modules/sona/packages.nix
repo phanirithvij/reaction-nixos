@@ -107,12 +107,12 @@ in {
     firefox # Best browser ever
     unstable.thunderbird # Mail, CalDav, XMPP & Matrix client
     ungoogled-chromium # Alternative browser
-    signal-desktop # Signal Messaging client
+    unstable.signal-desktop # Signal Messaging client
     # code-server # VSCodium w/ in-browser client & server
-    mumble # Mumble VoIP client
+    # mumble # Mumble VoIP client
     # anki
     # drawio
-    tor-browser-bundle-bin
+    # tor-browser-bundle-bin
     # jitsi-meet-electron
     # element-desktop
     pcmanfm # File Browser
@@ -130,10 +130,10 @@ in {
     gparted
     syncthing # ± P2P file synchronization
     apache-directory-studio # LDAP client
-    ferdi # Web client for apps (Mattermost, Nextcloud, Telegram…)
+    unstable.ferdium # Web client for apps (Mattermost, Nextcloud, Telegram…)
     # nextcloud-client
     # rssguard
-    klavaro # learn to type efficiently
+    # klavaro # learn to type efficiently
 
     # Games
     # superTux superTuxKart
@@ -161,7 +161,7 @@ in {
     mmctl # mattermost control (for Picasoft's server management)
 
     docker
-    docker-compose
+    docker-compose # for SiMDE's Portail des assos
     # virt-manager
     # wireshark
     # vscodium
@@ -182,8 +182,8 @@ in {
     beets # MP3 tag editor
     # cdparanoia # CD ripper, `cdparanoia -B`
     # yj # YAML to JSON etc.
-    # pandoc
-      # texlive.combined.scheme-full # 3GB 😬
+    pandoc
+    texlive.combined.scheme-small
     pdftk # PDF Swiss knife
     # poppler # other PDF manipulations
 
