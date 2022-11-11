@@ -84,19 +84,21 @@ in
           dsn imapsql.db
       }
 
-      # table.chain local_rewrites {
-      # # Handle 'user+alias@domain' delivery to 'user@domain'
-      #     optional_step regexp "(.+)\+(.+)@(.+)" "$1@$3"
-      #     optional_step static {
-      #         entry postmaster postmaster@$(primary_domain)
-      #     }
-      # }
+      table.chain local_rewrites {
+          # Handle 'user+alias@domain' delivery to 'user@domain'
+          # optional_step regexp "(.+)\+(.+)@(.+)" "$1@$3"
+          # postmaster as a catchall address
+          optional_step regexp "(.+)@(.+)" "postmaster@$2"
+          optional_step static {
+              entry postmaster postmaster@$(primary_domain)
+          }
+      }
 
       # Handle local domains
       msgpipeline local_routing {
           destination postmaster $(local_domains) {
               modify {
-                  # replace_rcpt &local_rewrites
+                  replace_rcpt &local_rewrites
 
                   # FIXME
                   # Postmaster as a catch-all address
@@ -155,7 +157,7 @@ in
           source $(local_domains) {
               check {
                   authorize_sender {
-                      # prepare_email &local_rewrites
+                      prepare_email &local_rewrites
                       user_to_email identity
                   }
               }
