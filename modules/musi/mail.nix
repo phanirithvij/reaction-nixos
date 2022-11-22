@@ -11,9 +11,12 @@ let
 in
 {
   services.nginx.virtualHosts = {
-    ${primaryDomain} = {
+    ${hostname} = {
       enableACME = true;
       forceSSL = true;
+      locations."/".root = pkgs.writeTextDir "index.html" ''
+        Here is the mail.
+      '';
     };
     "mta-sts.ppom.me" = {
       enableACME = true;
