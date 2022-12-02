@@ -40,10 +40,6 @@ in
       name = "var";
       paths = [ "/var/" ];
       startAt = [ "*-*-* 01:00" ];
-      extraArgs = {
-        preHook = "systemctl stop clickhouse.service";
-        postHook = "systemctl start clickhouse.service";
-      };
     }
     // backup {
       name = "data";
