@@ -185,6 +185,25 @@ in {
           add_header X-Frame-Options "DENY";
         '';
       };
+
+      "tokipona.ppom.me" = {
+        # enable and force SSL with Let's Encrypt
+        forceSSL = true;
+        enableACME = true;
+        # locations
+        locations = {
+          "/" = {
+            tryFiles = "$uri $uri.html $uri/ =404";
+            root = "/data/tokipona";
+          };
+        };
+        extraConfig = ''
+          # add_header Strict-Transport-Security "max-age=31536000";
+          # add_header Content-Security-Policy "default-src 'self' u.ppom.me; img-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'";
+          add_header X-Content-Type-Options "nosniff";
+          add_header X-Frame-Options "DENY";
+        '';
+      };
     };
   };
 
