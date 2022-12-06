@@ -1,13 +1,12 @@
 { lib, config, pkgs, ... }:
 
 let
-  ecomailAddress = "ppom@ecomail.io";
   hostname = "mail.ppom.me";
   primaryDomain = "ppom.me";
   acmeDir = "/var/lib/acme/${hostname}";
   # TODO reference all ports in a centralized file
-  # autoconfigPort = "6548";
-  # autoconfigDomain = "autoconfig.ppom.me";
+  autoconfigPort = "6548";
+  autoconfigDomain = "autoconfig.ppom.me";
 in
 {
   services.nginx.virtualHosts = {
@@ -30,29 +29,28 @@ in
     };
     # Autoconfig steps were found here: https://nixos.wiki/wiki/Maddy
     # DNS entry: _autodiscover._tcp SRV 0 0 443 autoconfig
-    # FIXME waiting for NixOS 22.05 to have this module
-    # ${autoconfigDomain} = {
-    #   enableACME = true;
-    #   forceSSL = true;
-    #   locations."/".proxyPass = "http://localhost:${autoconfigPort}";
-    # };
+    ${autoconfigDomain} = {
+      enableACME = true;
+      forceSSL = true;
+      locations."/".proxyPass = "http://localhost:${autoconfigPort}";
+    };
   };
 
-  # services.go-autoconfig = {
-  #   enable = true;
-  #   settings = {
-  #     service_addr = ":1323";
-  #     domain = autoconfigDomain;
-  #     imap = {
-  #       server = hostname;
-  #       port = 993;
-  #     };
-  #     smtp = {
-  #       server = hostname;
-  #       port = 587;
-  #     };
-  #   };
-  # };
+  services.go-autoconfig = {
+    enable = true;
+    settings = {
+      service_addr = ":${autoconfigPort}";
+      domain = autoconfigDomain;
+      imap = {
+        server = hostname;
+        port = 993;
+      };
+      smtp = {
+        server = hostname;
+        port = 587;
+      };
+    };
+  };
 
   users.users.maddy.extraGroups = [ config.security.acme.certs."${primaryDomain}".group ];
 
