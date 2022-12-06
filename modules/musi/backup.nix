@@ -32,24 +32,9 @@ in
 
   services.borgbackup = {
     jobs = backup {
-      name = "etc_nixos";
-      paths = [ "/etc/nixos/" ];
-      startAt = [ "*-*-* 02:30" ];
-    }
-    // backup {
-      name = "var";
-      paths = [ "/var/" ];
-      startAt = [ "*-*-* 01:00" ];
-    }
-    // backup {
       name = "data";
-      paths = [ "/data/" ];
+      paths = [ "/data/" "/var/" "/etc/nixos/" "/home/" "/root/" ];
       startAt = [ "*-*-* 02:00" ];
-    }
-    // backup {
-      name = "home";
-      paths = [ "/home/" "/root/" ];
-      startAt = [ "*-*-* 01:30" ];
     };
   };
 }
