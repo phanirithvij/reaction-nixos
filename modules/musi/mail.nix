@@ -63,6 +63,25 @@ in
     465 # SMTP, STARTTLS
   ];
 
+  environment.etc."fail2ban/filter.d/maddy.conf".text = ''
+    [INCLUDES]
+    before = common.conf
+
+    [Definition]
+    failregex = ^.*authentication failed.*"src_ip":"<ADDR>:.*$
+    ignoreregex =
+    journalmatch = _SYSTEMD_UNIT=maddy.service + _COMM=maddy
+  '';
+  services.fail2ban.jails.maddy = ''
+    enabled = true
+    port = 80,443
+    filter = maddy
+
+    maxretry = 20
+    findtime = 3600
+    bantime = ${toString (3600 * 24)}
+  '';
+
   services.maddy = {
     inherit primaryDomain hostname;
     enable = true;
