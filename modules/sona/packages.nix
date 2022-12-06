@@ -6,12 +6,11 @@ let
   f-mpv-with-scripts = super: super.wrapMpv super.mpv-unwrapped {
     scripts = with super.mpvScripts; [ mpris youtube-quality ];
   };
-  # `-l 2` because `-l 1` broke, idk why
   my-rbw-rofi = (pkgs.writeScriptBin "rbw-rofi" ''
     set -eu
     set -o pipefail
     rbw unlock
-    rbw ls --fields folder,name,user | sed 's/\t/\//g' | sort | rofi -dmenu | sed 's/^[^\/]*\///' | sed 's/\// /' | xargs -r rbw get | xclip -l 2 -selection clipboard
+    rbw ls --fields folder,name,user | sed 's/\t/\//g' | sort | ${pkgs.rofi}/bin/rofi -dmenu | sed 's/^[^\/]*\///' | sed 's/\// /' | xargs -r rbw get | xclip -l 1 -selection clipboard
   '');
   passrofi = (pkgs.writeScriptBin "passrofi" ''
     #${pkgs.runtimeShell}
@@ -169,6 +168,7 @@ in {
     # python39Packages.pip
     # nodejs cargo
     rustup
+    gcc
 
     # Sysadmin
     tdns-cli # dig alternative
