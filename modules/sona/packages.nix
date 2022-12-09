@@ -68,9 +68,9 @@ in {
 
     # GUI apps
     firefox # Best browser ever
-    unstable.thunderbird # Mail, CalDav, XMPP & Matrix client
+    thunderbird # Mail, CalDav, XMPP & Matrix client
     ungoogled-chromium # Alternative browser
-    unstable.signal-desktop # Signal Messaging client
+    signal-desktop # Signal Messaging client
     # code-server # VSCodium w/ in-browser client & server
     # mumble # Mumble VoIP client
     # anki
@@ -93,7 +93,7 @@ in {
     gparted
     syncthing # ± P2P file synchronization
     apache-directory-studio # LDAP client
-    unstable.ferdium # Web client for apps (Mattermost, Nextcloud, Telegram…)
+    ferdium # Web client for apps (Mattermost, Nextcloud, Telegram…)
     # nextcloud-client
     # rssguard
     # klavaro # learn to type efficiently
