@@ -163,9 +163,6 @@ in {
         super.rofi-mpd
       ]; };
 
-      # dwm override
-      dwm = super.callPackage ../../pkgs/dwm {};
-
       # soude_au_cou = super.callPackage /home/ao/prg/rust/sudoku {}; 
 
       mediahandler = super.callPackage ../../pkgs/mediahandler {}; 
