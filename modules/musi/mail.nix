@@ -82,6 +82,11 @@ in
     bantime = ${toString (3600 * 24)}
   '';
 
+  systemd.services.maddy = {
+    after = [ "network.target" ];
+    # restartTriggers = [ config.environment.etc."resolv.conf".source ];
+  };
+
   services.maddy = {
     inherit primaryDomain hostname;
     enable = true;
