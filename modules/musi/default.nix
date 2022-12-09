@@ -6,6 +6,7 @@
     ./anpa.nix # container
     ./backup.nix
     ./converter/default.nix
+    ./dolibarr.nix
     ./funkwhale/default.nix
     ./hardware-configuration.nix
     ./ghmm.nix
