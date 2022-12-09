@@ -145,6 +145,8 @@
     ];
   };
 
+  services.getty.autologinUser = "ao";
+
   programs.fish.enable = true;
   programs.xonsh.enable = true;
   environment.pathsToLink = [
@@ -188,10 +190,10 @@
 
   # Enable sound.
   sound.enable = true;
-  hardware.pulseaudio = {
-    enable = true;
-    package = pkgs.pulseaudioFull; # In order to get Bluetooth support
-  };
+  # hardware.pulseaudio = {
+  #   enable = true;
+  #   package = pkgs.pulseaudioFull; # In order to get Bluetooth support
+  # };
 
   services.tlp.enable = true;
 

@@ -4,29 +4,8 @@
 let 
   unstable = import <nixos-unstable> {};
   f-mpv-with-scripts = super: super.wrapMpv super.mpv-unwrapped {
-    scripts = with super.mpvScripts; [ mpris youtube-quality ];
+    scripts = with super.mpvScripts; [ mpris ];
   };
-  my-rbw-rofi = (pkgs.writeScriptBin "rbw-rofi" ''
-    set -eu
-    set -o pipefail
-    rbw unlock
-    rbw ls --fields folder,name,user | sed 's/\t/\//g' | sort | ${pkgs.rofi}/bin/rofi -dmenu | sed 's/^[^\/]*\///' | sed 's/\// /' | xargs -r rbw get | xclip -l 1 -selection clipboard
-  '');
-  passrofi = (pkgs.writeScriptBin "passrofi" ''
-    #${pkgs.runtimeShell}
-    shopt -s nullglob globstar
-
-    prefix=$\{PASSWORD_STORE_DIR-~/.password-store}
-    password_files=( "$prefix"/**/*.gpg )
-    password_files=( "${"\$"}{password_files[@]#"$prefix"/}" )
-    password_files=( "${"\$"}{password_files[@]%.gpg}" )
-
-    password=$(printf '%s\n' "${"\$"}{password_files[@]}" | ${pkgs.rofi}/bin/rofi -dmenu "$@")
-
-    [[ -n $password ]] || exit
-
-    ${pkgs.pass}/bin/pass show -c "$password" 2>/dev/null
-  '');
 in {
   environment.systemPackages = with pkgs; [
     # CLI
@@ -38,10 +17,8 @@ in {
     # sequoia # modern OpenPGP implementation
     tomb # LUKS wrapper
     rbw # unofficial bitwarden CLI
-    (lib.hiPrio my-rbw-rofi)
     pinentry-gnome # GUI password prompt (used by gpg-agent, installing it in global path for rbw & tomb)
     pass # password-store
-    passrofi
     acpi # battery information
     # powertop # power information
     # pciutils # lspci
@@ -51,6 +28,7 @@ in {
     # sl # You shouldn't type `sl`...
     jq # JSON shell toolbox
     pup # jq for HTML
+    bc # basic calculator
     # xsv # jq for CSV
     # parallel
     openvpn
@@ -79,26 +57,12 @@ in {
     # Desktop environment
     alacritty # terminal
     st # backup terminal if OpenGL bugs
-    conky # status bar
     feh # image viewer
-    xorg.xrandr # manage monitors
-    xorg.xev # log key and mouse events
-    xorg.xkill # kill an unresponsive window
-    xclip # X clipboard
-    autorandr # xrandr configurations memory
     dunst # notification daemon
     libnotify # send notifications
-    qsudo # graphical sudo
-    xdotool # programmatically move the mouse, type, etc.
-    numlockx # set Num Lock
-    xss-lock # for use with a screen locker
-    flameshot # advanced screenshots
     peek # GIF screenshots
-    redshift # less 'blue' screen
     pavucontrol # Pulseaudio GUI
     ncpamixer # Pulseaudio TUI
-    # ponymix # Pulseaudio CLI
-    rofi # Menu chooser (dmenu like)
     networkmanagerapplet # NM connection editor
 
 
@@ -223,6 +187,11 @@ in {
       };
 
       mpv-with-scripts = f-mpv-with-scripts super;
+
+      mpvpaper = super.mpvpaper.overrideAttrs (finalAttrs: previousAttrs: {
+        mpv = pkgs.mpv;
+      });
+
 
       ytfzf = super.ytfzf.override { mpv = f-mpv-with-scripts super; };
 

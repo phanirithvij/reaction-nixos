@@ -47,6 +47,12 @@ in
         # Neovim said this
         set-option -sa terminal-overrides ',xterm-256color:RGB'
         set-option -g focus-events on
+
+        # Wayland said this
+        set -ga update-environment ",SWAYSOCK,WAYLAND_DISPLAY"
+
+        # ssh-agent said this
+        set -ga update-environment ",SSH_AUTH_SOCK,SSH_AGENT_PID"
         '' else ''
         ''}
       '';

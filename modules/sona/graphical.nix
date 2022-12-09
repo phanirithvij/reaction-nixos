@@ -1,39 +1,139 @@
 { lib, config, pkgs, ... }:
+# from https://nixos.wiki/wiki/Sway
+let
+  # bash script to let dbus know about important env variables and
+  # propagate them to relevent services run at the end of sway config
+  # see
+  # https://github.com/emersion/xdg-desktop-portal-wlr/wiki/"It-doesn't-work"-Troubleshooting-Checklist
+  # note: this is pretty much the same as  /etc/sway/config.d/nixos.conf but also restarts  
+  # some user services to make sure they have the correct environment variables
+  dbus-sway-environment = pkgs.writeTextFile {
+    name = "dbus-sway-environment";
+    destination = "/bin/dbus-sway-environment";
+    executable = true;
+
+    text = ''
+  dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+  systemctl --user stop pipewire pipewire-media-session xdg-desktop-portal xdg-desktop-portal-wlr
+  systemctl --user start pipewire pipewire-media-session xdg-desktop-portal xdg-desktop-portal-wlr
+      '';
+  };
+
+  # currently, there is some friction between sway and gtk:
+  # https://github.com/swaywm/sway/wiki/GTK-3-settings-on-Wayland
+  # the suggested way to set gtk settings is with gsettings
+  # for gsettings to work, we need to tell it where the schemas are
+  # using the XDG_DATA_DIR environment variable
+  # run at the end of sway config
+  configure-gtk = pkgs.writeTextFile {
+      name = "configure-gtk";
+      destination = "/bin/configure-gtk";
+      executable = true;
+      text = let
+        schema = pkgs.gsettings-desktop-schemas;
+        datadir = "${schema}/share/gsettings-schemas/${schema.name}";
+      in ''
+        export XDG_DATA_DIRS=${datadir}:$XDG_DATA_DIRS
+        gnome_schema=org.gnome.desktop.interface
+        gsettings set $gnome_schema gtk-theme 'Dracula'
+        '';
+  };
+
+  rbw-wofi = (pkgs.writeScriptBin "rbw-wofi" ''
+    #!${pkgs.runtimeShell}
+    set -eu
+    set -o pipefail
+    rbw unlock
+    rbw ls --fields folder,name,user | sed 's/\t/\//g' | sort | ${pkgs.wofi}/bin/wofi --dmenu | sed 's/^[^\/]*\///' | sed 's/\// /' | xargs -r rbw get | wl-copy -o
+  '');
+  passwofi = (pkgs.writeScriptBin "passwofi" ''
+    #${pkgs.runtimeShell}
+    shopt -s nullglob globstar
+
+    prefix=$\{PASSWORD_STORE_DIR-~/.password-store}
+    password_files=( "$prefix"/**/*.gpg )
+    password_files=( "${"\$"}{password_files[@]#"$prefix"/}" )
+    password_files=( "${"\$"}{password_files[@]%.gpg}" )
+
+    password=$(printf '%s\n' "${"\$"}{password_files[@]}" | ${pkgs.wofi}/bin/wofi --dmenu "$@")
+
+    [[ -n $password ]] || exit
+
+    ${pkgs.pass}/bin/pass show | wl-copy -o
+  '');
+
+in
 {
-  # Enable the X11 windowing system.
-  services.xserver = {
+  environment.systemPackages = with pkgs; [
+    sway
+    wayland
+
+    swaylock
+    swayidle
+
+    dbus-sway-environment
+    configure-gtk
+
+    glib # gsettings
+    dracula-theme # gtk theme
+    gnome3.adwaita-icon-theme # default gnome cursors
+
+    grim # screenshot functionality
+    slurp # screenshot functionality
+
+    pulseaudio # only for pactl
+
+    conky # status bar
+    mpvpaper # mpv as a wallpaper
+    kanshi # auto change randr
+
+    wlr-randr # manage displays/monitors
+    wl-clipboard # wl-copy and wl-paste for copy/paste from stdin / stdout
+    wofi # wayland clone of rofi
+    wofi-emoji # wrapper for emoji mode
+
+    rbw-wofi
+    passwofi
+  ];
+
+
+  services.pipewire = {
     enable = true;
-    # enableCtrlAltBackspace = true;
-    layout = "fr";
-    # Enable touchpad support.
-    libinput.enable = true;
-    # use dwm
-    windowManager.dwm.enable = true;
-    # configure LightDM
-    displayManager = {
-      lightdm.enable = true;
-      lightdm.greeter.enable = false;
-      # autoLogin
-      autoLogin.enable = true;
-      autoLogin.user = "ao";
-    };
-    # The dots per inch of my screen.
-    dpi = 96;
+    alsa.enable = true;
+    pulse.enable = true;
+  };
+
+
+  # xdg-desktop-portal works by exposing a series of D-Bus interfaces
+  # known as portals under a well-known name
+  # (org.freedesktop.portal.Desktop) and object path
+  # (/org/freedesktop/portal/desktop).
+  # The portal interfaces include APIs for file access, opening URIs,
+  # printing and others.
+  services.dbus.enable = true;
+  xdg.portal = {
+    enable = true;
+    wlr.enable = true;
+    # gtk portal needed to make gtk apps happy
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+  };
+
+  # enable sway window manager
+  programs.sway = {
+    enable = true;
+    wrapperFeatures.gtk = true;
   };
 
   ### BEGIN UNFREE
   # Yeah, I'm not proud of that
-  nixpkgs.config.allowUnfree = true;
+  # nixpkgs.config.allowUnfree = true;
   # nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [ "steam" "nvidia" ];
 
-  # Nvidia driver
-  # services.xserver.videoDrivers = [ "nvidia" ];
-
   # Steam related
-  environment.systemPackages = [ pkgs.steam ];
-  hardware.opengl.driSupport32Bit = true;
-  hardware.opengl.extraPackages32 = with pkgs.pkgsi686Linux; [ libva ];
-  hardware.pulseaudio.support32Bit = true;
+  # environment.systemPackages = [ pkgs.steam ];
+  # hardware.opengl.driSupport32Bit = true;
+  # hardware.opengl.extraPackages32 = with pkgs.pkgsi686Linux; [ libva ];
+  # hardware.pulseaudio.support32Bit = true;
   ### END UNFREE
 
   # Fix of: Can't shutdown after having suspended the laptop by closing it.
@@ -45,17 +145,7 @@
   specialisation.closeLid.configuration.services.logind.lidSwitch = lib.mkOverride 98 "lock";
 
   # setuid wrapper for slock
-  programs.slock.enable = true;
-
-  # Cron jobs
-  # services.cron = {
-  #   enable = true;
-  #   cronFiles = [
-  #     ''${pkgs.writeText "ao.crontab" ''
-  #       */30 * * * * ao /home/ao/bin/change_wallpaper.fish
-  #     ''}''
-  #   ];
-  # };
+  # programs.slock.enable = true;
 
   systemd.services.notify-low-battery = {
     description = "Notify on low battery with sound and notification";
@@ -92,10 +182,10 @@
     # Udev rules
     light.enable = true;
 
-    xss-lock = {
-      enable = true;
-      lockerCommand = "/run/wrappers/bin/slock";
-    };
+    # xss-lock = {
+    #   enable = true;
+    #   lockerCommand = "/run/wrappers/bin/slock";
+    # };
 
     gnupg.agent = {
       pinentryFlavor = "gnome3";
@@ -105,60 +195,10 @@
 
   # Flatpak
   services.flatpak.enable = true;
-  xdg.portal = {
-    enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
-  };
+  # xdg.portal = {
+  #   enable = true;
+  #   extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+  # };
 
   environment.variables.BROWSER = "firefox";
-
-  xdg.mime = let
-    mails = "thunderbird.desktop";
-    images = "feh.desktop";
-    videos = "mpv.desktop";
-    web = "firefox.desktop";
-    pdfs = "org.gnome.Evince.desktop;";
-    bittorrent = "deluge.desktop";
-    filemanager = "pcmanfm.desktop";
-  in {
-    defaultApplications = {
-      "inode/directory" = filemanager;
-      "application/pdf" = pdfs;
-      "image/jpeg" = images;
-      "image/jpg" = images;
-      "image/png" = images;
-      "image/gif" = web;
-      "video/ogg" = videos;
-      "video/mp4" = videos;
-      "video/webm" = videos;
-      "video/mkv" = videos;
-      "video/avi" = videos;
-      "text/html" = web;
-      "x-scheme-handler/http" = web;
-      "x-scheme-handler/https" = web;
-      "x-scheme-handler/mailto" = mails;
-      "message/rfc822" = mails;
-      "x-scheme-handler/feed" = mails;
-      "application/rss+xml" = mails;
-      "application/x-extension-rss" = mails;
-    };
-    addedAssociations = {
-      "application/x-bittorrent" = bittorrent;
-      "x-scheme-handler/mailto" = mails;
-      "message/rfc822" = mails;
-      "application/pdf" = pdfs;
-      "x-scheme-handler/feed" = mails;
-      "application/rss+xml" = mails;
-      "application/x-extension-rss" = mails;
-      "video/ogg" = videos;
-      "video/mp4" = videos;
-      "video/webm" = videos;
-      "video/mkv" = videos;
-      "video/avi" = videos;
-      "text/html" = web;
-      "x-scheme-handler/http" = web;
-      "x-scheme-handler/https" = web;
-    };
-  };
-
 }
