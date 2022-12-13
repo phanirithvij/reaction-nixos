@@ -218,12 +218,6 @@ in {
     "Z '/var/cache/nginx' 0750 ${config.services.nginx.user} ${config.services.nginx.group} -"
   ];
 
-  systemd.timers.custom-reload-acme-www-ppom-me = {
-    wantedBy = [ "timers.target" ];
-    after = [ "network.target" ];
-    timerConfig = {
-    };
-  };
   systemd.services.custom-reload-acme-www-ppom-me = {
     description = "Temporarily edit the nginx conf to update properly the Let's Encrypt certificate for www.ppom.me";
     serviceConfig = {
