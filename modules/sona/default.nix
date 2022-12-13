@@ -89,12 +89,10 @@
 
   nix = {
     settings = {
-      allowed-users = [ "@wheel" ];
-
       # Only allow root and sudo users
-      auto-optimise-store = true;
+      allowed-users = [ "@wheel" ];
+      experimental-features = "nix-command flakes";
     };
-    extraOptions = ''experimental-features = nix-command flakes'';
 
     # FIXME update to daemonIOSchedClass daemonIOSchedPriority
     # daemonIONiceLevel = 7;

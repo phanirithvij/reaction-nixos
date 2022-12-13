@@ -43,9 +43,6 @@
       automatic = true;
       options = "--delete-older-than 15d";
     };
-    optimise = {
-      automatic = true;
-    };
   };
 
   # Only allow paths from /nix/store to be executables

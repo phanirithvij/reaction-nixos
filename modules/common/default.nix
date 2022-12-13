@@ -15,6 +15,11 @@
   environment.homeBinInPath = true;
 
   nix = {
+    settings = {
+      connect-timeout = 5;
+      log-lines = 25;
+      auto-optimise-store = true;
+    };
     # FIXME update to daemonIOSchedClass daemonIOSchedPriority
     # daemonIONiceLevel = 7;
     # FIXME update to daemonCPUSchedPolicy
