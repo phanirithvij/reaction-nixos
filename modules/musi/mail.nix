@@ -87,6 +87,13 @@ in
     # restartTriggers = [ config.environment.etc."resolv.conf".source ];
   };
 
+  systemd.services.restart-maddy = {
+    script = ''
+      ${pkgs.systemd}/bin/systemctl restart maddy.service
+    '';
+    startAt = "08:00";
+  };
+
   services.maddy = {
     inherit primaryDomain hostname;
     enable = true;
