@@ -97,6 +97,7 @@ in {
       ExecStart = ''
         ${pkgs.jre8_headless}/bin/java -jar streama.jar
       '';
+      Restart = "on-success"; # If oom-killed
       NoNewPrivileges = true;
       ProtectSystem = "strict";
       ReadWritePaths = [ "/var/lib/streama" "/data/streama/uploads" ];
