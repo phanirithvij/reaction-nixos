@@ -25,19 +25,14 @@ let
   # for gsettings to work, we need to tell it where the schemas are
   # using the XDG_DATA_DIR environment variable
   # run at the end of sway config
-  configure-gtk = pkgs.writeTextFile {
-      name = "configure-gtk";
-      destination = "/bin/configure-gtk";
-      executable = true;
-      text = let
-        schema = pkgs.gsettings-desktop-schemas;
-        datadir = "${schema}/share/gsettings-schemas/${schema.name}";
-      in ''
-        export XDG_DATA_DIRS=${datadir}:$XDG_DATA_DIRS
-        gnome_schema=org.gnome.desktop.interface
-        gsettings set $gnome_schema gtk-theme 'Dracula'
-        '';
-  };
+  configure-gtk = let
+    schema = pkgs.gsettings-desktop-schemas;
+    datadir = "${schema}/share/gsettings-schemas/${schema.name}";
+  in pkgs.writeScriptBin "configure-gtk" ''
+    export XDG_DATA_DIRS=${datadir}:$XDG_DATA_DIRS
+    gnome_schema=org.gnome.desktop.interface
+    gsettings set $gnome_schema gtk-theme 'Sweet-Dark'
+  '';
 
   rbw-wofi = (pkgs.writeScriptBin "rbw-wofi" ''
     #!${pkgs.runtimeShell}
@@ -65,23 +60,28 @@ let
 in
 {
   environment.systemPackages = with pkgs; [
-    sway
     wayland
 
     swaylock
     swayidle
+    swaybg
 
     dbus-sway-environment
     configure-gtk
 
     glib # gsettings
     dracula-theme # gtk theme
+    gruvbox-dark-gtk # gtk theme
+    nordic # gtk theme
+    sweet # gtk theme
     gnome3.adwaita-icon-theme # default gnome cursors
 
     grim # screenshot functionality
     slurp # screenshot functionality
 
     pulseaudio # only for pactl
+    wlsunset
+    wev
 
     conky # status bar
     mpvpaper # mpv as a wallpaper
