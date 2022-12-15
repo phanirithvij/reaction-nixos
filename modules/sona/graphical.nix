@@ -68,6 +68,7 @@ in
 
     dbus-sway-environment
     configure-gtk
+    xdg-utils
 
     glib # gsettings
     dracula-theme # gtk theme
