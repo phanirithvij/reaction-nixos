@@ -53,6 +53,8 @@ in {
     ytfzf # Youtube scrapper ⨯ fzf
     # aerc # Email client
     # neovim-remote
+    khal # calendar
+    vdirsyncer # caldav syncer
 
     # Desktop environment
     alacritty # terminal
