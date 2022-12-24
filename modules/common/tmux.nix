@@ -40,7 +40,7 @@ in
 
         ${if config.ppom.isDesktop then ''
         set -g status-style fg=#ffffff
-        set -g status-style bg=#444444
+        set -g status-style bg=#460179
 
         set -g detach-on-destroy off # since tmux 3.2. Love it.
 
