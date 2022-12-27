@@ -34,7 +34,7 @@ let
 
   monitPort = "2812";
   monitDestinationMail = "paco@ecomail.io";
-  monitFromMail = "monitoring@ppom.me";
+  monitFromMail = "musi@ppom.me";
   monitBasicAuthFile = "/var/secrets/basic_auth_nginx/monit";
 
   systemdCheck = pkgs.writeScript "systemctl-status-ok" ''
@@ -45,7 +45,15 @@ let
       then
         exit 0
       fi
-      ${pkgs.systemd}/bin/systemctl list-units --failed
+
+      units="$(systemctl list-units --failed | grep ● | cut -d" " -f2)"
+      echo "$units"
+
+      for unit in $units
+      do
+        echo "FAILED: $unit"
+        journalctl --no-pager -n 8 -u "$unit" | head -n4
+      done
       exit 1
     '';
 in {
@@ -60,7 +68,15 @@ in {
       # Mail alerts
       SET ALERT ${monitDestinationMail} WITH REMINDER ON 120 CYCLES # Every 10min
       SET MAILSERVER localhost
-      SET MAIL-FORMAT { from: ${monitFromMail} }
+      SET MAIL-FORMAT {
+      from: Monit <${monitFromMail}>
+      subject: $HOST: $EVENT
+      message: host:   $HOST
+      action: $ACTION
+      date:   $DATE
+      --
+      $DESCRIPTION
+      }
 
       # Standard Checks
       CHECK SYSTEM musi
