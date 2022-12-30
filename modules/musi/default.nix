@@ -6,7 +6,7 @@
     ./anpa.nix # container
     ./backup.nix
     ./converter/default.nix
-    # ./directus.nix
+    ./directus/default.nix
     ./dolibarr.nix
     ./funkwhale/default.nix
     ./hardware-configuration.nix
@@ -42,6 +42,25 @@
       enable = true;
       passwordFile = "/var/secrets/funkwhale/scanToken";
       startAt = "*-*-02/2 20:00"; # systemd.time: every 2 days at 20:00
+    };
+  };
+
+  services.directus.servers = {
+    "pompeani.art" = {
+      settings = {
+        NULL_TEST = null;
+        PORT = 8055;
+        PUBLIC_URL = "https://pompeani.art";
+        EMAIL_FROM = "directus@ppom.me";
+        EMAIL_TRANSPORT = "smtp";
+        EMAIL_SMTP_USER = "directus@ppom.me";
+        EMAIL_SMTP_HOST = "mail.ppom.me";
+        EMAIL_SMTP_PORT = 587;
+        EMAIL_SMTP_PASSWORD_FILE = "/var/secrets/mail/directus";
+      };
+      nginx.enable = true;
+      # redis.enable = true;
+      # redis.port = 8056;
     };
   };
 
