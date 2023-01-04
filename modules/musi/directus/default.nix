@@ -29,8 +29,18 @@ in {
     servers = mkOption {
       default = {};
       description = "Configuration of multiple directus instances";
-      type = attrsOf (submodule ({config, name, ...}@args: {
+      type = attrsOf (submodule ({name, config, ...}: {
+      # type = attrsOf {
         options = {
+
+          enable = mkEnableOption "enable this directus instance";
+
+          domain = mkOption {
+            type = str;
+            description = mdDoc ''
+              Whether to use local storage for file uploads
+            '';
+          };
 
           useLocalStorage = mkOption {
             type = bool;
@@ -67,7 +77,7 @@ in {
                 # General
                 HOST = mkOption {
                   type = str;
-                  default = if instanceCfg.nginx.enable then "127.0.0.1" else "0.0.0.0";
+                  default = if config.nginx.enable then "127.0.0.1" else "0.0.0.0";
                   defaultText = literalExpression ''if services.directus.servers.<name>.nginx.enable then "127.0.0.1" else "0.0.0.0"'';
                   description = mdDoc ''
                     IP or host the API listens on
@@ -82,15 +92,16 @@ in {
                 };
                 PUBLIC_URL = mkOption {
                   type = str;
-                  default = "/";
+                  default = if config.nginx.enable then config.nginx.serverName + config.nginx.location else "/";
+                  defaultText = literalExpression ''if config.nginx.enable then config.nginx.serverName + config.nginx.location else "/"'';
                   description = mdDoc ''
                     The URL where your API can be reached on the web. It is also used for things like OAuth redirects,
                     forgot-password emails, and logos that needs to be publicly available on the internet.
                   '';
                 };
                 SERVE_APP = mkOption {
-                  type = str;
-                  default = !instanceCfg.nginx.enable;
+                  type = bool;
+                  default = !config.nginx.enable;
                   defaultText = literalExpression ''!services.directus.servers.<name>.nginx.enable'';
                   description = mdDoc ''
                     Whether or not to serve the Admin App under /admin.
@@ -106,8 +117,8 @@ in {
                   '';
                 };
                 DB_FILENAME = mkOption {
-                  type = str;
-                  default = if instanceCfg.settings.DB_CLIENT == "sqlite3"
+                  type = nullOr str;
+                  default = if config.settings.DB_CLIENT == "sqlite3"
                   then "/var/lib/directus-${name}/data.db"
                   else null;
                   defaultText = literalExpression ''
@@ -123,7 +134,7 @@ in {
                 # Caching
                 # CACHE_ENABLED = mkOption {
                 #   type = bool;
-                #   default = instanceCfg.redis.enable;
+                #   default = config.redis.enable;
                 #   defaultText = literalExpression ''services.directus.servers.<name>.redis.enable'';
                 #   description = mdDoc ''
                 #     Whether or not caching is enabled.
@@ -131,7 +142,7 @@ in {
                 # };
                 # CACHE_STORE = mkOption {
                 #   type = enum ["memory" "redis" "memcache"];
-                #   default = if instanceCfg.redis.enable then "redis" else "memory";
+                #   default = if config.redis.enable then "redis" else "memory";
                 #   defaultText = literalExpression ''
                 #     if services.directus.servers.<name>.redis.enable then "redis" else "memory"
                 #   '';
@@ -141,7 +152,7 @@ in {
                 # };
                 # CACHE_REDIS = mkOption {
                 #   type = str;
-                #   default = if instanceCfg.redis.enable then "redis://@127.0.0.1:${instanceCfg.redis.port}" else null;
+                #   default = if config.redis.enable then "redis://@127.0.0.1:${config.redis.port}" else null;
                 #   defaultText = literalExpression ''
                 #     if services.directus.servers.<name>.redis.enable
                 #     then "redis://@127.0.0.1:$${services.directus.servers.<name>.redis.port}"
@@ -155,7 +166,7 @@ in {
                 # Storage
                 STORAGE_LOCATIONS = mkOption {
                   type = str;
-                  default = if instanceCfg.useLocalStorage then "local" else null;
+                  default = if config.useLocalStorage then "local" else null;
                   defaultText = literalExpression ''
                     if services.directus.servers.<name>.useLocalStorage then "local" else null
                   '';
@@ -165,15 +176,15 @@ in {
                   '';
                 };
                 STORAGE_LOCAL_DRIVER = mkOption {
-                  type = str;
-                  default = if instanceCfg.useLocalStorage then "local" else null;
+                  type = nullOr str;
+                  default = if config.useLocalStorage then "local" else null;
                   defaultText = literalExpression ''
                     if services.directus.servers.<name>.useLocalStorage then "local" else null
                   '';
                 };
                 STORAGE_LOCAL_ROOT = mkOption {
-                  type = str;
-                  default = if instanceCfg.useLocalStorage then "/var/lib/directus-${name}/uploads" else null;
+                  type = nullOr str;
+                  default = if config.useLocalStorage then "/var/lib/directus-${name}/uploads" else null;
                   defaultText = literalExpression ''
                     if services.directus.servers.<name>.useLocalStorage then "/var/lib/directus-<name>/uploads" else null
                   '';
@@ -195,15 +206,15 @@ in {
 
                 REFRESH_TOKEN_COOKIE_SECURE = mkOption {
                   type = bool;
-                  default = instanceCfg.nginx.virtualHost.forceSSL;
-                  defaultText = literalExpression "services.directus.servers.<name>.nginx.virtualHost.forceSSL";
+                  default = config.nginx.forceSSL;
+                  defaultText = literalExpression "services.directus.servers.<name>.nginx.forceSSL";
                   description = mdDoc ''
                     Whether or not to use a secure cookie for the refresh token in cookie mode
                   '';
                 };
                 REFRESH_TOKEN_COOKIE_SAME_SITE = mkOption {
                   type = nullOr (enum ["lax" "strict"]);
-                  default = if instanceCfg.nginx.enable then "strict" else null;
+                  default = if config.nginx.enable then "strict" else null;
                   description = mdDoc ''
                     Value for sameSite in the refresh token cookie when in cookie mode
                   '';
@@ -211,14 +222,14 @@ in {
 
                 CORS_ENABLED = mkOption {
                   type = bool;
-                  default = instanceCfg.nginx.enable;
+                  default = config.nginx.enable;
                   description = mdDoc ''
                     Whether or not to enable the CORS headers
                   '';
                 };
                 CORS_ORIGIN = mkOption {
                   type = oneOf [bool str];
-                  default = instanceCfg.nginx.enable;
+                  default = config.nginx.enable;
                   description = mdDoc ''
                     Value for the Access-Control-Allow-Origin header.
                     Use true to match the Origin header,
@@ -237,22 +248,22 @@ in {
 
                 # Email
                 EMAIL_FROM = mkOption {
-                  type = str;
+                  type = nullOr str;
                   default = null;
                   description = mdDoc ''
                     Email address from which emails are sent.
                   '';
                 };
                 EMAIL_TRANSPORT = mkOption {
-                  type = enum ["sendmail" "smtp" "mailgun" "sendgrid" "ses"];
-                  default = "sendmail";
+                  type = nullOr (enum ["sendmail" "smtp" "mailgun" "sendgrid" "ses"]);
+                  default = null;
                   description = mdDoc ''
                     What to use to send emails.
                   '';
                 };
                 EMAIL_SENDMAIL_PATH = mkOption {
-                  type = path;
-                  default = "${pkgs.sendmail}/bin/sendmail";
+                  type = nullOr path;
+                  default = "/dev/null";
                   defaultText = literalExpression "$${pkgs.sendmail}/bin/sendmail";
                   description = mdDoc ''
                     Path to your sendmail executable.
@@ -261,14 +272,14 @@ in {
 
                 # Bootstrap
                 ADMIN_EMAIL = mkOption {
-                  type = str;
+                  type = nullOr str;
                   default = null;
                   description = mdDoc ''
                     The email address of the first user that will be automatically created.
                   '';
                 };
                 ADMIN_PASSWORD_FILE = mkOption {
-                  type = path;
+                  type = nullOr path;
                   default = null;
                   description = mdDoc ''
                     The file containing the password of the first user that will be automatically created.
@@ -288,22 +299,33 @@ in {
             };
           };
 
-
           nginx = {
-            type = submodule;
             description = "nginx options";
-            default = { enable = false; };
-            options = {
-              enable = mkEnableOption "Enable nginx as a reverse proxy";
+            default = {};
+            type = submodule {
+              options = {
+                enable = mkEnableOption "Enable nginx as a reverse proxy";
 
-              virtualHost = mkOption {
-                # Upstream, this would be a relative path.
-                # Fine as long the main channel is called nixos
-                type = submodule (recursiveUpdate (import /nix/var/nix/profiles/per-user/root/channels/nixos/nixos/modules/services/web-servers/nginx/vhost-options.nix { inherit config lib; }) {});
-                default = {};
-                description = mdDoc ''
-                  With this option, you can customize the nginx virtualHost settings.
-                '';
+                nginx = mkOption {
+                  # Upstream, this would be a relative path.
+                  # Fine as long the main channel is called nixos
+                  type = submodule (recursiveUpdate (import /nix/var/nix/profiles/per-user/root/channels/nixos/nixos/modules/services/web-servers/nginx/vhost-options.nix { inherit config lib; }) {});
+                  default = {};
+                  description = mdDoc ''
+                    With this option, you can customize the nginx virtualHost settings.
+                  '';
+                };
+
+                serverName = mkOption {
+                  type = nullOr str;
+                  description = "nginx server directive";
+                };
+
+                location = mkOption {
+                  type = str;
+                  default = "/";
+                  description = "nginx server's location to configure as a proxy";
+                };
               };
             };
           };
@@ -332,158 +354,165 @@ in {
           };
         };
       }));
+      # };
     };
   };
 
-  # - un virtual-host nginx
-  #   - possibilité de gérer les assets? → node_modules/@directus/app/dist/assets
-  # - un fail2ban directus-prout
-  # Génération du .env aussi
-  # Génération du script de dl directus
   # Export SQL dans /var/backup
 
   config = let
     cfg = config.services.directus;
+    enabledServers = lib.filterAttrs (name: conf: conf.enable) cfg.servers;
 
-    recursiveUpdateArray = sets: builtins.foldl' (s1: s2: lib.recursiveUpdate s1 s2) {} sets;
+  in lib.mkIf (lib.any (s: s.enable) (builtins.attrValues cfg.servers)) {
 
-  in lib.mkIf (lib.any (s: s.enable) (builtins.attrValues cfg.servers))
-  (recursiveUpdateArray 
-  [{
+    # assertions = let
+    #   directusPorts = (map (conf: conf.settings.PORT) (builtins.attrValues enabledServers));
+    # in [
+    #   {
+    #     # Check that every port is different
+    #     assertion = (builtins.any (t: t) (lib.foldr (a: b: a != b) (lib.naturalSort directusPorts)));
+    #     message = "Every directus instance must have a different port";
+    #   }
+    # ];
+
     # Common config
-    users.users.directus = {
-      isSystemUser = true;
-      group = "directus";
-    };
-    users.groups.directus = {};
 
     systemd.slices.directus = {
       enable = true;
       description = "Slice designed to contain all Directus-related services";
     };
 
-    systemd.services."directus-npm-setup" = {
-      enable = true;
-      after = [ "network.target" ];
-      serviceConfig = {
-        Slice = "directus.slice";
-        Type = "oneshot";
-        ExecStart = pkgs.writeScript "directus-npm-start.sh" ''
-          set -e
-          cp ${./package.json} ./package.json
-          cp ${./package-lock.json} ./package-lock.json
-          npm i
-        '';
-        UMask = "0027";
-        # systemd directory management
-        WorkingDirectory = cfg.installDirectory;
-        StateDirectory   = cfg.installDirectory;
-        StateDirectoryMode = "0755";
-        # Security
-        User = "directus";
-        Group = "directus";
-        LockPersonality = true;
-        NoNewPrivileges = true;
-        PrivateDevices = true;
-        PrivateTmp = true;
-        PrivateUsers = true;
-        ProtectClock = true;
-        ProtectControlGroups = true;
-        ProtectHome = true;
-        ProtectHostname = true;
-        ProtectKernelLogs = true;
-        ProtectKernelModules = true;
-        ProtectKernelTunables = true;
-        ProtectProc = "invisible";
-        ProtectSystem = "strict";
-        RestrictNamespaces = true;
-        RestrictSUIDSGID = true;
+    users.groups.directus = {};
+    users.users = {
+      "directus" = {
+        description = "System user insalling directus";
+        isSystemUser = true;
+        group = "directus";
       };
-    };
-  }] ++ (map (name: let
-     instanceCfg = cfg.servers."${name}";
-   in {
-    # Instance-specific config
+    } // (
+      lib.mapAttrs' (name: conf: lib.nameValuePair "directus-${name}" {
+        description = "System user for the directus instance ${name}";
+        isSystemUser = true;
+        group = "directus";
+      }) enabledServers
+      );
 
-    users.users."directus-${name}" = {
-      isSystemUser = true;
-      group = "directus";
-    };
 
-    environment.etc."directus/directus-${name}".text = builtins.toJSON
-    # Remove variables set to null
-    (lib.filterAttrs (key: value: value != null) instanceCfg.settings);
+      environment.etc = lib.mapAttrs' (name: conf: lib.nameValuePair "directus/directus-${name}" {
+        text = builtins.toJSON
+        # Remove variables set to null
+        (lib.filterAttrs (key: value: value != null) conf.settings);
+      }) enabledServers;
 
-    systemd.services."directus-${name}" = {
-      enable = true;
-      after = [ "network.target" "directus-npm-setup.service" ];
-      requires = [ "directus-npm-setup.service" ];
-      wantedBy = [ "multi-user.target" ];
-      serviceConfig = {
-        Slice = "directus.slice";
-        User = "directus-${name}";
-        Group = "directus";
-        Environment = [ "CONFIG_PATH=/etc/directus/directus-${name}/config.json" ];
-        # Generate secrets and bootstrap application
-        ExecStartPre = pkgs.writeScript "directus-${name}-init" ''
+      systemd.services = {
+        "directus-npm-setup" = {
+          enable = true;
+          after = [ "network.target" ];
+          serviceConfig = {
+            Slice = "directus.slice";
+            Type = "oneshot";
+            ExecStart = pkgs.writeScript "directus-npm-start.sh" ''
+              set -e
+              cp ${./package.json} ./package.json
+              cp ${./package-lock.json} ./package-lock.json
+              npm i
+            '';
+            UMask = "0027";
+          # systemd directory management
+          WorkingDirectory = cfg.installDirectory;
+          StateDirectory   = cfg.installDirectory;
+          StateDirectoryMode = "0755";
+          # Security
+          User = "directus";
+          Group = "directus";
+          LockPersonality = true;
+          NoNewPrivileges = true;
+          PrivateDevices = true;
+          PrivateTmp = true;
+          PrivateUsers = true;
+          ProtectClock = true;
+          ProtectControlGroups = true;
+          ProtectHome = true;
+          ProtectHostname = true;
+          ProtectKernelLogs = true;
+          ProtectKernelModules = true;
+          ProtectKernelTunables = true;
+          ProtectProc = "invisible";
+          ProtectSystem = "strict";
+          RestrictNamespaces = true;
+          RestrictSUIDSGID = true;
+        };
+      };
+    } // (
+      lib.mapAttrs' (name: conf: lib.nameValuePair "directus-${name}" {
+        enable = true;
+        after = [ "network.target" "directus-npm-setup.service" ];
+        requires = [ "directus-npm-setup.service" ];
+        wantedBy = [ "multi-user.target" ];
+        serviceConfig = {
+          Slice = "directus.slice";
+          User = "directus-${name}";
+          Group = "directus";
+          Environment = [ "CONFIG_PATH=/etc/directus/directus-${name}/config.json" ];
+          # Generate secrets and bootstrap application
+          ExecStartPre = pkgs.writeScript "directus-${name}-init" ''
           #!${pkgs.runtimeShell}
-          set -e
-          genPasswd() {
-          ${pkgs.libressl}/bin/openssl rand -base64 40 | tr -cd '[:alnum:]'
-          }
-          mkdir -p secrets
-          [[ -e secrets/key ]] || ${pkgs.libossp_uuid}/bin/uuid -v4 > secrets/key
-          [[ -e secrets/secret ]] || genPasswd > secrets/secret
-          [[ -e node_modules ]] || ln -s ${cfg.installDirectory}/node_modules .
-          [[ -e package.json ]] || ln -s ${cfg.installDirectory}/package.json .
-          "${cfg.installDirectory}/.bin/directus bootstrap";
-        '';
-        ExecStart = "${cfg.installDirectory}/.bin/directus start";
-        ReadWritePaths = [ instanceCfg.dataDir instanceCfg.configDir ]
-        ++ lib.optionals (instanceCfg.settings.STORAGE_LOCAL_ROOT != null) [ instanceCfg.settings.STORAGE_LOCAL_ROOT ];
-        UMask = "0027";
-        Restart = "always";
-        RestartSec = 10;
-        # systemd directory management
-        WorkingDirectory = "/var/lib/directus-${name}";
-        StateDirectory   = "/var/lib/directus-${name}";
-        StateDirectoryMode = "0750";
-        ConfigurationDirectory = "/etc/directus/directus-${name}";
-        ConfigurationDirectoryMode = "0750";
-        # Security
-        LockPersonality = true;
-        NoNewPrivileges = true;
-        PrivateDevices = true;
-        PrivateTmp = true;
-        PrivateUsers = true;
-        ProtectClock = true;
-        ProtectControlGroups = true;
-        ProtectHome = true;
-        ProtectHostname = true;
-        ProtectKernelLogs = true;
-        ProtectKernelModules = true;
-        ProtectKernelTunables = true;
-        ProtectProc = "invisible";
-        ProtectSystem = "strict";
-        RestrictNamespaces = true;
-        RestrictSUIDSGID = true;
-      };
-    };
+            set -e
+            genPasswd() {
+            ${pkgs.libressl}/bin/openssl rand -base64 40 | tr -cd '[:alnum:]'
+            }
+            mkdir -p secrets
+            [[ -e secrets/key ]] || ${pkgs.libossp_uuid}/bin/uuid -v4 > secrets/key
+            [[ -e secrets/secret ]] || genPasswd > secrets/secret
+            [[ -e node_modules ]] || ln -s ${cfg.installDirectory}/node_modules .
+            [[ -e package.json ]] || ln -s ${cfg.installDirectory}/package.json .
+            "${cfg.installDirectory}/.bin/directus bootstrap";
+          '';
+          ExecStart = "${cfg.installDirectory}/.bin/directus start";
+          UMask = "0027";
+          Restart = "always";
+          RestartSec = 10;
+          # systemd directory management
+          WorkingDirectory = "/var/lib/directus-${name}";
+          StateDirectory   = "/var/lib/directus-${name}";
+          StateDirectoryMode = "0750";
+          ConfigurationDirectory = "/etc/directus/directus-${name}";
+          ConfigurationDirectoryMode = "0750";
+          # Security
+          LockPersonality = true;
+          NoNewPrivileges = true;
+          PrivateDevices = true;
+          PrivateTmp = true;
+          PrivateUsers = true;
+          ProtectClock = true;
+          ProtectControlGroups = true;
+          ProtectHome = true;
+          ProtectHostname = true;
+          ProtectKernelLogs = true;
+          ProtectKernelModules = true;
+          ProtectKernelTunables = true;
+          ProtectProc = "invisible";
+          ProtectSystem = "strict";
+          RestrictNamespaces = true;
+          RestrictSUIDSGID = true;
+        };
+      }) enabledServers
+      );
 
     # TODO assertion on nginx.enable -> settings.PUBLIC_URL
-    services.nginx.virtualHost."${config.settings.PUBLIC_URL}" = {
+    # TODO possibilité de gérer les assets? → node_modules/@directus/app/dist/assets
+    services.nginx.virtualHosts = lib.mapAttrs' (name: conf: lib.nameValuePair name {
       enableACME = true;
       forceSSL = true;
-      locations."/".proxyPass = "http://localhost:${instanceCfg.settings.PORT}";
-    } // instanceCfg.nginx.virtualHost;
+      locations."/".proxyPass = "http://localhost:${builtins.toString conf.settings.PORT}";
+    } // conf.nginx) enabledServers;
 
     # TODO redis
     # services.redis.servers."directus-${name}" = {
     #   enable = true;
-    #   port = instanceCfg.redis.port;
+    #   port = conf.redis.port;
     #   requirePassFile = "/var/lib/directus-${name}/secrets/redis";
     # };
-  }
-  (builtins.attrNames cfg.servers)))
-  );
+  };
 }
