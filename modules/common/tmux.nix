@@ -20,6 +20,8 @@ in
       shortcut = shortcut;
 
       extraConfig = ''
+        set -s command-alias[1] n='new -A'
+
         bind q copy-mode
         bind Q paste-buffer
         bind S new-session
