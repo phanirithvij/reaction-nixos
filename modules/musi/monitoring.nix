@@ -66,7 +66,7 @@ in {
       SET HTTPD PORT ${monitPort} ADDRESS 127.0.0.1 SIGNATURE DISABLE ALLOW MD5 ${monitBasicAuthFile}
 
       # Mail alerts
-      SET ALERT ${monitDestinationMail} WITH REMINDER ON 120 CYCLES # Every 10min
+      SET ALERT ${monitDestinationMail} WITH REMINDER ON ${builtins.toString (2 * 60 * 24)} CYCLES # Every 24h
       SET MAILSERVER localhost
       SET MAIL-FORMAT {
       from: Monit <${monitFromMail}>
