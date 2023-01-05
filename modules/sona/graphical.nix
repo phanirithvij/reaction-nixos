@@ -97,6 +97,11 @@ in
     passwofi
   ];
 
+  nixpkgs.overlays = [
+    (self: super: {
+      conky = super.conky.override { pulseSupport = true; };
+    })
+  ];
 
   services.pipewire = {
     enable = true;
@@ -202,4 +207,8 @@ in
   # };
 
   environment.variables.BROWSER = "firefox";
+
+  # services.xserver.videoDrivers = [
+  #   "modesetting" "fbdev"
+  # ];
 }
