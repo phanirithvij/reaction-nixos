@@ -10,11 +10,6 @@ in {
   options.services.directus = with lib; with types; {
     enable = mkEnableOption "Enable Directus using impure npm";
 
-    # version = mkOption {
-    #   type = str;
-    #   description = "Directus version to use";
-    # };
-
     installDirectory = mkOption {
       type = path;
       default = "/var/lib/directus";
@@ -103,7 +98,8 @@ in {
                 };
                 SERVE_APP = mkOption {
                   type = bool;
-                  default = !config.nginx.enable;
+                  default = true;
+                  # default = !config.nginx.enable;
                   defaultText = literalExpression ''!services.directus.servers.<name>.nginx.enable'';
                   description = mdDoc ''
                     Whether or not to serve the Admin App under /admin.
@@ -132,38 +128,6 @@ in {
                     Path to the sqlite3 database file when using sqlite3.
                   '';
                 };
-
-                # Caching
-                # CACHE_ENABLED = mkOption {
-                #   type = bool;
-                #   default = config.redis.enable;
-                #   defaultText = literalExpression ''services.directus.servers.<name>.redis.enable'';
-                #   description = mdDoc ''
-                #     Whether or not caching is enabled.
-                #   '';
-                # };
-                # CACHE_STORE = mkOption {
-                #   type = enum ["memory" "redis" "memcache"];
-                #   default = if config.redis.enable then "redis" else "memory";
-                #   defaultText = literalExpression ''
-                #     if services.directus.servers.<name>.redis.enable then "redis" else "memory"
-                #   '';
-                #   description = mdDoc ''
-                #     Whether or not caching is enabled.
-                #   '';
-                # };
-                # CACHE_REDIS = mkOption {
-                #   type = str;
-                #   default = if config.redis.enable then "redis://@127.0.0.1:${config.redis.port}" else null;
-                #   defaultText = literalExpression ''
-                #     if services.directus.servers.<name>.redis.enable
-                #     then "redis://@127.0.0.1:$${services.directus.servers.<name>.redis.port}"
-                #     else null
-                #   '';
-                #   description = mdDoc ''
-                #     Whether or not caching is enabled.
-                #   '';
-                # };
 
                 # Storage
                 STORAGE_LOCATIONS = mkOption {
@@ -331,20 +295,6 @@ in {
             };
           };
 
-          # redis = {
-          #   type = submodule;
-          #   description = "redis options";
-          #   default = { enable = false; };
-          #   options = {
-          #     enable = mkEnableOption "Enable redis for caching";
-
-          #     port = mkOption {
-          #       type = port;
-          #       description = "Port used by redis";
-          #     };
-          #   };
-          # };
-
           fail2ban = {
             type = submodule;
             description = "fail2ban options";
@@ -471,6 +421,7 @@ in {
           requires = [ "directus-npm-setup.service" ];
           wantedBy = [ "multi-user.target" ];
           path = with pkgs; [ nodejs bash ];
+          restartTriggers = [ config.environment.etc."directus/directus-${name}/config.json".source ];
           serviceConfig = {
             Slice = "directus.slice";
             User = "directus-${name}";
@@ -517,20 +468,16 @@ in {
       );
 
       # TODO assertion on nginx.enable -> settings.PUBLIC_URL
-      # TODO possibilité de gérer les assets? → node_modules/@directus/app/dist/assets
       # TODO assert locations doesn't end with slash
       services.nginx.virtualHosts = lib.mapAttrs' (name: conf: lib.nameValuePair conf.nginx.serverName {
         enableACME = true;
         forceSSL = true;
-        locations."${conf.nginx.location}".proxyPass = "http://localhost:${builtins.toString conf.settings.PORT}";
-        locations."${conf.nginx.location}/admin".root = "${cfg.installDirectory}/node_modules/@directus/app/dist/assets";
+        locations = {
+          "${conf.nginx.location}".return = "302 ${conf.nginx.location}/";
+          "${conf.nginx.location}/".proxyPass = "http://localhost:${builtins.toString conf.settings.PORT}/";
+          # "${conf.nginx.location}/admin".return = "302 /admin/";
+          # "${conf.nginx.location}/admin/".alias = "${cfg.installDirectory}/node_modules/@directus/app/dist/";
+        };
       } // conf.nginx) (lib.filterAttrs (name: conf: conf.nginx.enable) enabledServers);
-
-    # TODO redis
-    # services.redis.servers."directus-${name}" = {
-    #   enable = true;
-    #   port = conf.redis.port;
-    #   requirePassFile = "/var/lib/directus-${name}/secrets/redis";
-    # };
   };
 }
