@@ -4,15 +4,14 @@
     "pompeani.art" = {
       enable = true;
       settings = {
-        NULL_TEST = null;
         PORT = 8055;
         EMAIL_FROM = "directus@ppom.me";
         EMAIL_TRANSPORT = "smtp";
         EMAIL_SMTP_HOST = "mail.ppom.me";
-        EMAIL_SMTP_PORT = 587;
+        EMAIL_SMTP_PORT = 465;
         EMAIL_SMTP_SECURE = true;
-        EMAIL_SMTP_USER = "directus@ppom.me";
-        EMAIL_SMTP_PASSWORD_FILE = "/var/secrets/mail/directus";
+        EMAIL_SMTP_USER = "postmaster@ppom.me";
+        EMAIL_SMTP_PASSWORD_FILE = "/var/secrets/mail/directus"; # Must not end with a newline
       };
       nginx = {
         enable = true;
