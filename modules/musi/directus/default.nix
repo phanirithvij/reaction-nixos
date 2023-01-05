@@ -92,7 +92,9 @@ in {
                 };
                 PUBLIC_URL = mkOption {
                   type = str;
-                  default = if config.nginx.enable then config.nginx.serverName + config.nginx.location else "/";
+                  default = if config.nginx.enable
+                  then "https://${config.nginx.serverName}${config.nginx.location}"
+                  else "/";
                   defaultText = literalExpression ''if config.nginx.enable then config.nginx.serverName + config.nginx.location else "/"'';
                   description = mdDoc ''
                     The URL where your API can be reached on the web. It is also used for things like OAuth redirects,
@@ -206,8 +208,8 @@ in {
 
                 REFRESH_TOKEN_COOKIE_SECURE = mkOption {
                   type = bool;
-                  default = config.nginx.forceSSL;
-                  defaultText = literalExpression "services.directus.servers.<name>.nginx.forceSSL";
+                  default = config.nginx.nginx.forceSSL;
+                  defaultText = literalExpression "services.directus.servers.<name>.nginx.nginx.forceSSL";
                   description = mdDoc ''
                     Whether or not to use a secure cookie for the refresh token in cookie mode
                   '';
@@ -294,14 +296,13 @@ in {
                     Allow Directus to collect anonymized data about your environment.
                   '';
                 };
-
               };
             };
           };
 
-          nginx = {
-            description = "nginx options";
+          nginx = mkOption {
             default = {};
+            description = "nginx options";
             type = submodule {
               options = {
                 enable = mkEnableOption "Enable nginx as a reverse proxy";
@@ -366,15 +367,20 @@ in {
 
   in lib.mkIf (lib.any (s: s.enable) (builtins.attrValues cfg.servers)) {
 
-    # assertions = let
-    #   directusPorts = (map (conf: conf.settings.PORT) (builtins.attrValues enabledServers));
-    # in [
-    #   {
-    #     # Check that every port is different
-    #     assertion = (builtins.any (t: t) (lib.foldr (a: b: a != b) (lib.naturalSort directusPorts)));
-    #     message = "Every directus instance must have a different port";
-    #   }
-    # ];
+    assertions = let
+      directusPorts = (map (conf: conf.settings.PORT) (builtins.attrValues enabledServers));
+    in [
+      # {
+      #   # Check that every port is different
+      #   assertion = (builtins.any (t: t) (lib.foldr (a: b: a != b) (lib.naturalSort directusPorts)));
+      #   message = "Every directus instance must have a different port";
+      # }
+      {
+        # Check that every port is different
+        assertion = cfg.installDirectory == "/var/lib/directus";
+        message = "Sorry, for now you can't change this setting";
+      }
+    ];
 
     # Common config
 
@@ -383,27 +389,34 @@ in {
       description = "Slice designed to contain all Directus-related services";
     };
 
-    users.groups.directus = {};
+    users.groups = { directus = {}; };
+
     users.users = {
       "directus" = {
         description = "System user insalling directus";
         isSystemUser = true;
         group = "directus";
+        home = "/var/lib/directus";
       };
     } // (
       lib.mapAttrs' (name: conf: lib.nameValuePair "directus-${name}" {
         description = "System user for the directus instance ${name}";
         isSystemUser = true;
         group = "directus";
+        home = "/var/lib/directus-${name}";
       }) enabledServers
       );
 
 
-      environment.etc = lib.mapAttrs' (name: conf: lib.nameValuePair "directus/directus-${name}" {
-        text = builtins.toJSON
+      environment.etc = lib.mapAttrs' (name: conf: lib.nameValuePair "directus/directus-${name}/config.json" {
+        source = json.generate "directus-${name}.config.json"
         # Remove variables set to null
         (lib.filterAttrs (key: value: value != null) conf.settings);
       }) enabledServers;
+
+      systemd.tmpfiles.rules = map (name: "d /var/lib/directus-${name}/secrets 0750 directus-${name} directus - -") (lib.attrNames enabledServers)
+      # TODO use settings.STORAGE_LOCAL_ROOT if useLocalStorage
+       ++ map (name: "d /var/lib/directus-${name}/uploads 0750 directus-${name} directus - -") (lib.attrNames enabledServers);
 
       systemd.services = {
         "directus-npm-setup" = {
@@ -412,101 +425,106 @@ in {
           serviceConfig = {
             Slice = "directus.slice";
             Type = "oneshot";
-            ExecStart = pkgs.writeScript "directus-npm-start.sh" ''
+            Restart = "no";
+            ExecStart = "${pkgs.writeShellApplication {
+              name = "directus-npm-start.sh";
+              runtimeInputs = with pkgs; [
+                bash
+                nodejs
+              ];
+              text = ''
+                install -m0644 ${./package.json} ./package.json
+                install -m0644 ${./package-lock.json} ./package-lock.json
+                npm i
+              '';
+            }}/bin/directus-npm-start.sh";
+            UMask = "0022";
+            # systemd directory management
+            WorkingDirectory = "/var/lib/directus";
+            StateDirectory   = "directus";
+            StateDirectoryMode = "0755";
+            # Security
+            User = "directus";
+            Group = "directus";
+            LockPersonality = true;
+            NoNewPrivileges = true;
+            PrivateDevices = true;
+            PrivateTmp = true;
+            PrivateUsers = true;
+            ProtectClock = true;
+            ProtectControlGroups = true;
+            ProtectHome = true;
+            ProtectHostname = true;
+            ProtectKernelLogs = true;
+            ProtectKernelModules = true;
+            ProtectKernelTunables = true;
+            ProtectProc = "invisible";
+            ProtectSystem = "strict";
+            RestrictNamespaces = true;
+            RestrictSUIDSGID = true;
+          };
+        };
+      } // (
+        lib.mapAttrs' (name: conf: lib.nameValuePair "directus-${name}" {
+          enable = true;
+          after = [ "network.target" "directus-npm-setup.service" ];
+          requires = [ "directus-npm-setup.service" ];
+          wantedBy = [ "multi-user.target" ];
+          path = with pkgs; [ nodejs bash ];
+          serviceConfig = {
+            Slice = "directus.slice";
+            User = "directus-${name}";
+            Group = "directus";
+            Environment = [ "CONFIG_PATH=/etc/directus/directus-${name}/config.json" ];
+            # Generate secrets and bootstrap application
+            ExecStartPre = pkgs.writeScript "directus-${name}-init" ''
+              #!${pkgs.runtimeShell}
               set -e
-              cp ${./package.json} ./package.json
-              cp ${./package-lock.json} ./package-lock.json
-              npm i
+              genPasswd() {
+              ${pkgs.libressl}/bin/openssl rand -base64 40 | tr -cd '[:alnum:]'
+              }
+              [[ -e secrets/key ]] || ${pkgs.libossp_uuid}/bin/uuid -v4 > secrets/key
+              [[ -e secrets/secret ]] || genPasswd > secrets/secret
+              chmod 600 secrets/secret secrets/key
+              [[ -e node_modules ]] || ln -s ${cfg.installDirectory}/node_modules .
+              [[ -e package.json ]] || ln -s ${cfg.installDirectory}/package.json .
+              npx directus bootstrap
             '';
+            ExecStart = "${pkgs.nodejs}/bin/npx directus start";
             UMask = "0027";
-          # systemd directory management
-          WorkingDirectory = cfg.installDirectory;
-          StateDirectory   = cfg.installDirectory;
-          StateDirectoryMode = "0755";
-          # Security
-          User = "directus";
-          Group = "directus";
-          LockPersonality = true;
-          NoNewPrivileges = true;
-          PrivateDevices = true;
-          PrivateTmp = true;
-          PrivateUsers = true;
-          ProtectClock = true;
-          ProtectControlGroups = true;
-          ProtectHome = true;
-          ProtectHostname = true;
-          ProtectKernelLogs = true;
-          ProtectKernelModules = true;
-          ProtectKernelTunables = true;
-          ProtectProc = "invisible";
-          ProtectSystem = "strict";
-          RestrictNamespaces = true;
-          RestrictSUIDSGID = true;
-        };
-      };
-    } // (
-      lib.mapAttrs' (name: conf: lib.nameValuePair "directus-${name}" {
-        enable = true;
-        after = [ "network.target" "directus-npm-setup.service" ];
-        requires = [ "directus-npm-setup.service" ];
-        wantedBy = [ "multi-user.target" ];
-        serviceConfig = {
-          Slice = "directus.slice";
-          User = "directus-${name}";
-          Group = "directus";
-          Environment = [ "CONFIG_PATH=/etc/directus/directus-${name}/config.json" ];
-          # Generate secrets and bootstrap application
-          ExecStartPre = pkgs.writeScript "directus-${name}-init" ''
-          #!${pkgs.runtimeShell}
-            set -e
-            genPasswd() {
-            ${pkgs.libressl}/bin/openssl rand -base64 40 | tr -cd '[:alnum:]'
-            }
-            mkdir -p secrets
-            [[ -e secrets/key ]] || ${pkgs.libossp_uuid}/bin/uuid -v4 > secrets/key
-            [[ -e secrets/secret ]] || genPasswd > secrets/secret
-            [[ -e node_modules ]] || ln -s ${cfg.installDirectory}/node_modules .
-            [[ -e package.json ]] || ln -s ${cfg.installDirectory}/package.json .
-            "${cfg.installDirectory}/.bin/directus bootstrap";
-          '';
-          ExecStart = "${cfg.installDirectory}/.bin/directus start";
-          UMask = "0027";
-          Restart = "always";
-          RestartSec = 10;
-          # systemd directory management
-          WorkingDirectory = "/var/lib/directus-${name}";
-          StateDirectory   = "/var/lib/directus-${name}";
-          StateDirectoryMode = "0750";
-          ConfigurationDirectory = "/etc/directus/directus-${name}";
-          ConfigurationDirectoryMode = "0750";
-          # Security
-          LockPersonality = true;
-          NoNewPrivileges = true;
-          PrivateDevices = true;
-          PrivateTmp = true;
-          PrivateUsers = true;
-          ProtectClock = true;
-          ProtectControlGroups = true;
-          ProtectHome = true;
-          ProtectHostname = true;
-          ProtectKernelLogs = true;
-          ProtectKernelModules = true;
-          ProtectKernelTunables = true;
-          ProtectProc = "invisible";
-          ProtectSystem = "strict";
-          RestrictNamespaces = true;
-          RestrictSUIDSGID = true;
-        };
-      }) enabledServers
+            Restart = "no";
+            WorkingDirectory = "/var/lib/directus-${name}";
+            StateDirectory   = "directus-${name}";
+            StateDirectoryMode = "0750";
+            LockPersonality = true;
+            NoNewPrivileges = true;
+            PrivateDevices = true;
+            PrivateTmp = true;
+            PrivateUsers = true;
+            ProtectClock = true;
+            ProtectControlGroups = true;
+            ProtectHome = true;
+            ProtectHostname = true;
+            ProtectKernelLogs = true;
+            ProtectKernelModules = true;
+            ProtectKernelTunables = true;
+            ProtectProc = "invisible";
+            ProtectSystem = "strict";
+            RestrictNamespaces = true;
+            RestrictSUIDSGID = true;
+          };
+        }) enabledServers
       );
 
-    # TODO assertion on nginx.enable -> settings.PUBLIC_URL
-    # TODO possibilité de gérer les assets? → node_modules/@directus/app/dist/assets
-    services.nginx.virtualHosts = lib.mapAttrs' (name: conf: lib.nameValuePair name {
-      enableACME = true;
-      forceSSL = true;
-      locations."/".proxyPass = "http://localhost:${builtins.toString conf.settings.PORT}";
-    } // conf.nginx) enabledServers;
+      # TODO assertion on nginx.enable -> settings.PUBLIC_URL
+      # TODO possibilité de gérer les assets? → node_modules/@directus/app/dist/assets
+      # TODO assert locations doesn't end with slash
+      services.nginx.virtualHosts = lib.mapAttrs' (name: conf: lib.nameValuePair conf.nginx.serverName {
+        enableACME = true;
+        forceSSL = true;
+        locations."${conf.nginx.location}".proxyPass = "http://localhost:${builtins.toString conf.settings.PORT}";
+        locations."${conf.nginx.location}/admin".root = "${cfg.installDirectory}/node_modules/@directus/app/dist/assets";
+      } // conf.nginx) (lib.filterAttrs (name: conf: conf.nginx.enable) enabledServers);
 
     # TODO redis
     # services.redis.servers."directus-${name}" = {

@@ -34,6 +34,7 @@
 
   services.funkwhale = {
     enable = true;
+    # funkwhaleVersion = "1.2.9";
     funkwhaleVersion = "1.2.7";
     domainName = "music.ppom.me";
     musicDir = "/data/funkwhale/music";
@@ -66,12 +67,24 @@
       nginx = {
         enable = true;
         serverName = "directus.ppom.me";
-        location = "/pompeani.art/";
+        location = "/pompeani.art";
       };
       # redis.enable = true;
       # redis.port = 8056;
     };
   };
+  services.nginx.virtualHosts."directus.ppom.me".root = pkgs.writeTextDir "index.html" ''
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>Sites d'édition Directus</title>
+      </head>
+      <body>
+        <h1>Sites d'édition Directus</h1>
+        <a href="/pompeani.art">pompeani.art</a>
+      </body>
+    </html>
+  '';
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
