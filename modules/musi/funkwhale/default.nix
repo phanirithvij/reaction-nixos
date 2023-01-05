@@ -64,31 +64,6 @@
         default = "weekly";
       };
     };
-
-    autoPlaylistImport = {
-      enable = mkOption {
-        type = bool;
-        default = false;
-        description = "enable regular import of playlists";
-      };
-
-      passwordFile = mkOption {
-        type = str;
-        description = mdDoc ''
-          An env file containing the generated token in the user's settings.
-          Needs permissions `read` and `write:playlists`.
-          ```bash
-          TOKEN=the-generated-token
-          ```
-        '';
-      };
-
-      startAt = mkOption {
-        type = str;
-        description = mdDoc "When to launch the scans. Must be in the format described in `systemd.time`";
-        default = "weekly";
-      };
-    };
   };
 
   config = let
@@ -380,36 +355,5 @@
       startAt = cfg.autoScan.startAt;
     };
 
-    systemd.services.funkwhale-playlist-import = lib.mkIf cfg.autoPlaylistImport.enable {
-      serviceConfig = {
-        Environment = [
-          "INSTANCE_URL=https://${cfg.domainName}"
-        ];
-        EnvironmentFile = cfg.autoPlaylistImport.passwordFile;
-        ExecStart = let
-          python = pkgs.python3.withPackages (ps: with ps; [ requests rapidfuzz ]);
-        in pkgs.writeScript "funkwhale-playlist-import" ''
-          #!${pkgs.runtimeShell}
-          set -e
-          cd /var/lib/funkwhale-playlist-import
-          [ -e ./funkwhale-playlist-import ] || ${pkgs.git}/bin/git clone https://framagit.org/ppom/funkwhale-playlist-import funkwhale-playlist-import
-          cd ./funkwhale-playlist-import
-          ${pkgs.git}/bin/git pull
-          if [ ! -e ./secrets ]
-          then
-            mkdir ./secrets
-            echo "$INSTANCE_URL" > ./secrets/instance_url
-            echo "$TOKEN" > ./secrets/token
-          fi
-          for file in ./lists/*
-          do
-            ${python}/bin/python import-from-txt.py "$file"
-          done
-        '';
-        DynamicUser = true;
-        StateDirectory = "funkwhale-playlist-import";
-      };
-      startAt = cfg.autoPlaylistImport.startAt;
-    };
   };
 }

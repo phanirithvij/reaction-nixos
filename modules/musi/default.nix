@@ -19,7 +19,10 @@
     ./streama.nix
     ./tor.nix
     ./vaultwarden.nix
+
     ./websites.nix
+    ./music.ppom.me.nix
+    ./edit.ppom.me/default.nix
   ];
 
   ppom = {
@@ -31,60 +34,6 @@
       hardened = false;
     };
   };
-
-  services.funkwhale = {
-    enable = true;
-    # funkwhaleVersion = "1.2.9";
-    funkwhaleVersion = "1.2.7";
-    domainName = "music.ppom.me";
-    musicDir = "/data/funkwhale/music";
-    mediaDir = "/data/funkwhale/data/media";
-    autoScan = {
-      enable = true;
-      passwordFile = "/var/secrets/funkwhale/scanToken";
-      startAt = "*-*-02/2 20:00"; # man 5 systemd.time: every 2 days at 20:00
-    };
-    autoPlaylistImport = {
-      enable = true;
-      passwordFile = "/var/secrets/funkwhale/playlistImportToken";
-      startAt = "*-*-02/2 21:00"; # man 5 systemd.time: every 2 days at 20:00
-    };
-  };
-
-  services.directus.servers = {
-    "pompeani.art" = {
-      enable = true;
-      settings = {
-        NULL_TEST = null;
-        PORT = 8055;
-        EMAIL_FROM = "directus@ppom.me";
-        EMAIL_TRANSPORT = "smtp";
-        EMAIL_SMTP_USER = "directus@ppom.me";
-        EMAIL_SMTP_HOST = "mail.ppom.me";
-        EMAIL_SMTP_PORT = 587;
-        EMAIL_SMTP_PASSWORD_FILE = "/var/secrets/mail/directus";
-      };
-      nginx = {
-        enable = true;
-        serverName = "directus.ppom.me";
-        location = "/pompeani.art";
-      };
-      # redis.enable = true;
-      # redis.port = 8056;
-    };
-  };
-  services.nginx.virtualHosts."directus.ppom.me".root = pkgs.writeTextDir "index.html" ''
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <title>Sites d'édition Directus</title>
-      </head>
-      <body>
-        <h1>Sites d'édition Directus</h1>
-        <a href="/pompeani.art">pompeani.art</a>
-      </body>
-    </html>
-  '';
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
