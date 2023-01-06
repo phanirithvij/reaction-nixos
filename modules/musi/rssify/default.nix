@@ -6,10 +6,6 @@ let
     beautifulsoup4
     pytz
   ]);
-  script = pkgs.fetchurl {
-    url = "https://raw.githubusercontent.com/h43z/rssify/ebd6dd0b159dea971f210b671f9211fc8f9f0622/rssify.py";
-    sha256 = "sha256-Essrvg+DDyVaDplSTl3s/1U0+ZdRLUZoI8RzCL4n3FY=";
-  };
 in {
   systemd.tmpfiles.rules = [
     "d /var/cache/rssify 0755 rssify rssify - -"
@@ -34,7 +30,7 @@ in {
         rm -f ./config.ini
         ln -s ${./config.ini} ./config.ini
       '';
-      ExecStart = "${python}/bin/python ${script}";
+      ExecStart = "${python}/bin/python ${./rssify.py}";
       WorkingDirectory = "/var/cache/rssify";
     };
     startAt = "daily";
