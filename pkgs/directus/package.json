@@ -1,0 +1,14 @@
+{
+  "name": "directus",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {},
+  "keywords": [],
+  "author": "ppom",
+  "license": "GPL-3",
+  "dependencies": {
+    "@directus/sdk": "^10.3.1",
+    "directus": "^9.22.1",
+    "sqlite3": "^5.1.4"
+  }
+}
