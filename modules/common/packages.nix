@@ -86,6 +86,7 @@
     dos2unix
     vtt2srt # VTT to SRT converter
     subedit # Subtitle Editor
+    subshift # Personal subtitle editor
 
     ## nixeries
     # nox
@@ -101,6 +102,7 @@
       vtt2srt = super.callPackage ../../pkgs/vtt2srt {};
       toYaml = super.callPackage ../../pkgs/toYaml {};
       subedit = super.callPackage ../../pkgs/subedit {};
+      subshift = super.callPackage ../../pkgs/subshift {};
     })
   ];
 }
