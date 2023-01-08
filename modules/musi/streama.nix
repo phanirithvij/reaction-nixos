@@ -1,82 +1,59 @@
 { lib, pkgs, ... }:
 with lib;
 let
-  domainName = "video.ppom.me";
-  localPort = "8001";
+  localPort = 8001;
   dbPath = "jdbc:h2:/var/lib/streama/streama;AUTO_SERVER=TRUE";
   jarFile = pkgs.fetchurl {
     url = "https://github.com/streamaserver/streama/releases/download/v1.10.4/streama-1.10.4.jar";
     sha256 = "sha256:0bnsnwimx1mdxq7jh8z5wg7wh0g8gixkb99qmi9pbm7lhfvil1x1";
   };
-  config = pkgs.writeText "application.yml" ''
-    environments:
-        production:
-            dataSource:
-                driverClassName:  'org.h2.Driver'
-                url: ${dbPath};MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE
-                username: root
-                password:
-            server:
-                port: ${localPort}
-    streama:
-      regex:
-        movies: ^(?<Name>.*)[._ ]\(\d{4}\).*
-        shows:
-          - ^(?<Name>.+)[._ ][Ss](?<Season>\d{2})[Ee](?<Episode>\d{2,3}).*
-  '';
+  config = (pkgs.formats.yaml {}).generate "application.yml" {
+    environments = {
+      production = {
+        dataSource = {
+          driverClassName = "org.h2.Driver";
+          url = "${dbPath};MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE";
+          username = "root";
+          password = "";
+          server = {
+            port = localPort;
+          };
+        };
+      };
+    };
+    streama = {
+      regex = {
+        movies = "^(?<Name>.*)[._ ]\\(\\d{4}\\).*";
+        shows = [
+          "^(?<Name>.+)[._ ][Ss](?<Season>\\d{2})[Ee](?<Episode>\\d{2,3}).*"
+        ];
+      };
+    };
+  };
   workingDir = pkgs.linkFarm "streama-pwd" [
     { name = "application.yml"; path = config; }
     { name = "streama.jar"; path = jarFile; }
   ];
 in {
-  # Reverse proxy configuration
+
   services.nginx.enable = true;
-  services.nginx.virtualHosts."${domainName}" = {
-      forceSSL = true;
-      enableACME = true;
-      locations = {
+  services.nginx.virtualHosts."video.ppom.me" = {
+    forceSSL = true;
+    enableACME = true;
+    locations."/" = {
+      proxyPass = "http://localhost:${builtins.toString localPort}";
+      proxyWebsockets = true;
+      extraConfig = ''
+        add_header X-Content-Type-Options    "nosniff"       always;
+        add_header X-Frame-Options           "DENY"          always;
+        add_header X-XSS-Protection          "1; mode=block" always;
+        add_header Access-Control-Allow-Origin "https://video.ppom.me";
+        add_header Content-Security-Policy "default-src 'none'; script-src 'self' 'unsafe-inline' cdn.quilljs.com; style-src 'self' 'unsafe-inline' cdn.quilljs.com; img-src 'self' image.tmdb.org; font-src 'self'; media-src 'self'; connect-src 'self'; form-action 'self'; base-uri 'none'; frame-ancestors 'none';";
 
-        "/" = {
-          proxyPass = "http://localhost:${localPort}";
-          proxyWebsockets = true;
-          extraConfig = ''
-            add_header X-Content-Type-Options    "nosniff"       always;
-            add_header X-Frame-Options           "DENY"          always;
-            add_header X-XSS-Protection          "1; mode=block" always;
-            # add_header Strict-Transport-Security "max-age=31536000";
-            add_header Access-Control-Allow-Origin "https://video.ppom.me";
-            add_header Content-Security-Policy "default-src 'none'; script-src 'self' 'unsafe-inline' cdn.quilljs.com; style-src 'self' 'unsafe-inline' cdn.quilljs.com; img-src 'self' image.tmdb.org; font-src 'self'; media-src 'self'; connect-src 'self'; form-action 'self'; base-uri 'none'; frame-ancestors 'none';";
-
-            proxy_set_header X-Forwarded-Port $server_port;
-            proxy_cookie_path / "/; Secure; SameSite=strict";
-          '';
-        };
-
-        # "/sub" = {
-        #   return = "301 /sub/";
-        # };
-
-        # "/sub/" = {
-        #   # Needs the subsFilter NGINX module # FIXME doesn't compile on 22.05
-        #   root = "/data/streama/movies";
-        #   extraConfig = ''
-        #     # Remove the sub/ in the root dir
-        #     rewrite ^/sub(/.*)$ $1 break;
-
-        #     # Show the files
-        #     fancyindex on;
-        #     fancyindex_exact_size off;
-
-        #     # Filter mkv/mp4/avi files
-        #     subs_filter '<tr>.*<a href="[^"]*.(mp4|mkv|avi)".*</tr>' ' ' r;
-        #   '';
-        # };
-
-        # "~ /sub/.*\\.(mp4|mkv|avi)" = {
-        #   return = "403";
-        # };
-
-      };
+        proxy_set_header X-Forwarded-Port $server_port;
+        proxy_cookie_path / "/; Secure; SameSite=strict";
+      '';
+    };
   };
 
   users.users.streama = {
@@ -97,43 +74,28 @@ in {
       ExecStart = ''
         ${pkgs.jre8_headless}/bin/java -jar streama.jar
       '';
+      StateDirectory = "streama";
+      StateDirectoryMode = 0700;
       Restart = "on-success"; # If oom-killed
-      NoNewPrivileges = true;
-      ProtectSystem = "strict";
       ReadWritePaths = [ "/var/lib/streama" "/data/streama/uploads" ];
-      ProtectHome = true;
-      PrivateTmp = true;
-      PrivateDevices = true;
-      ProtectHostname = true;
-      ProtectClock = true;
-      ProtectKernelTunables = true;
-      ProtectKernelModules = true;
-      ProtectKernelLogs = true;
-      ProtectControlGroups = true;
-      RestrictAddressFamilies = [ "AF_UNIX" "AF_INET" "AF_INET6" ];
-      RestrictNamespaces = true;
       LockPersonality = true;
-      RestrictSUIDSGID = true;
-      RemoveIPC = true;
+      NoNewPrivileges = true;
+      PrivateDevices = true;
       PrivateMounts = true;
+      PrivateTmp = true;
+      ProtectClock = true;
+      ProtectControlGroups = true;
+      ProtectHome = true;
+      ProtectHostname = true;
+      ProtectKernelLogs = true;
+      ProtectKernelModules = true;
+      ProtectKernelTunables = true;
+      ProtectProc = "invisible";
+      ProtectSystem = "strict";
+      RemoveIPC = true;
+      RestrictNamespaces = true;
+      RestrictSUIDSGID = true;
     };
-  };
-  systemd.services."streama-init" = {
-    enable = true;
-    description = "Ensures /var/lib/streama is fine";
-    requiredBy = [ "streama.service" ];
-    before = [ "streama.service" ];
-    serviceConfig = {
-      Type = "oneshot";
-      User = "root";
-    };
-    script = ''
-      set -e
-      DIR=/var/lib/streama
-      [ -d "$DIR" ] || mkdir "$DIR"
-      chown "streama" "$DIR"
-      chmod 700 "$DIR"
-    '';
   };
 
   environment.systemPackages = [ pkgs.h2 ];
