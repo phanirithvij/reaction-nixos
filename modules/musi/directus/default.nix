@@ -443,6 +443,7 @@ in {
         LockPersonality = true;
         NoNewPrivileges = true;
         PrivateDevices = true;
+        PrivateMounts = true;
         PrivateTmp = true;
         PrivateUsers = true;
         ProtectClock = true;
@@ -454,6 +455,7 @@ in {
         ProtectKernelTunables = true;
         ProtectProc = "invisible";
         ProtectSystem = "strict";
+        RemoveIPC = true;
         RestrictNamespaces = true;
         RestrictSUIDSGID = true;
       };
