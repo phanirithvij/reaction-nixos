@@ -7,29 +7,27 @@ let
     url = "https://github.com/streamaserver/streama/releases/download/v1.10.4/streama-1.10.4.jar";
     sha256 = "sha256:0bnsnwimx1mdxq7jh8z5wg7wh0g8gixkb99qmi9pbm7lhfvil1x1";
   };
-  config = (pkgs.formats.yaml {}).generate "application.yml" {
-    environments = {
-      production = {
-        dataSource = {
-          driverClassName = "org.h2.Driver";
-          url = "${dbPath};MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE";
-          username = "root";
-          password = "";
-          server = {
-            port = localPort;
-          };
-        };
-      };
-    };
-    streama = {
-      regex = {
-        movies = "^(?<Name>.*)[._ ]\\(\\d{4}\\).*";
-        shows = [
-          "^(?<Name>.+)[._ ][Ss](?<Season>\\d{2})[Ee](?<Episode>\\d{2,3}).*"
-        ];
-      };
-    };
-  };
+  # Can't use pkgs.formats.yaml
+  # Because the first section uses 4-spaces indentation
+  # and the second section uses 2-spaces indentation.
+  # And that's required, but I don't know how to specify this
+  # with nix (according to me, that's simply a malformed yaml)
+  config = pkgs.writeText "application.yml" ''
+    environments:
+        production:
+            dataSource:
+                driverClassName: org.h2.Driver
+                url: ${dbPath};MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE
+                username: root
+                password:
+            server:
+                port: ${builtins.toString localPort}
+    streama:
+      regex:
+        movies: ^(?<Name>.*)[._ ]\(\d{4}\).*
+        shows:
+          - ^(?<Name>.+)[._ ][Ss](?<Season>\d{2})[Ee](?<Episode>\d{2,3}).*
+  '';
   workingDir = pkgs.linkFarm "streama-pwd" [
     { name = "application.yml"; path = config; }
     { name = "streama.jar"; path = jarFile; }
@@ -47,7 +45,6 @@ in {
         add_header X-Content-Type-Options    "nosniff"       always;
         add_header X-Frame-Options           "DENY"          always;
         add_header X-XSS-Protection          "1; mode=block" always;
-        add_header Access-Control-Allow-Origin "https://video.ppom.me";
         add_header Content-Security-Policy "default-src 'none'; script-src 'self' 'unsafe-inline' cdn.quilljs.com; style-src 'self' 'unsafe-inline' cdn.quilljs.com; img-src 'self' image.tmdb.org; font-src 'self'; media-src 'self'; connect-src 'self'; form-action 'self'; base-uri 'none'; frame-ancestors 'none';";
 
         proxy_set_header X-Forwarded-Port $server_port;
