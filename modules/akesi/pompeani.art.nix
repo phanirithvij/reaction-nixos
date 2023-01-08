@@ -1,21 +1,23 @@
 { lib, config, pkgs, ... }:
-let
-  recursiveMerge = sets: builtins.foldl' (s1: s2: lib.recursiveUpdate s1 s2) {} sets;
+{
+  users.users."pompeani.art-uploader" = {
+    isNormalUser = true;
+    group = "pompeani.art-uploader";
+    openssh.authorizedKeys.keys = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC0DRrxfZFRGlFBF16h7YqRPRLxoN0wrE+aklNJyLAKHro0bbIY7oxvLJUdLQculrqIHntwoDzXtVnDMcakzgmiAvbSH1Gy7iUTxfu7GrwsC1vOIeRtywhKuhnu9g/D3/3duDoGnuYRiEZHJT8+MJs1MpGm9la7cBS0nPi1Yy6wms1PVg75Xkk90ck9lc/phuU1caDXW1KG+iw9PxfNZIvrmWPdjsXxtvaje675qJ3iB0m8yiKJXNazKmMGDirLrSrO0IQeU53EbsEMosaTIlDAfl20/e63gL6JVCwvvsa9E6MV94wABgZ3nKkRHduTXYhfFZ6eMZJMfgF1bwFnMZXV9OSL0pSey0V4Rx/gi/lob04l05dCpv5BXH/UOD3HYcTNj4SzW9PfnoGUmA+aQ5TCnFg8I/Xw7ot9OPYycQKkcKMPf7aVS5OlUxA1zw+xlKcvSZD8PivtplMapT2q0bzzbHJnLEE3WoPYLKAPG9dDdGWdg0vXWZ45uqGKtggeliwQImCYbXuFyM0pYxzxPVZQE0+UDH0Jc1k5BeqrDIZww/ECspLpZXYZtimzXPfsZlyhQPfNyVRzlI8Dxjpj6AB28sVdW4Q+TVxRQH2KcbOv37CciK6mglI8mA8bxXo4U4III1zK+6ocqBbIL2+PDCpkS8PTmi5ks0kBSNJkZRGyCQ== root@musi" ];
+  };
+  users.groups."pompeani.art-uploader" = {};
 
-  root    = version: "/var/www/pompeani.art-${version}";
-  domain  = version: if version == "test" then "test.pompeani.art" else "pompeani.art";
-  confFor = version: {
+  systemd.tmpfiles.rules = [
+    "d /var/www/pompeani.art 755 pompeani.art-uploader pompeani.art-uploader -"
+  ];
 
-    systemd.tmpfiles.rules = [
-      "d ${root version} 755 art art -"
-      "d /var/lib/art/build-${version} 755 art art -"
-    ];
-
-    services.nginx.virtualHosts."${domain version}" = {
+  services.nginx.virtualHosts = {
+    "pompeani.art" = {
       enableACME = true;
       forceSSL = true;
       locations = {
-        "/".root = root version;
+        # just remove '-master'!
+        "/".root = "/var/www/pompeani.art-master";
         "^[^.]+[^/]$".return = "301 $request_uri/";
         # "~* \\.webp$".extraConfig = ''
         #   expires 30d;
@@ -23,68 +25,10 @@ let
         # '';
       };
     };
-
-    # Fail2ban hack to launch build
-    services.fail2ban.jails."pompeaniart-${version}" = ''
-      enabled = true
-      filter = pompeaniart-${version}
-      action = pompeaniart-${version}
-      maxretry = 0
-      findtime = 1
-      bantime = 5
-    '';
-
-    environment.etc."fail2ban/action.d/pompeaniart-${version}.conf".text = ''
-      # Fail2ban action for building the ${version} pompeani.art website
-      [Definition]
-      actionstart =
-      actionstop =
-      actioncheck =
-      actionban = ${pkgs.systemd}/bin/systemctl start pompeaniart-ci-${version}.service
-      actionunban = 
-    '';
-
-    environment.etc."fail2ban/filter.d/pompeaniart-${version}.conf".text = ''
-      [INCLUDES]
-      before = common.conf
-
-      [Definition]
-      failregex = client: <ADDR>, server: akesi.ppom.me, request: "GET /build-pompeani.art/${version} HTTP/2.0", host: "akesi.ppom.me"
-      ignoreregex =
-      journalmatch = _SYSTEMD_UNIT=nginx.service + _COMM=nginx
-    '';
-
-    systemd.services."pompeaniart-ci-${version}" = {
-      enable = true;
-      description = "Building ${version} pompeani.art website";
-      serviceConfig = {
-        ExecStart = "${pkgs.writeShellApplication {
-          name = "ci";
-          runtimeInputs = with pkgs; [ git zola fd rsync bash imagemagick ];
-          text = builtins.readFile ./pompeani.art.ci.sh;
-        }}/bin/ci ${version}";
-        User = "art";
-      };
-    };
-  };
-in recursiveMerge [
-  {
-    users.users.art = {
-      isSystemUser = true;
-      group = "art";
-    };
-    users.groups.art = {};
-
-    services.fail2ban = {
-      enable = true;
-    };
-
-    services.nginx.virtualHosts."www.pompeani.art" = {
+    "www.pompeani.art" = {
       enableACME = true;
       forceSSL = true;
       locations."/".return = "301 https://pompeani.art$request_uri";
     };
-  }
-  (confFor "test")
-  (confFor "master")
-]
+  };
+}
