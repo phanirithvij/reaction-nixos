@@ -2,8 +2,7 @@
 {
   services.funkwhale = {
     enable = true;
-    # funkwhaleVersion = "1.2.9";
-    funkwhaleVersion = "1.2.7";
+    funkwhaleVersion = "1.2.9";
     domainName = "music.ppom.me";
     musicDir = "/data/funkwhale/music";
     mediaDir = "/data/funkwhale/data/media";
