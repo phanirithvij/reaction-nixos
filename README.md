@@ -42,3 +42,8 @@ This repository resides [here](https://framagit.org/ppom/config/) and its `bin/`
 ### Musi
 
 Funkwhale, Nextcloud, and Collabora run in Docker, which I'm not proud of.
+
+## License
+
+All work here is licensed under the AGPLv3.
+Work upstreamed to [nixpkgs](https://github.com/NixOS/nixpkgs) will be licensed under the MIT license.
