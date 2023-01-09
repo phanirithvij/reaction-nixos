@@ -129,6 +129,9 @@
 
     systemd.tmpfiles.rules = [
       "d ${localVars.secretsDir} 755 root root - -"
+      "d /var/lib/funkwhale 755 funkwhale funkwhale - -"
+      "d ${localVars.staticDir} 755 funkwhale funkwhale - -"
+      "Z ${localVars.staticDir} 755 funkwhale funkwhale - -"
     ];
 
     systemd.services = {
@@ -145,10 +148,6 @@
         path = [ pkgs.libressl pkgs.postgresql ];
         # TODO reload redis?
         script = with localVars; ''
-          mkdir -p /var/lib/funkwhale/static
-          chown funkwhale:funkwhale /var/lib/funkwhale /var/lib/funkwhale/static
-          chmod 755 /var/lib/funkwhale /var/lib/funkwhale/static
-
           genPasswd() {
             # tr -cd '[:alnum:]' < /dev/urandom | fold -w30 | head -n1
             openssl rand -base64 32 | tr -cd '[:alnum:]'
