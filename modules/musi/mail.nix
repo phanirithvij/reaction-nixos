@@ -9,6 +9,12 @@ let
   autoconfigDomain = "autoconfig.ppom.me";
 in
 {
+  # shared secret
+  users.groups.postmaster = {};
+  systemd.tmpfiles.rules = [
+    "z /var/secrets/mail/postmaster 640 root postmaster - -"
+  ];
+
   services.nginx.virtualHosts = {
     ${hostname} = {
       enableACME = true;
@@ -150,28 +156,17 @@ in
               all concurrency 10
           }
 
-          # Allow submission for local accounts
+          dmarc yes
+          check {
+              require_mx_record
+              dkim
+              spf
+          }
+
           source $(local_domains) {
-              check {
-                command test {source_ip} = 127.0.0.1 -o {source_ip} = ::1 {
-                  run_on conn
-                  code 1 reject 550 5.1.1 "Only localhost can use local accounts on port 25"
-                }
-              }
-              default_destination {
-                  modify {
-                      dkim $(primary_domain) $(local_domains) default
-                  }
-                  deliver_to &remote_queue
-              }
+              reject 501 5.1.8 "Use Submission for outgoing SMTP"
           }
           default_source {
-              # dmarc yes # FIXME!
-              check {
-                  require_mx_record
-                  dkim
-                  spf
-              }
               destination postmaster $(local_domains) {
                   deliver_to &local_routing
               }

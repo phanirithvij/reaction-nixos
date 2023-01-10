@@ -67,7 +67,6 @@ in {
 
       # Mail alerts
       SET ALERT ${monitDestinationMail} WITH REMINDER ON ${builtins.toString (2 * 60 * 24)} CYCLES # Every 24h
-      SET MAILSERVER localhost
       SET MAIL-FORMAT {
       from: Monit <${monitFromMail}>
       subject: $HOST: $EVENT
@@ -76,6 +75,10 @@ in {
       date:   $DATE
       --
       $DESCRIPTION
+      }
+
+      SET SSL OPTIONS {
+        VERIFY: ENABLE
       }
 
       # Standard Checks
@@ -95,6 +98,13 @@ in {
       #   IF STATUS != 0 THEN ALERT
     '';
   };
+
+  systemd.services.monit.serviceConfig.ExecStartPre = pkgs.writeScript "monit-start-pre" ''
+    #!${pkgs.runtimeShell}
+    CONFLINE="SET MAILSERVER mail.ppom.me PORT 465 USING SSL USERNAME postmaster@ppom.me PASSWORD"
+    grep -q "$CONFLINE" /etc/monitrc || \
+       echo "$CONFLINE $(cat /var/secrets/mail/postmaster)" >> /etc/monitrc
+    '';
 
   services.nginx.virtualHosts."ppom.me" = {
     forceSSL = true;
