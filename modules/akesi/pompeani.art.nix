@@ -16,8 +16,7 @@
       enableACME = true;
       forceSSL = true;
       locations = {
-        # just remove '-master'!
-        "/".root = "/var/www/pompeani.art-master";
+        "/".root = "/var/www/pompeani.art";
         "^[^.]+[^/]$".return = "301 $request_uri/";
         # "~* \\.webp$".extraConfig = ''
         #   expires 30d;
