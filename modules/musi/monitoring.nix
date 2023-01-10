@@ -32,7 +32,7 @@ let
     ${pkgs.findutils}/bin/xargs -d'\n' -I'{}' date -d'@{}'
   '';
 
-  monitPort = "2812";
+  monitSocket = "/run/monit.sock";
   monitDestinationMail = "paco@ecomail.io";
   monitFromMail = "musi@ppom.me";
   monitBasicAuthFile = "/var/secrets/basic_auth_nginx/monit";
@@ -63,7 +63,7 @@ in {
     config = ''
       # General Settings
       SET DAEMON 30 # Run checks every 30s
-      SET HTTPD PORT ${monitPort} ADDRESS 127.0.0.1 SIGNATURE DISABLE ALLOW MD5 ${monitBasicAuthFile}
+      SET HTTPD UNIXSOCKET ${monitSocket} UID root GID ${config.services.nginx.user} PERMISSION 770 SIGNATURE DISABLE ALLOW MD5 ${monitBasicAuthFile}
 
       # Mail alerts
       SET ALERT ${monitDestinationMail} WITH REMINDER ON ${builtins.toString (2 * 60 * 24)} CYCLES # Every 24h
@@ -111,7 +111,7 @@ in {
     enableACME = true;
     locations."/monit/" = {
       # trailing / indicates that the "/monit/" prefix should be removed
-      proxyPass = "http://localhost:${monitPort}/";
+      proxyPass = "http://unix:${monitSocket}:/";
       # extraConfig = ''auth_basic "Credentials"; auth_basic_user_file ${monitBasicAuthFile};'';
     };
   };
