@@ -131,7 +131,7 @@ async function generate_build() {
   console.log('building');
   await execute("zola", ["build"], "./zola/");
   console.log('uploading');
-  await execute("rsync", ["-avz", `--rsh=ssh -i ${process.env.D2Z_SSH_KEY}`, "./public/", process.env.D2Z_SSH_DEST], "./zola/");
+  await execute("rsync", ["-az", `--rsh=ssh -i ${process.env.D2Z_SSH_KEY}`, "./public/", process.env.D2Z_SSH_DEST], "./zola/");
   console.log('done');
 }
 
