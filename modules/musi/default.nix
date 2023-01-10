@@ -24,6 +24,7 @@
     ./websites.nix
     ./music.ppom.me.nix
     ./edit.ppom.me/default.nix
+    ./file.ppom.me.nix
   ];
 
   ppom = {
