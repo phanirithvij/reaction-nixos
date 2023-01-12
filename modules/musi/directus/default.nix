@@ -326,6 +326,8 @@ in {
       }
     ];
 
+    environment.systemPackages = [ pkgs.nodejs ];
+
     systemd.slices.directus = {
       enable = true;
       description = "Slice designed to contain all Directus-related services";
