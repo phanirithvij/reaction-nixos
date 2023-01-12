@@ -62,9 +62,6 @@ in {
       Group = "directus2zola-pompeani.art";
       Environment = [
         "D2Z_PORT=${builtins.toString d2zPort}"
-        "D2Z_USER=readonly@ppom.me"
-        "D2Z_PASSWORD_FILE=/var/secrets/pompeani.art/readonly"
-        "D2Z_ACCESS_TOKEN_FILE=/var/secrets/pompeani.art/access_token"
         "D2Z_SSH_KEY=/var/secrets/pompeani.art/key"
         "D2Z_SSH_DEST=pompeani.art-uploader@akesi.ppom.me:/var/www/pompeani.art/"
       ];

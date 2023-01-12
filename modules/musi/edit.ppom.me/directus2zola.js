@@ -7,10 +7,6 @@ import { spawn } from 'node:child_process';
 
 import { Directus } from '@directus/sdk';
 
-const accessToken = readFileSync(process.env.D2Z_ACCESS_TOKEN_FILE, 'utf8').trim();
-const email = process.env.D2Z_USER;
-const password = readFileSync(process.env.D2Z_PASSWORD_FILE, 'utf8').trim();
-
 const defaultQuery = { limit: -1 };
 const basedir = './zola/content';
 const baseurl = 'http://127.0.0.1:8055';
@@ -18,11 +14,6 @@ const baseurl = 'http://127.0.0.1:8055';
 async function generate() {
   // Connect
   const directus = new Directus(baseurl);
-
-  await directus.auth.login({
-    email: email,
-    password: password,
-  });
 
   // Create zola's content directory
   try {
@@ -64,7 +55,7 @@ ${post.prix_euro ? `prix = "${post.prix_euro} €"` : "prix = \"\""}
     await writeFile(join(dir, "index.md"), md);
 
     for (const preset of [ "small", "big" ]) {
-      const image_url = join(baseurl, `assets/${post.image}?download&key=${preset}&access_token=${accessToken}`);
+      const image_url = join(baseurl, `assets/${post.image}?download&key=${preset}`);
       const image = await fetch(image_url);
       await pipeline(image.body, createWriteStream(join(dir, `${preset}.webp`), image));
     }
@@ -99,7 +90,7 @@ ${page.texte}
     await writeFile(join(dir, "index.md"), md);
 
     const preset = "big";
-    const image_url = join(baseurl, `assets/${page.image}?download&key=${preset}&access_token=${accessToken}`);
+    const image_url = join(baseurl, `assets/${page.image}?download&key=${preset}`);
     const image = await fetch(image_url);
     await pipeline(image.body, createWriteStream(join(dir, `${preset}.webp`), image));
   }
