@@ -30,7 +30,7 @@ async function generate() {
   // Fetch posts
   const posts = await directus.items('posts').readByQuery({
     fields: [ 'titre', 'slug', 'status', 'ordre', 'image', 'date_creation',
-      'technique.nom', 'largeur_cm', 'hauteur_cm', 'prix_euro' ],
+      'technique.nom', 'collection.nom', 'largeur_cm', 'hauteur_cm', 'prix_euro' ],
     filter: {
       status: { "_eq": "published", },
     },
@@ -47,7 +47,8 @@ in_search_index = true
 [extra]
 technique = "${post.technique.nom}"
 dimensions = "${post.hauteur_cm} x ${post.largeur_cm} cm"
-${post.prix_euro ? `prix = "${post.prix_euro} €"` : "prix = \"\""}
+prix = "${post.prix_euro ? `${post.prix_euro} €` : ""}"
+collection = "${(post.collection && post.collection.nom) || ""}"
 +++`;
     const dir = join(basedir, post.slug);
     await mkdir(dir);
