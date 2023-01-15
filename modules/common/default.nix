@@ -1,28 +1,22 @@
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 {
   imports = [
-    ./ppom.nix
-    ./tmux.nix
-    ./nvim.nix
     ./git.nix
+    ./misc.nix
+    ./nvim.nix
     ./packages.nix
-    ./environment.nix
     ./ssh.nix
+    ./tmux.nix
   ];
 
-  i18n.supportedLocales = [ "en_US.UTF-8/UTF-8" "fr_FR.UTF-8/UTF-8" ];
+  options.ppom.enable = lib.mkEnableOption "enable default ppom environment";
 
-  environment.homeBinInPath = true;
-
-  nix = {
-    settings = {
-      connect-timeout = 5;
-      log-lines = 25;
-      auto-optimise-store = true;
-    };
-    # FIXME update to daemonIOSchedClass daemonIOSchedPriority
-    # daemonIONiceLevel = 7;
-    # FIXME update to daemonCPUSchedPolicy
-    # daemonNiceLevel =   10;
+  config = lib.mkIf config.ppom.enable {
+    ppom.misc.enable = true;
+    ppom.packages.enable = true;
+    ppom.tmux.enable = true;
+    ppom.nvim.enable = true;
+    ppom.git.enable = true;
+    # ppom.ssh.enable = true;
   };
 }

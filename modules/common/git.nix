@@ -1,29 +1,33 @@
 { lib, config, pkgs, ... }:
 {
-  environment.etc."gitconfig".text = ''
-    [user]
-        name = Paco${lib.optionalString (!config.ppom.isDesktop) " on ${config.networking.hostName}"}
-        email = paco@ecomail.io
-    [core]
+  options.ppom.git = {
+    enable = lib.mkEnableOption "enable ppom git";
+    email = lib.mkOption {
+      type = lib.types.str;
+    };
+  };
+  config = lib.mkIf config.ppom.git.enable {
+    programs.git = {
+      enable = true;
+      config = {
+        user.name = "ppom";
+        user.email = config.ppom.git.email;
         # Default ssh's askpass is a pain
-        askPass =
-    [difftool]
-        tool = vimdiff
-        prompt = false
-    [diff]
-        tool = vimdiff
-    [alias]
-        d = diff
-        dc = diff --cached
-        dt = difftool
-        s = status
-        a = add -A
-        cm = commit -m
-    [credential]
-        helper = cache --timeout=${builtins.toString (4 * 60 * 60)}
-    [pull]
-        rebase = false
-    [commit]
-        verbose = true
-  '';
+        core.askPass = "";
+        difftool.tool = "vimdiff";
+        difftool.prompt = false;
+        credential.helper = "cache --timeout=${builtins.toString (4 * 60 * 60)}";
+        commit.verbose = true;
+        pull.rebase = false;
+        alias = {
+          d = "diff";
+          dc = "diff --cached";
+          dt = "difftool";
+          s = "status";
+          a = "add -A";
+          cm = "commit -m";
+        };
+      };
+    };
+  };
 }

@@ -1,22 +1,24 @@
 { lib, config, pkgs, ... }:
 {
   imports = [
-      ../common
+    ../common
 
-      ./direnv.nix
-      ./down-detector.nix
-      ./graphical.nix
-      ./hardware-configuration.nix
-      # ./nginx.nix
-      ./packages.nix
-      ./virt.nix
-      ./vpnc.nix
-      # ./wireguard.nix
-      # ./phpmysql.nix
-      # ./userunits.nix
-    ];
+    ./direnv.nix
+    ./down-detector.nix
+    ./graphical.nix
+    ./hardware-configuration.nix
+    ./packages.nix
+    ./virt.nix
+    ./vpnc.nix
+  ];
 
-  ### Flavors
+  ppom = {
+    enable = true;
+    tmux.desktop = true;
+    packages.more = true;
+    git.email = "paco@ecomail.io";
+    nvim.steroids = true;
+  };
 
   specialisation = {
     # A (future) wifi proxy
@@ -24,8 +26,6 @@
     #   imports = [ ./accesspoint.nix ];
     # }
   };
-
-  ### System ###
 
   # Boot
   boot = {
@@ -35,7 +35,6 @@
     tmpOnTmpfs = true;
     # add ntfs support
     supportedFilesystems = [ "ntfs" ];
-    # plymouth = { enable = true; logo = pkgs.fetchurl { url = "https://u.ppom.me/plymouth.png"; sha256 = "b2d44f5120e6528cec6dea9b6b8ad049e57b7f65670d8f05ca1c18b5a43c63d7"; }; };
 
     # The 5.15 mainline has a "dim brightness" bug for me
     kernelPackages = pkgs.linuxKernel.packages.linux_6_0;
@@ -44,16 +43,7 @@
   # Networking
   networking = {
     hostName = "sona";
-
-    # Per-interface useDHCP
     useDHCP = false;
-    # interfaces.enp2s0.useDHCP = true;
-    # interfaces.wlp9s0.useDHCP = true;
-
-    # nameservers = [ "80.67.169.12" "80.67.169.40" ]; # FDN DNS. does not override provided DNS :(
-
-    extraHosts = "10.62.215.188 y.local";
-
     networkmanager.enable = true;
     networkmanager.wifi.powersave = true;
 
@@ -78,6 +68,7 @@
   #   #nameserver 80.67.169.12
   #   #nameserver 80.67.169.40
   # '';
+
   # disable wait online
   systemd.services.NetworkManager-wait-online.enable = false;
 
@@ -93,22 +84,13 @@
       allowed-users = [ "@wheel" ];
       experimental-features = "nix-command flakes";
     };
-
-    # FIXME update to daemonIOSchedClass daemonIOSchedPriority
-    # daemonIONiceLevel = 7;
-    # FIXME update to daemonCPUSchedPolicy
-    # daemonNiceLevel =   10;
   };
 
-
-  # Select internationalisation properties.
-  i18n.defaultLocale = "en_US.UTF-8";
   console = {
     font = "Lat2-Terminus16";
     keyMap = "fr";
   };
 
-  # Set your time zone.
   time.timeZone = "Europe/Paris";
 
   powerManagement = {
@@ -117,26 +99,15 @@
     powertop.enable = true;
   };
 
-  # systemd.automount = [
-  #   {
-  #     enable = true;
-  #     automountConfig = {
-  #       Where = "/mnt/sdc1";
-  #     };
-  #   }
-  # ];
-
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.ao = {
     isNormalUser = true;
     shell = pkgs.fish;
-    # "wheel" enables ‘sudo’ for the user.
     extraGroups = [
       "wheel"
       "networkmanager"
       "network"
       "video"
-      # "wireshark"
       "docker"
       "adbusers"
       "media"
@@ -146,10 +117,7 @@
   services.getty.autologinUser = "ao";
 
   programs.fish.enable = true;
-  programs.xonsh.enable = true;
-  environment.pathsToLink = [
-    "/share/fish"
-  ];
+  environment.pathsToLink = [ "/share/fish" ];
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
@@ -159,43 +127,18 @@
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "20.03"; # Did you read the comment?
 
-  # system.autoUpgrade.enable = true;
-  # system.autoUpgrade.allowReboot = false;
-
-  security.apparmor = {
-    enable = true;
-  };
-
-  security.sudo.extraConfig = ''Defaults insults'';
-
-  ### Services and packages
-
+  security.apparmor.enable = true;
 
   services.locate = {
+    enable = true;
     locate = pkgs.mlocate;
     localuser = null; # accepts mlocate running as root
-    enable = true;
     interval = "hourly";
     prunePaths = [ "/tmp" "/var/tmp" "/var/cache" "/var/lock" "/var/run" "/var/spool" "/mnt" ];
   };
 
   services.atd.enable = true;
-
-  # Enable bluetooth
-  services.blueman.enable = true;
-  hardware.bluetooth.enable = true;
-  hardware.bluetooth.powerOnBoot = false;
-
-  # Enable sound.
-  sound.enable = true;
-  # hardware.pulseaudio = {
-  #   enable = true;
-  #   package = pkgs.pulseaudioFull; # In order to get Bluetooth support
-  # };
-
   services.tlp.enable = true;
-
-  programs.kdeconnect.enable = true;
 
   environment = {
     variables = rec {
@@ -206,26 +149,10 @@
 
   # Programs
   programs = {
-    # system
-    iftop.enable = true;
-    bandwhich.enable = true;
-    # dev
+    gnupg.agent.enable = true;
+    kdeconnect.enable = true;
     npm.enable = true;
-    # other
-    # wireshark.enable = true;
-    # adb.enable = true;
-
-    gnupg.agent = {
-      enable = true;
-    };
-
+    bandwhich.enable = true;
   };
-
-  ppom = {
-    isDesktop = true;
-    isLight = false;
-    ssh.hardened = false;
-  };
-
 }
 

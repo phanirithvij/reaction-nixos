@@ -1,23 +1,24 @@
 { lib, config, pkgs, ... }:
-let
-  shortcut = if config.ppom.isDesktop then "q" else "b";
-in
 {
-  imports = [ ./ppom.nix ];
-  # tmuxPlugins.fingers TODO add them in tmux's path
-  # tmuxPlugins.pain-control
+  options.ppom.tmux = {
+    enable = lib.mkEnableOption "enable tmux with ppom config";
+    desktop = lib.mkEnableOption "on a desktop";
+  };
 
-  config = {
+  config = let
+    cfg = config.ppom.tmux;
+  in {
     programs.tmux = {
       enable = true;
       clock24 = true;
       customPaneNavigationAndResize = true;
       historyLimit = 20000;
       keyMode = "vi";
+      newSession = true;
       resizeAmount = 5;
       terminal = "screen-256color";
-      escapeTime = if config.ppom.isDesktop then 20 else 500;
-      shortcut = shortcut;
+      escapeTime = if cfg.desktop then 20 else 500;
+      shortcut = if cfg.desktop then "q" else "b";
 
       extraConfig = ''
         set -s command-alias[1] n='new -A'
@@ -39,12 +40,12 @@ in
         # ù is more accessible on AZERTY
         bind ù   split-window -h -c "#{pane_current_path}"
         bind c   new-window      -c "#{pane_current_path}"
-
-        ${if config.ppom.isDesktop then ''
+      '' + lib.optionalString cfg.desktop ''
         set -g status-style fg=#ffffff
         set -g status-style bg=#460179
 
-        set -g detach-on-destroy off # since tmux 3.2. Love it.
+        # Switch to another sessions when the current one ends
+        set -g detach-on-destroy off
 
         # Neovim said this
         set-option -sa terminal-overrides ',xterm-256color:RGB'
@@ -55,8 +56,6 @@ in
 
         # ssh-agent said this
         set -ga update-environment ",SSH_AUTH_SOCK,SSH_AGENT_PID"
-        '' else ''
-        ''}
       '';
     };
   };

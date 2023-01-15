@@ -5,17 +5,15 @@
     ../common
 
     ./hardware-configuration.nix
-    # ./openvpn.nix
     ./pompeani.art.nix
-    # ./turn.nix
     ./torrent.nix
     ./webserver.nix
     ./wireguard.nix
   ];
 
   ppom = {
-    isDesktop = false;
-    isLight = true;
+    enable = true;
+    git.email = "akesi@ppom.me";
     ssh = {
       enable = true;
       port = 22;

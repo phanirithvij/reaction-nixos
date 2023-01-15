@@ -28,8 +28,9 @@
   ];
 
   ppom = {
-    isDesktop = false;
-    isLight = false;
+    enable = true;
+    packages.more = true;
+    git.email = "musi@ppom.me";
     ssh = {
       enable = true;
       port = 22;

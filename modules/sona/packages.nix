@@ -10,36 +10,22 @@ in {
   environment.systemPackages = with pkgs; [
     # CLI
     # sshuttle # poor's man VPN
-    sshfs-fuse # mount remote FS via SSH
-    (lib.lowPrio moreutils) # vipe, vidir
     sysstat
     tealdeer # tldr man pages
-    # sequoia # modern OpenPGP implementation
     tomb # LUKS wrapper
     rbw # unofficial bitwarden CLI
     pinentry-gnome # GUI password prompt (used by gpg-agent, installing it in global path for rbw & tomb)
     pass # password-store
     acpi # battery information
-    # powertop # power information
-    # pciutils # lspci
     libossp_uuid # uuid v4
-    # vmtouch # Virtual Memory Toucher
-    # xonsh # Python x Bash = xon.sh
-    # sl # You shouldn't type `sl`...
     jq # JSON shell toolbox
     pup # jq for HTML
-    bc # basic calculator
     # xsv # jq for CSV
-    # parallel
     openvpn
     # lolcat
     # figlet
     # espeak-ng
     # cowsay
-    # subdl
-    # croc # CLI file transfer
-    # nix-bundle # Bundle a derivation like AppImage
-    # comma # wrapper around `nix-index` && `nix run` to launch a command without installing it
     inotify-tools # Linux filesystem watchdog
     # languagetool # Proofreading program
     deepl-translate-cli # CLI to use deepl. With a shell wrapper around it, it's fast to use
@@ -48,11 +34,7 @@ in {
     # TUI
     # w3m # web browser
     # asuka # gemini browser
-    # ddgr # DuckDuckGo CLI
-    # lookatme # Terminal MarkDown viewer, unmaintained?
     ytfzf # Youtube scrapper ⨯ fzf
-    # aerc # Email client
-    # neovim-remote
     khal # calendar
     vdirsyncer # caldav syncer
 
@@ -67,7 +49,6 @@ in {
     ncpamixer # Pulseaudio TUI
     networkmanagerapplet # NM connection editor
 
-
     # GUI apps
     firefox # Best browser ever
     thunderbird # Mail, CalDav, XMPP & Matrix client
@@ -75,11 +56,8 @@ in {
     signal-desktop # Signal Messaging client
     # code-server # VSCodium w/ in-browser client & server
     # mumble # Mumble VoIP client
-    # anki
     # drawio
     # tor-browser-bundle-bin
-    # jitsi-meet-electron
-    # element-desktop
     pcmanfm # File Browser
     evince
     libreoffice
@@ -97,7 +75,6 @@ in {
     apache-directory-studio # LDAP client
     ferdium # Web client for apps (Mattermost, Nextcloud, Telegram…)
     # nextcloud-client
-    # rssguard
     # klavaro # learn to type efficiently
 
     # Games
@@ -143,7 +120,6 @@ in {
     wireguard-tools
 
     # Media
-    # subtitleeditor (broken)
     imagemagick
     beets # MP3 tag editor
     # cdparanoia # CD ripper, `cdparanoia -B`
@@ -153,7 +129,6 @@ in {
     pdftk # PDF Swiss knife
     # poppler # other PDF manipulations
 
-    # adv_coreutils # with patch, see below
     mediahandler # ⏯️
   ];
 

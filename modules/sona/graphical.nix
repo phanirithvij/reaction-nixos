@@ -65,6 +65,7 @@ in
     swaylock
     swayidle
     swaybg
+    waybar
 
     dbus-sway-environment
     configure-gtk
@@ -103,12 +104,17 @@ in
     })
   ];
 
+  sound.enable = true;
   services.pipewire = {
     enable = true;
     alsa.enable = true;
     pulse.enable = true;
   };
 
+  # Enable bluetooth
+  services.blueman.enable = true;
+  hardware.bluetooth.enable = true;
+  hardware.bluetooth.powerOnBoot = false;
 
   # xdg-desktop-portal works by exposing a series of D-Bus interfaces
   # known as portals under a well-known name
