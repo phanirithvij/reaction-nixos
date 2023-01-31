@@ -69,7 +69,7 @@ in {
     gimp # GNU Image Manipulation Program
     inkscape # Vector Image Editor
     deluge # BitTorrent peer
-    nicotine-plus # Soulseek client
+    unstable.nicotine-plus # Soulseek client
     gparted
     syncthing # ± P2P file synchronization
     apache-directory-studio # LDAP client
