@@ -2,17 +2,16 @@
 {
   imports = [
     ../common
+    ../common/directus/default.nix
+    ../common/funkwhale/default.nix
 
     ./anpa.nix # container
     ./backup.nix
     ./converter/default.nix
-    ./directus/default.nix
     ./dolibarr.nix
-    ./funkwhale/default.nix
     ./hardware-configuration.nix
     ./ghmm.nix
     ./languagetool.nix
-    ./log.nix
     ./mail.nix
     ./monitoring.nix
     ./nextcloud/default.nix
@@ -110,6 +109,11 @@
     interval = "daily";
     prunePaths = [ "/tmp" "/var/tmp" "/var/cache" "/var/lock" "/var/run" "/var/spool" "/var/lib/docker" ];
   };
+
+  services.journald.extraConfig = ''
+    SystemMaxUse=6G
+    MaxRetentionSec=1month
+  '';
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
