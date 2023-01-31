@@ -40,30 +40,5 @@ toYaml "docker-compose" {
       env_file = [ "/var/secrets/nextcloud-suite/db.env" ];
       depends_on = [ "db" ];
     };
-
-    # collabora = {
-    #   image = "collabora/code";
-    #   container_name = "collabora";
-    #   restart = "always";
-    #   volumes = [ "./coolwsd.xml:/etc/coolwsd/coolwsd.xml" ];
-    #   ports = [ "${collabora.port}:9980" ];
-    #   cap_add = [ "MKNOD" ];
-    #   environment = [
-    #     "domain=${nextcloud.domainName}"
-    #     "VIRTUAL_HOST=${collabora.domainName}"
-    #     "VIRTUAL_NETWORK=nginx-proxy"
-    #     "VIRTUAL_PORT=9980"
-    #     "DONT_GEN_SSL_CERT=true"
-    #   ];
-    #   networks = [ "proxy-tier" ];
-    # };
-
-    mail = {
-      image = "bytemark/smtp";
-      container_name = "nc_mail";
-      restart = "always";
-      ports = [ "25:25" ];
-      env_file = [ "/var/secrets/nextcloud-suite/mail.env" ];
-    };
   };
 }
