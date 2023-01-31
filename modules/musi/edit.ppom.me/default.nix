@@ -54,6 +54,7 @@ in {
   systemd.services."directus2zola-pompeani.art" = {
     enable = true;
     wantedBy = [ "multi-user.target" ];
+    requires = [ "directus-pompeani.art.service" ];
     after = [ "directus-pompeani.art.service" ];
     path = with pkgs; [ nodejs git zola rsync openssh ];
     serviceConfig = {
@@ -80,6 +81,8 @@ in {
         [[ -e zola ]] || git clone https://framagit.org/ppom/pompeani.art.git zola
       '';
       ExecStart = "${pkgs.nodejs}/bin/node ./index.js";
+      Restart = "always";
+      RestartSec = 10;
       LockPersonality = true;
       NoNewPrivileges = true;
       PrivateDevices = true;

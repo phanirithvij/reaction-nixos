@@ -29,11 +29,8 @@ async function generate() {
 
   // Fetch posts
   const posts = await directus.items('posts').readByQuery({
-    fields: [ 'titre', 'slug', 'status', 'ordre', 'image', 'date_creation',
-      'technique.nom', 'collection.nom', 'largeur_cm', 'hauteur_cm', 'prix_euro' ],
-    filter: {
-      status: { "_eq": "published", },
-    },
+    fields: [ '*', 'technique.nom', 'collection.nom' ],
+    filter: { status: { "_eq": "published" } },
   });
 
   // Generate posts content
@@ -64,7 +61,7 @@ collection = "${(post.collection && post.collection.nom) || ""}"
 
   // Fetch special pages
   const pages = await directus.items('pages').readByQuery({
-    fields: [ 'titre', 'slug', 'template', 'description', 'image', 'texte', ],
+    fields: [ '*' ],
   });
 
   // Generate pages content
