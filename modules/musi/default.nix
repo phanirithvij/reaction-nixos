@@ -6,7 +6,6 @@
     ../common/funkwhale/default.nix
 
     ./anpa.nix # container
-    ./apicasoft-init.nix # container
     ./backup.nix
     ./converter/default.nix
     ./dolibarr.nix
