@@ -65,8 +65,8 @@ in
     25 # SMTP
     143 # IMAP, STARTTLS
     993 # IMAP, SSL/TLS
-    587 # SMTP, SSL/TLS
-    465 # SMTP, STARTTLS
+    587 # SMTP, STARTTLS
+    465 # SMTP, SSL/TLS
   ];
 
   environment.etc."fail2ban/filter.d/maddy.conf".text = ''
