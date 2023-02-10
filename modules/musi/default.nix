@@ -14,7 +14,6 @@
     ./languagetool.nix
     ./mail.nix
     ./monitoring.nix
-    ./nextcloud/default.nix
     ./rssify/default.nix
     ./streama.nix
     ./tor.nix
