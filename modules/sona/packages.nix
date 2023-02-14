@@ -69,13 +69,14 @@ in {
     gimp # GNU Image Manipulation Program
     inkscape # Vector Image Editor
     deluge # BitTorrent peer
-    unstable.nicotine-plus # Soulseek client
+    # nicotine-plus # Soulseek client
     gparted
     syncthing # ± P2P file synchronization
     apache-directory-studio # LDAP client
     ferdium # Web client for apps (Mattermost, Nextcloud, Telegram…)
     # nextcloud-client
     # klavaro # learn to type efficiently
+    tigervnc
 
     # Games
     # superTux superTuxKart

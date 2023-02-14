@@ -70,6 +70,7 @@ in
     dbus-sway-environment
     configure-gtk
     xdg-utils
+    dex # xdg-autostart
 
     glib # gsettings
     dracula-theme # gtk theme
