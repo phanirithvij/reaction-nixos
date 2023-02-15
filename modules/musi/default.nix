@@ -89,7 +89,7 @@
   };
 
   # Only allow root to use nix
-  nix.settings.allowed-users = [ "root" ];
+  nix.settings.allowed-users = [ "root" "ppom" ];
 
   virtualisation.docker.enable = true;
   boot.kernel.sysctl."net.ipv4.ip_forward" = true;
