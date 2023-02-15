@@ -19,6 +19,7 @@
       port = 22;
       hardened = true;
     };
+    fail2ban.enable = true;
     monit = {
       enable = true;
       fromMail = "akesi@ppom.me";
