@@ -216,6 +216,7 @@ in {
   # Workaround for cache files being sometimes owned by nobody
   systemd.tmpfiles.rules = [
     "Z '/var/cache/nginx' 0750 ${config.services.nginx.user} ${config.services.nginx.group} -"
+    "f /data/uploader/index.html 0755 root root - 'Hello!'"
   ];
 
   systemd.services.custom-reload-acme-www-ppom-me = {

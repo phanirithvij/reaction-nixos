@@ -19,6 +19,10 @@
       port = 22;
       hardened = true;
     };
+    monit = {
+      enable = true;
+      fromMail = "akesi@ppom.me";
+    };
   };
 
   system.stateVersion = "22.05";

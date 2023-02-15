@@ -6,6 +6,7 @@
     ./funkwhale
     ./git.nix
     ./misc.nix
+    ./monit.nix
     ./nvim.nix
     ./packages.nix
     ./ssh.nix

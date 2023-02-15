@@ -33,6 +33,10 @@
       hardened = false;
     };
     fail2ban.enable = true;
+    monit = {
+      enable = true;
+      fromMail = "musi@ppom.me";
+    };
   };
 
   # Use the systemd-boot EFI boot loader.
