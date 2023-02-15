@@ -4,6 +4,16 @@ let
   suffix = "/vault";
   rocketPort = 8060;
   websocketPort = 8061;
+
+  fail2banFilter = pkgs.writeText "vaulwardenFail2banFilter.conf" ''
+    [INCLUDES]
+    before = common.conf
+
+    [Definition]
+    failregex = ^.*Username or password is incorrect\. Try again\. IP: <ADDR>\. Username:.*$
+    ignoreregex =
+    journalmatch = _SYSTEMD_UNIT=vaultwarden.service + _COMM=vaultwarden
+  '';
 in {
   services.vaultwarden = {
     enable = true;
@@ -38,15 +48,8 @@ in {
   };
 
   # fail2ban
-  environment.etc."fail2ban/filter.d/vaultwarden.conf".text = ''
-    [INCLUDES]
-    before = common.conf
+  environment.etc."fail2ban/filter.d/vaultwarden.conf".source = fail2banFilter;
 
-    [Definition]
-    failregex = ^.*Username or password is incorrect\. Try again\. IP: <ADDR>\. Username:.*$
-    ignoreregex =
-    journalmatch = _SYSTEMD_UNIT=vaultwarden.service + _COMM=vaultwarden
-  '';
   services.fail2ban.jails.vaultwarden = ''
     enabled = true
     port = 80,443
@@ -56,4 +59,6 @@ in {
     findtime = 3600
     bantime = 2400
   '';
+
+  systemd.services.fail2ban.restartTriggers = [ fail2banFilter ];
 }

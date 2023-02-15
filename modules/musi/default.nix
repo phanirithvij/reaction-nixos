@@ -2,8 +2,6 @@
 {
   imports = [
     ../common
-    ../common/directus/default.nix
-    ../common/funkwhale/default.nix
 
     ./anpa.nix # container
     ./backup.nix
@@ -34,6 +32,7 @@
       port = 22;
       hardened = false;
     };
+    fail2ban.enable = true;
   };
 
   # Use the systemd-boot EFI boot loader.

@@ -27,18 +27,5 @@ in {
     # programs.mosh.enable = true;
 
     networking.firewall.allowedTCPPorts = [ cfg.port ];
-
-    services.fail2ban = {
-      enable = true;
-      # Stick with default banaction, banaction-allports
-      jails.sshd = ''
-        enabled = true
-        port = ${builtins.toString cfg.port}
-        mode = aggressive
-        maxretry = 5
-        findtime = 1200
-        bantime = ${if cfg.hardened then "4800" else "2400"}
-      '';
-    };
   };
 }

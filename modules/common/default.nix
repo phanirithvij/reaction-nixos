@@ -1,6 +1,9 @@
 { config, lib, pkgs, ... }:
 {
   imports = [
+    ./directus
+    ./fail2ban.nix
+    ./funkwhale
     ./git.nix
     ./misc.nix
     ./nvim.nix
@@ -17,6 +20,8 @@
     ppom.tmux.enable = true;
     ppom.nvim.enable = true;
     ppom.git.enable = true;
+    # server-side
+    # ppom.fail2ban.enable = true;
     # ppom.ssh.enable = true;
   };
 }
