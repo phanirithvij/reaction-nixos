@@ -1,5 +1,10 @@
 { lib, pkgs, config, ... }:
 let
+  nextcloudFail2banFilter = pkgs.writeText "nextcloudFail2banFilter" ''
+    [Definition]
+    failregex = "remoteAddr":"<HOST>".*"message":"Login failed:
+                "remoteAddr":"<HOST>".*"message":"Trusted domain error.
+  '';
 in {
   services.nextcloud = {
     enable = true;
@@ -46,4 +51,24 @@ in {
     requires = ["postgresql.service"];
     after = ["postgresql.service"];
   };
+
+  # Fail2ban
+  environment.etc."fail2ban/filter.d/nextcloud.conf".source = nextcloudFail2banFilter;
+
+  services.fail2ban = {
+    enable = true;
+    jails.nextcloud = ''
+      enabled = true
+      port = 80,443
+
+      filter = nextcloud
+      journalmatch = _SYSTEMD_UNIT=phpfpm-nextcloud.service + _COMM=phpfpm-nextcloud
+
+      maxretry = 3
+      bantime = 3600
+      findtime = 3600
+    '';
+  };
+
+  systemd.services.fail2ban.restartTriggers = [ nextcloudFail2banFilter ];
 }
