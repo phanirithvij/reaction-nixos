@@ -34,7 +34,7 @@
           echo "$INSTANCE_URL" > ./secrets/instance_url
           echo "$TOKEN" > ./secrets/token
           fi
-          for file in ./lists/*
+          for file in $(ls lists/* | grep -v '/paco-' | grep -v '/pomme-' | grep -v '/tan-' )
           do
             ${python}/bin/python import-from-txt.py "$file"
           done
