@@ -18,6 +18,12 @@
         Succeedly wiped /
       '';
     };
+
+    virtualHosts."paris-loyers.fr" = {
+      enableACME = true;
+      forceSSL = true;
+      locations."/".root = "/var/www/paris-loyers.fr";
+    };
   };
 
   # Let's Encrypt config
