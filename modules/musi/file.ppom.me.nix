@@ -46,6 +46,8 @@ in {
     } ];
   };
 
+  services.postgresqlBackup.databases = [ "nextcloud" ];
+
   # ensure that postgres is running *before* running the setup
   systemd.services."nextcloud-setup" = {
     requires = ["postgresql.service"];
