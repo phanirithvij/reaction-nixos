@@ -12,6 +12,7 @@
     ./languagetool.nix
     ./mail.nix
     ./monitoring.nix
+    ./postgresql.nix
     ./rssify/default.nix
     ./streama.nix
     ./tor.nix
