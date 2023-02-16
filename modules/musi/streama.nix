@@ -130,6 +130,7 @@ in {
         ''
       }
     '';
+    serviceConfig.User = "streama";
     startAt = "daily";
   };
 }
