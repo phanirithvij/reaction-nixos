@@ -30,6 +30,7 @@
 
       ## protocols
       curl # HTTP client
+      goaccess # HTTP Log parser
 
       ## developpement
       git
