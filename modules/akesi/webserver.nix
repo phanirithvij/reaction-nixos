@@ -11,7 +11,6 @@
     recommendedProxySettings = true;
 
     virtualHosts."akesi.ppom.me" = {
-      default = true;
       enableACME = true;
       forceSSL = true;
       locations."/".root = pkgs.writeTextDir "index.html" ''
@@ -20,11 +19,15 @@
     };
 
     virtualHosts."paris-loyers.fr" = {
+      default = true;
       enableACME = true;
       forceSSL = true;
       locations."/".root = "/var/www/paris-loyers.fr";
     };
   };
+
+  # Prevent it from being garbage-collected between each nginx config change
+  environment.systemPackages = [ pkgs.gixy ];
 
   # Let's Encrypt config
   security.acme = {
