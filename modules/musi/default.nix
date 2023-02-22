@@ -5,7 +5,7 @@
 
     ./anpa.nix # container
     ./backup.nix
-    ./converter/default.nix
+    ./converter
     ./dolibarr.nix
     ./hardware-configuration.nix
     ./ghmm.nix
@@ -20,7 +20,7 @@
 
     ./websites.nix
     ./music.ppom.me.nix
-    ./edit.ppom.me/default.nix
+    ./edit.ppom.me
     ./file.ppom.me.nix
   ];
 

@@ -314,7 +314,7 @@ in {
 
     assertions = let
       directusPorts = (map (conf: conf.settings.PORT) (builtins.attrValues enabledServers));
-      sortedDirectusPorts = lib.naturalSort directusPorts;
+      sortedDirectusPorts = (lib.sort (a: b: a < b) directusPorts);
     in [
       {
         assertion = 0 != builtins.foldl' (a: b: if a != b then b else 0) 0 sortedDirectusPorts;
@@ -463,15 +463,18 @@ in {
       };
     }) enabledServers;
 
-    services.nginx.virtualHosts = lib.mapAttrs' (name: conf: lib.nameValuePair "${conf.nginx.serverName}" {
+    services.nginx.virtualHosts = let
+      nginxEnabledServers = builtins.attrValues (lib.filterAttrs (name: conf: conf.nginx.enable) enabledServers);
+      groupedByServerNameConfs = builtins.groupBy (conf: conf.nginx.serverName) nginxEnabledServers;
+    in builtins.mapAttrs (name: confs: {
       enableACME = true;
       forceSSL = true;
-      locations = {
+      locations = lib.mkMerge (builtins.map (conf: {
         "${conf.nginx.location}".return = "302 ${conf.nginx.location}/";
         "${conf.nginx.location}/".proxyPass = "http://localhost:${builtins.toString conf.settings.PORT}/";
         # "${conf.nginx.location}/admin".return = "302 /admin/";
         # "${conf.nginx.location}/admin/".alias = "${cfg.installDirectory}/node_modules/@directus/app/dist/";
-      };
-    } // conf.nginx.nginx) (lib.filterAttrs (name: conf: conf.nginx.enable) enabledServers);
+      }) confs);
+    }) groupedByServerNameConfs;
   }]);
 }
