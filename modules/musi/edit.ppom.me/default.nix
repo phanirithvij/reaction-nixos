@@ -20,6 +20,7 @@
       <body>
         <h1>Sites d'édition Directus</h1>
         <a href="/pompeani.art">pompeani.art</a>
+        <a href="/leborddeleau">Le bord de l'eau</a>
       </body>
     </html>
   '';
