@@ -80,10 +80,10 @@ in
   '';
   services.fail2ban.jails.maddy = ''
     enabled = true
-    port = 80,443
+    port = 25,143,993,587,465
     filter = maddy
 
-    maxretry = 20
+    maxretry = 3
     findtime = 3600
     bantime = ${toString (3600 * 24)}
   '';
