@@ -16,7 +16,7 @@
     enable = true;
     tmux.desktop = true;
     packages.more = true;
-    git.email = "paco@ecomail.io";
+    git.email = "sona@ppom.me";
     nvim.steroids = true;
   };
 
