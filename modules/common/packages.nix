@@ -48,6 +48,7 @@
       ## security
       srm # secure rm
       gnupg # reference OpenPGP implementation
+      # crowdsec # powerfull, go alternative to fail2ban, with community database
 
     ] ++ lib.optionals config.ppom.packages.more [
       fish # Friendly interactive shell
