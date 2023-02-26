@@ -114,7 +114,14 @@
     ];
   };
 
-  services.getty.autologinUser = "ao";
+  # I want autologin only on tty1.
+  # services.getty.autologinUser = "ao";
+  # From /nix/var/nix/profiles/per-user/root/nixos/nixos/modules/services/ttys/getty.nix
+  # From /etc/systemd/system/getty@.service
+  systemd.services."getty@tty1" = {
+    serviceConfig.ExecStart = [ "" "@${pkgs.util-linux}/sbin/agetty agetty '--login-program' '${pkgs.shadow}/bin/login' '--autologin' 'ao' %I --keep-baud $TERM" ];
+    overrideStrategy = "asDropin";
+  };
 
   programs.fish.enable = true;
   environment.pathsToLink = [ "/share/fish" ];
