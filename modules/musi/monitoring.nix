@@ -59,8 +59,11 @@ in {
 
   systemd.services.check-co = {
     description = "Check if internet connection is up";
-    serviceConfig.User = "ppom";
-    serviceConfig.ExecStart = "${check}/bin/check_co.sh";
+    serviceConfig = {
+      User = "ppom";
+      ExecStart = "${check}/bin/check_co.sh";
+      LogNamespace = "trash";
+    };
     startAt = "minutely";
   };
 }
