@@ -2,6 +2,9 @@
 
 {
   imports = [
+    # For cloud vms. See https://nixos.org/manual/nixos/stable/index.html#sec-profile-headless
+    <nixpkgs/nixos/modules/profiles/headless.nix>
+
     ../common
 
     ./hardware-configuration.nix
