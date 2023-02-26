@@ -40,6 +40,8 @@
     };
   };
 
+  environment.systemPackages = [ (pkgs.callPackage ../../pkgs/crowdsec {}) ];
+
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.systemd-boot.editor = false;
