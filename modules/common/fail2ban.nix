@@ -3,6 +3,12 @@
   options.ppom.fail2ban = {
     enable = lib.mkEnableOption "enable fail2ban";
 
+    enableManual = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "enable a jail to manually ban ips or ip ranges";
+    };
+
     enableSSHJail = lib.mkOption {
       type = lib.types.bool;
       default = true;
@@ -24,14 +30,21 @@
       before = common.conf
 
       [Definition]
-      failregex = ^<ADDR>.*"GET /wp-login.php.*
+      failregex = ^<ADDR>.*"GET //*wp-login\.php.*
+                  ^<ADDR>.*"GET //*\.env .*
+                  ^<ADDR>.*"GET //*[^/]*/\.env .*
+                  ^<ADDR>.*"GET //*config\.json .*
+                  ^<ADDR>.*"GET //*info\.php .*
       ignoreregex =
       datepattern = \[%%d/%%b/%%Y:%%H:%%M:%%S %%z\]
     '';
   in lib.mkIf cfg.enable {
     services.fail2ban = {
       enable = true;
-      # Stick with default banaction, banaction-allports
+      bantime-increment = {
+        enable = true;
+        maxtime = "48h";
+      };
       jails.sshd = lib.mkIf cfg.enableSSHJail ''
         enabled = true
         port = 22
@@ -50,6 +63,17 @@
         bantime = ${toString (3600 * 24 * 30)}
         backend = polling
         logpath = /var/log/nginx/access.log
+      '';
+
+      jails.manual = lib.mkIf cfg.enableManual ''
+        enabled = true
+        action = iptables-allports
+        # Any filter is ok
+        filter = qmail
+        maxretry = 9999
+        findtime = 1
+        bantime = ${toString (3600 * 24 * 365 * 5)}
+        logpath = /dev/null
       '';
     };
 
