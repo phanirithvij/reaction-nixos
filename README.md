@@ -33,15 +33,15 @@ containing one of those:
 
 ## Impurities
 
-### Sona
+### sona
 
 #### ppom's config
 
 This repository resides [here](https://framagit.org/ppom/config/) and its `bin/` directory should be symlinked as `/home/ao/bin`.
 
-### Musi
+### musi
 
-Funkwhale, Nextcloud, and Collabora run in Docker, which I'm not proud of.
+Funkwhale processes run in Docker.
 
 ## License
 
