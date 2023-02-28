@@ -20,6 +20,12 @@
       default = true;
       description = "enable jail for bots hiting wp-login.conf";
     };
+
+    enablePortScan = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "enable jail for bots hiting closed ports";
+    };
   };
 
   config = let
@@ -37,6 +43,15 @@
                   ^<ADDR>.*"GET //*info\.php .*
       ignoreregex =
       datepattern = \[%%d/%%b/%%Y:%%H:%%M:%%S %%z\]
+    '';
+
+    portScanFilterFile = pkgs.writeText "portscanfilter.conf" ''
+      [INCLUDES]
+      before = common.conf
+
+      [Definition]
+      failregex = ^.*refused connection: .*SRC=<ADDR> .*$
+      ignoreregex =
     '';
   in lib.mkIf cfg.enable {
     services.fail2ban = {
@@ -65,6 +80,16 @@
         logpath = /var/log/nginx/access.log
       '';
 
+      jails.portscan = lib.mkIf cfg.enablePortScan ''
+        enabled = true
+        action = iptables-allports
+        filter = portscan
+        maxretry = 4
+        findtime = 3600
+        bantime = ${toString (3600 * 24 * 30)}
+        journalmatch = SYSLOG_IDENTIFIER=kernel
+      '';
+
       jails.manual = lib.mkIf cfg.enableManual ''
         enabled = true
         action = iptables-allports
@@ -77,8 +102,11 @@
       '';
     };
 
-    environment.etc."fail2ban/filter.d/wplogin.conf".source = lib.mkIf cfg.enableWPLogin wpLoginFilterFile;
+    environment.etc = {
+      "fail2ban/filter.d/wplogin.conf".source = lib.mkIf cfg.enableWPLogin wpLoginFilterFile;
+      "fail2ban/filter.d/portscan.conf".source = lib.mkIf cfg.enablePortScan portScanFilterFile;
+    };
 
-    systemd.services.fail2ban.restartTriggers = [ wpLoginFilterFile ];
+    systemd.services.fail2ban.restartTriggers = [ wpLoginFilterFile portScanFilterFile ];
   };
 }
