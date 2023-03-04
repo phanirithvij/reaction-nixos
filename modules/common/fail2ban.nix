@@ -107,6 +107,21 @@
       "fail2ban/filter.d/portscan.conf".source = lib.mkIf cfg.enablePortScan portScanFilterFile;
     };
 
-    systemd.services.fail2ban.restartTriggers = [ wpLoginFilterFile portScanFilterFile ];
+    systemd.services.fail2ban-manual-bans = {
+      restartTriggers = [ wpLoginFilterFile portScanFilterFile ];
+      wantedBy = [ "multi-user.target" ];
+      requires = [ "fail2ban.service" ];
+      after = [ "fail2ban.service" ];
+      serviceConfig = {
+        Type = "oneshot";
+        ExecStart = pkgs.writeShellScript "fail2ban-manual-bans" ''
+          while ! test -e /run/fail2ban/fail2ban.sock
+          do
+          sleep .1
+          done
+          ${pkgs.fail2ban}/bin/fail2ban-client set manual banip 46.148.40.0/24
+        '';
+      };
+    };
   };
 }
