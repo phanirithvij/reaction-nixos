@@ -115,11 +115,16 @@
       serviceConfig = {
         Type = "oneshot";
         ExecStart = pkgs.writeShellScript "fail2ban-manual-bans" ''
+          ban() {
+            ${pkgs.fail2ban}/bin/fail2ban-client set manual banip "$1"
+          }
           while ! test -e /run/fail2ban/fail2ban.sock
           do
           sleep .1
           done
-          ${pkgs.fail2ban}/bin/fail2ban-client set manual banip 46.148.40.0/24
+          ban 46.148.40.0/24
+          ban 176.111.174.0/24
+          ban 94.102.61.0/24
         '';
       };
     };
