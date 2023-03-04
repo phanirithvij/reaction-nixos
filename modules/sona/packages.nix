@@ -18,7 +18,6 @@ in {
     pass # password-store
     acpi # battery information
     libossp_uuid # uuid v4
-    jq # JSON shell toolbox
     pup # jq for HTML
     # xsv # jq for CSV
     openvpn

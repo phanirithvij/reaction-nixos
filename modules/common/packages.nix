@@ -44,6 +44,7 @@
       exa # ls like
       du-dust # du like
       pydf # df like
+      jq # json swiss-army-knife
 
       ## security
       srm # secure rm
