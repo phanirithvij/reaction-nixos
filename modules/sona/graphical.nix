@@ -73,9 +73,9 @@ in
     dex # xdg-autostart
 
     glib # gsettings
-    dracula-theme # gtk theme
-    gruvbox-dark-gtk # gtk theme
-    nordic # gtk theme
+    # dracula-theme # gtk theme
+    # gruvbox-dark-gtk # gtk theme
+    # nordic # gtk theme
     sweet # gtk theme
     gnome3.adwaita-icon-theme # default gnome cursors
 
@@ -102,6 +102,9 @@ in
   nixpkgs.overlays = [
     (self: super: {
       conky = super.conky.override { pulseSupport = true; };
+      sweet = super.sweet.overrideAttrs (oldAttrs: {
+        patches = [ ./sweet-theme.patch ];
+      });
     })
   ];
 
@@ -157,9 +160,6 @@ in
   # This specialisation allows to close the lid without actually suspending the computer
   specialisation.closeLid.configuration.services.logind.lidSwitch = lib.mkOverride 98 "lock";
 
-  # setuid wrapper for slock
-  # programs.slock.enable = true;
-
   systemd.services.notify-low-battery = {
     description = "Notify on low battery with sound and notification";
     serviceConfig = {
@@ -194,28 +194,12 @@ in
   programs = {
     # Udev rules
     light.enable = true;
-
-    # xss-lock = {
-    #   enable = true;
-    #   lockerCommand = "/run/wrappers/bin/slock";
-    # };
-
     gnupg.agent = {
       pinentryFlavor = "gnome3";
     };
-
   };
 
-  # Flatpak
   services.flatpak.enable = true;
-  # xdg.portal = {
-  #   enable = true;
-  #   extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
-  # };
 
   environment.variables.BROWSER = "firefox";
-
-  # services.xserver.videoDrivers = [
-  #   "modesetting" "fbdev"
-  # ];
 }
