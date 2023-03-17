@@ -121,7 +121,8 @@ in {
 
     # Media
     imagemagick
-    beets # MP3 tag editor
+    beets # MP3 tag editor from MusicBrainz
+    kid3 # MP3 tag editor
     # cdparanoia # CD ripper, `cdparanoia -B`
     # yj # YAML to JSON etc.
     pandoc
