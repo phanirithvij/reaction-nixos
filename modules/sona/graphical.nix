@@ -87,7 +87,6 @@ in
     wev
 
     conky # status bar
-    mpvpaper # mpv as a wallpaper
     kanshi # auto change randr
 
     wlr-randr # manage displays/monitors
