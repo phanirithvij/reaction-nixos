@@ -53,6 +53,7 @@ in {
     thunderbird # Mail, CalDav, XMPP & Matrix client
     ungoogled-chromium # Alternative browser
     signal-desktop # Signal Messaging client
+    lagrange # Gemini browser
     # code-server # VSCodium w/ in-browser client & server
     # mumble # Mumble VoIP client
     # drawio
