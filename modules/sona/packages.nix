@@ -113,6 +113,7 @@ in {
     # nodejs cargo
     rustup
     go
+    gopls
     gcc
 
     # Sysadmin
