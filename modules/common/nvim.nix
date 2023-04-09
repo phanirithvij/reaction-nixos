@@ -1,5 +1,4 @@
 { lib, config, pkgs, ... }:
-
 let
   undoquit-vim = pkgs.vimUtils.buildVimPluginFrom2Nix {
     pname = "undoquit-vim";
@@ -128,6 +127,8 @@ in {
             autocmd FileType rust       vmap ù   yoprintln!("<Esc>pa: {}", <Esc>pa);<Esc>
             autocmd FileType c          nmap ù yiwoprintf("<Esc>pa: %s", <Esc>pa);<Esc>
             autocmd FileType c          vmap ù   yoprintf("<Esc>pa: %s", <Esc>pa);<Esc>
+            autocmd FileType go         nmap ù yiwofmt.Printf("<Esc>pa: %s\n", <Esc>pa)<Esc>
+            autocmd FileType go         vmap ù   yofmt.Printf("<Esc>pa: %s\n", <Esc>pa);<Esc>
             augroup END
 
           '' + lib.optionalString cfg.steroids ''
@@ -178,6 +179,7 @@ in {
                 # coc-html
                 # coc-xml
               vim-svelte
+              vim-go
               rust-vim
               vim-markdown
               tabular # used by vim-markdown
