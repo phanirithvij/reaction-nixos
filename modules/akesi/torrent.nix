@@ -68,7 +68,7 @@ in
 
   systemd.services.stig-status = {
     description = "Print transmission status to a file available to akesi@anpa";
-    script = "LINES=35 COLUMNS=120 ${pkgs.stig}/bin/stig ls > /musi/stig-output";
+    script = "LINES=35 COLUMNS=120 ${pkgs.stig}/bin/stig ls > /musi/stig-output || true";
     serviceConfig.User = "transmission";
     startAt = "*:*:0,30";
   };
@@ -76,7 +76,7 @@ in
   systemd.services.new-torrent-watch = {
     description = "Touch new files not seen by transmission's inotify because /musi is a network fs";
     script = ''
-      ${pkgs.fd}/bin/fd . --changed-within 100s /musi/dot.torrents/ -x touch
+      ${pkgs.fd}/bin/fd . --changed-within 100s /musi/dot.torrents/ -x touch || true
     '';
     startAt = "*:*:0";
   };
