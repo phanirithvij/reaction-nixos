@@ -16,13 +16,14 @@ in
   ];
 
   services.nginx.virtualHosts = {
-    ${hostname} = {
-      enableACME = true;
-      forceSSL = true;
-      locations."/".root = pkgs.writeTextDir "index.html" ''
-        Here is the mail.
-      '';
-    };
+    # Present in ./listmonk.nix
+    # ${hostname} = {
+    #   enableACME = true;
+    #   forceSSL = true;
+    #   locations."/".root = pkgs.writeTextDir "index.html" ''
+    #     Here is the mail.
+    #   '';
+    # };
     "mta-sts.ppom.me" = {
       enableACME = true;
       forceSSL = true;

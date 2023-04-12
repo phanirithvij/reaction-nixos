@@ -10,6 +10,7 @@
     ./hardware-configuration.nix
     ./ghmm.nix
     ./languagetool.nix
+    ./listmonk.nix
     ./mail.nix
     ./monitoring.nix
     ./postgresql.nix
