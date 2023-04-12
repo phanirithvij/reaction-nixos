@@ -163,6 +163,7 @@ in {
               vim-fugitive
               vim-unimpaired
               vim-fish
+              vim-go
               undoquit-vim
               guess-indent-nvim
               # gruvbox
@@ -179,7 +180,6 @@ in {
                 # coc-html
                 # coc-xml
               vim-svelte
-              vim-go
               rust-vim
               vim-markdown
               tabular # used by vim-markdown

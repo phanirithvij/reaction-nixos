@@ -112,8 +112,6 @@ in {
     # python39Packages.pip
     # nodejs cargo
     rustup
-    go
-    gopls
     gcc
 
     # Sysadmin
