@@ -1,5 +1,7 @@
 { lib, pkgs, config, ... }:
-{
+let 
+  fwlink = pkgs.callPackage ../../pkgs/fwlink {};
+in {
   services.funkwhale = {
     enable = true;
     funkwhaleVersion = "1.2.9";
@@ -43,5 +45,43 @@
       StateDirectory = "funkwhale-playlist-import";
     };
     startAt = "*-*-02/2 21:00"; # man 5 systemd.time: every 2 days at 20:00
+  };
+
+  # FunkwhaleLink
+
+  users.users.fwlink = {
+    isSystemUser = true;
+    group = "funkwhale";
+  };
+
+  services.postgresql.ensureUsers = [ {
+    name = "fwlink";
+    ensurePermissions = { "DATABASE FUNKWHALE" = "CONNECT"; };
+  } ];
+  systemd.services.funkwhale-music-link-pre = {
+    serviceConfig = {
+      User = "postgres";
+      ExecStart = ''${config.services.postgresql.package}/bin/psql funkwhale -c "GRANT SELECT ON TABLE music_trackactor, music_upload, music_track, music_album, music_artist TO fwlink"'';
+    };
+  };
+
+  systemd.tmpfiles.rules = [
+    "d /data/music-export/ 755 fwlink funkwhale - -"
+  ];
+
+  systemd.services.funkwhale-music-link = {
+    requires = [ "funkwhale-music-link-pre.service" ];
+    after = [ "funkwhale-music-link-pre.service" ];
+
+    path = [ config.services.postgresql.package ];
+    serviceConfig = {
+      User = "fwlink";
+      ExecStartPre = [
+        "${pkgs.coreutils}/bin/rm -rf /data/music-export/music"
+        "${pkgs.coreutils}/bin/mkdir /data/music-export/music"
+      ];
+      ExecStart = "${fwlink}/bin/fwlink /data/music-export/music";
+    };
+    startAt = "daily";
   };
 }
