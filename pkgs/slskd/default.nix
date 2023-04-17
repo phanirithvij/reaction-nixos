@@ -1,50 +1,52 @@
-{ lib, stdenv, fetchurl, makeDesktopItem, makeWrapper }:
+{ lib, stdenv
+, fetchurl
+, unzip
+, zlib
+, gcc-unwrapped
+, autoPatchelfHook
+}:
 let
   pname = "slskd";
-  version = "0.16.27";
+  version = "0.17.5";
 
   src = fetchurl {
     url = "https://github.com/slskd/slskd/releases/download/${version}/slskd-${version}-linux-x64.zip";
-    sha256 = "sha256-78awjXg50xjUYNQZKAnkCgVBxs+OMKfkOPjCqIH+YrY=";
+    sha256 = "sha256-QYGu2kwZJPMXeSYcE2HpC44RvSOl4MUgNp1Z+gTvrck=";
   };
 
-  # TODO build the app w/ https://nixos.org/manual/nixpkgs/stable/#dotnet
+  # TODO really build the app w/ https://nixos.org/manual/nixpkgs/stable/#dotnet
 
 in stdenv.mkDerivation {
   inherit pname src version;
 
-  nativeBuildInputs = [ ];
+  nativeBuildInputs = [
+    autoPatchelfHook
+    unzip
+    zlib
+    gcc-unwrapped.lib
+  ];
 
-  # TODO externalize static content
-  # TODO
-  buildPhase = ''
-    runHook preBuild
+  unpackPhase = ''
+    unzip -q $src
+  '';
 
-    mkdir -p $out/lib
+  sourceRoot = ".";
 
-    runHook postBuild
-    '';
-
-  # TODO
   installPhase = ''
     runHook preInstall
 
-    cp -r src $out/
+    cp -r . $out
+    mkdir $out/bin
+    mv $out/slskd $out/bin
 
     runHook postInstall
   '';
-
-  # TODO
-  postFixup = ''
-    mkdir -p $out/bin
-    makeWrapper <EXECUTABLE> $out/bin/${pname} --add-flags "-cp $out/lib application.Main" --chdir $out
-    '';
 
   meta = with lib; {
     description = "A modern client-server application for the Soulseek file sharing network";
     homepage = "https://github.com/slskd/slskd";
     license = licenses.agpl3;
     maintainers = with maintainers; [ ppom ];
-    platforms = platforms.all;
+    platforms = platforms.linux;
   };
 }
