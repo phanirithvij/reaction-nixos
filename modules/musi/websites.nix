@@ -9,27 +9,9 @@ let
     ];
   });
   nginxLogPath = "/var/log/nginx/access.log";
-  reloadScript = pkgs.writeScript "custom-reload-acme-www-ppom-me" ''
-    #!/${pkgs.runtimeShell}
 
-    real_path=/etc/static/nginx/nginx.conf
-    conf_path=/etc/nginx/nginx.conf
-
-    set -x
-
-    file=$(mktemp)
-    chmod 644 $file
-    sed 's%return 301 https://ppom.me;%#return 301 https://ppom.me;%' > $file < $real_path
-
-    rm $conf_path
-    cp $file $conf_path
-    systemctl reload nginx
-    systemctl start acme-www.ppom.me
-    sleep 20
-    rm $conf_path
-    ln -s $real_path $conf_path
-    systemctl reload nginx
-  '';
+  nginxRealPath = "/etc/static/nginx/nginx.conf";
+  nginxConfPath = "/etc/nginx/nginx.conf";
 in {
   networking.firewall.allowedTCPPorts = [
     80 443 # web
@@ -219,15 +201,37 @@ in {
     "f /data/uploader/index.html 0755 root root - 'Hello!'"
   ];
 
-  systemd.services.custom-reload-acme-www-ppom-me = {
-    description = "Temporarily edit the nginx conf to update properly the Let's Encrypt certificate for www.ppom.me";
+  systemd.services."acme-www.ppom.me" = {
+    requires = [ "acme-www.ppom.me-post.service" ];
+    before = [ "acme-www.ppom.me-post.service" ];
     serviceConfig = {
-      ExecStart = reloadScript;
+      ExecStartPre = [ "+${pkgs.writeShellScript "acme-www.ppom.me.pre.sh" ''
+        set -x
+
+        file=$(mktemp)
+        chmod 644 $file
+        sed 's%return 301 https://ppom.me;%#return 301 https://ppom.me;%' > $file < ${nginxRealPath}
+
+        rm ${nginxConfPath}
+        cp $file ${nginxConfPath}
+        systemctl reload nginx
+      ''}" ];
     };
-    startAt = "*-*-01 00:00:00";
   };
 
-  systemd.services."acme-www.ppom.me".serviceConfig.OnFailure = "custom-reload-acme-www-ppom-me";
+  # Can't put this as an ExecStartPost of acme-www.ppom.me.service
+  # because there is already one [here](/nix/store/izraszd1vi8fa40kaw0c28lhv4chnw7j-nixos-22.11/nixos/nixos/modules/security/acme/default.nix → L316)
+  # and it's not in a list.
+  systemd.services."acme-www.ppom.me-post" = {
+    script = ''
+        set -x
+        rm ${nginxConfPath}
+        ln -s ${nginxRealPath} ${nginxConfPath}
+        systemctl reload nginx
+    '';
+  };
+
+  # systemd.services."acme-www.ppom.me".serviceConfig.OnFailure = "custom-reload-acme-www-ppom-me";
 
   # Can't make it work, hard to debug why
   # environment.etc."fail2ban/filter.d/nginx.conf".text = ''
