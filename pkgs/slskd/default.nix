@@ -1,45 +1,61 @@
 { lib, stdenv
+, fetchFromGitHub
 , fetchurl
 , unzip
-, zlib
-, gcc-unwrapped
-, autoPatchelfHook
+, dotnetCorePackages
+, buildDotnetModule
+, mono
 }:
 let
   pname = "slskd";
   version = "0.17.5";
 
-  src = fetchurl {
-    url = "https://github.com/slskd/slskd/releases/download/${version}/slskd-${version}-linux-x64.zip";
-    sha256 = "sha256-QYGu2kwZJPMXeSYcE2HpC44RvSOl4MUgNp1Z+gTvrck=";
+  # TODO build this via npm
+  wwwroot = stdenv.mkDerivation {
+    inherit version;
+    pname = "${pname}-wwwroot";
+
+    src = fetchurl {
+      url = "https://github.com/slskd/slskd/releases/download/${version}/slskd-${version}-linux-x64.zip";
+      sha256 = "sha256-QYGu2kwZJPMXeSYcE2HpC44RvSOl4MUgNp1Z+gTvrck=";
+    };
+
+    nativeBuildInputs = [ unzip ];
+
+    unpackPhase = ''
+      unzip -q $src
+    '';
+
+    sourceRoot = "./wwwroot";
+
+    installPhase = ''
+      cp -r . $out
+    '';
   };
 
-  # TODO really build the app w/ https://nixos.org/manual/nixpkgs/stable/#dotnet
+in buildDotnetModule {
+  inherit pname version;
 
-in stdenv.mkDerivation {
-  inherit pname src version;
+  src = fetchFromGitHub {
+    owner = "slskd";
+    repo = "slskd";
+    rev = version;
+    sha256 = "sha256-iIM29ZI3M9etbw4yzin+4f4cGHIt5qjIl7uzsTUCBc4=";
+  };
 
-  nativeBuildInputs = [
-    autoPatchelfHook
-    unzip
-    zlib
-    gcc-unwrapped.lib
-  ];
+  runtimeDeps = [ mono ];
 
-  unpackPhase = ''
-    unzip -q $src
-  '';
+  dotnet-sdk = dotnetCorePackages.sdk_7_0;
+  dotnet-runtime = dotnetCorePackages.aspnetcore_7_0;
 
-  sourceRoot = ".";
+  projectFile = "slskd.sln";
 
-  installPhase = ''
-    runHook preInstall
+  nugetDeps = ./deps.nix;
 
-    cp -r . $out
-    mkdir $out/bin
-    mv $out/slskd $out/bin
-
-    runHook postInstall
+  postInstall = ''
+    rm $out/lib/slskd/wwwroot/.gitkeep
+    rmdir $out/lib/slskd/wwwroot
+    ln -s ${wwwroot} $out/lib/slskd/wwwroot
   '';
 
   meta = with lib; {
