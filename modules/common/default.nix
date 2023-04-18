@@ -10,6 +10,7 @@
     ./nvim.nix
     ./packages.nix
     ./ssh.nix
+    ./slskd.nix
     ./tmux.nix
   ];
 

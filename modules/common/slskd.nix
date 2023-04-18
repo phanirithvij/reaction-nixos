@@ -1,25 +1,40 @@
 { lib, pkgs, config, ... }:
-{
+
+# TODO what should we do with the auto-created logs in /var/lib/slskd/logs/?
+# Seems impossible to disable. As slskd also logs to stdout,
+# it's already stored by systemd. Maybe a daily cleaning?
+
+let
+  settingsFormat = pkgs.formats.yaml {};
+in {
   options.services.slskd = with lib; with types; {
     enable = mkEnableOption "enable slskd";
 
     package = mkOption {
       type = package;
       description = "The slskd package to use";
-      default = pkgs.callPackage ../pkgs/slskd {};
+      default = pkgs.callPackage ../../pkgs/slskd {};
     };
 
     nginx = mkOption {
-      type = submodule;
-      enable = mkEnableOption "enable nginx as a reverse proxy";
+      type = submodule ({name, config, ...}: {
+        options = {
+          enable = mkEnableOption "enable nginx as a reverse proxy";
 
-      domainName = mkOption {
-        type = str;
-        description = "Domain you want to use";
-      };
-    };
-
-    musicDir = mkOption {
+          domainName = mkOption {
+            type = str;
+            description = "Domain you want to use";
+          };
+          contextPath = mkOption {
+            type = types.path;
+            default = "/";
+            description = lib.mdDoc ''
+              The context path, i.e., the last part of the slskd
+              URL. Typically '/' or '/slskd'. Default '/'
+            '';
+          };
+        };
+      });
     };
 
     environmentFile = mkOption {
@@ -39,9 +54,11 @@
     };
 
     settings = mkOption {
-      description = ''
+      description = lib.mdDoc ''
         Configuration for slskd, see
         [available options](https://github.com/slskd/slskd/blob/master/docs/config.md)
+        `APP_DIR` is set to /var/lib/slskd, where default download & incomplete directories,
+        log and databases will be created.
       '';
       default = {};
       type = submodule {
@@ -51,7 +68,6 @@
           soulseek = {
             username = mkOption {
               type = str;
-              required = true;
               description = "Username on the Soulseek Network";
             };
             listen_port = mkOption {
@@ -68,13 +84,8 @@
               description = "The HTTP listen port";
             };
             url_base = mkOption {
-              type = str;
-              default = "/";
-              description = "The base url for web requests";
-            };
-            content_path = mkOption {
               type = path;
-              description = "The base url for web requests";
+              default = config.services.slskd.nginx.contextPath;
             };
           };
 
@@ -84,34 +95,37 @@
               description = ''
                 Paths to your shared directories. See
                 [documentation](https://github.com/slskd/slskd/blob/master/docs/config.md#directories)
-                for advanced usage'';
+                for advanced usage
+              '';
             };
           };
 
           directories = {
-            # > Directories must exist and be writable by the application
-            # TODO make a tmpfiles declaration
             incomplete = mkOption {
-              type = path;
+              type = nullOr path;
               description = "Directory where downloading files are stored";
-              default = "/var/lib/slskd/incomplete";
+              defaultText = "<APP_DIR>/incomplete";
+              default = null;
             };
             downloads = mkOption {
-              type = path;
-              description = "Directory where downloading files are stored";
-              default = "/var/lib/slskd/downloads";
+              type = nullOr path;
+              description = "Directory where downloaded files are stored";
+              defaultText = "<APP_DIR>/downloads";
+              default = null;
             };
           };
         };
       };
     };
-
   };
 
   config = let
     cfg = config.services.slskd;
-    settingsFormat = pkgs.formats.yaml {};
-    configurationYaml = settingsFormat.generate "slskd.yml" cfg.settings;
+
+    confWithoutNullValues = (lib.filterAttrs (key: value: value != null) cfg.settings);
+    updatedConf = confWithoutNullValues; # { web.url_base = cfg.nginx.contextPath; } // confWithoutNullValues;
+
+    configurationYaml = settingsFormat.generate "slskd.yml" updatedConf;
 
   in lib.mkIf cfg.enable {
 
@@ -125,13 +139,22 @@
 
     # Reverse proxy configuration
     services.nginx.enable = true;
-    services.nginx.virtualHosts."${cfg.domainName}" = {
+    services.nginx.virtualHosts."${cfg.nginx.domainName}" = {
       forceSSL = true;
       enableACME = true;
-      # TODO externalize static content
-      # TODO use settings.web
-      locations = {};
+      locations = {
+        "${cfg.nginx.contextPath}" = {
+          proxyPass = "http://localhost:${toString cfg.settings.web.port}";
+          proxyWebsockets = true;
+        };
+      };
     };
+
+    # Hide state & logs
+    systemd.tmpfiles.rules = [
+      "d /var/lib/slskd/data 0750 slskd slskd - -"
+      "d /var/lib/slskd/logs 0750 slskd slskd - -"
+    ];
 
     systemd.services.slskd = {
       description = "A modern client-server application for the Soulseek file sharing network";
@@ -141,19 +164,28 @@
         Type = "simple";
         User = "slskd";
         EnvironmentFile = lib.mkIf (cfg.environmentFile != null) cfg.environmentFile;
-        Environment = {
-          APP_DIR = "/var/lib/slskd";
-          # TODO log to systemd?
-        };
-        ExecStartPre = pkgs.writeScript "slskd-init.sh" ''
-          mkdir -p /var/lib/slskd
-          chown -R slskd:slskd /var/lib/slskd
-          cp ${configurationYaml} /var/lib/slskd/slskd.yml
-        '';
-        ExecStart = "${pkgs.slskd}/bin/slskd";
+        StateDirectory = "slskd";
+        ExecStart = "${cfg.package}/bin/slskd --app-dir /var/lib/slskd --config ${configurationYaml}";
         Restart = "on-failure";
-        # TODO hardening
-        # TODO allow only shares as RO and /var/lib/slskd and upload directories as RW
+        ReadOnlyPaths = map (d: builtins.elemAt (builtins.split "[^/]*(/.+)" d) 1) cfg.settings.shares.directories;
+        LockPersonality = true;
+        NoNewPrivileges = true;
+        PrivateDevices = true;
+        PrivateMounts = true;
+        PrivateTmp = true;
+        PrivateUsers = true;
+        ProtectClock = true;
+        ProtectControlGroups = true;
+        ProtectHome = true;
+        ProtectHostname = true;
+        ProtectKernelLogs = true;
+        ProtectKernelModules = true;
+        ProtectKernelTunables = true;
+        ProtectProc = "invisible";
+        ProtectSystem = "strict";
+        RemoveIPC = true;
+        RestrictNamespaces = true;
+        RestrictSUIDSGID = true;
       };
     };
   };

@@ -16,6 +16,7 @@
     ./postgresql.nix
     ./rssify/default.nix
     ./streama.nix
+    ./slskd.nix
     ./tor.nix
     ./vaultwarden.nix
 
