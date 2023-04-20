@@ -306,8 +306,11 @@
             proxy_pass   ${proxyUrl}/.well-known/;
           '' + proxyBackConfigs;
         };
-        "/media/" = {
-          alias = "${cfg.mediaDir}/";
+        "/media/__sized__/" = {
+          alias = "${cfg.mediaDir}/__sized__/";
+        };
+        "/media/attachments/" = {
+          alias = "${cfg.mediaDir}/attachments/";
         };
         # TODO check the log on these paths to be sure it's really used
         "/_protected/media/" = {
