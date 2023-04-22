@@ -95,6 +95,9 @@ in {
             " Do not break words
             set linebreak
 
+            " make = not considered as part of filenames
+            set isfname-==
+
             au TextYankPost * silent! lua vim.highlight.on_yank {on_visual=false}
 
             " Netrw Tree
