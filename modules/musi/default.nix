@@ -92,13 +92,19 @@
     startAt = "23:00:00";
   };
 
-  # Doas
   security.doas = {
     enable = true;
   };
 
-  # Only allow root to use nix
-  nix.settings.allowed-users = [ "root" "ppom" ];
+  nix = {
+    settings.allowed-users = [ "root" "ppom" ];
+    gc = {
+      automatic = true;
+      dates = "04:00";
+      options = "--delete-older-than 15d";
+      persistent = false;
+    };
+  };
 
   virtualisation.docker.enable = true;
   boot.kernel.sysctl."net.ipv4.ip_forward" = true;
