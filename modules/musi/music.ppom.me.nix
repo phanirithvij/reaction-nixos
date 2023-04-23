@@ -81,6 +81,9 @@ in {
         "${pkgs.coreutils}/bin/mkdir /data/music-export/music"
       ];
       ExecStart = "${fwlink}/bin/fwlink /data/music-export/music";
+      ExecStartPost = [
+        "${pkgs.curl}/bin/curl -s -w '%{http_code}' -X PUT https://ppom.me/slskd/api/v0/shares -H @/var/secrets/slskd_header"
+      ];
     };
     startAt = "daily";
   };

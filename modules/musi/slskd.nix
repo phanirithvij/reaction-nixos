@@ -19,4 +19,10 @@ in {
       ];
     };
   };
+
+  # Allow ppom to edit downloads
+  systemd.services.slskd.serviceConfig.UMask = "0002";
+  users.users.ppom.extraGroups = [ "slskd" ];
+
+  environment.systemPackages = with pkgs; [ beets ];
 }
