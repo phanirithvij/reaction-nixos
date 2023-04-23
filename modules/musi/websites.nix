@@ -64,7 +64,7 @@ in {
           # tell browsers to only send https://domain.name as Referer
           add_header Referrer-Policy "strict-origin";
           # CSP
-          add_header Content-Security-Policy "default-src 'self'; style-src 'self' 'unsafe-inline'; frame-ancestors: 'none';";
+          add_header Content-Security-Policy "default-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; frame-ancestors: 'none';";
         '';
       };
 
