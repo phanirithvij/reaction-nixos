@@ -30,12 +30,9 @@ in {
           [ -e ./funkwhale-playlist-import ] || ${pkgs.git}/bin/git clone https://framagit.org/ppom/funkwhale-playlist-import funkwhale-playlist-import
           cd ./funkwhale-playlist-import
           ${pkgs.git}/bin/git pull
-          if [ ! -e ./secrets ]
-          then
-          mkdir ./secrets
+          mkdir -p ./secrets
           echo "$INSTANCE_URL" > ./secrets/instance_url
           echo "$TOKEN" > ./secrets/token
-          fi
           for file in $(ls lists/* | grep -v '/paco-' | grep -v '/pomme-' | grep -v '/tan-' )
           do
             ${python}/bin/python import-from-txt.py "$file"
