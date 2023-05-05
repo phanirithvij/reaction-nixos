@@ -9,6 +9,7 @@
     ./monit.nix
     ./nvim.nix
     ./packages.nix
+    ./reaction.nix
     ./ssh.nix
     ./slskd.nix
     ./tmux.nix
