@@ -188,5 +188,7 @@ in {
         RestrictSUIDSGID = true;
       };
     };
+
+    networking.firewall.allowedTCPPorts = lib.optional cfg.openFirewall cfg.settings.soulseek.listen_port;
   };
 }
