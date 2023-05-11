@@ -1,12 +1,22 @@
-{ lib, buildNpmPackage, linkFarm, vips, pkg-config, python3, jq }:
+{
+  lib
+, buildNpmPackage
+, callPackage
+, jq
+, linkFarm
+, pkg-config
+, python3
+, vips
+}:
 
-# UPDATE
-# Update the dependencies of ./package.json:
-# - @directus/sdk → https://www.npmjs.com/package/@directus/sdk
-# - directus → https://github.com/directus/directus/releases/
-# - sqlite3 → https://github.com/directus/directus/blob/v9.22.1/api/package.json → optionalDependencies
+# update this package with ./update.sh
 
-buildNpmPackage {
+# an embedded version of vips is included in ./vips
+# if there is an npm error on the sharp module, adapt the version
+# from https://github.com/lovell/sharp/blob/<VERSION>/package.json → .config.libvips
+let
+  vips' = callPackage ./vips.nix {};
+in buildNpmPackage {
   pname = "directus";
   version = "9.21.2";
 
@@ -19,11 +29,11 @@ buildNpmPackage {
   nativeBuildInputs = [
     python3
     pkg-config
-    vips
+    vips'
   ];
 
   buildInputs = [
-    vips
+    vips'
   ];
 
   # Workaround buildNpmPackage.installHook assuming this directory exists
@@ -37,14 +47,14 @@ buildNpmPackage {
     ln -s $out/lib/node_modules/directus/node_modules/.bin/directus $out/bin/directus 
   '';
 
-  npmDepsHash = "sha256-vlOHcAbjP/XmMQDDlps1PoDvGHEYm0vUPjlrfCzGEfY=";
+  npmDepsHash = "sha256-je+05TigR1Afo2yP3E5g0Roy2iFxziQKqeBFPQQB13U=";
 
   dontNpmBuild = true;
 
   meta = with lib; {
     description = "The Modern Data Stack rabbit — Directus is an instant REST+GraphQL API and intuitive no-code data collaboration app for any SQL database";
     homepage = "https://directus.io";
-    license = licenses.gpl3Only;
+    license = licenses.bsl11;
     maintainers = with maintainers; [ ppom ];
   };
 }

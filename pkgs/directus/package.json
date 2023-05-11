@@ -5,10 +5,10 @@
   "scripts": {},
   "keywords": [],
   "author": "ppom",
-  "license": "GPL-3",
+  "license": "BUSL-1.1",
   "dependencies": {
-    "@directus/sdk": "^10.3.1",
-    "directus": "^9.22.1",
-    "sqlite3": "^5.1.4"
+    "@directus/sdk": "v10.3.3",
+    "directus": "v10.0.0",
+    "sqlite3": "5.1.6"
   }
 }
