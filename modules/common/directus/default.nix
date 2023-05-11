@@ -287,23 +287,13 @@ in {
               };
             };
           };
-
-          fail2ban = {
-            type = submodule;
-            description = "fail2ban options";
-            default = { enable = false; };
-            options = {
-              enable = mkEnableOption "Enable fail2ban to block brute-force attacks";
-            };
-          };
         };
       }));
-      # };
     };
   };
 
   # TODO Export SQL dans /var/backup
-  # TODO fail2ban
+  # TODO reaction
 
   config = let
     cfg = config.services.directus;

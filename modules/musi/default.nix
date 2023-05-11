@@ -15,7 +15,6 @@
     ./monitoring.nix
     ./postgresql.nix
     ./rssify/default.nix
-    ./reaction.nix
     ./streama.nix
     ./slskd.nix
     ./tor.nix
@@ -36,7 +35,7 @@
       port = 22;
       hardened = false;
     };
-    fail2ban.enable = true;
+    reaction.enable = true;
     monit = {
       enable = true;
       fromMail = "musi@ppom.me";

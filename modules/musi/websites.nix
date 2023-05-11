@@ -230,44 +230,4 @@ in {
         systemctl reload nginx
     '';
   };
-
-  # systemd.services."acme-www.ppom.me".serviceConfig.OnFailure = "custom-reload-acme-www-ppom-me";
-
-  # Can't make it work, hard to debug why
-  # environment.etc."fail2ban/filter.d/nginx.conf".text = ''
-  #     [INCLUDES]
-  #     before = common.conf
-
-  #     [Definition]
-  #     failregex = ^<HOST>.*"(GET|POST).*" (404|444|403|400) .*$
-  #     ignoreregex =
-  #     # Due to systemd backend as a default, we have to set this as polling
-  #     # (auto doesn't work when systemd is default backend)
-  #     backend = polling
-  #     logpath = ${nginxLogPath}
-  # '';
-  # services.fail2ban.jails.nginx = ''
-  #     enabled = true
-  #     port = 80,443
-  #     filter = nginx
-
-  #     maxretry = 40
-  #     findtime = 60
-  #     bantime = 7200
-  # '';
-
-  # services.fail2ban.jails.nginx-http-auth = ''
-  #     enabled = true
-  #     port = 80,443
-  #     filter = nginx-http-auth
-  #     # Due to systemd backend as a default, we have to set this as polling
-  #     # (auto doesn't work when systemd is default backend)
-  #     backend = polling
-  #     logpath = ${nginxLogPath}
-
-  #     maxretry = 5
-  #     findtime = 60
-  #     bantime = 7200
-  # '';
-
 }

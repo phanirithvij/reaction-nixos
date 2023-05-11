@@ -1,20 +1,12 @@
 { lib, config, pkgs, ... }:
 let 
+  var = import ../common/reaction-variables.nix { inherit pkgs; };
   unstable = import <nixos-unstable> {};
   domain = "ppom.me";
   suffix = "/vault";
   rocketPort = 8060;
   websocketPort = 8061;
 
-  fail2banFilter = pkgs.writeText "vaulwardenFail2banFilter.conf" ''
-    [INCLUDES]
-    before = common.conf
-
-    [Definition]
-    failregex = ^.*Username or password is incorrect\. Try again\. IP: <ADDR>\. Username:.*$
-    ignoreregex =
-    journalmatch = _SYSTEMD_UNIT=vaultwarden.service + _COMM=vaultwarden
-  '';
 in {
   services.vaultwarden = {
     enable = true;
@@ -50,18 +42,13 @@ in {
     };
   };
 
-  # fail2ban
-  environment.etc."fail2ban/filter.d/vaultwarden.conf".source = fail2banFilter;
-
-  services.fail2ban.jails.vaultwarden = ''
-    enabled = true
-    port = 80,443
-    filter = vaultwarden
-
-    maxretry = 3
-    findtime = 3600
-    bantime = 2400
-  '';
-
-  systemd.services.fail2ban.restartTriggers = [ fail2banFilter ];
+  services.reaction.settings.streams.vaultwarden = {
+    cmd = [ var.journalctl "-fu" "vaultwarden.service" ];
+    filters.failedlogin = {
+      regex = [ ''Username or password is incorrect\. Try again\. IP: <ip>\. Username:''];
+      retry = 3;
+      retry-period = "1h";
+      actions = var.banFor "2h";
+    };
+  };
 }

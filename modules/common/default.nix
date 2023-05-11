@@ -2,7 +2,6 @@
 {
   imports = [
     ./directus
-    ./fail2ban.nix
     ./funkwhale
     ./git.nix
     ./misc.nix
@@ -10,6 +9,7 @@
     ./nvim.nix
     ./packages.nix
     ./reaction.nix
+    ./reaction-custom.nix
     ./ssh.nix
     ./slskd.nix
     ./tmux.nix
@@ -24,7 +24,7 @@
     ppom.nvim.enable = true;
     ppom.git.enable = true;
     # server-side
-    # ppom.fail2ban.enable = true;
+    # ppom.reaction.enable = true;
     # ppom.ssh.enable = true;
   };
 }

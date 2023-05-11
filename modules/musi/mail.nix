@@ -1,6 +1,7 @@
 { lib, config, pkgs, ... }:
 
 let
+  var = import ../common/reaction-variables.nix { inherit pkgs; };
   hostname = "mail.ppom.me";
   primaryDomain = "ppom.me";
   acmeDir = "/var/lib/acme/${hostname}";
@@ -70,49 +71,28 @@ in
     465 # SMTP, SSL/TLS
   ];
 
-  environment.etc."fail2ban/filter.d/maddy.conf".text = ''
-    [INCLUDES]
-    before = common.conf
-    [Definition]
-    failregex = ^.*authentication failed.*"src_ip":"<ADDR>:.*$
-    ignoreregex =
-    journalmatch = _SYSTEMD_UNIT=maddy.service + _COMM=maddy
-  '';
-  services.fail2ban.jails.maddy = ''
-    enabled = true
-    port = 25,143,993,587,465
-    filter = maddy
-    maxretry = 1
-    findtime = 3600
-    bantime = ${toString (3600 * 24 * 30)}
-  '';
+  services.reaction.settings.streams.maddy = {
+    cmd = [ var.journalctl "-fu" "maddy.service" ];
+    filters = {
 
+      failedLogin = {
+        regex = [ ''authentication failed.*"src_ip":"<ip>:'' ];
+        actions = var.banFor "${toString (30 * 24)}h";
+      };
 
-  # Restart maddy when a mail sending fails
-  # Issue: https://github.com/foxcpp/maddy/issues/475
-  environment.etc."fail2ban/filter.d/maddy-restart.conf".text = ''
-    [INCLUDES]
-    before = common.conf
-    [Definition]
-    failregex = ^.*queue: delivery attempt failed.*<ADDR>.*$
-    journalmatch = _SYSTEMD_UNIT=maddy.service + _COMM=maddy
-  '';
-  environment.etc."fail2ban/action.d/maddy-restart.conf".text = ''
-    [Definition]
-    actionstart =
-    actionstop =
-    actioncheck =
-    actionban = ${pkgs.systemd}/bin/systemctl restart maddy.service
-    actionunban =
-  '';
-  services.fail2ban.jails.maddy-restart = ''
-    enabled = true
-    filter = maddy-restart
-    action = maddy-restart
-    maxretry = 1
-    findtime = 40
-    bantime = 40
-  '';
+      # Restart maddy when a mail sending fails
+      # Issue: https://github.com/foxcpp/maddy/issues/475
+      deliveryFailure = {
+        regex = [ ''queue: delivery attempt failed.*<ip>'' ];
+        actions.restart.cmd = with var; [ doas systemctl "restart" "maddy.service" ];
+      };
+    };
+  };
+
+  security.doas.extraRules = var.doasReaction {
+    cmd = var.systemctl;
+    args = [ "restart" "maddy.service" ];
+  };
 
   systemd.services.maddy = {
     after = [ "network.target" ];

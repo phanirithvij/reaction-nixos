@@ -3,7 +3,7 @@ let
   cfg = config.ppom.ssh;
 in {
   options.ppom.ssh = {
-    enable = lib.mkEnableOption "enable sshd config & fail2ban";
+    enable = lib.mkEnableOption "enable sshd config";
 
     port = lib.mkOption {
       type = lib.types.int;
