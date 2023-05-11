@@ -131,6 +131,7 @@ in {
     texlive.combined.scheme-small
     pdftk # PDF Swiss knife
     # poppler # other PDF manipulations
+    pngquant # png size reducer
 
     mediahandler # ⏯️
   ];
