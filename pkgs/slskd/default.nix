@@ -1,40 +1,16 @@
 { lib, stdenv
+, buildNpmPackage
 , fetchFromGitHub
 , fetchurl
 , unzip
 , dotnetCorePackages
 , buildDotnetModule
 , mono
+, nodejs-18_x
 }:
 let
   pname = "slskd";
   version = "0.17.5";
-
-  # TODO build this via npm
-  wwwroot = stdenv.mkDerivation {
-    inherit version;
-    pname = "${pname}-wwwroot";
-
-    src = fetchurl {
-      url = "https://github.com/slskd/slskd/releases/download/${version}/slskd-${version}-linux-x64.zip";
-      sha256 = "sha256-QYGu2kwZJPMXeSYcE2HpC44RvSOl4MUgNp1Z+gTvrck=";
-    };
-
-    nativeBuildInputs = [ unzip ];
-
-    unpackPhase = ''
-      unzip -q $src
-    '';
-
-    sourceRoot = "./wwwroot";
-
-    installPhase = ''
-      cp -r . $out
-    '';
-  };
-
-in buildDotnetModule {
-  inherit pname version;
 
   src = fetchFromGitHub {
     owner = "slskd";
@@ -43,12 +19,35 @@ in buildDotnetModule {
     sha256 = "sha256-iIM29ZI3M9etbw4yzin+4f4cGHIt5qjIl7uzsTUCBc4=";
   };
 
+  buildNpmPackage' = buildNpmPackage.override { nodejs = nodejs-18_x; };
+
+  wwwroot = buildNpmPackage' {
+    pname = "slskd-web";
+    version = version;
+    src = "${src}/src/web";
+    patches = [ ./package-lock.patch ];
+    npmFlags = [ "--legacy-peer-deps" ];
+    npmDepsHash = "sha256-vURi36ebdJQofhBlElIH5m6T1b8tsVGAzXCiDYUcSww=";
+    installPhase = ''
+      cp -r build $out
+    '';
+    meta = {
+      license = lib.licenses.agpl3;
+    };
+  };
+
+in buildDotnetModule {
+  inherit pname version src;
+
   runtimeDeps = [ mono ];
 
   dotnet-sdk = dotnetCorePackages.sdk_7_0;
   dotnet-runtime = dotnetCorePackages.aspnetcore_7_0;
 
   projectFile = "slskd.sln";
+
+  testProjectFile = "tests/slskd.Tests.Unit/slskd.Tests.Unit.csproj";
+  doCheck = true;
 
   nugetDeps = ./deps.nix;
 
