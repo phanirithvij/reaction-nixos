@@ -19,11 +19,20 @@ let
     sha256 = "sha256-iIM29ZI3M9etbw4yzin+4f4cGHIt5qjIl7uzsTUCBc4=";
   };
 
+  meta = with lib; {
+    description = "A modern client-server application for the Soulseek file sharing network";
+    homepage = "https://github.com/slskd/slskd";
+    license = licenses.agpl3;
+    maintainers = with maintainers; [ ppom ];
+    platforms = platforms.linux;
+  };
+
   buildNpmPackage' = buildNpmPackage.override { nodejs = nodejs-18_x; };
 
   wwwroot = buildNpmPackage' {
+    inherit meta version;
+
     pname = "slskd-web";
-    version = version;
     src = "${src}/src/web";
     patches = [ ./package-lock.patch ];
     npmFlags = [ "--legacy-peer-deps" ];
@@ -31,13 +40,10 @@ let
     installPhase = ''
       cp -r build $out
     '';
-    meta = {
-      license = lib.licenses.agpl3;
-    };
   };
 
 in buildDotnetModule {
-  inherit pname version src;
+  inherit pname version src meta;
 
   runtimeDeps = [ mono ];
 
@@ -52,16 +58,7 @@ in buildDotnetModule {
   nugetDeps = ./deps.nix;
 
   postInstall = ''
-    rm $out/lib/slskd/wwwroot/.gitkeep
-    rmdir $out/lib/slskd/wwwroot
+    rm -r $out/lib/slskd/wwwroot
     ln -s ${wwwroot} $out/lib/slskd/wwwroot
   '';
-
-  meta = with lib; {
-    description = "A modern client-server application for the Soulseek file sharing network";
-    homepage = "https://github.com/slskd/slskd";
-    license = licenses.agpl3;
-    maintainers = with maintainers; [ ppom ];
-    platforms = platforms.linux;
-  };
 }
