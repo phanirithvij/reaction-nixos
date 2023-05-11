@@ -63,8 +63,9 @@ in {
     libreoffice
     mpv-no-scripts
     mpv-with-scripts
-    clementine
-    gnome3.cheese
+    clementine # music player
+    gnome3.cheese # webcam
+    qpwgraph # play with pipewire streams
     # ocenaudio # test ardour?
     gimp # GNU Image Manipulation Program
     inkscape # Vector Image Editor
