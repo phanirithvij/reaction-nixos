@@ -5,6 +5,8 @@
     ./leborddeleau/default.nix
   ];
 
+  services.directus.allowDirectusLicense = true;
+
   programs.ssh.knownHostsFiles = [
     (pkgs.writeText "akesi"
     "akesi.ppom.me ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOrvqULNbWvvsOKt0pSoEMfpK6ototDyU3bncfGCkj6C")

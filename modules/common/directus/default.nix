@@ -8,17 +8,17 @@ let
   varLib = name: "/var/lib/${directusName name}";
 in {
   options.services.directus = with lib; with types; {
-    enable = mkEnableOption "Enable Directus using impure npm";
+    enable = mkEnableOption "enable Directus";
 
-    installDirectory = mkOption {
-      type = path;
-      default = "/var/lib/directus";
-      description = mdDoc ''
-        Directus install directory.
-        For now, directus is installed in an impure way by npm.
-        See [this discourse topic](https://discourse.nixos.org/t/building-an-impure-npm-package/24097)\
-        to help packaging it the pure way.
-      '';
+    allowDirectusLicense = mkEnableOption (lib.mdDoc ''
+      required. Allow-list directus, which has an "unfree but ethical" license.
+      See [here](https://github.com/directus/directus/releases/tag/v10.0.0) for more information on the license agreement.
+    '');
+
+    package = mkOption {
+      type = package;
+      description = "The directus package to use";
+      default = pkgs.callPackage ../../../pkgs/directus {};
     };
 
     servers = mkOption {
@@ -310,10 +310,6 @@ in {
         assertion = 0 != builtins.foldl' (a: b: if a != b then b else 0) 0 sortedDirectusPorts;
         message = "Every directus instance must have a different port";
       }
-      {
-        assertion = cfg.installDirectory == "/var/lib/directus";
-        message = "Sorry: for now you can't change the setting services.directus.installDirectory";
-      }
     ];
 
     environment.systemPackages = [ pkgs.nodejs ];
@@ -323,58 +319,9 @@ in {
       description = "Slice designed to contain all Directus-related services";
     };
 
-    users.groups.directus = {};
-    users.users."directus" = {
-      description = "System user insalling directus";
-      isSystemUser = true;
-      group = "directus";
-      home = "/var/lib/directus";
-    };
-
-    systemd.services."directus-npm-setup" = {
-      enable = true;
-      after = [ "network.target" ];
-      serviceConfig = {
-        Slice = "directus.slice";
-        Type = "oneshot";
-        Restart = "no";
-        ExecStart = "${pkgs.writeShellApplication {
-          name = "directus-npm-start.sh";
-          runtimeInputs = with pkgs; [
-            bash
-            nodejs
-          ];
-          text = ''
-            install -m0644 ${./package.json} ./package.json
-            install -m0644 ${./package-lock.json} ./package-lock.json
-            npm i
-          '';
-        }}/bin/directus-npm-start.sh";
-        UMask = "0022";
-        WorkingDirectory = "/var/lib/directus";
-        StateDirectory   = "directus";
-        StateDirectoryMode = "0755";
-        User = "directus";
-        Group = "directus";
-        LockPersonality = true;
-        NoNewPrivileges = true;
-        PrivateDevices = true;
-        PrivateTmp = true;
-        PrivateUsers = true;
-        ProtectClock = true;
-        ProtectControlGroups = true;
-        ProtectHome = true;
-        ProtectHostname = true;
-        ProtectKernelLogs = true;
-        ProtectKernelModules = true;
-        ProtectKernelTunables = true;
-        ProtectProc = "invisible";
-        ProtectSystem = "strict";
-        RestrictNamespaces = true;
-        RestrictSUIDSGID = true;
-      };
-    };
-  } {
+  } (lib.mkIf cfg.allowDirectusLicense {
+    nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [ "directus" ];
+  }) {
 
     assertions = lib.mapAttrsToList (name: conf: {
       assertion = conf.nginx.enable -> conf.nginx.location != null && conf.nginx.serverName != null;
@@ -383,36 +330,40 @@ in {
     ++ lib.mapAttrsToList (name: conf: {
       assertion = conf.nginx.location != null -> "/" != builtins.substring (-1 + builtins.stringLength conf.nginx.location) 1 conf.nginx.location;
       message = "services.directus.servers.<name>.nginx.location musn't end with a '/'";
-    }) enabledServers;
+    }) enabledServers ++ [{
+      assertion = cfg.allowDirectusLicense || (builtins.hasAttr "allowUnfree" config.nixpkgs.config && config.nixpkgs.config.allowUnfree);
+      message = "If you don't nixpkgs.config.allowUnfree, you must at least services.directus.allowDirectusLicense";
+    }];
 
     users.users = lib.mapAttrs' (name: conf: lib.nameValuePair "directus-${name}" {
       description = "System user for the directus instance ${name}";
       isSystemUser = true;
-      group = "directus";
+      group = "directus-${name}";
       home = "/var/lib/directus-${name}";
     }) enabledServers;
 
-    environment.etc = let
-      settingsJson = settings: { source = json.generate "config.json" (lib.filterAttrs (key: value: value != null) settings); };
-    in lib.mapAttrs' (name: conf: lib.nameValuePair "directus/directus-${name}/config.json" (settingsJson conf.settings)) enabledServers;
+    users.groups = lib.mapAttrs' (name: conf: lib.nameValuePair "directus-${name}" {}) enabledServers;
 
     systemd.tmpfiles.rules = let
       localStorageServers = (lib.filterAttrs (name: conf: conf.useLocalStorage) enabledServers);
-    in lib.mapAttrsToList (name: conf: "d /var/lib/directus-${name}/secrets 0750 directus-${name} directus - -") enabledServers
-    ++ lib.mapAttrsToList (name: conf: "d ${conf.settings.STORAGE_LOCAL_ROOT} 0750 directus-${name} directus - -") localStorageServers;
+    in lib.mapAttrsToList (name: conf: "d /var/lib/directus-${name}/secrets   0750 directus-${name} directus-${name} - -") enabledServers
+    ++ lib.mapAttrsToList (name: conf: "d ${conf.settings.STORAGE_LOCAL_ROOT} 0750 directus-${name} directus-${name} - -") localStorageServers;
 
-    systemd.services = lib.mapAttrs' (name: conf: lib.nameValuePair "directus-${name}" {
+    systemd.services = let
+      settingsJson = settings: json.generate "config.json" (lib.filterAttrs (key: value: value != null) settings);
+    in lib.mapAttrs' (name: conf: let
+      settings = settingsJson conf.settings;
+    in lib.nameValuePair "directus-${name}" {
       enable = true;
-      after = [ "network.target" "directus-npm-setup.service" ];
-      requires = [ "directus-npm-setup.service" ];
+      after = [ "network.target" ];
       wantedBy = [ "multi-user.target" ];
-      path = with pkgs; [ nodejs bash ];
-      restartTriggers = [ config.environment.etc."directus/directus-${name}/config.json".source ];
+      # path = with pkgs; [ nodejs bash ];
+      restartTriggers = [ settings ];
       serviceConfig = {
         Slice = "directus.slice";
-        User = "directus-${name}";
-        Group = "directus";
-        Environment = [ "CONFIG_PATH=/etc/directus/directus-${name}/config.json" ];
+        User  = "directus-${name}";
+        Group = "directus-${name}";
+        Environment = [ "CONFIG_PATH=${settings}" ];
         ExecStartPre = pkgs.writeScript "directus-${name}-init" ''
           #!${pkgs.runtimeShell}
           set -e
@@ -422,11 +373,10 @@ in {
           [[ -e secrets/key ]] || ${pkgs.libossp_uuid}/bin/uuid -v4 > secrets/key
           [[ -e secrets/secret ]] || genPasswd > secrets/secret
           chmod 600 secrets/secret secrets/key
-          [[ -e node_modules ]] || ln -s ${cfg.installDirectory}/node_modules .
-          [[ -e package.json ]] || ln -s ${cfg.installDirectory}/package.json .
-          npx directus bootstrap
+          ln -sf ${cfg.package}/lib/package.json .
+          ${cfg.package}/bin/directus bootstrap
         '';
-        ExecStart = "${pkgs.nodejs}/bin/npx directus start";
+        ExecStart = "${cfg.package}/bin/directus start";
         UMask = "0027";
         Restart = "no";
         WorkingDirectory = "/var/lib/directus-${name}";

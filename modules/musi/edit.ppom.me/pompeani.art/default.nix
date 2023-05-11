@@ -47,11 +47,11 @@ in {
         #!${pkgs.runtimeShell}
         set -e
         rm -f node_modules package.json index.js
-        cat ${config.services.directus.installDirectory}/package.json | \
+        cat ${config.services.directus.package}/lib/package.json | \
           ${pkgs.jq}/bin/jq \
             '.type = "module" | .main = "index.js"' \
           > package.json
-        ln -s ${config.services.directus.installDirectory}/node_modules ./node_modules
+        ln -s ${config.services.directus.package}/lib/node_modules ./node_modules
         cp ${./directus2zola.js} ./index.js
         [[ -e zola ]] || git clone https://framagit.org/ppom/pompeani.art.git zola
       '';
