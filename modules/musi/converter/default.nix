@@ -21,7 +21,7 @@ in {
     wantedBy = [ "multi-user.target" ];
     serviceConfig = {
       Type = "simple";
-      User = "ppom";
+      User = "media";
       # WorkingDirectory = workingDir;
       ExecStart = ''
         ${convertd}/bin/convertd /data/convertd
