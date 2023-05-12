@@ -11,6 +11,21 @@ const defaultQuery = { limit: -1 };
 const basedir = './zola/content';
 const baseurl = 'http://127.0.0.1:8055';
 
+async function waitForPing(directus) {
+  let counter = 10;
+  let sleep = (millis) => new Promise(resolve => setTimeout(resolve, millis));
+  while (counter > 0) {
+    try {
+      await directus.server.ping();
+      return;
+    } catch (err) {
+      await sleep(2000);
+      counter--;
+    }
+  }
+  throw "could not reach server";
+}
+
 async function generate() {
   // Connect
   const directus = new Directus(baseurl);
@@ -26,6 +41,8 @@ async function generate() {
       sort_by = "weight"
     +++`
   );
+
+  await waitForPing(directus);
 
   // Fetch posts
   const posts = await directus.items('posts').readByQuery({

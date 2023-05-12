@@ -51,13 +51,11 @@ in {
           ${pkgs.jq}/bin/jq \
             '.type = "module" | .main = "index.js"' \
           > package.json
-        ln -s ${config.services.directus.package}/lib/node_modules ./node_modules
+        ln -s ${config.services.directus.package}/lib/node_modules/directus/node_modules ./node_modules
         cp ${./directus2zola.js} ./index.js
         [[ -e zola ]] || git clone https://framagit.org/ppom/pompeani.art.git zola
       '';
       ExecStart = "${pkgs.nodejs}/bin/node ./index.js";
-      Restart = "always";
-      RestartSec = 10;
       LockPersonality = true;
       NoNewPrivileges = true;
       PrivateDevices = true;
