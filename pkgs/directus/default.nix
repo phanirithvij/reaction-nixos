@@ -18,7 +18,7 @@ let
   vips' = callPackage ./vips.nix {};
 in buildNpmPackage {
   pname = "directus";
-  version = "10.0.0";
+  version = "10.1.0";
 
   src = linkFarm "directus-source" [
     { name = "package.json"; path = ./package.json; }
@@ -48,7 +48,7 @@ in buildNpmPackage {
     ln -s ${./package.json} $out/lib/package.json
   '';
 
-  npmDepsHash = "sha256-je+05TigR1Afo2yP3E5g0Roy2iFxziQKqeBFPQQB13U=";
+  npmDepsHash = "sha256-nEQnNxhP78C3cAyM4T52MzDKZoQQ/jdusYWxue7p8BA=";
 
   dontNpmBuild = true;
 
