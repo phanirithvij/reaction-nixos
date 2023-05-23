@@ -48,7 +48,7 @@ in {
   config = let
     cfg = config.services.reaction;
     configurationYaml = settingsFormat.generate "reaction.yml" cfg.settings;
-  in {
+  in lib.mkIf cfg.enable {
     users = lib.mkIf (!cfg.runAsRoot) {
       users.reaction = {
         isSystemUser = true;
