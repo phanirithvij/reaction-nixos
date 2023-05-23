@@ -41,5 +41,5 @@ cd "$here"
 
 hash=$(prefetch-npm-deps package-lock.json)
 
-sed -i '/npmDepsHash/s§".*"§"'$hash'"§' default.nix
+sed -i '/npmDepsHash/s>".*">"'$hash'">' default.nix
 sed -i '/version =/s/".*"/"'$directus_version'"/' default.nix
