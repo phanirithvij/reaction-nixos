@@ -18,7 +18,7 @@
     bertille = {
       isNormalUser = true;
       group = "users";
-      openssh.authorizedKeys.keys = [ "" ];
+      openssh.authorizedKeys.keys = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDcO2E3P+kOXto9zUkn2Qq2ykJtZlgrb+JQYzs9w0mc/NoRZpOqQn1giiXPBcijhE2s+t8Y2Je5383sZUgaqqlPOsfo99FZmor+CVb5+V0fmH9Czeduxdxr1OQJ+1BUxsLe2k/bSg/wMz4cdMYvO2I2sEf3xY9Ofz6WxUvWTb6F65719bHw4FOPkcl6CaieWzfH/3mQ/Rlev7y0aNhzYQO6Sl1pf22/r3RjtHAAF1rKZ5HvS1SflLj2JsQ2OmhU1i8bD5NGi2nnZEoojWVYIxrY79hCku2TX5b+pPHU4i38nXowL8KUMKlbi3Fiv1JnK8y87Vj9IN53v02V5130na9r bertille.dubosc@enercoop.org" ];
     };
     media = {
       isNormalUser = true;
