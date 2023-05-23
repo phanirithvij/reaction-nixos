@@ -3,6 +3,7 @@ let
 in {
   services.slskd = {
     enable = true;
+    enableLogrotate = true;
     openFirewall = true;
     environmentFile = "/var/secrets/slskd";
     nginx = {

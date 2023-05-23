@@ -10,6 +10,8 @@ in {
   options.services.slskd = with lib; with types; {
     enable = mkEnableOption "enable slskd";
 
+    enableLogrotate = mkEnableOption "enable an unit and timer that will logrotate /var/slskd/logs";
+
     package = mkOption {
       type = package;
       description = "The slskd package to use";
@@ -190,5 +192,20 @@ in {
     };
 
     networking.firewall.allowedTCPPorts = lib.optional cfg.openFirewall cfg.settings.soulseek.listen_port;
+
+    # Enable rotation of log files
+    systemd.services.slskd-logrotate = lib.mkIf cfg.enableLogrotate {
+      description = "Logrotate for slskd logs";
+      serviceConfig = {
+        Type = "oneshot";
+        User = "slskd";
+        ExecStart = [
+          "${pkgs.fd}/bin/fd . /var/lib/slskd/logs/ -tf --changed-before 10d -x rm {}"
+          "${pkgs.fd}/bin/fd . /var/lib/slskd/logs/ -tf -e log --changed-before 1d -x ${pkgs.gzip}/bin/gzip {}"
+        ];
+      };
+      startAt = "daily";
+    };
+
   };
 }
