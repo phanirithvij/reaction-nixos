@@ -87,7 +87,7 @@ in {
     # blobby
     # soude_au_cou # my own game!
     # nxengine-evo # Cave Story NX
-    soweli # my own game!
+    # soweli # my own game!
 
     # Development
     git
@@ -109,7 +109,8 @@ in {
     # virt-manager
     # wireshark
     # vscodium
-    python39
+    python3
+    # python39
     # python39Packages.pip
     # nodejs cargo
     rustup
