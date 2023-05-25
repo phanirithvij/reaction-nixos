@@ -161,7 +161,7 @@ in
     serviceConfig = {
       ExecStart = "${pkgs.writeShellApplication {
         name = "check_battery";
-        runtimeInputs = with pkgs; [ libnotify espeak pulseaudio mpv-no-scripts ];
+        runtimeInputs = with pkgs; [ libnotify pulseaudio mpv-no-scripts ];
         text = ''
           export DISPLAY=${"\$"}{DISPLAY:=":0"}
           export XDG_RUNTIME_DIR=${"\$"}{XDG_RUNTIME_DIR:=/run/user/$(id -u)}
