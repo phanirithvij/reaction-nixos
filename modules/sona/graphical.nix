@@ -98,6 +98,8 @@ in
     passwofi
 
     steam
+
+    xfce.thunar # file explorer
   ];
 
   nixpkgs.overlays = [
@@ -196,6 +198,8 @@ in
   };
 
   services.flatpak.enable = true;
+
+  services.tumbler.enable = true;
 
   environment.variables.BROWSER = "firefox";
 }
