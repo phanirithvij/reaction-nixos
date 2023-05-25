@@ -159,7 +159,10 @@ in {
           '';
           packages.myVimPackage = with pkgs.vimPlugins; {
             start = [
-              vim-nix
+              # Waiting for https://github.com/LnL7/vim-nix/issues/49 to be fixed
+              (super.vimPlugins.vim-nix.overrideAttrs (oldAttrs: {
+                patches = [ ./vim_nix_comment.patch ];
+              }))
               vim-commentary
               vim-surround
               vim-repeat

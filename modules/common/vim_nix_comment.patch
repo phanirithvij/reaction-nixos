@@ -1,0 +1,17 @@
+diff --git a/indent/nix.vim b/indent/nix.vim
+index 450989f..3a9220c 100644
+--- a/indent/nix.vim
++++ b/indent/nix.vim
+@@ -35,9 +35,9 @@ function! GetNixIndent()
+ 
+   " Skip indentation for single line comments explicitly, in case a
+   " comment was just inserted (eg. visual block mode)
+-  if getline(v:lnum) =~ '^\s*#'
+-    return indent(v:lnum)
+-  endif
++  " if getline(v:lnum) =~ '^\s*#'
++  "   return indent(v:lnum)
++  " endif
+ 
+   if synIDattr(synID(v:lnum, 1, 1), "name") !~ s:skip_syntax
+     let current_line = getline(v:lnum)
