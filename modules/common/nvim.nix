@@ -42,7 +42,7 @@ in {
     ] ++ lib.optionals cfg.steroids [
       pkgs.nodejs
       pkgs.black
-      pkgs.ccls
+      # pkgs.ccls
     ];
 
     environment = {
