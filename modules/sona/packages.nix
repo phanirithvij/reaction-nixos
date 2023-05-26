@@ -10,6 +10,7 @@ in {
   environment.systemPackages = with pkgs; [
     # CLI
     # sshuttle # poor's man VPN
+    mosh # alternative to SSH that bootstraps over it
     sysstat
     tealdeer # tldr man pages
     tomb # LUKS wrapper
