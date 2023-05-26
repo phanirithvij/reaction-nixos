@@ -18,7 +18,7 @@ let
     SITES="${lib.concatStringsSep " " websites}"
 
     # First check general internet connectivity
-    if ${pkgs.inetutils}/bin/ping -c 1 -W 3 ${dns_test} &>/dev/null
+    if /run/current-system/sw/bin/ping -c 1 -W 3 ${dns_test} &>/dev/null
     then
 
         DIR="$(${pkgs.coreutils}/bin/mktemp -d)"
@@ -45,7 +45,7 @@ let
   '';
 in
 {
-  environment.systemPackages = [ down_detector ];
+  environment.systemPackages = [ pkgs.inetutils down_detector ];
 
   systemd.services.down_detector = {
     description = "check if some websites are down";
