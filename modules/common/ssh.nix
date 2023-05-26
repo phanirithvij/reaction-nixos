@@ -23,8 +23,8 @@ in {
       allowSFTP = false;
     };
 
-    # Mosh extension (doesn't work: TODO)
-    # programs.mosh.enable = true;
+    # Mosh extension
+    programs.mosh.enable = true;
 
     networking.firewall.allowedTCPPorts = [ cfg.port ];
   };
