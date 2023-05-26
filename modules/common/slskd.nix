@@ -1,9 +1,5 @@
 { lib, pkgs, config, ... }:
 
-# TODO what should we do with the auto-created logs in /var/lib/slskd/logs/?
-# Seems impossible to disable. As slskd also logs to stdout,
-# it's already stored by systemd. Maybe a daily cleaning?
-
 let
   settingsFormat = pkgs.formats.yaml {};
 in {
@@ -200,8 +196,8 @@ in {
         Type = "oneshot";
         User = "slskd";
         ExecStart = [
-          "${pkgs.fd}/bin/fd . /var/lib/slskd/logs/ -tf --changed-before 10d -x rm {}"
-          "${pkgs.fd}/bin/fd . /var/lib/slskd/logs/ -tf -e log --changed-before 1d -x ${pkgs.gzip}/bin/gzip {}"
+          "${pkgs.findutils}/bin/find /var/lib/slskd/logs/ -type f -mtime +10 -delete"
+          "${pkgs.findutils}/bin/find /var/lib/slskd/logs/ -type f -mtime +1  -exec ${pkgs.gzip}/bin/gzip -q {} \\;"
         ];
       };
       startAt = "daily";
