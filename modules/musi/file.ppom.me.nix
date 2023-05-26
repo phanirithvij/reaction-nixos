@@ -5,7 +5,7 @@ in {
   services.nextcloud = {
     enable = true;
     enableBrokenCiphersForSSE = false;
-    package = pkgs.nextcloud25;
+    package = pkgs.nextcloud26;
     autoUpdateApps.enable = true;
     hostName = "file.ppom.me";
     https = true;
