@@ -81,6 +81,7 @@ in {
       ExecStartPost = [
         "${pkgs.curl}/bin/curl -s -w '%{http_code}' -X PUT https://ppom.me/slskd/api/v0/shares -H @/var/secrets/slskd_header"
       ];
+      TimeoutStartSec = "20min";
     };
     startAt = "daily";
   };
