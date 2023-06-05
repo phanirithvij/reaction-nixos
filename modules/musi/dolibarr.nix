@@ -8,4 +8,6 @@
     domain = "dolibarr.ppom.me";
     nginx = {};
   };
+
+  services.mysqlBackup.databases = [ "dolibarr" ];
 }

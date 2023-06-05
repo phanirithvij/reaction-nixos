@@ -26,14 +26,20 @@ in
 {
   services.postgresqlBackup = {
     enable = true;
-    # every 2 hours, it only costs 2s of CPU time for now
-    startAt = "*-*-* 0/2:15";
+    # every 6 hours, it only costs 2s of CPU time for now
+    startAt = "*-*-* 0/6:15";
+  };
+
+  services.mysqlBackup = {
+    enable = true;
+    # every 6 hours, it only costs 2s of CPU time for now
+    calendar = "*-*-* 0/6:15";
   };
 
   services.borgbackup = {
     jobs = backup {
       name = "data";
-      paths = [ "/data/" "/var/" "/etc/nixos/" "/home/" "/root/" ];
+      paths = [ "/data/" "/var/" "/etc/nixos/" "/home/" "/root/" "/nix/var/nix/" ];
       startAt = [ "*-*-* 02:00" ];
     };
   };

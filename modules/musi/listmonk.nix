@@ -15,6 +15,8 @@ in {
     secretFile = "/var/secrets/listmonk";
   };
 
+  services.postgresqlBackup.databases = [ "listmonk" ];
+
   services.nginx.virtualHosts."mail.ppom.me" = {
     enableACME = true;
     forceSSL = true;
