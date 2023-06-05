@@ -6,9 +6,9 @@ in {
   services.directus.servers = {
     "leborddeleau" = {
       enable = true;
-      settings = {
+      settings = common.settings // {
         PORT = directusPort;
-      } // common.mailSettings;
+      };
       nginx = {
         enable = true;
         serverName = "edit.ppom.me";

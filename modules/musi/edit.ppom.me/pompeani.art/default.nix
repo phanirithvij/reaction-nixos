@@ -7,9 +7,9 @@ in {
   services.directus.servers = {
     "pompeani.art" = {
       enable = true;
-      settings = {
+      settings = common.settings // {
         PORT = directusPort;
-      } // common.mailSettings;
+      };
       nginx = {
         enable = true;
         serverName = "edit.ppom.me";
