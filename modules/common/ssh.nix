@@ -23,8 +23,8 @@ in {
       allowSFTP = false;
     };
 
-    # Mosh extension
     programs.mosh.enable = true;
+    environment.variables.MOSH_SERVER_NETWORK_TMOUT = builtins.toString (60*60*4);
 
     networking.firewall.allowedTCPPorts = [ cfg.port ];
   };
