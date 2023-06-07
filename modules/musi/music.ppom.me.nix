@@ -15,6 +15,11 @@ in {
     };
   };
 
+  users.users.funkwhale-playlist-import = {
+    isSystemUser = true;
+    group = "funkwhale";
+  };
+
   systemd.services.funkwhale-playlist-import = {
     serviceConfig = {
       Environment = [
@@ -38,7 +43,7 @@ in {
             ${python}/bin/python import-from-txt.py "$file"
           done
       '';
-      DynamicUser = true;
+      User = "funkwhale-playlist-import";
       StateDirectory = "funkwhale-playlist-import";
     };
     startAt = "*-*-02/2 21:00"; # man 5 systemd.time: every 2 days at 20:00
