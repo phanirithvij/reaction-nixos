@@ -12,8 +12,11 @@
       config = {
         user.name = "ppom";
         user.email = config.ppom.git.email;
-        # Default ssh's askpass is a pain
-        core.askPass = "";
+        core = {
+          # Default ssh's askpass is a pain
+          askPass = "";
+          pager = "delta";
+        };
         difftool.tool = "vimdiff";
         difftool.prompt = false;
         credential.helper = "cache --timeout=${builtins.toString (4 * 60 * 60)}";
@@ -29,5 +32,6 @@
         };
       };
     };
+    environment.systemPackages = [ pkgs.delta ];
   };
 }
