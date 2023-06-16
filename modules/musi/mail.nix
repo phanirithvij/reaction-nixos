@@ -84,14 +84,9 @@ in
       # Issue: https://github.com/foxcpp/maddy/issues/475
       deliveryFailure = {
         regex = [ ''queue: delivery attempt failed.*<ip>'' ];
-        actions.restart.cmd = with var; [ doas systemctl "restart" "maddy.service" ];
+        actions.restart.cmd = with var; [ systemctl "restart" "maddy.service" ];
       };
     };
-  };
-
-  security.doas.extraRules = var.doasReaction {
-    cmd = var.systemctl;
-    args = [ "restart" "maddy.service" ];
   };
 
   systemd.services.maddy = {

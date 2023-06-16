@@ -26,7 +26,7 @@
     cfg = config.ppom.reaction;
     var = import ./reaction-variables.nix { inherit pkgs; };
 
-    iptablesBanRange = ipRange: "+${var.iptables} -w -A reaction -s ${ipRange} -j DROP";
+    iptablesBanRange = ipRange: "+${var.iptables} -w -A reaction -s ${ipRange} -j reaction-log-refuse";
     bannedIpRanges = [
       "46.148.40.0/24"
       "176.111.174.0/24"
@@ -35,6 +35,7 @@
   in lib.mkIf cfg.enable {
     services.reaction = {
       enable = true;
+      runAsRoot = true;
       settings = {
         patterns = {
           ip = ''(([0-9]{1,3}\.){3}[0-9]{1,3})|([0-9a-fA-F:]{2,90})'';
@@ -65,7 +66,7 @@
           };
 
           nginx = lib.mkIf cfg.enableNginx {
-            cmd = [ "tail" "-f" "/var/log/nginx/access.log" ];
+            cmd = [ "tail" "-n0" "-f" "/var/log/nginx/access.log" ];
             filters.suspectRequests = {
               regex = [
                 ''^<ip>.*"GET //*wp-login\.php''
@@ -86,28 +87,24 @@
       };
     };
 
-    users.users.reaction.extraGroups = [
-      "systemd-journal"
-    ] ++ lib.optional cfg.enableNginx "nginx";
-
-
-    security.doas = {
-      enable = true;
-      extraRules = var.doasReaction { cmd = var.iptables; args = null; };
-    };
-
     systemd.services.reaction.serviceConfig = {
       ExecStartPre= [
         "+${var.iptables} -w -N reaction"
-        "+${var.iptables} -w -I reaction 1 -s 127.0.0.1 -j ACCEPT"
-        # "+${var.iptables} -w -I reaction 1 -s ::1 -j ACCEPT"
+        "+${var.iptables} -w -N reaction-log-refuse"
+        "+${var.iptables} -w -A reaction -s 127.0.0.1 -j RETURN"
+        "+${var.iptables} -w -A reaction -s 192.168.0.0/24 -j RETURN"
+        "+${var.iptables} -w -A reaction-log-refuse -j LOG --log-prefix 'reaction banned connection: ' --log-level 6"
+        "+${var.iptables} -w -A reaction-log-refuse -j nixos-fw-refuse"
         "+${var.iptables} -w -I INPUT -p all -j reaction"
       ] ++ builtins.map iptablesBanRange bannedIpRanges;
       ExecStopPost = [
         "+${var.iptables} -w -D INPUT -p all -j reaction"
         "+${var.iptables} -w -F reaction"
         "+${var.iptables} -w -X reaction"
+        "+${var.iptables} -w -F reaction-log-refuse"
+        "+${var.iptables} -w -X reaction-log-refuse"
       ];
+      TimeoutStopSec = "3 min";
     };
   };
 }
