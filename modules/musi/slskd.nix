@@ -12,7 +12,10 @@ in {
       contextPath = "/slskd";
     };
     settings = {
-      soulseek.username = "pomme";
+      soulseek = {
+        username = "pomme";
+        listen_port = 2332;
+      };
       web.authentication.username = "ppom";
       shares.directories = [
         "[music]/data/music-export/music"
