@@ -22,6 +22,7 @@
     ./vaultwarden.nix
 
     ./websites.nix
+    ./babos.land.nix
     ./music.ppom.me.nix
     ./edit.ppom.me
     ./file.ppom.me.nix
