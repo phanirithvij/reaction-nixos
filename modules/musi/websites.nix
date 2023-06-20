@@ -73,10 +73,6 @@ in {
         default = true;
         enableACME = true;
         extraConfig = ''
-          # Redirection for Véloc
-          if ($host = veloc.ppom.me) {
-            return 301 https://assos.utc.fr/veloc/$request_uri;
-          }
           # Standard redirection
           # Comment this line ↓ to resolve ACME challenge
           return 301 https://ppom.me;
@@ -121,15 +117,6 @@ in {
             root = "/var/www/rainbow";
           };
         };
-      };
-
-      "veloc.ppom.me" = {
-        extraConfig = ''
-            return 301 https://assos.utc.fr/veloc/$request_uri;
-        '';
-        # enable and force SSL with Let's Encrypt
-        forceSSL = true;
-        enableACME = true;
       };
 
       "music.ppom.me" = {
