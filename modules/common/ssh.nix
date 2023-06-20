@@ -6,7 +6,7 @@ in {
     enable = lib.mkEnableOption "enable sshd config";
 
     port = lib.mkOption {
-      type = lib.types.int;
+      type = with lib.types; coercedTo int lib.singleton (listOf int);
       description = "ssh port";
     };
 
@@ -16,7 +16,7 @@ in {
   config = lib.mkIf cfg.enable {
     services.openssh = {
       enable = true;
-      ports = [ cfg.port ];
+      ports = cfg.port;
       permitRootLogin = "no";
     } // lib.optionalAttrs cfg.hardened {
       passwordAuthentication = false;
@@ -26,6 +26,6 @@ in {
     programs.mosh.enable = true;
     environment.variables.MOSH_SERVER_NETWORK_TMOUT = builtins.toString (60*60*4);
 
-    networking.firewall.allowedTCPPorts = [ cfg.port ];
+    networking.firewall.allowedTCPPorts = cfg.port;
   };
 }

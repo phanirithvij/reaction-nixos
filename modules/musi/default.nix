@@ -33,7 +33,7 @@
     git.email = "musi@ppom.me";
     ssh = {
       enable = true;
-      port = 22;
+      port = [ 22 123 ];
       hardened = false;
     };
     reaction.enable = true;
