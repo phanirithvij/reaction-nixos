@@ -30,6 +30,7 @@ in {
     # languagetool # Proofreading program
     deepl-translate-cli # CLI to use deepl. With a shell wrapper around it, it's fast to use
     signalbackup-tools # Manipulate Signal smartphone backups.
+    restic # Backup
 
     # TUI
     # w3m # web browser
