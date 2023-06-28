@@ -32,7 +32,7 @@
     loader.systemd-boot.enable = true;
     loader.systemd-boot.editor = false;
     loader.efi.canTouchEfiVariables = true;
-    tmpOnTmpfs = true;
+    tmp.useTmpfs = true;
     # add ntfs support
     supportedFilesystems = [ "ntfs" ];
 
