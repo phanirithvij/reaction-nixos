@@ -196,8 +196,7 @@ in {
         Type = "oneshot";
         User = "slskd";
         ExecStart = [
-          "${pkgs.findutils}/bin/find /var/lib/slskd/logs/ -type f -mtime +10 -delete"
-          "${pkgs.findutils}/bin/find /var/lib/slskd/logs/ -type f -mtime +1  -exec ${pkgs.gzip}/bin/gzip -q {} \\;"
+          "${pkgs.findutils}/bin/find /var/lib/slskd/logs/ -type f -delete"
         ];
       };
       startAt = "daily";
