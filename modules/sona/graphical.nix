@@ -144,7 +144,7 @@ in
   };
 
   # Steam related
-  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [ "steam"  "steam-original" ];
+  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [ "steam" "steam-original" ];
   hardware.opengl = {
     driSupport32Bit = true;
     extraPackages32 = with pkgs.pkgsi686Linux; [ libva ];
