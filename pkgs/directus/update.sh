@@ -14,7 +14,7 @@ last_release() { # owner, repo
 }
 
 sdk_version="$(last_release directus sdk)"
-directus_version="$(last_release directus directus)"
+directus_version="v10.3.0"
 
 sqlite_version="$(curl -L -s \
 	"https://raw.githubusercontent.com/directus/directus/$directus_version/api/package.json" \
