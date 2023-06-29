@@ -2,7 +2,7 @@
 {
   imports = [
     ./pompeani.art/default.nix
-    ./leborddeleau/default.nix
+    # ./leborddeleau/default.nix
   ];
 
   services.directus.allowDirectusLicense = true;
