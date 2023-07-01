@@ -23,6 +23,12 @@
       default = 5000;
     };
 
+    hostPortFront = mkOption {
+      type = int;
+      description = "Port to expose on the host for the frontend";
+      default = 4999;
+    };
+
     musicDir = mkOption {
       type = str;
       description = "Path to your music directory";
@@ -183,39 +189,57 @@
       docker-funkwhale-api = dockerServiceOverrides;
       docker-funkwhale-celeryworker = dockerServiceOverrides;
       docker-funkwhale-celerybeat = dockerServiceOverrides;
+      docker-funkwhale-front = {
+        after = [ "docker-funkwhale-api.service" ];
+      };
     };
 
     virtualisation.oci-containers = {
       backend = "docker";
 
       containers = let
-        commonOptions = {
+        basicOptions = {
           autoStart = true;
-          image = "funkwhale/funkwhale:${cfg.funkwhaleVersion}";
           extraOptions = [ "--network" "host" ]; # to connect to postgresql
-          environmentFiles = [ localVars.pythonSecretFile ];
+          image = "funkwhale/front:${cfg.funkwhaleVersion}";
           environment = pythonEnv;
-          user = "${toString config.users.users.funkwhale.uid}:${toString config.users.groups.funkwhale.gid}";
         };
-        commonVolumes = [
+        pythonOptions = basicOptions // {
+          user = "${toString config.users.users.funkwhale.uid}:${toString config.users.groups.funkwhale.gid}";
+          image = "funkwhale/api:${cfg.funkwhaleVersion}";
+          environmentFiles = [ localVars.pythonSecretFile ];
+        };
+        mediaVolumes = [
             "${cfg.musicDir}:/music:ro"
             "${cfg.mediaDir}:/${pythonEnv.MEDIA_ROOT}"
         ];
+        codeVolumes = [
+            "${localVars.frontendDir}:/frontend"
+            "${localVars.staticDir}:${pythonEnv.STATIC_ROOT}"
+        ];
       in {
-        funkwhale-celeryworker = commonOptions // {
+        funkwhale-celeryworker = pythonOptions // {
           cmd = [ "celery" "-A" "funkwhale_api.taskapp" "worker" "-l" "INFO" "--concurrency=8" ];
-          volumes = commonVolumes;
+          volumes = mediaVolumes;
         };
 
-        funkwhale-celerybeat = commonOptions // {
+        funkwhale-celerybeat = pythonOptions // {
           cmd = [ "celery" "-A" "funkwhale_api.taskapp" "beat" "--pidfile=" "-l" "INFO" "-s" "/tmp/celerybeat-schedule" ];
         };
 
-        funkwhale-api = commonOptions // {
-          volumes = commonVolumes ++ [
-            "${localVars.frontendDir}:/frontend"
-            "${localVars.staticDir}:${pythonEnv.STATIC_ROOT}"
+        funkwhale-api = pythonOptions // {
+          volumes = mediaVolumes ++ codeVolumes ++ [
             "${./merge-funkwhale-artists.py}:/app/merge-funkwhale-artists.py:ro"
+            "${./merge-funkwhale-tracks.py}:/app/merge-funkwhale-tracks.py:ro"
+          ];
+        };
+
+        funkwhale-front = basicOptions // {
+          volumes = mediaVolumes ++ codeVolumes ++ [
+            "${pkgs.writeScript "edit-upstream" ''
+              #!/bin/sh
+              /bin/sed -e 's/api:5000/localhost:${toString cfg.hostPort}/' -e 's/listen\(.*\)80;/listen\1${toString cfg.hostPortFront};/' -i /etc/nginx/conf.d/default.conf
+            ''}:/docker-entrypoint.d/99-zzz-edit-upstream.sh"
           ];
         };
       };
@@ -247,82 +271,14 @@
       forceSSL = true;
       enableACME = true;
       root = localVars.frontendDir;
-      locations = let
-        frontConfigs = ''
-          add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; object-src 'none'; media-src 'self' data:";
-          add_header Referrer-Policy "strict-origin-when-cross-origin";
-          add_header Service-Worker-Allowed "/";
-          add_header X-Frame-Options "DENY";
-          add_header Pragma public;
-          add_header Cache-Control "public, must-revalidate, proxy-revalidate";
-          expires 30d;
-        '';
-        proxyBackConfigs = ''
-          proxy_set_header Host $host;
-          proxy_set_header X-Real-IP $remote_addr;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          proxy_set_header X-Forwarded-Proto $http_x_forwarded_proto;
-          proxy_set_header X-Forwarded-Host $http_x_forwarded_host;
-          proxy_set_header X-Forwarded-Port $http_x_forwarded_port;
-          proxy_redirect off;
-          # websocket support
-          proxy_http_version 1.1;
-          proxy_set_header Upgrade $http_upgrade;
-          proxy_set_header Connection $connection_upgrade;
-          proxy_cookie_path / "/; Secure; HttpOnly; SameSite=strict";
-        '';
-        proxyUrl = "http://localhost:${toString cfg.hostPort}";
-      in {
+      locations = {
         "/" = {
+          proxyPass = "http://localhost:${toString cfg.hostPortFront}";
           proxyWebsockets = true;
-          proxyPass = proxyUrl;
           extraConfig = ''
-            proxy_set_header X-Forwarded-Port $http_x_forwarded_port;
-            proxy_redirect off;
-            proxy_cookie_path / "/; Secure; SameSite=strict";
             client_max_body_size ${cfg.maxBodySize};
+            # proxy_cookie_path / "/; Secure; HttpOnly; SameSite=strict";
           '';
-        };
-        "/front/" = {
-          alias = "${localVars.frontendDir}/";
-          extraConfig = frontConfigs;
-        };
-        "=/front/embed.html" = {
-          alias = "${localVars.frontendDir}/embed.html";
-          extraConfig = frontConfigs;
-        };
-        "/federation/" = {
-          extraConfig = ''
-            proxy_pass   ${proxyUrl}/federation/;
-          '' + proxyBackConfigs;
-        };
-        "/rest/" = {
-          extraConfig = ''
-            proxy_pass   ${proxyUrl}/api/subsonic/rest/;
-          '' + proxyBackConfigs;
-        };
-        "/.well-known/" = {
-          extraConfig = ''
-            proxy_pass   ${proxyUrl}/.well-known/;
-          '' + proxyBackConfigs;
-        };
-        "/media/__sized__/" = {
-          alias = "${cfg.mediaDir}/__sized__/";
-        };
-        "/media/attachments/" = {
-          alias = "${cfg.mediaDir}/attachments/";
-        };
-        # TODO check the log on these paths to be sure it's really used
-        "/_protected/media/" = {
-          extraConfig = "internal;";
-          alias = "${cfg.mediaDir}/";
-        };
-        "/_protected/music/" = {
-          extraConfig = "internal;";
-          alias = "${cfg.musicDir}/";
-        };
-        "/staticfiles/" = {
-          alias = "${localVars.staticDir}/";
         };
       };
       # TODO upgrade the security settings
