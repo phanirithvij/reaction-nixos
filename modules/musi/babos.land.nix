@@ -15,8 +15,11 @@ let
 in {
 
   services.nginx.virtualHosts = {
+      "accueil.babos.land" = generalConf;
       "babos.land" = generalConf;
+      "bureau.babos.land" = generalConf;
       "djembe.babos.land" = generalConf;
       "kiosque.babos.land" = generalConf;
+      "tribune.babos.land" = generalConf;
   };
 }
