@@ -36,6 +36,11 @@ in {
       default = false;
       description = "Neovim but on steroids";
     };
+    enableNixd = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Enable nixd language server (unstable)";
+    };
   };
 
   config = let
@@ -49,6 +54,7 @@ in {
       };
       systemPackages = [
         neovim
+      ] ++ lib.optionals cfg.enableNixd [
         unstable.nixd
       ] ++ lib.optionals cfg.steroids [
         nodejs
@@ -73,6 +79,7 @@ in {
           configure = {
             customRC = ''
               lua << EOF
+              enableNixd = ${if cfg.enableNixd == true then "true" else "false"}
               steroids = ${if cfg.steroids == true then "true" else "false"}
               ${builtins.readFile ./init.lua}
               EOF
@@ -92,12 +99,13 @@ in {
                 vim-fugitive # Git support. :Gdiffsplit etc.
                 vim-repeat # Provide undo/redo for vim-commentary & vim-surround
                 vim-surround # ds ys operators for delete or add surrounding "'( etc.
-                unstable.vimPlugins.nvim-lspconfig
                 # vim-unimpaired # useful but you have to learn the all the shortcuts
                 # nvim-cmp cmp-buffer cmp-path # useful but I start keeping things simple
                 (super.vimPlugins.gruvbox.overrideAttrs (oldAttrs: {
                   patches = [ ./true_black_gruvbox.patch ];
                 }))
+              ] ++ lib.optionals (cfg.steroids || cfg.enableNixd) [
+                unstable.vimPlugins.nvim-lspconfig
               ] ++ lib.optionals cfg.steroids [
                 tabular # used by vim-markdown
                 unicode-vim # search unicode with :Unicode & i_ctrl-x_ctrl-z

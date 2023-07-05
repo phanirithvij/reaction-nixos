@@ -93,10 +93,14 @@ stdoutautocmd('go', 'fmt.Printf("<Esc>pa: %v\\n", <Esc>pa)')
 stdoutautocmd('lua', 'print("<Esc>pa:", <Esc>pa)')
 
 -- LSP config
-local lspconfig = require 'lspconfig'
-lspconfig.nixd.setup {}
+
+if enableNixd then
+	local lspconfig = require 'lspconfig'
+	lspconfig.nixd.setup {}
+end
 
 if steroids then
+	local lspconfig = require 'lspconfig'
 	vim.g.vim_markdown_folding_disabled = 1
 	vim.g.vim_markdown_toc_autofit = 1
 

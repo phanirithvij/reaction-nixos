@@ -17,6 +17,7 @@
   ppom = {
     enable = true;
     git.email = "akesi@ppom.me";
+    nvim.enableNixd = false;
     ssh = {
       enable = true;
       port = 22;
