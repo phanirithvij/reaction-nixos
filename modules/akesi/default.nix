@@ -34,6 +34,11 @@
   system.autoUpgrade.enable = true;
   system.autoUpgrade.allowReboot = false;
 
+  # Given that akesi is headless, emergency mode is useless.
+  # It's better for the system to attempt to continue booting
+  # so that we can hopefully still access it remotely.
+  systemd.enableEmergencyMode = false;
+
   networking.hostName = "akesi"; # Define your hostname.
   networking.firewall.allowPing = true;
   networking.firewall.enable = true;
