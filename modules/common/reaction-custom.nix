@@ -70,10 +70,16 @@
             filters.suspectRequests = {
               regex = [
                 ''^<ip>.*"GET //*wp-login\.php''
+                ''^<ip>.*"GET //*wp-includes''
                 ''^<ip>.*"GET //*\.env ''
                 ''^<ip>.*"GET //*[^/]*/\.env ''
                 ''^<ip>.*"GET //*config\.json ''
                 ''^<ip>.*"GET //*info\.php ''
+                ''^<ip>.*"GET /owa/auth/logon.aspx ''
+                ''^<ip>.*"GET /auth.html ''
+                ''^<ip>.*"GET /auth1.html ''
+                ''^<ip>.*"GET /password.txt ''
+                ''^<ip>.*"GET /passwords.txt ''
               ];
               actions = var.banFor "${toString (30 * 24)}h";
             };
