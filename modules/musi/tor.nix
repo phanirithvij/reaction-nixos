@@ -1,6 +1,6 @@
 { config, lib, ... }:
 let
-  torPort = 22;
+  torPort = 666;
 in
 {
   networking.firewall.allowedTCPPorts = [ torPort ];
