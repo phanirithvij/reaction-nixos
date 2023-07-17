@@ -10,16 +10,6 @@
     recommendedOptimisation = true;
     recommendedProxySettings = true;
 
-    commonHttpConfig = ''
-      log_format combinedwithhost '$host: '
-                    '$remote_addr - $remote_user'
-                    '[$time_local] '
-                    '"$request" $status $body_bytes_sent '
-                    '"$http_referer" "$http_user_agent"';
-
-      access_log /var/log/nginx/access.log combinedwithhost;
-    '';
-
     virtualHosts."akesi.ppom.me" = {
       enableACME = true;
       forceSSL = true;
@@ -29,7 +19,6 @@
     };
 
     virtualHosts."paris-loyers.fr" = {
-      default = true;
       enableACME = true;
       forceSSL = true;
       locations."/".root = "/var/www/paris-loyers.fr";
