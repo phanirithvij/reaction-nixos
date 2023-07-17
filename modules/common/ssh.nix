@@ -17,7 +17,9 @@ in {
     services.openssh = {
       enable = true;
       ports = cfg.port;
-      permitRootLogin = "no";
+      settings = {
+        PermitRootLogin = "no";
+      };
     } // lib.optionalAttrs cfg.hardened {
       passwordAuthentication = false;
       allowSFTP = false;

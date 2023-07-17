@@ -105,9 +105,14 @@ in
     inherit primaryDomain hostname;
     enable = true;
     openFirewall = true;
+    tls = {
+      loader = "file";
+      certificates = [{
+        keyPath = "${acmeDir}/key.pem";
+        certPath = "${acmeDir}/cert.pem";
+      }];
+    };
     config = ''
-      tls file ${acmeDir}/cert.pem ${acmeDir}/key.pem
-
       # Store accounts with sqlite
       auth.pass_table local_authdb {
           table sql_table {

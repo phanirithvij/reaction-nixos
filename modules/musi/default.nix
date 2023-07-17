@@ -45,11 +45,16 @@
 
   environment.systemPackages = [ (pkgs.callPackage ../../pkgs/crowdsec {}) ];
 
-  # Use the systemd-boot EFI boot loader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.systemd-boot.editor = false;
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.tmpOnTmpfs = true;
+  boot = {
+    loader = {
+      systemd-boot = {
+        enable = true;
+        editor = false;
+      };
+      efi.canTouchEfiVariables = true;
+    };
+    tmp.useTmpfs = true;
+  };
 
   fileSystems."/data" = {
     device = "/dev/mapper/vg_data-lv_data";
