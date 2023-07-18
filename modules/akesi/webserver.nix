@@ -42,6 +42,6 @@
   # Let's Encrypt config
   security.acme = {
     acceptTerms = true;
-    defaults.email = "paco@ecomail.io";
+    defaults.email = "ppom" + "@" + "ecomail" + "." + "fr";
   };
 }

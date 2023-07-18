@@ -179,7 +179,7 @@ in {
   # Let's Encrypt config
   security.acme = {
     acceptTerms = true;
-    defaults.email = "paco@ecomail.io";
+    defaults.email = "ppom" + "@" + "ecomail" + "." + "fr";
   };
 
   # Workaround for cache files being sometimes owned by nobody
