@@ -156,7 +156,7 @@ in
   services.logind.lidSwitch = "suspend-then-hibernate";
 
   # This specialisation allows to close the lid without actually suspending the computer
-  specialisation.closeLid.configuration.services.logind.lidSwitch = lib.mkOverride 98 "lock";
+  # specialisation.closeLid.configuration.services.logind.lidSwitch = lib.mkOverride 98 "lock";
 
   systemd.services.notify-low-battery = {
     description = "Notify on low battery with sound and notification";
