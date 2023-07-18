@@ -100,8 +100,6 @@
       (self: super: {
         # go vtt2srt script
         vtt2srt = super.callPackage ../../pkgs/vtt2srt {};
-        toYaml = super.callPackage ../../pkgs/toYaml {};
-        subedit = super.callPackage ../../pkgs/subedit {};
         subshift = super.callPackage ../../pkgs/subshift {};
       })
     ];
