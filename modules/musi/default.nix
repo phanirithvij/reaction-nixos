@@ -43,8 +43,6 @@
     };
   };
 
-  environment.systemPackages = [ (pkgs.callPackage ../../pkgs/crowdsec {}) ];
-
   boot = {
     loader = {
       systemd-boot = {
