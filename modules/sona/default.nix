@@ -1,6 +1,7 @@
 { lib, config, pkgs, ... }:
 {
   imports = [
+    # <nixos-hardware/dell/precision/5530>
     ../common
 
     ./direnv.nix
