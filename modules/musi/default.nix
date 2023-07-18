@@ -3,6 +3,7 @@
   imports = [
     ../common
 
+    ./akesi.nix
     ./anpa.nix # container
     ./backup.nix
     ./converter
