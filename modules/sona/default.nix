@@ -21,24 +21,20 @@
     nvim.steroids = true;
   };
 
-  specialisation = {
-    # A (future) wifi proxy
-    # withAccessPoint = {
-    #   imports = [ ./accesspoint.nix ];
-    # }
-  };
-
-  # Boot
   boot = {
-    loader.systemd-boot.enable = true;
-    loader.systemd-boot.editor = false;
-    loader.efi.canTouchEfiVariables = true;
+    loader = {
+      systemd-boot.enable = true;
+      systemd-boot.editor = false;
+      efi.canTouchEfiVariables = true;
+      timeout = 1;
+    };
     tmp.useTmpfs = true;
-    # add ntfs support
     supportedFilesystems = [ "ntfs" ];
 
     # The 5.15 mainline has a "dim brightness" bug for me
     kernelPackages = pkgs.linuxKernel.packages.linux_6_1;
+
+    initrd.systemd.enable = true;
   };
 
   # Networking
@@ -51,13 +47,9 @@
     firewall = {
       enable = true;
       allowedTCPPorts = [
-        5500 # Clementine
-        58432 # SoulseekQT
-        10080
-        3901 # Garage
+        # 58432 # SoulseekQT
         8000 # simple-http-server
       ];
-      allowedUDPPorts = [];
     };
   };
   # use FDN's DNS. Override Internet provider's DNS
