@@ -154,7 +154,7 @@
   # Programs
   programs = {
     gnupg.agent.enable = true;
-    kdeconnect.enable = true;
+    # kdeconnect.enable = true;
     npm.enable = true;
     bandwhich.enable = true;
   };
