@@ -66,6 +66,7 @@ in {
         unstable.vscode-langservers-extracted # requires vscode to build
         nodePackages."@tailwindcss/language-server"
         nodePackages.svelte-language-server
+        nodePackages.typescript-language-server
         nodePackages.bash-language-server
       ];
     };

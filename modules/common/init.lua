@@ -35,7 +35,7 @@ local options = {
 }
 
 for k, v in pairs(options) do
-	vim.go[k] = v
+	vim.o[k] = v
 end
 
 -- Completion look
@@ -87,6 +87,7 @@ stdoutautocmd('python', 'print(f"<Esc>pa: {<Esc>pa}")')
 stdoutautocmd('fish', 'echo <Esc>pa: $<Esc>p')
 stdoutautocmd('java', 'System.out.println("<Esc>pa:" + <Esc>pa);')
 stdoutautocmd('javascript', 'console.log("<Esc>pa:", <Esc>pa);')
+stdoutautocmd('typescript', 'console.log("<Esc>pa:", <Esc>pa);')
 stdoutautocmd('rust', 'println!("<Esc>pa: {}", <Esc>pa);')
 stdoutautocmd('c', 'printf("<Esc>pa: %s", <Esc>pa);')
 stdoutautocmd('go', 'fmt.Printf("<Esc>pa: %v\\n", <Esc>pa)')
@@ -115,6 +116,7 @@ if steroids then
 	lspconfig.cssls.setup {}
 
 	lspconfig.tailwindcss.setup {}
+	lspconfig.tsserver.setup {}
 	lspconfig.svelte.setup {}
 
 	lspconfig.lua_ls.setup { settings = {
