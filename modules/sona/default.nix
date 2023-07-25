@@ -9,6 +9,7 @@
     ./graphical.nix
     ./hardware-configuration.nix
     ./packages.nix
+    ./peertube.nix
     ./virt.nix
     ./vpnc.nix
   ];
