@@ -23,19 +23,19 @@
     mailServer = lib.mkOption {
       type = lib.types.str;
       description = "mail server";
-      default = "mail.ppom.me";
+      default = "smtp.ecomail.fr";
     };
 
     mailAccount = lib.mkOption {
       type = lib.types.str;
       description = "mail account";
-      default = "postmaster@ppom.me";
+      default = "paco@ecomail.io";
     };
 
     mailAccountPasswordFile = lib.mkOption {
       type = lib.types.path;
       description = "file containing the password";
-      default = "/var/secrets/mail/postmaster";
+      default = "/var/secrets/mail/ecomail";
     };
   };
 
