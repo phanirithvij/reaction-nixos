@@ -34,8 +34,6 @@
 
     # The 5.15 mainline has a "dim brightness" bug for me
     kernelPackages = pkgs.linuxKernel.packages.linux_6_1;
-
-    initrd.systemd.enable = true;
   };
 
   # Networking
