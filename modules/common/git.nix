@@ -10,21 +10,24 @@
     programs.git = {
       enable = true;
       config = {
-        user.name = "ppom";
-        user.email = config.ppom.git.email;
+        user = {
+          name = "ppom";
+          email = config.ppom.git.email;
+        };
         core = {
           # Default ssh's askpass is a pain
           askPass = "";
-          pager = "delta";
         };
-        difftool.tool = "vimdiff";
-        difftool.prompt = false;
+        difftool = {
+          tool = "vimdiff";
+          prompt = false;
+        };
         credential.helper = "cache --timeout=${builtins.toString (4 * 60 * 60)}";
         commit.verbose = true;
         pull.rebase = false;
         alias = {
-          d = "diff";
-          dc = "diff --cached";
+          d = "diff --ignore-all-space";
+          dc = "diff --ignore-all-space --cached";
           dt = "difftool";
           s = "status";
           a = "add -A";
@@ -32,6 +35,5 @@
         };
       };
     };
-    environment.systemPackages = [ pkgs.delta ];
   };
 }
