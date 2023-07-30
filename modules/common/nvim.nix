@@ -62,7 +62,6 @@ in {
         gopls
         ltex-ls
         lua-language-server
-        rust-analyzer
         unstable.vscode-langservers-extracted # requires vscode to build
         nodePackages."@tailwindcss/language-server"
         nodePackages.svelte-language-server
