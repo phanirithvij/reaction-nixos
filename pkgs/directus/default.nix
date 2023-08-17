@@ -48,7 +48,7 @@ in buildNpmPackage {
     ln -s ${./package.json} $out/lib/package.json
   '';
 
-  npmDepsHash = "sha256-l3bUzkm6OX2EBTvqbbq89OoNOe2YmuRWEWA7GyOOKkE=";
+  npmDepsHash = "sha256-mEXwNI5MZiRAN9Lt0ehUv2u8uGkQG8ABhPWvecSXIWs=";
 
   dontNpmBuild = true;
 
