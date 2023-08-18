@@ -6,17 +6,17 @@
 , dotnetCorePackages
 , buildDotnetModule
 , mono
-, nodejs-18_x
+, nodejs_18
 }:
 let
   pname = "slskd";
-  version = "0.17.5";
+  version = "0.18.1";
 
   src = fetchFromGitHub {
     owner = "slskd";
     repo = "slskd";
     rev = version;
-    sha256 = "sha256-iIM29ZI3M9etbw4yzin+4f4cGHIt5qjIl7uzsTUCBc4=";
+    sha256 = "sha256-RfwkMNUUt/iecf8A+OV8kyvF4LKWkYcwQ/KErERNWV4=";
   };
 
   meta = with lib; {
@@ -27,16 +27,15 @@ let
     platforms = platforms.linux;
   };
 
-  buildNpmPackage' = buildNpmPackage.override { nodejs = nodejs-18_x; };
+  buildNpmPackage' = buildNpmPackage.override { nodejs = nodejs_18; };
 
   wwwroot = buildNpmPackage' {
     inherit meta version;
 
     pname = "slskd-web";
     src = "${src}/src/web";
-    patches = [ ./package-lock.patch ];
     npmFlags = [ "--legacy-peer-deps" ];
-    npmDepsHash = "sha256-vURi36ebdJQofhBlElIH5m6T1b8tsVGAzXCiDYUcSww=";
+    npmDepsHash = "sha256-+2g3pCaGFbzQjKwhjmD6viuzVE5pRg+qSOXMrCtLQkI=";
     installPhase = ''
       cp -r build $out
     '';
