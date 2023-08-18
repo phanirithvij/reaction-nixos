@@ -62,4 +62,27 @@ in {
       actions = var.banFor "1h";
     };
   };
+
+  users.users.cospend-balance = {
+    isSystemUser = true;
+    group = "cospend-balance";
+  };
+  users.groups.cospend-balance = {};
+
+  systemd.services.cospend-balance = let
+    package = pkgs.callPackage ../../pkgs/cospend-balance {};
+    json = pkgs.formats.json {};
+    settings = ./cospend-balance.yml;
+  in {
+    enable = true;
+    description = "Sync Nextcloud Cospend bills";
+    requires = ["phpfpm-nextcloud.service"];
+    after = ["phpfpm-nextcloud.service"];
+    startAt = "02:55";
+    serviceConfig = {
+      User = "cospend-balance";
+      Group = "cospend-balance";
+      ExecStart = "${package}/bin/cospend-balance -y ${settings}";
+    };
+  };
 }

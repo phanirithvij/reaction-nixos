@@ -1,0 +1,118 @@
+---
+mainproject:
+  urlfile: /var/secrets/cospend/fusion
+  payer: 74
+  payedfor: [74]
+  otherpayedpaymentmode: friend
+  categoriesbyslug:
+    grocery: 165
+    party: 166
+    donation: 168
+    excursion: 169
+    health: 170
+    shopping: 171
+    restaurant: 172
+    rent: 173
+    transport: 174
+    gift: 175
+    bill: 176
+  paymentmodesbyslug:
+    cash: 78
+    online: 81
+    cb: 77
+    payutc: 83
+    friend: 82
+    transfer: 80
+
+otherprojects:
+  - name: Pomme
+    urlfile: /var/secrets/cospend/pomme
+    ower: 19
+    shadowedmembers:
+      - 20
+    categoriesbyid:
+      3: grocery
+      4: party
+      7: excursion
+      8: health
+      9: shopping
+      10: restaurant
+      11: rent
+      17: donation
+      18: transport
+      19: gift
+      42: bill
+    paymentmodesbyid:
+      4: cash
+      5: online
+      6: cb
+      7: payutc
+      60: friend
+      61: transfer
+
+  - name: Bertille
+    urlfile: /var/secrets/cospend/bertille
+    ower: 21
+    categoriesbyid:
+      20: grocery
+      21: party
+      22: rent
+      23: bill
+      24: excursion
+      25: health
+      26: shopping
+      27: restaurant
+      28: rent
+      29: transport
+    paymentmodesbyid:
+      8: cb
+      9: cash
+      10: cb
+      11: transfer
+      12: online
+      33: payutc
+      49: cb
+
+  - name: Corentin
+    urlfile: /var/secrets/cospend/corentin
+    ower: 37
+    categoriesbyid:
+      65: grocery
+      66: party
+      67: rent
+      68: bill
+      69: excursion
+      70: health
+      71: shopping
+      72: restaurant
+      73: rent
+      74: transport
+      75: excursion
+    paymentmodesbyid:
+      28: cb
+      29: cash
+      30: cb
+      31: transfer
+      32: online
+
+  - name: Jeanne
+    urlfile: /var/secrets/cospend/jeanne
+    ower: 40
+    categoriesbyid:
+      76: grocery
+      77: party
+      78: rent
+      79: bill
+      80: excursion
+      81: health
+      82: shopping
+      83: restaurant
+      84: rent
+      85: transport
+      86: excursion
+    paymentmodesbyid:
+      34: cb
+      35: cash
+      36: cb
+      37: transfer
+      38: online
