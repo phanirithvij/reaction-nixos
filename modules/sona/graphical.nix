@@ -100,6 +100,7 @@ in
     steam
 
     xfce.thunar # file explorer
+    xfce.ristretto # image viewer
   ];
 
   nixpkgs.overlays = [
