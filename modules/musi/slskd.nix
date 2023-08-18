@@ -15,6 +15,7 @@ in {
       soulseek = {
         username = "pomme";
         listen_port = 2332;
+        diagnostic_level = "Warning";
       };
       web.authentication.username = "ppom";
       shares.directories = [
