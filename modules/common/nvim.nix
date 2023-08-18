@@ -111,6 +111,7 @@ in {
                 unicode-vim # search unicode with :Unicode & i_ctrl-x_ctrl-z
                 vim-markdown
                 vim-visual-multi # multiple cursors with i_ctrl-n
+                vim-svelte
               ];
               opt = [ ];
             };
