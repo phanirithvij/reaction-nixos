@@ -19,7 +19,6 @@ in {
       "babos.land" = generalConf;
       "bureau.babos.land" = generalConf;
       "djembe.babos.land" = generalConf;
-      "kiosque.babos.land" = generalConf;
       "tribune.babos.land" = generalConf;
   };
 
