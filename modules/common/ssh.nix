@@ -19,9 +19,10 @@ in {
       ports = cfg.port;
       settings = {
         PermitRootLogin = "no";
+      } // lib.optionalAttrs cfg.hardened {
+        PasswordAuthentication = false;
       };
     } // lib.optionalAttrs cfg.hardened {
-      passwordAuthentication = false;
       allowSFTP = false;
     };
 
