@@ -72,7 +72,7 @@ in
   ];
 
   services.reaction.settings.streams.maddy = {
-    cmd = [ var.journalctl "-fu" "maddy.service" ];
+    cmd = [ var.journalctl "-fn0" "-u" "maddy.service" ];
     filters = {
 
       failedLogin = {

@@ -1,5 +1,6 @@
 { lib, config, pkgs, ... }:
 let
+  var = import ../common/reaction-variables.nix { inherit pkgs; };
 in {
   services.slskd = {
     enable = true;
@@ -30,4 +31,14 @@ in {
   users.users.ppom.extraGroups = [ "slskd" ];
 
   environment.systemPackages = with pkgs; [ beets ];
+
+  services.reaction.settings.streams.nginx.filters."slskd-failedLogin" = {
+    regex = [
+      ''^<ip> .* "POST /slskd/api/v0/session HTTP/..." 401 [0-9]+ .https://ppom.me''
+      ''^<ip> .* "POST /kiosque/api/v0/session HTTP/..." 401 [0-9]+ .https://babos.land''
+    ];
+    retry = 3;
+    retry-period = "1h";
+    actions = var.banFor "6h";
+  };
 }

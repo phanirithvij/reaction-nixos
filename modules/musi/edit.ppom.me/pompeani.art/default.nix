@@ -3,7 +3,6 @@ let
   directusPort = 8055;
   d2zPort = 8056;
   common = import ../common.nix {};
-  var = import ../../../common/reaction-variables.nix { inherit pkgs; };
 in {
   services.directus.servers = {
     "pompeani.art" = {
@@ -18,15 +17,6 @@ in {
       };
     };
   };
-
-  # services.reaction.settings.streams.nginx.filters."directus-pompeani.art".failedLogin = {
-  #   regex = [
-  #     '' '<ip> .* "POST /pompeani.art/auth/login HTTP/..." 401 [0-9]* "https://edit.ppom.me' ''
-  #   ];
-  #   retry = 6;
-  #   retry-period = "3h";
-  #   actions = var.banFor "2h";
-  # };
 
   users.users."directus-pompeani.art".extraGroups = [ "postmaster" ];
 

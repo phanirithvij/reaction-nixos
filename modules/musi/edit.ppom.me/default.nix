@@ -1,8 +1,12 @@
 { lib, pkgs, config, ... }:
+let
+  var = import ../../common/reaction-variables.nix { inherit pkgs; };
+in
 {
   imports = [
+    ./ecotheque/default.nix
     ./pompeani.art/default.nix
-    # ./leborddeleau/default.nix
+    ./leborddeleau/default.nix
   ];
 
   services.directus.allowDirectusLicense = true;
@@ -27,4 +31,15 @@
     </html>
   '';
 
+  services.reaction.settings.streams.nginx.filters."directusFailedLogin" = {
+    regex = [
+      ''^<ip> .* "POST /repertoire/auth/login HTTP/..." 401 [0-9]+ .https://babos.land''
+      ''^<ip> .* "POST /ecotheque/auth/login HTTP/..." 401 [0-9]+ .https://edit.ppom.me''
+      ''^<ip> .* "POST /pompeani.art/auth/login HTTP/..." 401 [0-9]+ .https://edit.ppom.me''
+      ''^<ip> .* "POST /leborddeleau/auth/login HTTP/..." 401 [0-9]+ .https://edit.ppom.me''
+    ];
+    retry = 6;
+    retry-period = "4h";
+    actions = var.banFor "4h";
+  };
 }

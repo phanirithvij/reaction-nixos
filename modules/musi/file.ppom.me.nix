@@ -51,7 +51,7 @@ in {
   };
 
   services.reaction.settings.streams.nextcloud = {
-    cmd = [ var.journalctl "-fu" "phpfpm-nextcloud.service" ];
+    cmd = [ var.journalctl "-fn0" "-u" "phpfpm-nextcloud.service" ];
     filters.failedLogin = {
       regex = [
         ''"remoteAddr":"<ip>".*"message":"Login failed:''

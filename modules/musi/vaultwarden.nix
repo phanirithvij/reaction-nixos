@@ -43,7 +43,7 @@ in {
   };
 
   services.reaction.settings.streams.vaultwarden = {
-    cmd = [ var.journalctl "-fu" "vaultwarden.service" ];
+    cmd = [ var.journalctl "-fn0" "-u" "vaultwarden.service" ];
     filters.failedlogin = {
       regex = [ ''Username or password is incorrect\. Try again\. IP: <ip>\. Username:''];
       retry = 3;

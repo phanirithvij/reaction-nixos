@@ -15,6 +15,12 @@
       description = "enable jail for bots hiting wp-login.conf";
     };
 
+    enableGPTBot = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "enable jail for GPTBot";
+    };
+
     enablePortScan = lib.mkOption {
       type = lib.types.bool;
       default = true;
@@ -43,7 +49,7 @@
         streams = {
 
           ssh = lib.mkIf cfg.enableSSHJail {
-            cmd = [ var.journalctl "-fu" "sshd.service" ];
+            cmd = [ var.journalctl "-fn0" "-u" "sshd.service" ];
             filters.failedlogin = {
               regex = [
                 "authentication failure;.*rhost=<ip>"
@@ -56,7 +62,7 @@
           };
 
           kernel = lib.mkIf cfg.enablePortScan {
-            cmd = [ var.journalctl "-f" "-k" ];
+            cmd = [ var.journalctl "-fn0" "-k" ];
             filters.portscan = {
               regex = [ "refused connection: .*SRC=<ip>" ];
               retry = 4;
@@ -65,29 +71,41 @@
             };
           };
 
-          nginx = lib.mkIf cfg.enableNginx {
+          nginx = lib.mkIf (cfg.enableNginx || cfg.enableGPTBot) {
             cmd = [ "tail" "-n0" "-f" "/var/log/nginx/access.log" ];
-            filters.suspectRequests = {
-              regex = [
-                ''^<ip>.*"GET //*wp-login\.php''
-                ''^<ip>.*"GET //*wp-includes''
-                ''^<ip>.*"GET //*\.env ''
-                ''^<ip>.*"GET //*[^/]*/\.env ''
-                ''^<ip>.*"GET //*config\.json ''
-                ''^<ip>.*"GET //*info\.php ''
-                ''^<ip>.*"GET /owa/auth/logon.aspx ''
-                ''^<ip>.*"GET /auth.html ''
-                ''^<ip>.*"GET /auth1.html ''
-                ''^<ip>.*"GET /password.txt ''
-                ''^<ip>.*"GET /passwords.txt ''
-              ];
-              actions = var.banFor "${toString (30 * 24)}h";
+            filters = {
+              suspectRequests = lib.mkIf cfg.enableNginx {
+                regex = [
+                  # (?:[^/" ]*/)* is a "non-capturing group" regex that allow for subpath(s)
+                  # example: /code/.env should be matched as well as /.env
+                  #           ^^^^^
+                  ''^<ip>.*"GET /(?:[^/" ]*/)*wp-login\.php''
+                  ''^<ip>.*"GET /(?:[^/" ]*/)*wp-includes''
+                  ''^<ip>.*"GET /(?:[^/" ]*/)*\.env ''
+                  ''^<ip>.*"GET /(?:[^/" ]*/)*config\.json ''
+                  ''^<ip>.*"GET /(?:[^/" ]*/)*info\.php ''
+                  ''^<ip>.*"GET /(?:[^/" ]*/)*owa/auth/logon.aspx ''
+                  ''^<ip>.*"GET /(?:[^/" ]*/)*auth.html ''
+                  ''^<ip>.*"GET /(?:[^/" ]*/)*auth1.html ''
+                  ''^<ip>.*"GET /(?:[^/" ]*/)*password.txt ''
+                  ''^<ip>.*"GET /(?:[^/" ]*/)*passwords.txt ''
+                  ''^<ip>.*"GET /(?:[^/" ]*/)*dns-query ''
+                ];
+                actions = var.banFor "${toString (30 * 24)}h";
+              };
+              gptbot = lib.mkIf cfg.enableGPTBot {
+                regex = [
+                  ''^<ip>.*GPTBot/1.0''
+                ];
+                actions = var.banFor "${toString (30 * 24)}h";
+              };
+
+              # TODO make a filter for too much failed requests
+              # regex = [ ''^<ip>.*"(GET|POST).*" (404|444|403|400) '' ];
+              # retry = 40;
+              # retry-period = "1m";
+              # TODO make a filter for failed http basic auth
             };
-            # TODO make a filter for too much failed requests
-            # regex = [ ''^<ip>.*"(GET|POST).*" (404|444|403|400) '' ];
-            # retry = 40;
-            # retry-period = "1m";
-            # TODO make a filter for failed http basic auth
           };
         };
       };
@@ -98,7 +116,7 @@
         "+${var.iptables} -w -N reaction"
         "+${var.iptables} -w -N reaction-log-refuse"
         "+${var.iptables} -w -A reaction -s 127.0.0.1 -j RETURN"
-        "+${var.iptables} -w -A reaction -s 192.168.0.0/24 -j RETURN"
+        "+${var.iptables} -w -A reaction -s 192.168.1.0/24 -j RETURN"
         "+${var.iptables} -w -A reaction-log-refuse -j LOG --log-prefix 'reaction banned connection: ' --log-level 6"
         "+${var.iptables} -w -A reaction-log-refuse -j nixos-fw-refuse"
         "+${var.iptables} -w -I INPUT -p all -j reaction"
