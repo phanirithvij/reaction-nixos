@@ -69,8 +69,6 @@ in {
       };
 
       "www.ppom.me" = {
-        # makes it the default host
-        default = true;
         enableACME = true;
         extraConfig = ''
           # Standard redirection
