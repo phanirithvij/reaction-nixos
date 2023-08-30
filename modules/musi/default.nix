@@ -88,6 +88,9 @@
     };
   };
 
+  # Update all channels on upgrade, not only the default one.
+  systemd.services.nixos-upgrade.serviceConfig.ExecStartPre = [ "${config.nix.package}/bin/nix-channel --update" ];
+
   virtualisation.docker.enable = true;
   boot.kernel.sysctl."net.ipv4.ip_forward" = true;
 
