@@ -18,6 +18,28 @@
       '';
     };
 
+    virtualHosts."ppom.fr" = {
+      forceSSL = true;
+      enableACME = true;
+      locations = {
+        "/" = {
+          index = "index.html";
+          root = "/var/www/ppom.fr";
+          tryFiles = "$uri $uri.html $uri/ =404";
+        };
+      };
+      extraConfig = ''
+        # do not allow to be framed inside another website
+        add_header X-Frame-Options "DENY";
+        # only allow script and style handling if the MIME type is correct
+        add_header X-Content-Type-Options "nosniff";
+        # tell browsers to only send https://domain.name as Referer
+        add_header Referrer-Policy "strict-origin";
+        # CSP
+        # add_header Content-Security-Policy "default-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self'; frame-src 'none'; frame-ancestors 'none'; base-uri 'none'";
+      '';
+    };
+
     virtualHosts."paris-loyers.fr" = {
       enableACME = true;
       forceSSL = true;
