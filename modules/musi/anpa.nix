@@ -27,6 +27,11 @@ let
       ssh = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDcO2E3P+kOXto9zUkn2Qq2ykJtZlgrb+JQYzs9w0mc/NoRZpOqQn1giiXPBcijhE2s+t8Y2Je5383sZUgaqqlPOsfo99FZmor+CVb5+V0fmH9Czeduxdxr1OQJ+1BUxsLe2k/bSg/wMz4cdMYvO2I2sEf3xY9Ofz6WxUvWTb6F65719bHw4FOPkcl6CaieWzfH/3mQ/Rlev7y0aNhzYQO6Sl1pf22/r3RjtHAAF1rKZ5HvS1SflLj2JsQ2OmhU1i8bD5NGi2nnZEoojWVYIxrY79hCku2TX5b+pPHU4i38nXowL8KUMKlbi3Fiv1JnK8y87Vj9IN53v02V5130na9r bertille.dubosc@enercoop.org" ];
       uid = 2004;
     }
+    {
+      name = "fallstar";
+      ssh = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDhHg9zYgR15EqE8b0gf6ojj276X5cpJfGw8hFa/zrnKt4rh93NFS1Ouvai/XxCF1GD+eGJbkGPauuiQ8ICtyOXjjU5Yp2PcntDpc4F4hyokyaEYc+3CcElLeqXeJIoTZ2g2wCKd7MS92EUtN6Bqb5ld70d/KyV7Nh2k2T91/PYAFUUJhKPvcvy3mMb3BzDdwnDWdavO9THvZOaJfsgZKupctdYKI47uQEyUkm+syDnMYVaTflhWVEM4BK6MwiIif+0wEF8RPo413MpY/ECuo7B5L5MA8l1vD9t8mYqKAfUNWr7DB70hlQ2YLH1macXAiUNx+8sg04QgNXNglSEWfK7 fallstar@hyperion" ];
+      uid = 2005;
+    }
   ];
   transitDir   = user: "/data/user-uploads/${user.name}";
   containerDir = user: "/home/${user.name}/upload-here";
