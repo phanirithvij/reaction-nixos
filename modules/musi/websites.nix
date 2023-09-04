@@ -108,15 +108,6 @@ in {
         '';
       };
 
-      "xn--og8ha.ml" = {
-        locations = {
-          "/" = {
-            index = "index.html";
-            root = "/var/www/rainbow";
-          };
-        };
-      };
-
       "music.ppom.me" = {
         locations = {
           "/to" = {
