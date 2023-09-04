@@ -140,7 +140,6 @@
     prunePaths = [ "/tmp" "/var/tmp" "/var/cache" "/var/lock" "/var/run" "/var/spool" "/mnt" ];
   };
 
-  services.atd.enable = true;
   services.tlp.enable = true;
 
   environment = {
