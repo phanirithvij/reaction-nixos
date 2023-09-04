@@ -236,9 +236,24 @@
 
         funkwhale-front = basicOptions // {
           volumes = mediaVolumes ++ codeVolumes ++ [
+            # FIXME this fix should not be necessary in 1.3.3
             "${pkgs.writeScript "edit-upstream" ''
               #!/bin/sh
-              /bin/sed -e 's/api:5000/localhost:${toString cfg.hostPort}/' -e 's/listen\(.*\)80;/listen\1${toString cfg.hostPortFront};/' -i /etc/nginx/conf.d/default.conf
+              # Add this missing conf before when templates are evaluated in 20
+              # See https://github.com/nginxinc/docker-nginx/tree/2879b26c7dedf1d958b1894a5c1b1dec3c026369/entrypoint
+              /bin/sed \
+                  -e '$ilocation /staticfiles/ { alias ${"$"}{STATIC_ROOT}/; add_header Access-Control-Allow-Origin '"'"'*'"'"'; }' \
+                  -i /etc/nginx/templates/default.conf.template
+            ''}:/docker-entrypoint.d/19-edit-upstream.sh"
+            # FIXME this fix should not be necessary in 1.3.3
+            # See how to use upstream env substitution
+            "${pkgs.writeScript "edit-upstream" ''
+              #!/bin/sh
+              # Change the generated conf at the last moment (after 99)
+              /bin/sed \
+                  -e 's/api:5000/localhost:${toString cfg.hostPort}/' \
+                  -e 's/listen\(.*\)80;/listen\1${toString cfg.hostPortFront};/' \
+                  -i /etc/nginx/conf.d/default.conf
             ''}:/docker-entrypoint.d/99-zzz-edit-upstream.sh"
           ];
         };
