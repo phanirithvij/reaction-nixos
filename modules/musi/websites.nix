@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, stdenv, lib, ... }:
 
 let
   nginxPackage = (pkgs.nginx.override {
@@ -205,5 +205,13 @@ in {
         ln -s ${nginxRealPath} ${nginxConfPath}
         systemctl reload nginx
     '';
+  };
+
+  systemd.services."uploader-auto-delete" = {
+    serviceConfig = {
+      ExecStart = "${pkgs.callPackage ../../pkgs/older.go {}}/bin/older /data/uploader/d";
+      User = "uploader";
+    };
+    startAt = "1:00";
   };
 }
