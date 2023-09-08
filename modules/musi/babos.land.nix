@@ -36,4 +36,11 @@ in {
   };
 
   users.users."directus-babos".extraGroups = [ "postmaster" ];
+  users.users."bertille".extraGroups = [ "directus-babos" ];
+
+  security.doas.extraRules = [{
+    users = [ "bertille" ];
+    runAs = "directus-babos";
+    noPass = true;
+  }];
 }
