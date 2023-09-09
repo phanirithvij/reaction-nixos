@@ -26,6 +26,10 @@
 
     environment.homeBinInPath = true;
 
+    environment.systemPackages = with pkgs; [
+      atuin
+    ];
+
     programs.bash.interactiveShellInit = ''
       # load fzf key-bindings
         [ -f ${pkgs.fzf}/share/fzf/key-bindings.bash ] && source ${pkgs.fzf}/share/fzf/key-bindings.bash
@@ -37,6 +41,9 @@
       function nix-cd()   { cd "$(nix-dir "$1")"; }
       function nix-pkgs() { cd /nix/var/nix/profiles/per-user/root/channels/nixos; }
       function nix()      { command nix --offline "$@"; }
+
+      source ${pkgs.bash-preexec}/share/bash/bash-preexec.sh
+      eval "$(atuin init bash)"
     '';
 
     programs.fish.interactiveShellInit = ''
@@ -44,6 +51,8 @@
       function nix-cd; cd (nix-dir $argv[1]); end
       function nix-pkgs; cd /nix/var/nix/profiles/per-user/root/channels/nixos; end
       function nix; command nix --offline $argv; end
+
+      atuin init fish | source
     '';
   };
 }
