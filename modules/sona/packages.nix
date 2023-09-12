@@ -56,6 +56,7 @@ in {
     ungoogled-chromium # Alternative browser
     signal-desktop # Signal Messaging client
     lagrange # Gemini browser
+    fluffychat # Matrix light client
     # code-server # VSCodium w/ in-browser client & server
     # mumble # Mumble VoIP client
     # drawio
