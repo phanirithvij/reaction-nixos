@@ -12,6 +12,7 @@
     ./languagetool.nix
     ./listmonk.nix
     ./mail.nix
+    ./matrix.nix
     ./monitoring.nix
     ./postgresql.nix
     ./rssify/default.nix
