@@ -39,6 +39,11 @@
         # add_header Content-Security-Policy "default-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self'; frame-src 'none'; frame-ancestors 'none'; base-uri 'none'";
       '';
     };
+    virtualHosts."www.ppom.fr" = {
+      enableACME = true;
+      forceSSL = true;
+      locations."/".return = "301 https://ppom.fr$request_uri";
+    };
 
     virtualHosts."paris-loyers.fr" = {
       enableACME = true;
