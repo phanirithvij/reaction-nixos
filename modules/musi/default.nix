@@ -63,7 +63,13 @@
 
   networking.hostName = "musi"; # Define your hostname.
   networking.useDHCP = false;
-  networking.interfaces.enp6s0.useDHCP = true;
+  networking.interfaces.enp6s0 = {
+    useDHCP = true;
+    ipv6.addresses = [{
+      address = "2a01:e0a:b3a:1dd0::2";
+      prefixLength = 64;
+    }];
+  };
 
   # Set your time zone.
   time.timeZone = "Europe/Paris";
