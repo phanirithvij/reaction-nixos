@@ -20,6 +20,15 @@ in {
       proxyPass = "http://localhost:6167";
       proxyWebsockets = true;
     };
+
+    # locations."/matrix/" = {
+    #   root = pkgs.linkFarm "fluffychat-in-subdirectory" [ {
+    #     name = "matrix";
+    #     path = (pkgs.callPackage ../../pkgs/fluffychat-web { baseHref = "/matrix/"; });
+    #   } ];
+    # };
+
+    locations."/matrix".return = "301 /matrix/";
     # extraConfig = "merge_slashes off;";
   };
 
