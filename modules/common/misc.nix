@@ -16,6 +16,9 @@
       # daemonNiceLevel =   10;
     };
 
+    system.autoUpgrade.enable = lib.mkDefault true;
+    system.autoUpgrade.allowReboot = lib.mkDefault false;
+
     environment.shellAliases = {
       n = "cd /etc/nixos/modules";
       ll = "ls -lh";

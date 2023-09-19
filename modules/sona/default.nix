@@ -130,6 +130,14 @@
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "20.03"; # Did you read the comment?
 
+  system.autoUpgrade.dates = "10:00";
+  systemd.services.nixos-upgrade.serviceConfig = {
+    # Seems unused for now https://www.kernel.org/doc/html/v6.1/block/ioprio.html
+    # CFQ is the only IO Scheduler concerned but it's only for reads and it
+    # is somewhat deprecated
+    IOSchedulingClass = "idle";
+  };
+
   security.apparmor.enable = true;
 
   services.locate = {
