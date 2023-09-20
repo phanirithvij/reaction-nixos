@@ -88,6 +88,10 @@
       handbrake
       # gpac # MP4Box
 
+      # nix-related
+      nurl # nix prefetching (generate src = ... from URL)
+      nix-init # automagically create go,rust,python,zig package
+
       ## text
       dos2unix
       vtt2srt # VTT to SRT converter
