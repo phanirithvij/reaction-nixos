@@ -25,6 +25,8 @@
       la = "ls -a";
       lla = "ls -lha";
       dc = "cd -";
+      ffmpeg = "ffmpeg -hide_banner";
+      ffprobe = "ffprobe -hide_banner";
     };
 
     environment.homeBinInPath = true;
