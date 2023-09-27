@@ -58,8 +58,12 @@
       function nix-pkgs() { cd /nix/var/nix/profiles/per-user/root/channels/nixos; }
       function nix()      { command nix --offline "$@"; }
 
-      source ${pkgs.bash-preexec}/share/bash/bash-preexec.sh
-      eval "$(atuin init bash)"
+      # Only for non-system users
+      if [ "$USER" = "root" ] || [ -d "/home/$USER" ]
+      then
+        source ${pkgs.bash-preexec}/share/bash/bash-preexec.sh
+        eval "$(atuin init bash)"
+      fi
     '';
 
     programs.fish.interactiveShellInit = ''
