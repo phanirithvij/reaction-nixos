@@ -43,6 +43,7 @@
       ripgrep # grep like
       exa # ls like
       du-dust # du like
+      diskonaut # like dust, but interactive
       pydf # df like
       jq # json swiss-army-knife
 
