@@ -51,8 +51,8 @@ in {
     networkmanagerapplet # NM connection editor
 
     # GUI apps
-    firefox # Best browser ever
-    thunderbird # Mail, CalDav, XMPP & Matrix client
+    unstable.firefox # Best browser ever
+    unstable.thunderbird # Mail, CalDav, XMPP & Matrix client
     ungoogled-chromium # Alternative browser
     signal-desktop # Signal Messaging client
     lagrange # Gemini browser
