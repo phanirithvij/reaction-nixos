@@ -16,8 +16,19 @@
       # daemonNiceLevel =   10;
     };
 
-    system.autoUpgrade.enable = lib.mkDefault true;
-    system.autoUpgrade.allowReboot = lib.mkDefault false;
+    # Auto upgrade block
+    system.autoUpgrade = {
+      enable = lib.mkDefault true;
+      allowReboot = lib.mkDefault false;
+    };
+    systemd.services.nixos-upgrade.serviceConfig = {
+      # Permit to update all channels (not just default one)
+      ExecStartPre = [ "${config.nix.package}/bin/nix-channel --update" ];
+      # Seems unused for now https://www.kernel.org/doc/html/v6.1/block/ioprio.html
+      # CFQ is the only IO Scheduler concerned but it's only for reads and it
+      # is somewhat deprecated
+      IOSchedulingClass = "idle";
+    };
 
     environment.shellAliases = {
       n = "cd /etc/nixos/modules";
