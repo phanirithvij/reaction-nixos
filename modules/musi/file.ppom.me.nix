@@ -18,13 +18,15 @@ in {
       adminuser = "admin";
       # Not possible because services.nextcloud.config is not of freeform type
       # mail_smtpmode = "smtp";
-      # mail_smtphost = "mail.ppom.me:465";
+      # mail_smtphost = "smtp.ecomail.fr";
       # mail_smtpsecure = "ssl";
       # mail_smtpauthtype = "LOGIN";
-      # mail_smtpname     = "postmaster@ppom.me";
-      # mail_smtppassword = "' . file_get_contents('/var/secrets/mail/postmaster') . '";
+      # mail_smtpname     = "paco@ecomail.io";
+      # mail_smtppassword = "' . trim(file_get_contents('/var/secrets/mail/ecomail')) . '";
     };
   };
+
+  users.users.nextcloud.extraGroups = [ "postmaster" ];
 
   services.nginx.virtualHosts = {
     "file.ppom.me" = {
