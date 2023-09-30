@@ -58,6 +58,12 @@
       function nix-pkgs() { cd /nix/var/nix/profiles/per-user/root/channels/nixos; }
       function nix()      { command nix --offline "$@"; }
 
+      GIT_AUTHOR_DATE="$(date -d '12:00 today')"
+      GIT_COMMITTER_DATE="$GIT_AUTHOR_DATE"
+      export GIT_AUTHOR_DATE
+      export GIT_COMMITTER_DATE
+
+
       # Only for non-system users
       if [ "$USER" = "root" ] || [ -d "/home/$USER" ]
       then
@@ -72,7 +78,20 @@
       function nix-pkgs; cd /nix/var/nix/profiles/per-user/root/channels/nixos; end
       function nix; command nix --offline $argv; end
 
+      set -x GIT_AUTHOR_DATE (date -d '12:00 today')
+      set -x GIT_COMMITTER_DATE $GIT_AUTHOR_DATE
+
       atuin init fish | source
     '';
+
+    security.sudo.extraConfig = ''
+      Defaults env_keep += "GIT_AUTHOR_DATE GIT_COMMITTER_DATE"
+    '';
+    security.doas.extraRules = [{
+      groups = ["wheel"];
+      cmd = "git";
+      persist = true;
+      setEnv = [ "GIT_AUTHOR_DATE" "GIT_COMMITTER_DATE" ];
+    }];
   };
 }
