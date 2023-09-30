@@ -49,6 +49,7 @@ in {
     pavucontrol # Pulseaudio GUI
     ncpamixer # Pulseaudio TUI
     networkmanagerapplet # NM connection editor
+    playerctl # media play pause
 
     # GUI apps
     unstable.firefox # Best browser ever
@@ -137,7 +138,6 @@ in {
     # poppler # other PDF manipulations
     pngquant # png size reducer
 
-    mediahandler # ⏯️
   ];
 
   nixpkgs.overlays = [
@@ -149,8 +149,6 @@ in {
       ]; };
 
       # soude_au_cou = super.callPackage /home/ao/prg/rust/sudoku {}; 
-
-      mediahandler = super.callPackage ../../pkgs/mediahandler {}; 
 
       deepl-translate-cli = super.callPackage ../../pkgs/deepl-translate-cli {}; 
 
