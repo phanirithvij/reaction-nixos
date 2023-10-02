@@ -7,6 +7,7 @@ in
     ./ecotheque/default.nix
     ./pompeani.art/default.nix
     ./leborddeleau/default.nix
+    ./chatons/default.nix
   ];
 
   services.directus.allowDirectusLicense = true;
