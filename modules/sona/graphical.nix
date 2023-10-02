@@ -123,6 +123,11 @@ in
   services.blueman.enable = true;
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = false;
+  systemd.user.services = {
+    blueman-applet.enable = false;
+    obex.enable = false;
+    "dbus-org.bluez.obex.service".enable = false;
+  };
 
   # xdg-desktop-portal works by exposing a series of D-Bus interfaces
   # known as portals under a well-known name
