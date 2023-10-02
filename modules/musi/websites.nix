@@ -214,4 +214,7 @@ in {
     };
     startAt = "1:00";
   };
+
+  # Prevent it from being garbage-collected between each nginx config change
+  environment.systemPackages = [ pkgs.gixy ];
 }
