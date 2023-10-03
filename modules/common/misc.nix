@@ -81,7 +81,9 @@
       set -x GIT_AUTHOR_DATE (date -d '12:00 today')
       set -x GIT_COMMITTER_DATE $GIT_AUTHOR_DATE
 
+      set -x ATUIN_NOBIND true
       atuin init fish | source
+      bind \cr _atuin_search
     '';
 
     security.sudo.extraConfig = ''
