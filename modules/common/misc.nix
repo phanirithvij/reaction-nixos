@@ -68,7 +68,7 @@
       if [ "$USER" = "root" ] || [ -d "/home/$USER" ]
       then
         source ${pkgs.bash-preexec}/share/bash/bash-preexec.sh
-        eval "$(atuin init bash)"
+        eval "$(atuin init bash --disable-up-arrow)"
       fi
     '';
 
@@ -81,9 +81,7 @@
       set -x GIT_AUTHOR_DATE (date -d '12:00 today')
       set -x GIT_COMMITTER_DATE $GIT_AUTHOR_DATE
 
-      set -x ATUIN_NOBIND true
-      atuin init fish | source
-      bind \cr _atuin_search
+      atuin init fish --disable-up-arrow | source
     '';
 
     security.sudo.extraConfig = ''
