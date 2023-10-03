@@ -130,7 +130,7 @@
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "20.03"; # Did you read the comment?
 
-  system.autoUpgrade.dates = "10:00";
+  system.autoUpgrade.dates = "13:30";
 
   security.apparmor.enable = true;
 
