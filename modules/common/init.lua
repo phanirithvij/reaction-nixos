@@ -108,7 +108,7 @@ if steroids then
 	-- LSP config
 	lspconfig.gopls.setup {}
 	lspconfig.bashls.setup {}
-	lspconfig.ltex.setup {}
+	-- lspconfig.ltex.setup {}
 	lspconfig.rust_analyzer.setup {}
 
 	lspconfig.html.setup {}

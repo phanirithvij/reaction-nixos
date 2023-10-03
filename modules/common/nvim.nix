@@ -60,7 +60,7 @@ in {
         nodejs
         # Language servers
         gopls
-        ltex-ls
+        # ltex-ls
         lua-language-server
         unstable.vscode-langservers-extracted # requires vscode to build
         nodePackages."@tailwindcss/language-server"
