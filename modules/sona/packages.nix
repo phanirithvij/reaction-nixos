@@ -95,13 +95,10 @@ in {
 
     # Development
     git
-      # gitAndTools.git-filter-repo
-      # gource
-      # gti
+    gitAndTools.git-filter-repo
+    # gource
     gnumake
-    # ghc stack cabal-install # haskell
     h2 # H2 Database Editor
-    # gomod2nix
     # alejandra # Nix formatter
     zola # static site generator
     # gcc-wrapper
