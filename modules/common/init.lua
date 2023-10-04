@@ -110,6 +110,7 @@ if steroids then
 	lspconfig.bashls.setup {}
 	-- lspconfig.ltex.setup {}
 	lspconfig.rust_analyzer.setup {}
+	lspconfig.jsonnet_ls.setup {}
 
 	lspconfig.html.setup {}
 	lspconfig.jsonls.setup {}

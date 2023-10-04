@@ -62,6 +62,7 @@ in {
         gopls
         # ltex-ls
         lua-language-server
+        jsonnet-language-server
         unstable.vscode-langservers-extracted # requires vscode to build
         nodePackages."@tailwindcss/language-server"
         nodePackages.svelte-language-server
@@ -112,6 +113,7 @@ in {
                 vim-markdown
                 vim-visual-multi # multiple cursors with i_ctrl-n
                 vim-svelte
+                vim-jsonnet
               ];
               opt = [ ];
             };
