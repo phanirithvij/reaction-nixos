@@ -7,7 +7,7 @@
     ./direnv.nix
     ./down-detector.nix
     ./graphical.nix
-    ./hardware-configuration.nix
+    ./hardware.nix
     ./packages.nix
     ./peertube.nix
     ./virt.nix
