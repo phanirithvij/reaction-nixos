@@ -19,7 +19,7 @@ in {
     "babos.land" = generalConf;
     "bureau.babos.land" = generalConf;
     "djembe.babos.land" = generalConf;
-    "tribune.babos.land" = generalConf;
+    "tribulations.babos.land" = generalConf;
   };
 
   services.directus.servers."babos" = {
