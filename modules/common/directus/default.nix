@@ -4,6 +4,7 @@
 { lib, pkgs, config, ... }:
 let
   json = pkgs.formats.json {};
+  settingsJson = settings: json.generate "config.json" (lib.filterAttrs (key: value: value != null) settings);
   directusName = name: "directus-${name}";
   varLib = name: "/var/lib/${directusName name}";
 in {
@@ -312,7 +313,24 @@ in {
       }
     ];
 
-    environment.systemPackages = [ pkgs.nodejs ];
+    environment.systemPackages = [ pkgs.nodejs ] ++ (lib.mapAttrsToList (name: conf: (pkgs.writeShellApplication {
+      name = "directus-${name}";
+      runtimeInputs = with pkgs; [];
+      text = ''
+        set +o errexit
+
+        D="directus-${name}"
+        if [[ "$USER" != "$D" ]]
+        then
+          echo "not executed as $D, changing permissions with doas"
+          exec doas -u "$D" "$0" "$@"
+        fi
+        
+        export CONFIG_PATH=${settingsJson conf.settings}
+        cd /var/lib/"$D"
+        exec ${cfg.package}/bin/directus "$@"
+      '';
+    })) enabledServers);
 
     systemd.slices.directus = {
       enable = true;
@@ -349,9 +367,7 @@ in {
     in lib.mapAttrsToList (name: conf: "d /var/lib/directus-${name}/secrets   0750 directus-${name} directus-${name} - -") enabledServers
     ++ lib.mapAttrsToList (name: conf: "d ${conf.settings.STORAGE_LOCAL_ROOT} 0750 directus-${name} directus-${name} - -") localStorageServers;
 
-    systemd.services = let
-      settingsJson = settings: json.generate "config.json" (lib.filterAttrs (key: value: value != null) settings);
-    in lib.mapAttrs' (name: conf: let
+    systemd.services = lib.mapAttrs' (name: conf: let
       settings = settingsJson conf.settings;
     in lib.nameValuePair "directus-${name}" {
       enable = true;
