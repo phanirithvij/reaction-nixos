@@ -8,6 +8,7 @@ in {
       enable = true;
       settings = common.settings // {
         PORT = directusPort;
+        LOG_LEVEL = "debug";
       };
       nginx = {
         enable = true;
