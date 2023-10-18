@@ -102,6 +102,7 @@ in {
                 vim-surround # ds ys operators for delete or add surrounding "'( etc.
                 # vim-unimpaired # useful but you have to learn the all the shortcuts
                 # nvim-cmp cmp-buffer cmp-path # useful but I start keeping things simple
+                papercolor-theme # Light theme
                 (super.vimPlugins.gruvbox.overrideAttrs (oldAttrs: {
                   patches = [ ./true_black_gruvbox.patch ];
                 }))
