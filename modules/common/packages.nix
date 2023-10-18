@@ -6,6 +6,7 @@
   };
   config = {
     environment.systemPackages = with pkgs; [
+      man-pages # standard man pages
       ## shell environnement
       (lib.lowPrio moreutils)
       fzf # fuzzy finder
