@@ -58,9 +58,6 @@ in {
     signal-desktop # Signal Messaging client
     lagrange # Gemini browser
     element-desktop # Matrix heavy client
-    # code-server # VSCodium w/ in-browser client & server
-    # mumble # Mumble VoIP client
-    # drawio
     # tor-browser-bundle-bin
     pcmanfm # File Browser
     evince
@@ -74,12 +71,9 @@ in {
     gimp # GNU Image Manipulation Program
     inkscape # Vector Image Editor
     deluge # BitTorrent peer
-    # nicotine-plus # Soulseek client
     gparted
     syncthing # ± P2P file synchronization
     apache-directory-studio # LDAP client
-    ferdium # Web client for apps (Mattermost, Nextcloud, Telegram…)
-    # nextcloud-client
     # klavaro # learn to type efficiently
     tigervnc
 
