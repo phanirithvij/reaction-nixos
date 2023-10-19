@@ -40,6 +40,7 @@ for k, v in pairs(options) do
 end
 
 vim.cmd.colorscheme "PaperColor"
+vim.cmd.highlight("Normal guibg=NONE ctermbg=NONE")
 
 -- Completion look
 vim.go.shortmess = vim.go.shortmess .. "c"

@@ -30,8 +30,7 @@ let
     datadir = "${schema}/share/gsettings-schemas/${schema.name}";
   in pkgs.writeScriptBin "configure-gtk" ''
     export XDG_DATA_DIRS=${datadir}:$XDG_DATA_DIRS
-    gnome_schema=org.gnome.desktop.interface
-    gsettings set $gnome_schema gtk-theme 'Sweet-Dark'
+    gsettings set org.gnome.desktop.interface gtk-theme 'Qogir-Light'
   '';
 
   rbw-wofi = (pkgs.writeScriptBin "rbw-wofi" ''
@@ -76,7 +75,8 @@ in
     # dracula-theme # gtk theme
     # gruvbox-dark-gtk # gtk theme
     # nordic # gtk theme
-    sweet # gtk theme
+    # sweet # gtk theme
+    qogir-theme # gtk theme
     gnome3.adwaita-icon-theme # default gnome cursors
 
     grim # screenshot functionality
@@ -106,9 +106,9 @@ in
   nixpkgs.overlays = [
     (self: super: {
       conky = super.conky.override { pulseSupport = true; };
-      sweet = super.sweet.overrideAttrs (oldAttrs: {
-        patches = [ ./sweet-theme.patch ];
-      });
+      # sweet = super.sweet.overrideAttrs (oldAttrs: {
+      #   patches = [ ./sweet-theme.patch ];
+      # });
     })
   ];
 
