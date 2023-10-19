@@ -56,7 +56,7 @@ let
     ${pkgs.pass}/bin/pass show | wl-copy -o
   '');
 
-in
+in lib.mkMerge [
 {
   environment.systemPackages = with pkgs; [
     wayland
@@ -87,17 +87,16 @@ in
     wev
 
     conky # status bar
-    kanshi # auto change randr
 
+    kanshi # auto change randr
     wlr-randr # manage displays/monitors
+
     wl-clipboard # wl-copy and wl-paste for copy/paste from stdin / stdout
+
     wofi # wayland clone of rofi
     wofi-emoji # wrapper for emoji mode
-
     rbw-wofi
     passwofi
-
-    steam
 
     xfce.thunar # file explorer
     xfce.ristretto # image viewer
@@ -149,13 +148,6 @@ in
     wrapperFeatures.gtk = true;
   };
 
-  # Steam related
-  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [ "steam" "steam-original" ];
-  hardware.opengl = {
-    driSupport32Bit = true;
-    extraPackages32 = with pkgs.pkgsi686Linux; [ libva ];
-  };
-
   # Fix of: Can't shutdown after having suspended the laptop by closing it.
   # Fix found here: https://bugs.launchpad.net/ubuntu/+source/systemd/+bug/1441253
   # Sounds like one of the systemd bugs that has never been fixed...
@@ -205,7 +197,36 @@ in
 
   services.flatpak.enable = true;
 
+  # thunar tumbnail provider
   services.tumbler.enable = true;
 
   environment.variables.BROWSER = "firefox";
 }
+{
+  # Steam
+  hardware.opengl = {
+    driSupport32Bit = true;
+    extraPackages32 = with pkgs.pkgsi686Linux; [ libva ];
+  };
+  environment.systemPackages = with pkgs; [
+    steam
+  ];
+}
+{
+  # Android
+  programs.adb.enable = true;
+  users.users.ao.extraGroups = ["adbusers"];
+  programs.sway.extraSessionCommands = ''
+    # Fix for some Java AWT applications (e.g. Android Studio),
+    # use this if they aren't displayed properly:
+    export _JAVA_AWT_WM_NONREPARENTING=1
+  '';
+  environment.systemPackages = with pkgs; [
+    android-studio
+  ];
+}
+{
+  # Unfree
+  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) ([ "steam" "steam-original" ] ++ map lib.getName [ pkgs.android-studio ]);
+}
+]
