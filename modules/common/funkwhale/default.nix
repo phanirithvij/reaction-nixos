@@ -107,6 +107,7 @@
       STATIC_ROOT = "/static";
       MEDIA_ROOT = "/media";
       # DEFAULT_FROM_EMAIL = "noreply@yourdomain";
+      EXTERNAL_REQUESTS_TIMEOUT = "120";
     };
 
     dockerServiceOverrides = {
