@@ -8,6 +8,7 @@ in
     ./pompeani.art/default.nix
     ./leborddeleau/default.nix
     ./chatons/default.nix
+    ./5eroue/default.nix
   ];
 
   services.directus.allowDirectusLicense = true;
@@ -26,8 +27,12 @@ in
       </head>
       <body>
         <h1>Sites d'édition Directus</h1>
-        <a href="/pompeani.art">pompeani.art</a>
-        <a href="/leborddeleau">Le bord de l'eau</a>
+        <ul>
+          <li><a href="/pompeani.art">Pompeani.art</a></li>
+          <li><a href="/leborddeleau">Le bord de l'eau</a></li>
+          <li><a href="/chatons">CHATONS</a></li>
+          <li><a href="/5eroue">La 5e Roue</a></li>
+        </ul>
       </body>
     </html>
   '';
@@ -38,6 +43,8 @@ in
       ''^<ip> .* "POST /ecotheque/auth/login HTTP/..." 401 [0-9]+ .https://edit.ppom.me''
       ''^<ip> .* "POST /pompeani.art/auth/login HTTP/..." 401 [0-9]+ .https://edit.ppom.me''
       ''^<ip> .* "POST /leborddeleau/auth/login HTTP/..." 401 [0-9]+ .https://edit.ppom.me''
+      ''^<ip> .* "POST /chatons/auth/login HTTP/..." 401 [0-9]+ .https://edit.ppom.me''
+      ''^<ip> .* "POST /5eroue/auth/login HTTP/..." 401 [0-9]+ .https://edit.ppom.me''
     ];
     retry = 6;
     retry-period = "4h";
