@@ -63,6 +63,7 @@ in {
         # ltex-ls
         lua-language-server
         jsonnet-language-server
+        jsonnet
         unstable.vscode-langservers-extracted # requires vscode to build
         nodePackages."@tailwindcss/language-server"
         nodePackages.svelte-language-server
