@@ -9,10 +9,10 @@
 
     ./hardware-configuration.nix
     ./nebula.nix
+    ./nfs.nix
     ./pompeani.art.nix
     ./torrent.nix
     ./webserver.nix
-    ./wireguard.nix
   ];
 
   ppom = {
