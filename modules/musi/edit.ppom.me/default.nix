@@ -47,7 +47,7 @@ in
       ''^<ip> .* "POST /5eroue/auth/login HTTP/..." 401 [0-9]+ .https://edit.ppom.me''
     ];
     retry = 6;
-    retry-period = "4h";
+    retryperiod = "4h";
     actions = var.banFor "4h";
   };
 }

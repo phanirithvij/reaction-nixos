@@ -40,7 +40,7 @@ in {
       ''^<ip> .* "POST /kiosque/api/v0/session HTTP/..." 401 [0-9]+ .https://babos.land''
     ];
     retry = 3;
-    retry-period = "1h";
+    retryperiod = "1h";
     actions = var.banFor "6h";
   };
 }

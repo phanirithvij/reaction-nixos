@@ -32,7 +32,7 @@
     cfg = config.ppom.reaction;
     var = import ./reaction-variables.nix { inherit pkgs; };
 
-    iptablesBanRange = ipRange: "+${var.iptables} -w -A reaction -s ${ipRange} -j reaction-log-refuse";
+    iptablesBanRange = ipRange: "+-${var.iptables} -w -A reaction -s ${ipRange} -j reaction-log-refuse";
     bannedIpRanges = [
       "46.148.40.0/24"
       "176.111.174.0/24"
@@ -44,7 +44,13 @@
       runAsRoot = true;
       settings = {
         patterns = {
-          ip = ''(([0-9]{1,3}\.){3}[0-9]{1,3})|([0-9a-fA-F:]{2,90})'';
+          ip = {
+            regex = ''(([0-9]{1,3}\.){3}[0-9]{1,3})|([0-9a-fA-F:]{2,90})'';
+            ignore = [
+              "127.0.0.1"
+              "192.168.1.0/24"
+            ];
+          };
         };
         streams = {
 
@@ -56,7 +62,7 @@
                 "Connection reset by authenticating user .* <ip>"
               ];
               retry = 3;
-              retry-period = "6h";
+              retryperiod = "6h";
               actions = var.banFor "48h";
             };
           };
@@ -66,7 +72,7 @@
             filters.portscan = {
               regex = [ "refused connection: .*SRC=<ip>" ];
               retry = 4;
-              retry-period = "1h";
+              retryperiod = "1h";
               actions = var.banFor "${toString (30 * 24)}h";
             };
           };
@@ -103,7 +109,7 @@
               # TODO make a filter for too much failed requests
               # regex = [ ''^<ip>.*"(GET|POST).*" (404|444|403|400) '' ];
               # retry = 40;
-              # retry-period = "1m";
+              # retryperiod = "1m";
               # TODO make a filter for failed http basic auth
             };
           };

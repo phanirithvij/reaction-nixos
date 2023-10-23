@@ -60,7 +60,7 @@ in {
         ''"remoteAddr":"<ip>".*"message":"Trusted domain error.''
       ];
       retry = 3;
-      retry-period = "1h";
+      retryperiod = "1h";
       actions = var.banFor "1h";
     };
   };

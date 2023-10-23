@@ -62,10 +62,11 @@ in {
       description = "Daemon to ban hosts that cause multiple authentication errors";
       after = [ "network.target" ];
       wantedBy = [ "multi-user.target" ];
+      path = [ pkgs.iptables ];
       serviceConfig = {
         Type = "simple";
         User = lib.mkIf (!cfg.runAsRoot) "reaction";
-        ExecStart = ''${cfg.package}/bin/reaction -c ${configurationYaml}'';
+        ExecStart = ''${cfg.package}/bin/reaction start -c ${configurationYaml}'';
         StateDirectory = "reaction";
         RuntimeDirectory = "reaction";
         WorkingDirectory = "/var/lib/reaction";

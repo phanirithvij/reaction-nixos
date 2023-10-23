@@ -47,7 +47,7 @@ in {
     filters.failedlogin = {
       regex = [ ''Username or password is incorrect\. Try again\. IP: <ip>\. Username:''];
       retry = 3;
-      retry-period = "1h";
+      retryperiod = "1h";
       actions = var.banFor "2h";
     };
   };
