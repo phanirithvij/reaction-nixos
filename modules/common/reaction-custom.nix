@@ -60,6 +60,8 @@
               regex = [
                 "authentication failure;.*rhost=<ip>"
                 "Connection reset by authenticating user .* <ip>"
+                "Invalid user .* from <ip>"
+                "Received disconnect from <ip> port .*[preauth]"
               ];
               retry = 3;
               retryperiod = "6h";
