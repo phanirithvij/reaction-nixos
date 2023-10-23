@@ -8,6 +8,7 @@
     ../common
 
     ./hardware-configuration.nix
+    ./nebula.nix
     ./pompeani.art.nix
     ./torrent.nix
     ./webserver.nix
