@@ -224,6 +224,8 @@ in lib.mkMerge [
   environment.systemPackages = with pkgs; [
     android-studio
   ];
+  # WayDroid
+  virtualisation.waydroid.enable = true;
 }
 {
   # Unfree
