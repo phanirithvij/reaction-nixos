@@ -63,13 +63,13 @@ in {
   systemd.services.funkwhale-music-link-pre = {
     serviceConfig = {
       User = "postgres";
-      ExecStart = ''${config.services.postgresql.package}/bin/psql funkwhale -c "GRANT SELECT ON TABLE music_trackactor, music_upload, music_track, music_album, music_artist TO fwlink"'';
+      ExecStart = ''${config.services.postgresql.package}/bin/psql funkwhale -c "GRANT SELECT ON TABLE music_trackactor, music_upload, music_track, music_album, music_artist TO root"'';
     };
   };
 
-  systemd.tmpfiles.rules = [
-    "d /data/music-export/ 755 fwlink funkwhale - -"
-  ];
+  # systemd.tmpfiles.rules = [
+  #   "d /data/music-export/ 755 fwlink funkwhale - -"
+  # ];
 
   systemd.services.funkwhale-music-link = {
     requires = [ "funkwhale-music-link-pre.service" ];
@@ -77,7 +77,7 @@ in {
 
     path = [ config.services.postgresql.package ];
     serviceConfig = {
-      User = "fwlink";
+      # User = "fwlink";
       ExecStartPre = [
         "${pkgs.coreutils}/bin/rm -rf /data/music-export/music"
         "${pkgs.coreutils}/bin/mkdir /data/music-export/music"

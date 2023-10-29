@@ -99,15 +99,20 @@ INNER JOIN music_artist ar ON al.artist_id = ar.id
 WHERE (u.audio_file <> '' OR u.source LIKE 'file:///%');`}
 
 func main() {
+	var err error
 	log.Println("Starting")
 
 	if len(os.Args) < 2 || len(os.Args[1]) < 1 {
 		log.Fatalln("First argument must be the destination dir")
 	}
 	root := os.Args[1]
-	os.MkdirAll(root, 0755)
+	err = os.MkdirAll(root, 0755)
+	if err != nil {
+		log.Fatalln("mkdir error", err)
+	}
 
 	lines := cmdStdout(request)
+
 
 	for line := range lines {
 		directories, filename, source := DirectoriesFilenameSource(line)
@@ -118,8 +123,14 @@ func main() {
 		dir := fmt.Sprintf("%s/%s", root, directories)
 		filepath := fmt.Sprintf("%s/%s%s", dir, filename, ext)
 
-		os.MkdirAll(dir, 0755)
+		err = os.MkdirAll(dir, 0755)
+		if err != nil {
+			log.Println("mkdir error", err)
+		}
 
-		os.Symlink(source, filepath)
+		err = os.Link(source, filepath)
+		if err != nil {
+			log.Println("link error", err)
+		}
 	}
 }
