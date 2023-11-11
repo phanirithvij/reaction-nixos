@@ -81,6 +81,7 @@ in lib.mkMerge [
 
     grim # screenshot functionality
     slurp # screenshot functionality
+    wf-recorder # screen recording
 
     pulseaudio # only for pactl
     wlsunset
