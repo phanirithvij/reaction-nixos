@@ -31,16 +31,17 @@ local options = {
   -- Do not break words
   linebreak = true,
 
-  -- PaperColor light theme
-  background = "light"
+  -- PaperColor/gruvbox light theme
+  -- background = "light"
 }
 
 for k, v in pairs(options) do
   vim.o[k] = v
 end
 
-vim.cmd.colorscheme "PaperColor"
-vim.cmd.highlight("Normal guibg=NONE ctermbg=NONE")
+vim.cmd.colorscheme "gruvbox"
+-- vim.cmd.colorscheme "PaperColor"
+-- vim.cmd.highlight("Normal guibg=NONE ctermbg=NONE")
 
 -- Completion look
 vim.go.shortmess = vim.go.shortmess .. "c"

@@ -41,7 +41,7 @@
         bind ù   split-window -h -c "#{pane_current_path}"
         bind c   new-window      -c "#{pane_current_path}"
       '' + lib.optionalString cfg.desktop ''
-        set -g status-style fg=#ffffff,bg=#8c02f2
+        set -g status-style fg=#ffffff,bg=#460179
 
         # Switch to another sessions when the current one ends
         set -g detach-on-destroy off
