@@ -45,6 +45,8 @@
     };
   };
 
+  services.reaction.settings.patterns.ip.ignore = [ "192.168.1.253" ];
+
   boot = {
     loader = {
       systemd-boot = {

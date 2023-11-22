@@ -4,8 +4,8 @@ let
   localPort = 8001;
   dbPath = "jdbc:h2:/var/lib/streama/streama;AUTO_SERVER=TRUE";
   jarFile = pkgs.fetchurl {
-    url = "https://github.com/streamaserver/streama/releases/download/v1.10.4/streama-1.10.4.jar";
-    sha256 = "sha256:0bnsnwimx1mdxq7jh8z5wg7wh0g8gixkb99qmi9pbm7lhfvil1x1";
+    url = "https://github.com/streamaserver/streama/releases/download/v1.10.5/streama-1.10.5.jar";
+    sha256 = "sha256-1FY2nC9xLL93SfS8RiaP4zGh2Rwp/g2J6RD4WJxKJgM=";
   };
   # Can't use pkgs.formats.yaml
   # Because the first section uses 4-spaces indentation
