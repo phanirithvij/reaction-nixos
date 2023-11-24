@@ -1,29 +1,37 @@
 {
-  lib
-, buildNpmPackage
-, callPackage
-, jq
-, linkFarm
-, pkg-config
-, python3
-, vips
-}:
-
-# update this package with ./update.sh
-
-# an embedded version of vips is included in ./vips
-# if there is an npm error on the sharp module, adapt the version
-# from https://github.com/lovell/sharp/blob/<VERSION>/package.json → .config.libvips
-let
+  lib,
+  buildNpmPackage,
+  callPackage,
+  pkg-config,
+  python3,
+  # if there is an npm error on the sharp module, you should adapt the vips version
+  # from https://github.com/lovell/sharp/blob/<VERSION>/package.json → .config.libvips
+  # vips,
+  writeScriptBin,
+  nodejs,
+}: let
   vips' = callPackage ./vips.nix {};
-in buildNpmPackage {
+  # The original script is just a wrapper to app/cli/run
+  # that checks always for the latest version.
+  # We don't want to be constantly remminded we are some version behind
+  directus-bin = writeScriptBin "directus" ''
+    #!${lib.getExe nodejs}
+    import('@directus/api/cli/run.js');
+  '';
+in
+buildNpmPackage rec {
   pname = "directus";
-  version = "v10.8.2";
+  version = "10.8.2";
 
-  src = linkFarm "directus-source" [
-    { name = "package.json"; path = ./package.json; }
-    { name = "package-lock.json"; path = ./package-lock.json; }
-  ];
+  src = builtins.filterSource (path: _: let
+    basename = builtins.baseNameOf path;
+  in
+    lib.hasSuffix ".json" basename)
+  ./.;
+
+  npmDepsHash = "sha256-7VOfuXEJOEDPOdo1rGur1aHIf7aaLn8qywDasZFr0mY=";
+
+  dontNpmBuild = true;
 
   # Required for sharp dependency
   nativeBuildInputs = [
@@ -36,26 +44,21 @@ in buildNpmPackage {
     vips'
   ];
 
-  # Workaround buildNpmPackage.installHook assuming this directory exists
-  # https://github.com/NixOS/nixpkgs/blob/master/pkgs/build-support/node/build-npm-package/hooks/npm-install-hook.sh#L27
-  preInstall = ''
-    mkdir -p $out/lib/node_modules/$(${jq}/bin/jq --raw-output '.name' package.json)
-  '';
-
   postInstall = ''
     mkdir $out/bin
-    ln -s $out/lib/node_modules/directus/node_modules/.bin/directus $out/bin/directus 
-    ln -s ${./package.json} $out/lib/package.json
+    cp ${directus-bin}/bin/directus $out/lib/node_modules/directus/node_modules/.bin/
+    ln -s $out/lib/node_modules/directus/node_modules/.bin/directus $out/bin/directus
+    ln -s $src/package.json $out/lib/package.json
   '';
 
-  npmDepsHash = "sha256-t18B+mI6ple+PbufYlMNXkQpLDAChhge4mxnfC4UIRs=";
-
-  dontNpmBuild = true;
+  passthru.updateScript = ./update.sh;
 
   meta = with lib; {
     description = "The Modern Data Stack rabbit — Directus is an instant REST+GraphQL API and intuitive no-code data collaboration app for any SQL database";
     homepage = "https://directus.io";
+    changelog = "https://github.com/directus/directus/releases/tag/v${version}";
     license = licenses.bsl11;
-    maintainers = with maintainers; [ ppom ];
+    mainProgram = "directus";
+    maintainers = with maintainers; [ppom];
   };
 }

@@ -1,28 +1,22 @@
 #!/usr/bin/env nix-shell
 #! nix-shell -i bash -p curl jq moreutils nodejs prefetch-npm-deps
+set -eou pipefail
 
-set -xeu
+tmpDir="$(mktemp -d)"
 
-tmp="$(mktemp -d)"
-here="$(pwd)"
+cp package.json "$tmpDir"
 
-cp "$here/package.json" "$tmp"
-
-cd "$tmp"
-
-npm update --save '@directus/sdk' 'directus' 'sqlite3'
-
-directus_version="$(jq -r '.dependencies.directus' < "$tmp/package.json" | tr -d '^')"
-
+pushd "$tmpDir"
+npm update
 npm i
+popd
 
-cp -f "$tmp/package.json" "$tmp/package-lock.json" "$here"
+cp -f "$tmpDir/package.json" "$tmpDir/package-lock.json" .
 
-cd "$here"
+npmDepsHash=$(prefetch-npm-deps package-lock.json)
+directusVersion="$(jq -r '.dependencies.directus' < "$tmpDir/package.json" | tr -d '^')"
 
-rm -r "$tmp"
+sed -i '/npmDepsHash/s>".*">"'"$npmDepsHash"'">' default.nix
+sed -i '/version =/s/".*"/"'"$directusVersion"'"/' default.nix
 
-hash=$(prefetch-npm-deps package-lock.json)
-
-sed -i '/npmDepsHash/s>".*">"'$hash'">' default.nix
-sed -i '/version =/s/".*"/"v'$directus_version'"/' default.nix
+rm -r "$tmpDir"

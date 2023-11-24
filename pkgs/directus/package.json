@@ -9,6 +9,6 @@
   "dependencies": {
     "@directus/sdk": "^10.3.5",
     "directus": "^10.8.2",
-    "sqlite3": "^v5.1.6"
+    "sqlite3": "^5.1.6"
   }
 }
