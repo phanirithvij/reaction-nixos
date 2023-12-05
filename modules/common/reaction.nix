@@ -12,14 +12,30 @@ in {
     };
 
     settings = mkOption {
-      description = lib.mdDoc ''
-        Configuration for reaction, see [configuration reference](https://framagit.org/ppom/reaction/-/blob/main/config/reaction.yml)
+      description = ''
+        Configuration for reaction. See the [wiki](https://framagit.org/ppom/reaction-wiki)
+
+        The settings are compiled into a YAML file.
+
+        Mutually exclusive option `settingsFile`.
       '';
       default = {};
       type = submodule {
         freeformType = settingsFormat.type;
         options = {};
       };
+    };
+
+    settingsFile = mkOption {
+      description = ''
+        Configuration for reaction, see the [wiki](https://framagit.org/ppom/reaction-wiki)
+
+        reaction supports JSON, YAML and JSONnet. For those who prefer to take advantage of JSONnet rather than Nix.
+
+        Mutually exclusive with `settings`
+      '';
+      default = null;
+      type = nullOr path;
     };
 
     # Not working, no ExecReloadPre
@@ -68,8 +84,14 @@ in {
 
   config = let
     cfg = config.services.reaction;
-    configurationYaml = settingsFormat.generate "reaction.yml" cfg.settings;
+    generatedSettings = settingsFormat.generate "reaction.yml" cfg.settings;
+    settingsFile = if cfg.settingsFile != null then cfg.settingsFile else generatedSettings;
   in lib.mkIf cfg.enable {
+    assertions = [{
+      assertion = (cfg.settings == {} && cfg.settingsFile != null) || (cfg.settings != {} && cfg.settingsFile == null);
+        message = "You must choose between settings and settingsFile options";
+    }];
+
     users = lib.mkIf (!cfg.runAsRoot) {
       users.reaction = {
         isSystemUser = true;
@@ -87,7 +109,7 @@ in {
       serviceConfig = {
         Type = "simple";
         User = lib.mkIf (!cfg.runAsRoot) "reaction";
-        ExecStart = ''${cfg.package}/bin/reaction start -c ${configurationYaml}'';
+        ExecStart = ''${cfg.package}/bin/reaction start -c ${settingsFile}'';
         StateDirectory = "reaction";
         RuntimeDirectory = "reaction";
         WorkingDirectory = "/var/lib/reaction";
