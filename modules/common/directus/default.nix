@@ -1,6 +1,3 @@
-# Create & network to reach host                            ↓ host ip on the network
-# docker network create -d bridge --subnet 192.168.0.0/24 --gateway 192.168.0.1 mynet
-# containers on this network will access to the host, for example to connect to a database
 { lib, pkgs, config, ... }:
 let
   json = pkgs.formats.json {};
