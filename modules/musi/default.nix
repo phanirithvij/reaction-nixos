@@ -16,6 +16,7 @@
     ./monitoring.nix
     ./postgresql.nix
     ./rssify/default.nix
+    ./rustdesk.nix
     ./streama.nix
     ./slskd.nix
     ./tor.nix
