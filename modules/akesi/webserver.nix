@@ -1,5 +1,25 @@
 { lib, config, pkgs, ... }:
-{
+let
+  host = { root ? null, return ? null }: assert (root == null && return != null) || (return == null && root != null); {
+    enableACME = true;
+    forceSSL = true;
+    locations = {
+      "/" = if root != null then {
+        root = root;
+        index = "index.html";
+        tryFiles = "$uri $uri.html $uri/ =404";
+      } else {
+        inherit return;
+      };
+    };
+    extraConfig = ''
+      add_header X-Frame-Options "DENY";
+      add_header Referrer-Policy "strict-origin";
+      add_header X-Content-Type-Options "nosniff";
+      add_header Content-Security-Policy "default-src 'self' u.ppom.me static.ppom.me; img-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'";
+    '';
+  };
+in {
   networking.firewall.allowedTCPPorts = [ 80 443 ];
 
   services.nginx = {
@@ -10,45 +30,22 @@
     recommendedOptimisation = true;
     recommendedProxySettings = true;
 
-    virtualHosts."akesi.ppom.me" = {
-      enableACME = true;
-      forceSSL = true;
-      locations."/".root = pkgs.writeTextDir "index.html" ''
-        Succeedly wiped /
-      '';
-    };
+    virtualHosts = {
 
-    virtualHosts."ppom.fr" = {
-      forceSSL = true;
-      enableACME = true;
-      locations = {
-        "/" = {
-          index = "index.html";
-          root = "/var/www/ppom.fr";
-          tryFiles = "$uri $uri.html $uri/ =404";
-        };
-      };
-      extraConfig = ''
-        # do not allow to be framed inside another website
-        add_header X-Frame-Options "DENY";
-        # only allow script and style handling if the MIME type is correct
-        add_header X-Content-Type-Options "nosniff";
-        # tell browsers to only send https://domain.name as Referer
-        add_header Referrer-Policy "strict-origin";
-        # CSP
-        # add_header Content-Security-Policy "default-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self'; frame-src 'none'; frame-ancestors 'none'; base-uri 'none'";
-      '';
-    };
-    virtualHosts."www.ppom.fr" = {
-      enableACME = true;
-      forceSSL = true;
-      locations."/".return = "301 https://ppom.fr$request_uri";
-    };
+      "akesi.ppom.me" = host { root = pkgs.writeTextDir "index.html" "Succeedly wiped /"; };
 
-    virtualHosts."paris-loyers.fr" = {
-      enableACME = true;
-      forceSSL = true;
-      locations."/".root = "/var/www/paris-loyers.fr";
+      "ppom.fr" = host { root = "/var/www/ppom.fr"; };
+
+      "www.ppom.fr" = host { return = "301 https://ppom.fr$request_uri"; };
+
+      "paris-loyers.fr" = host { root = "/var/www/paris-loyers.fr"; };
+
+      "static.ppom.me" = host { root = "/var/www/static"; };
+
+      "blog.ppom.me" = host { root = "/var/www/blog"; };
+
+      "tokipona.ppom.me" = host { root = "/var/www/tokipona"; };
+
     };
   };
 
