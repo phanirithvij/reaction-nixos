@@ -6,13 +6,13 @@ stdenv
 }:
 let
   pname = "reaction";
-  version = "v1.0";
+  version = "v1.0.2";
   src = fetchFromGitLab {
     domain = "framagit.org";
     owner = "ppom";
     repo = pname;
     rev = version;
-    sha256 = "sha256-wIdHtL9t4f/0Q1ciqF8h+Gx9dEtVXZIGC3cch6M1BoI=";
+    sha256 = "sha256-yC3It/cFzZznbWNwKRs99VBvs/nEDsbmow7NEocVLqo=";
   };
   reaction = buildGoModule {
     inherit pname version src;
@@ -20,9 +20,10 @@ let
     vendorHash = "sha256-THUIoWFzkqaTofwH4clBgsmtUlLS9WIB2xjqW7vkhpg=";
   };
   ip46tables = stdenv.mkDerivation {
-    inherit pname version src;
+    inherit version src;
+    pname = "ip46tables";
     buildPhase = ''
-      make ip46tables
+      gcc ip46tables.d/ip46tables.c -o ip46tables
     '';
     installPhase = ''
       mkdir -p $out/bin
