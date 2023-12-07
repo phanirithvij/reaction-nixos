@@ -329,7 +329,7 @@ in {
       '';
     })) enabledServers);
 
-    systemd.slices.directus = {
+    systemd.slices.system-directus = {
       enable = true;
       description = "Slice designed to contain all Directus-related services";
     };
@@ -373,7 +373,7 @@ in {
       # path = with pkgs; [ nodejs bash ];
       restartTriggers = [ settings ];
       serviceConfig = {
-        Slice = "directus.slice";
+        Slice = "system-directus.slice";
         User  = "directus-${name}";
         Group = "directus-${name}";
         Environment = [ "CONFIG_PATH=${settings}" ];

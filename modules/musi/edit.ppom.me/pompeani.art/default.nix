@@ -33,7 +33,7 @@ in {
     after = [ "directus-pompeani.art.service" ];
     path = with pkgs; [ nodejs git zola rsync openssh ];
     serviceConfig = {
-      Slice = "directus.slice";
+      Slice = "system-directus.slice";
       User = "directus2zola-pompeani.art";
       Group = "directus2zola-pompeani.art";
       Environment = [
