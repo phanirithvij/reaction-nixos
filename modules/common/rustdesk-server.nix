@@ -1,13 +1,9 @@
 { lib, pkgs, config, ... }:
 {
-  options.services.rustdesk = with lib; with types; {
+  options.services.rustdesk-server = with lib; with types; {
     enable = mkEnableOption "enable RustDesk";
 
-    package = mkOption {
-      type = package;
-      description = "The directus package to use";
-      default = pkgs.rustdesk-server;
-    };
+    package = mkPackageOption pkgs "rustdesk-server" {};
 
     openFirewall = mkOption {
       type = types.bool;
@@ -22,13 +18,13 @@
     relayIP = mkOption {
       type = str;
       description = ''
-        The RustDesk relay has to know its public facing IP
+        The public facing IP of the RustDesk relay
       '';
     };
   };
 
   config = let
-    cfg = config.services.rustdesk;
+    cfg = config.services.rustdesk-server;
     serviceDefaults = {
       enable = true;
       requiredBy = [ "rustdesk.target" ];
@@ -68,8 +64,8 @@
     };
     users.groups.rustdesk = {};
 
-    networking.firewall.allowedTCPPorts = [ 21115 21116 21117 21118 21119 ];
-    networking.firewall.allowedUDPPorts = [ 21116 ];
+    networking.firewall.allowedTCPPorts = lib.mkIf cfg.openFirewall [ 21115 21116 21117 21118 21119 ];
+    networking.firewall.allowedUDPPorts = lib.mkIf cfg.openFirewall [ 21116 ];
 
     systemd.slices.rustdesk = {
       enable = true;
@@ -91,4 +87,6 @@
       serviceConfig.ExecStart = "${cfg.package}/bin/hbbr";
     } ];
   };
+
+  meta.maintainers = with lib.maintainers; [ ppom ];
 }
