@@ -4,7 +4,7 @@ let
 in {
   services.funkwhale = {
     enable = true;
-    funkwhaleVersion = "1.3.4";
+    funkwhaleVersion = "1.4.0";
     domainName = "music.ppom.me";
     musicDir = "/data/funkwhale/music";
     mediaDir = "/data/funkwhale/data/media";
