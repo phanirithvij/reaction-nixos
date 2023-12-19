@@ -8,6 +8,7 @@
     ./down-detector.nix
     ./graphical.nix
     ./hardware.nix
+    ./mobilizon.nix
     ./packages.nix
     ./peertube.nix
     ./virt.nix
