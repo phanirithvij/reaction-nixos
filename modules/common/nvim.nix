@@ -116,6 +116,8 @@ in {
                 vim-visual-multi # multiple cursors with i_ctrl-n
                 vim-svelte
                 vim-jsonnet
+                unstable.vimPlugins.quarto-nvim
+                unstable.vimPlugins.otter-nvim
               ];
               opt = [ ];
             };

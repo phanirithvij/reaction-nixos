@@ -99,6 +99,7 @@ in {
     # gcc-wrapper
     sqlitebrowser
     mmctl # mattermost control (for Picasoft's server management)
+    unstable.quarto # Markdown environment based on pandoc
 
     docker
     docker-compose # for SiMDE's Portail des assos
