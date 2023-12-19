@@ -182,5 +182,6 @@ in {
     # mplus-outline-fonts
     dina-font
     proggyfonts
+    libertinus
   ];
 }
