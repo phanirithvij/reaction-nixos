@@ -135,14 +135,6 @@
 
   security.apparmor.enable = true;
 
-  services.locate = {
-    enable = true;
-    locate = pkgs.mlocate;
-    localuser = null; # accepts mlocate running as root
-    interval = "hourly";
-    prunePaths = [ "/tmp" "/var/tmp" "/var/cache" "/var/lock" "/var/run" "/var/spool" "/mnt" ];
-  };
-
   services.tlp.enable = true;
 
   environment = {

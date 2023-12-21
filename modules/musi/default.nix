@@ -119,14 +119,6 @@
   # Secondary services
   programs.iftop.enable = true;
 
-  services.locate = {
-    locate = pkgs.mlocate;
-    localuser = null; # accepts mlocate running as root
-    enable = true;
-    interval = "daily";
-    prunePaths = [ "/tmp" "/var/tmp" "/var/cache" "/var/lock" "/var/run" "/var/spool" "/var/lib/docker" ];
-  };
-
   services.journald.extraConfig = ''
     SystemMaxUse=6G
     MaxRetentionSec=1month
