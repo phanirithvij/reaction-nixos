@@ -4,7 +4,6 @@ let
 in {
   services.nextcloud = {
     enable = true;
-    enableBrokenCiphersForSSE = false;
     package = pkgs.nextcloud26;
     autoUpdateApps.enable = true;
     hostName = "file.ppom.me";

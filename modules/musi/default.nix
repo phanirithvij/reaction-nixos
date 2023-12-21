@@ -10,7 +10,7 @@
     ./dolibarr.nix
     ./hardware-configuration.nix
     ./languagetool.nix
-    ./listmonk.nix
+    # ./listmonk.nix
     ./mail.nix
     ./matrix.nix
     ./monitoring.nix

@@ -6,7 +6,7 @@ in {
   services.slskd = {
     enable = true;
     package = unstable.slskd;
-    enableLogrotate = true;
+    rotateLogs = true;
     openFirewall = true;
     environmentFile = "/var/secrets/slskd";
     nginx = {
