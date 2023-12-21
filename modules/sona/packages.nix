@@ -100,6 +100,7 @@ in {
     sqlitebrowser
     mmctl # mattermost control (for Picasoft's server management)
     unstable.quarto # Markdown environment based on pandoc
+    minisign # small utility to sign files
 
     docker
     docker-compose # for SiMDE's Portail des assos
@@ -172,7 +173,7 @@ in {
     (import /home/ao/prg/nix/gomod2nix/overlay.nix)
   ];
 
-  fonts.fonts = with pkgs; with xorg; [
+  fonts.packages = with pkgs; with xorg; [
     noto-fonts
     noto-fonts-cjk
     noto-fonts-emoji

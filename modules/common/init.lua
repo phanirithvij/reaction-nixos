@@ -80,7 +80,8 @@ vim.api.nvim_create_autocmd('TermOpen', {
 -- map ù to /log what's under the cursor/
 local stdout = vim.api.nvim_create_augroup('stdout', { clear = true })
 local stdoutautocmd = function(filetype, text)
-  vim.api.nvim_create_autocmd('Filetype ' .. filetype, {
+  vim.api.nvim_create_autocmd('Filetype', {
+    pattern = filetype,
     callback = function()
       vim.keymap.set('n', 'ù', 'yiwo' .. text .. '<esc>')
       vim.keymap.set('v', 'ù', 'yo' .. text .. '<esc>')

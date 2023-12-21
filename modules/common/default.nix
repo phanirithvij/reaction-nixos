@@ -12,7 +12,6 @@
     ./reaction-custom.nix
     ./rustdesk-server.nix
     ./ssh.nix
-    ./slskd.nix
     ./tmux.nix
   ];
 

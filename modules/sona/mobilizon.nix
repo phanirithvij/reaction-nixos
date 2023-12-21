@@ -2,10 +2,6 @@
 let
   unstable = import <nixos-unstable> {};
 in {
-  imports = [
-    "/etc/nixos/modules/common/mobilizon.nix"
-  ];
-
   services.mobilizon = {
     enable = true;
     package = unstable.pkgs.mobilizon.overrideAttrs (final: previous: {
@@ -71,5 +67,10 @@ in {
     nginx.before = mobiservice;
     postgresql.wantedBy = mobiservice;
     postgresql.before = mobiservice;
+  };
+
+  services.postgresql = {
+    enable = true;
+    package = pkgs.postgresql_15;
   };
 }

@@ -42,7 +42,7 @@
       file # file types
       fd # find like
       ripgrep # grep like
-      exa # ls like
+      eza # ls like
       du-dust # du like
       diskonaut # like dust, but interactive
       pydf # df like

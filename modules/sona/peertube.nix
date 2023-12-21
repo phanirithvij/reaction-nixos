@@ -5,7 +5,7 @@
     ensureDatabases = [ "peertube-dev" ];
     ensureUsers = [ {
       name = "peertube-dev";
-      ensurePermissions."DATABASE \"peertube-dev\"" = "ALL PRIVILEGES";
+      ensureDBOwnership = true;
     } ];
   };
   services.redis.servers.peertube-dev = {
