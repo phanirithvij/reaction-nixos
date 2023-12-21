@@ -4,7 +4,7 @@ let
     config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) (map lib.getName [ pkgs.vscode ]);
   };
 
-  undoquit-vim = pkgs.vimUtils.buildVimPluginFrom2Nix {
+  undoquit-vim = pkgs.vimUtils.buildVimPlugin {
     pname = "undoquit-vim";
     version = "2021-05-16";
     src = pkgs.fetchFromGitHub {
@@ -16,7 +16,7 @@ let
     meta.homepage = "https://github.com/AndrewRadev/undoquit.vim";
   };
 
-  vim-svelte = pkgs.vimUtils.buildVimPluginFrom2Nix {
+  vim-svelte = pkgs.vimUtils.buildVimPlugin {
     pname = "vim-svelte";
     version = "2022-10-27";
     src = pkgs.fetchFromGitHub {
