@@ -1,11 +1,11 @@
 { lib, config, pkgs, ... }:
 let
   var = import ../common/reaction-variables.nix { inherit pkgs; };
-  unstable = import <nixos-unstable> {};
+  # unstable = import <nixos-unstable> {};
 in {
   services.slskd = {
     enable = true;
-    package = unstable.slskd;
+    # package = unstable.slskd;
     rotateLogs = true;
     openFirewall = true;
     environmentFile = "/var/secrets/slskd";

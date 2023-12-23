@@ -6,6 +6,5 @@ in {
     enable = true;
     openFirewall = true;
     relayIP = "82.66.255.188";
-    package = unstable.rustdesk-server;
   };
 }

@@ -1,7 +1,6 @@
 { lib, config, pkgs, ... }:
 let 
   var = import ../common/reaction-variables.nix { inherit pkgs; };
-  unstable = import <nixos-unstable> {};
   domain = "ppom.me";
   suffix = "/vault";
   rocketPort = 8060;
@@ -10,8 +9,6 @@ let
 in {
   services.vaultwarden = {
     enable = true;
-    package = unstable.vaultwarden;
-    webVaultPackage = unstable.vaultwarden.webvault;
     # secrets
     environmentFile = "/var/secrets/vaultwarden/env";
     dbBackend = "sqlite";
