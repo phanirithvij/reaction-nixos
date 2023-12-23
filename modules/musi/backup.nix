@@ -55,7 +55,7 @@ in {
       "/home/*/.cache"
     ];
     timerConfig = {
-      OnCalendar = [ "02:00" ];
+      OnCalendar = [ "04:00" ];
       RandomizedDelaySec = "30m";
     };
   };
