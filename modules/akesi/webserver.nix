@@ -1,16 +1,17 @@
 { lib, config, pkgs, ... }:
 let
-  host = { root ? null, return ? null }: assert (root == null && return != null) || (return == null && root != null); {
+  host = { root ? null, return ? null, extra ? {} }:
+  assert (root == null && return != null) || (return == null && root != null); {
     enableACME = true;
     forceSSL = true;
     locations = {
-      "/" = if root != null then {
+      "/" = (if root != null then {
         root = root;
         index = "index.html";
         tryFiles = "$uri $uri.html $uri/ =404";
       } else {
         inherit return;
-      };
+      }) // extra;
     };
     extraConfig = ''
       add_header X-Frame-Options "DENY";
@@ -30,6 +31,12 @@ in {
     recommendedOptimisation = true;
     recommendedProxySettings = true;
 
+    package = (pkgs.nginx.override {
+      modules = with pkgs.nginxModules; [
+        fancyindex
+      ];
+    });
+
     virtualHosts = {
 
       "akesi.ppom.me" = host { root = pkgs.writeTextDir "index.html" "Succeedly wiped /"; };
@@ -38,7 +45,15 @@ in {
 
       "www.ppom.fr" = host { return = "301 https://ppom.fr$request_uri"; };
 
-      "paris-loyers.fr" = host { root = "/var/www/paris-loyers.fr"; };
+      "paris-loyers.fr" = host {
+        root = "/var/www/paris-loyers.fr";
+        extra = {
+          extraConfig = ''
+            fancyindex on;
+            fancyindex_exact_size off;
+          '';
+        };
+      };
 
       "static.ppom.me" = host { root = "/var/www/static"; };
 
