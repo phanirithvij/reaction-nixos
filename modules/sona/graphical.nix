@@ -96,6 +96,7 @@ in lib.mkMerge [
 
     wofi # wayland clone of rofi
     wofi-emoji # wrapper for emoji mode
+    wtype # needed by wofi-emoji
     rbw-wofi
     passwofi
 
