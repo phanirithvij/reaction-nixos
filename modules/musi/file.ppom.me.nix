@@ -4,7 +4,8 @@ let
 in {
   services.nextcloud = {
     enable = true;
-    package = pkgs.nextcloud26;
+    package = pkgs.nextcloud27;
+    configureRedis = true;
     autoUpdateApps.enable = true;
     hostName = "file.ppom.me";
     https = true;
