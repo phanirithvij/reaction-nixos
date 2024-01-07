@@ -58,8 +58,12 @@ in {
 
   services.postgresql.ensureUsers = [ {
     name = "fwlink";
-    ensurePermissions = { "DATABASE FUNKWHALE" = "CONNECT"; };
   } ];
+  systemd.services.postgresql.postStart = lib.mkAfter ''
+    $PSQL funkwhale -tAc 'GRANT CONNECT ON DATABASE funkwhale TO "fwlink"'
+    $PSQL funkwhale -tAc 'GRANT SELECT ON ALL TABLES IN SCHEMA public TO "fwlink"'
+    $PSQL funkwhale -tAc 'GRANT SELECT ON ALL SEQUENCES IN SCHEMA public TO "fwlink"'
+  '';
   systemd.services.funkwhale-music-link-pre = {
     serviceConfig = {
       User = "postgres";

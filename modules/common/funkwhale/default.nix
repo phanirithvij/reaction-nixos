@@ -281,12 +281,10 @@
     services.postgresql = {
       enable = true;
       ensureDatabases = [ "funkwhale" ];
-      ensureUsers = [
-        {
-          name = "funkwhale";
-          ensurePermissions = { "DATABASE funkwhale" = "ALL PRIVILEGES"; };
-        }
-      ];
+      ensureUsers = [{
+        name = "funkwhale";
+        ensureDBOwnership = true;
+      }];
     };
 
     # Rest of postgresqlBackup in musi/backup.nix
