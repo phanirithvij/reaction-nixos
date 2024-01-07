@@ -32,15 +32,16 @@
         Slice = "rustdesk.slice";
         User  = "rustdesk";
         Group = "rustdesk";
+        DynamicUser = "yes";
         Environment = [];
         WorkingDirectory = "/var/lib/rustdesk";
         StateDirectory   = "rustdesk";
         StateDirectoryMode = "0750";
         LockPersonality = true;
-        NoNewPrivileges = true;
+        # NoNewPrivileges = true; # implied by DynamicUser
         PrivateDevices = true;
         PrivateMounts = true;
-        PrivateTmp = true;
+        # PrivateTmp = true; # implied by DynamicUser
         PrivateUsers = true;
         ProtectClock = true;
         ProtectControlGroups = true;
@@ -50,10 +51,10 @@
         ProtectKernelModules = true;
         ProtectKernelTunables = true;
         ProtectProc = "invisible";
-        ProtectSystem = "strict";
-        RemoveIPC = true;
+        # ProtectSystem = "strict"; # implied by DynamicUser
+        # RemoveIPC = true; # implied by DynamicUser
         RestrictNamespaces = true;
-        RestrictSUIDSGID = true;
+        # RestrictSUIDSGID = true; # implied by DynamicUser
       };
     };
   in lib.mkIf cfg.enable {
