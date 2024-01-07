@@ -151,5 +151,21 @@
     npm.enable = true;
     bandwhich.enable = true;
   };
-}
 
+  # FIXME logind quickfix doesn't build
+  # swapDevices = [{
+  #   device = "/home/hdd/swap";
+  #   encrypted = {
+  #     enable = true;
+  #     label = "swap";
+  #     keyFile = "/var/.swapkey";
+  #   };
+  # }];
+  # # Make swap visible to logind, to be able to hibernate
+  # systemd.services.systemd-logind.serviceConfig.ProtectHome = "read-only";
+  # # Power button
+  # services.logind = {
+  #   powerKey = "suspend";
+  #   powerKeyLongPress = "poweroff";
+  # };
+}
