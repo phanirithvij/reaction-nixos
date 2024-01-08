@@ -38,9 +38,20 @@
   # so that we can hopefully still access it remotely.
   systemd.enableEmergencyMode = false;
 
-  networking.hostName = "akesi"; # Define your hostname.
-  networking.firewall.allowPing = true;
-  networking.firewall.enable = true;
+  networking = {
+    hostName = "akesi"; # Define your hostname.
+    firewall = {
+      allowPing = true;
+      enable = true;
+    };
+    defaultGateway6 = {
+      address = "2001:41d0:701:1100::1";
+    };
+    interfaces.ens3.ipv6.addresses = [{
+      address = "2001:41d0:701:1100::194";
+      prefixLength = 64;
+    }];
+  };
 
   time.timeZone = "Europe/Paris";
   i18n.defaultLocale = "en_US.UTF-8";
