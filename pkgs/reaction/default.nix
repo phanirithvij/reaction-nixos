@@ -6,13 +6,13 @@ stdenv
 }:
 let
   pname = "reaction";
-  version = "v1.0.3";
+  version = "v1.1.0";
   src = fetchFromGitLab {
     domain = "framagit.org";
     owner = "ppom";
     repo = pname;
     rev = version;
-    sha256 = "sha256-qaLmzACIYYYQsY+I2di2BNp9ULjV38nx2e6BPx5AgXw=";
+    sha256 = "sha256-SSSd15nS6AgP9akKscvuUL4t5QRiMdgVfObX5BZOH3Q=";
   };
   reaction = buildGoModule {
     inherit pname version src;
