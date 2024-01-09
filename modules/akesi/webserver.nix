@@ -55,7 +55,15 @@ in {
         };
       };
 
-      "static.ppom.me" = host { root = "/var/www/static"; };
+      "static.ppom.me" = host {
+        root = "/var/www/static";
+        extra = {
+          extraConfig = ''
+            fancyindex on;
+            fancyindex_exact_size off;
+          '';
+        };
+      };
 
       "blog.ppom.me" = host { root = "/var/www/blog"; };
 
