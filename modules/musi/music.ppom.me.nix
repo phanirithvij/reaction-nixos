@@ -4,6 +4,7 @@ let
 in {
   services.funkwhale = {
     enable = true;
+    enableLocalTypesense = true;
     funkwhaleVersion = "1.4.0";
     domainName = "music.ppom.me";
     musicDir = "/data/funkwhale/music";

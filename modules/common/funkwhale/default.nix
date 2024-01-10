@@ -46,12 +46,14 @@
       default = "100M";
     };
 
+    enableLocalTypesense = mkEnableOption ''
+      Enable a local Typesense server for search.
+      If you don't set yourself `services.typesense.apiKeyFile`, it will be set to `/var/secrets/typesense/apikey`.
+      If the path doesn't exist, a random secret will be generated.
+    '';
+
     autoScan = {
-      enable = mkOption {
-        type = bool;
-        default = false;
-        description = "enable regular scan of subscribed libraries";
-      };
+      enable = mkEnableOption "enable regular scan of subscribed libraries";
 
       passwordFile = mkOption {
         type = str;
@@ -86,6 +88,7 @@
       # filled by the API container, served by host NGINX
       frontendDir = "/var/lib/funkwhale/frontend";
       staticDir = "/var/lib/funkwhale/static";
+      apiKeyFile = config.services.typesense.apiKeyFile;
     };
 
     pythonEnv = {
@@ -108,6 +111,8 @@
       MEDIA_ROOT = "/media";
       # DEFAULT_FROM_EMAIL = "noreply@yourdomain";
       EXTERNAL_REQUESTS_TIMEOUT = "120";
+    } // lib.optionalAttrs cfg.enableLocalTypesense {
+      TYPESENSE_HOST = "localhost";
     };
 
     dockerServiceOverrides = {
@@ -115,7 +120,6 @@
     };
 
   in lib.mkIf cfg.enable {
-
     assertions = [
       {
         assertion = cfg.autoScan.enable -> (cfg.autoScan.passwordFile != null && cfg.autoScan.startAt != null);
@@ -147,7 +151,7 @@
         description = "Secret generation for Funkwhale";
         wantedBy = [ "multi-user.target" ];
         after = [ "postgresql.service" ];
-        before = [ "redis.service" ];
+        before = [ "redis.service" ] ++ lib.optionals cfg.enableLocalTypesense [ "typesense.service" ];
         serviceConfig = {
           Type = "oneshot";
           User = "root";
@@ -184,6 +188,22 @@
           DATABASE_URL=postgresql://funkwhale:$POSTGRES_PASSWORD@localhost:${toString config.services.postgresql.port}/funkwhale
           EOF
           fi
+
+          ${lib.optionalString cfg.enableLocalTypesense ''
+          if test '!' -f "${apiKeyFile}"
+          then
+            echo Generating Typesense API key...
+            TYPESENSE_PASSWORD=$(genPasswd)
+            mkdir -p "$(dirname "${apiKeyFile}")"
+            echo $TYPESENSE_PASSWORD > "${apiKeyFile}"
+            chmod 640 "${apiKeyFile}"
+            chown root:typesense "${apiKeyFile}"
+          fi
+          # This is done everytime in case a human changes the secret. Better to have a SSOT.
+          sed -i -e '/TYPESENSE_API_KEY/d' \
+                 -e "aTYPESENSE_API_KEY=$(cat "${apiKeyFile}")" \
+                 ${pythonSecretFile}
+          ''}
         '';
       };
 
@@ -330,13 +350,26 @@
           echo "$COUNT libraries"
           for LIB in $LIBRARIES
           do
-              printf "$LIB → "
-              ${pkgs.curl}/bin/curl --no-progress-meter --oauth2-bearer "$TOKEN" -X POST "$BASE_URL/federation/libraries/$LIB/scan" | ${pkgs.jq}/bin/jq -r '.status'
+          printf "$LIB → "
+          ${pkgs.curl}/bin/curl --no-progress-meter --oauth2-bearer "$TOKEN" -X POST "$BASE_URL/federation/libraries/$LIB/scan" | ${pkgs.jq}/bin/jq -r '.status'
           done
         '';
       };
       startAt = cfg.autoScan.startAt;
     };
 
+    services.typesense = lib.mkIf cfg.enableLocalTypesense {
+      enable = true;
+      apiKeyFile = lib.mkDefault "/var/secrets/typesense/apikey";
+      settings.server.api-address = lib.mkDefault "127.0.0.1";
+    };
+    systemd.services.typesense.serviceConfig = lib.mkIf cfg.enableLocalTypesense {
+      DynamicUser = lib.mkForce false;
+    };
+    users.users.typesense = lib.mkIf cfg.enableLocalTypesense {
+      isSystemUser = true;
+      group = "typesense";
+    };
+    users.groups.typesense = lib.mkIf cfg.enableLocalTypesense {};
   };
 }
