@@ -32,6 +32,11 @@ let
       ssh = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDhHg9zYgR15EqE8b0gf6ojj276X5cpJfGw8hFa/zrnKt4rh93NFS1Ouvai/XxCF1GD+eGJbkGPauuiQ8ICtyOXjjU5Yp2PcntDpc4F4hyokyaEYc+3CcElLeqXeJIoTZ2g2wCKd7MS92EUtN6Bqb5ld70d/KyV7Nh2k2T91/PYAFUUJhKPvcvy3mMb3BzDdwnDWdavO9THvZOaJfsgZKupctdYKI47uQEyUkm+syDnMYVaTflhWVEM4BK6MwiIif+0wEF8RPo413MpY/ECuo7B5L5MA8l1vD9t8mYqKAfUNWr7DB70hlQ2YLH1macXAiUNx+8sg04QgNXNglSEWfK7 fallstar@hyperion" ];
       uid = 2005;
     }
+    {
+      name = "guillaume";
+      ssh = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDLNfnP6zlA9+RDf9cVmwlzFBwAxGIPnoWcSp0oRWIJl5EEsqakAdPhuJRRi3xfbmpJwkQHpBC1G2IGaicuMdKZjUnwuYJm4NsxaSr7sVMRTbbm1DBnF21KMMhZxQ3upwoD+26bl8o3AhqreQ1gX7z8AjpDm2yAaWQEXtr3cseLKNJjwtLldZQd48e3w1UZgATLkQuw0Tno1FEjAiYJQpuZLZ3Di3wp+uHMmDTQl6CBhR6kUy1BsnccLNykRE8LYlsy/SSlBnkH3LKfz9i1GdgAdzHAifISaecRlV9SqOwZIMdbHlIR/RqdYen13by3wntECFfGZHfvzmr0uNLm8avnPKQNsoYDpPia1sptcnABSnqtWP63QdLYEnct2BW5tYdeICPary6HIr6jFZfGTgtPGigXiUBH7AbirB+Byn3wBal2wV2jI56FBRLCvcXfGlFcTSE6z+75SFEG3iW937tf0jody+Jez4dYn6MaAaPI2zf62Kd2vvdRohbi4z/WwKc= guillaume@desktop" ];
+      uid = 2006;
+    }
   ];
   transitDir   = user: "/data/user-uploads/${user.name}";
   containerDir = user: "/home/${user.name}/upload-here";
