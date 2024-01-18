@@ -142,6 +142,16 @@ in {
         super.rofi-mpd
       ]; };
 
+      zola = super.zola.overrideAttrs (final: prev: {
+        patches = [
+          # provides `zola serve --store-html`
+          (pkgs.fetchpatch {
+            url = "https://github.com/getzola/zola/commit/d23eded6bcd95d475340b3bf40d7d4eb17c028e3.diff";
+            sha256 = "1i4sq4b0vsxcl5cdd15jnhs2hr8g547s9qpxc4a9lv26bkhz8fmv";
+          })
+        ];
+      });
+
       # soude_au_cou = super.callPackage /home/ao/prg/rust/sudoku {}; 
 
       deepl-translate-cli = super.callPackage ../../pkgs/deepl-translate-cli {}; 
