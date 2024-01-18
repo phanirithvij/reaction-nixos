@@ -95,7 +95,7 @@ in {
     h2 # H2 Database Editor
     # alejandra # Nix formatter
     zola # static site generator
-    nodePackages.tailwindcss # CSS generation framework
+    (nodePackages.tailwindcss.overrideAttrs (old: { plugins = [ nodePackages."@tailwindcss/typography" ]; })) # CSS generation framework
     # gcc-wrapper
     sqlitebrowser
     mmctl # mattermost control (for Picasoft's server management)
