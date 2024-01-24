@@ -99,7 +99,7 @@ in {
     # gcc-wrapper
     sqlitebrowser
     mmctl # mattermost control (for Picasoft's server management)
-    unstable.quarto # Markdown environment based on pandoc
+    (unstable.quarto.override { rWrapper = null; python3 = null; }) # Markdown environment based on pandoc
     minisign # small utility to sign files
 
     docker
