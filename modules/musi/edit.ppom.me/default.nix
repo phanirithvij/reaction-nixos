@@ -4,11 +4,12 @@ let
 in
 {
   imports = [
-    ./ecotheque/default.nix
+    # ./ecotheque/default.nix
     ./pompeani.art/default.nix
     ./leborddeleau/default.nix
-    ./chatons/default.nix
+    # ./chatons/default.nix
     ./5eroue/default.nix
+    ./edit/default.nix
   ];
 
   services.directus.allowDirectusLicense = true;
@@ -30,8 +31,8 @@ in
         <ul>
           <li><a href="/pompeani.art">Pompeani.art</a></li>
           <li><a href="/leborddeleau">Le bord de l'eau</a></li>
-          <li><a href="/chatons">CHATONS</a></li>
           <li><a href="/5eroue">La 5e Roue</a></li>
+          <li><a href="/edit">edit</a></li>
         </ul>
       </body>
     </html>
@@ -40,11 +41,12 @@ in
   services.reaction.settings.streams.nginx.filters."directusFailedLogin" = {
     regex = [
       ''^<ip> .* "POST /repertoire/auth/login HTTP/..." 401 [0-9]+ .https://babos.land''
-      ''^<ip> .* "POST /ecotheque/auth/login HTTP/..." 401 [0-9]+ .https://edit.ppom.me''
+      # ''^<ip> .* "POST /ecotheque/auth/login HTTP/..." 401 [0-9]+ .https://edit.ppom.me''
       ''^<ip> .* "POST /pompeani.art/auth/login HTTP/..." 401 [0-9]+ .https://edit.ppom.me''
       ''^<ip> .* "POST /leborddeleau/auth/login HTTP/..." 401 [0-9]+ .https://edit.ppom.me''
-      ''^<ip> .* "POST /chatons/auth/login HTTP/..." 401 [0-9]+ .https://edit.ppom.me''
+      # ''^<ip> .* "POST /chatons/auth/login HTTP/..." 401 [0-9]+ .https://edit.ppom.me''
       ''^<ip> .* "POST /5eroue/auth/login HTTP/..." 401 [0-9]+ .https://edit.ppom.me''
+      ''^<ip> .* "POST /edit/auth/login HTTP/..." 401 [0-9]+ .https://edit.ppom.me''
     ];
     retry = 6;
     retryperiod = "4h";
