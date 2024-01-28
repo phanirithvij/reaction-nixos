@@ -8,6 +8,7 @@
     ../common
 
     ./hardware-configuration.nix
+    ./poweroff.nix
   ];
 
   ppom = {
