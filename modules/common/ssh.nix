@@ -23,7 +23,7 @@ in {
         PasswordAuthentication = false;
       };
     } // lib.optionalAttrs cfg.hardened {
-      allowSFTP = false;
+      allowSFTP = lib.mkDefault false;
     };
 
     programs.mosh.enable = true;
