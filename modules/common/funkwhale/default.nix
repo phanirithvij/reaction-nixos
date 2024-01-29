@@ -250,6 +250,7 @@
 
         funkwhale-api = pythonOptions // {
           volumes = mediaVolumes ++ codeVolumes ++ [
+            "${./merge-funkwhale-albums.py}:/app/merge-funkwhale-albums.py:ro"
             "${./merge-funkwhale-artists.py}:/app/merge-funkwhale-artists.py:ro"
             "${./merge-funkwhale-tracks.py}:/app/merge-funkwhale-tracks.py:ro"
             "${pkgs.writeScript "merge.sh" ''
@@ -259,8 +260,10 @@
                   TRACK1="$2" TRACK2="$3" python merge-funkwhale-tracks.py ;;
                 artists|artist)
                   ARTIST1="$2" ARTIST2="$3" python merge-funkwhale-artists.py ;;
+                albums|album)
+                  ALBUM1="$2" ALBUM2="$3" python merge-funkwhale-albums.py ;;
                 *)
-                  print "merge artist|track id1 id2 (id1 <--merge into-- id2)"
+                  print "merge album|artist|track id1 id2 (id1 <--merge into-- id2)"
               esac
             ''}:/usr/local/bin/merge:ro"
           ];
