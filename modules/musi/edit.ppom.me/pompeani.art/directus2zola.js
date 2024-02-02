@@ -9,7 +9,7 @@ import { Directus } from '@directus/sdk';
 
 const defaultQuery = { limit: -1 };
 const basedir = './zola/content';
-const baseurl = 'http://127.0.0.1:8055';
+const baseurl = `http://127.0.0.1:${process.env.DIRECTUS_PORT}`;
 
 async function waitForPing(directus) {
   let counter = 10;

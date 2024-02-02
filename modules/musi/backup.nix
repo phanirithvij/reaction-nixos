@@ -66,7 +66,7 @@ in {
       for _ in $(seq 60)
       do
         sleep 5
-        ssh ${pokiHost} -i ${pokiKey} -o ConnectTimeout=10
+        ssh ${pokiHost} -i ${pokiKey} -o ConnectTimeout=10 true && break
       done
     ''}";
   };
