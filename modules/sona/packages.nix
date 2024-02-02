@@ -95,7 +95,7 @@ in {
     h2 # H2 Database Editor
     # alejandra # Nix formatter
     zola # static site generator
-    (nodePackages.tailwindcss.overrideAttrs (old: { plugins = [ nodePackages."@tailwindcss/typography" ]; })) # CSS generation framework
+    tailwindcss # CSS generation framework
     # gcc-wrapper
     sqlitebrowser
     mmctl # mattermost control (for Picasoft's server management)
@@ -141,21 +141,6 @@ in {
         super.rofi-emoji
         super.rofi-mpd
       ]; };
-
-      zola = super.zola.overrideAttrs (final: prev: {
-        patches = [
-          # provides `zola serve --store-html`
-          (pkgs.fetchpatch {
-            url = "https://github.com/getzola/zola/commit/d23eded6bcd95d475340b3bf40d7d4eb17c028e3.diff";
-            sha256 = "1i4sq4b0vsxcl5cdd15jnhs2hr8g547s9qpxc4a9lv26bkhz8fmv";
-          })
-          # provides `save_as_file` Tera function
-          (pkgs.fetchpatch {
-            url = "https://github.com/ppom0/zola/commit/404de294ffc3b3e2e15952790c41ade74bb7d935.diff";
-            sha256 = "0pavxybvj54dibfvffm58mv8wfykzaqjicfcp90d0cwxak8w82g5";
-          })
-        ];
-      });
 
       # soude_au_cou = super.callPackage /home/ao/prg/rust/sudoku {}; 
 
