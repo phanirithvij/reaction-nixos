@@ -10,7 +10,7 @@
     ./hardware-configuration.nix
     ./nebula.nix
     ./nfs.nix
-    ./pompeani.art.nix
+    ./musi-websites.nix
     ./torrent.nix
     ./webserver.nix
   ];
