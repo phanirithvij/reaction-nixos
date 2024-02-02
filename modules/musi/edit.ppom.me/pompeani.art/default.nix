@@ -22,9 +22,8 @@ in {
 
   users.users."directus2zola-pompeani.art" = {
     isSystemUser = true;
-    group = "directus2zola-pompeani.art";
+    group = "directus2zola";
   };
-  users.groups."directus2zola-pompeani.art" = {};
 
   systemd.services."directus2zola-pompeani.art" = {
     enable = true;
@@ -35,12 +34,12 @@ in {
     serviceConfig = {
       Slice = "system-directus.slice";
       User = "directus2zola-pompeani.art";
-      Group = "directus2zola-pompeani.art";
+      Group = "directus2zola";
       Environment = [
         "DIRECTUS_PORT=${builtins.toString directusPort}"
         "D2Z_PORT=${builtins.toString d2zPort}"
         "D2Z_SSH_KEY=${common.sshKey}"
-        "D2Z_SSH_DEST=pompeani.art-uploader@akesi.ppom.me:/var/www/pompeani.art/"
+        "D2Z_SSH_DEST=musi-uploader@akesi.ppom.me:/var/www/pompeani.art/"
       ];
       StateDirectory =            "directus2zola-pompeani.art";
       WorkingDirectory = "/var/lib/directus2zola-pompeani.art";

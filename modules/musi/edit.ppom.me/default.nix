@@ -5,9 +5,9 @@ in
 {
   imports = [
     # ./ecotheque/default.nix
+    # ./chatons/default.nix
     ./pompeani.art/default.nix
     ./leborddeleau/default.nix
-    # ./chatons/default.nix
     ./5eroue/default.nix
     ./edit/default.nix
   ];
@@ -52,4 +52,6 @@ in
     retryperiod = "4h";
     actions = var.banFor "4h";
   };
+
+  users.groups.directus2zola = {};
 }
