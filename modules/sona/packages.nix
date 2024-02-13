@@ -52,7 +52,7 @@ in {
     playerctl # media play pause
 
     # GUI apps
-    unstable.firefox # Best browser ever
+    (wrapFirefox (firefox-unwrapped.override { pipewireSupport = true;}) {}) # Best browser ever
     unstable.thunderbird # Mail, CalDav, XMPP & Matrix client
     ungoogled-chromium # Alternative browser
     signal-desktop # Signal Messaging client
