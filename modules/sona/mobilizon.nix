@@ -36,9 +36,9 @@ in {
           password = mkGetEnv { envVariable = "SMTP_PASSWORD"; };
           tls = mkAtom ":never";
           allowed_tls_versions = [
-            (mkAtom ":tlsv1")
-            (mkAtom ":\"tlsv1.1\"")
-            (mkAtom ":\"tlsv1.2\"")
+            (mkAtom '':tlsv1'')
+            (mkAtom '':"tlsv1.1"'')
+            (mkAtom '':"tlsv1.2"'')
           ];
           retries = 1;
           no_mx_lookups = false;
