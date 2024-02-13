@@ -37,6 +37,10 @@ in {
       Group = "directus2zola";
       StateDirectory =            "directus2zola-leborddeleau";
       WorkingDirectory = "/var/lib/directus2zola-leborddeleau";
+      Restart = "always";
+      RestartSec = "10s";
+      RestartMaxDelaySec = "2h";
+      RestartSteps = "2d";
       ExecStartPre = "${pkgs.writeShellApplication {
         name = "d2z-bdo-prestart";
         text = ''
