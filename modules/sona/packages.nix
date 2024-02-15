@@ -53,7 +53,7 @@ in {
 
     # GUI apps
     (wrapFirefox (firefox-unwrapped.override { pipewireSupport = true;}) {}) # Best browser ever
-    unstable.thunderbird # Mail, CalDav, XMPP & Matrix client
+    thunderbird # Mail, CalDav, XMPP & Matrix client
     ungoogled-chromium # Alternative browser
     signal-desktop # Signal Messaging client
     lagrange # Gemini browser
@@ -99,7 +99,7 @@ in {
     # gcc-wrapper
     sqlitebrowser
     mmctl # mattermost control (for Picasoft's server management)
-    (unstable.quarto.override { rWrapper = null; python3 = null; }) # Markdown environment based on pandoc
+    (quarto.override { rWrapper = null; python3 = null; }) # Markdown environment based on pandoc
     minisign # small utility to sign files
 
     docker
