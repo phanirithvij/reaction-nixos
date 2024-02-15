@@ -59,6 +59,7 @@ in {
       ] ++ lib.optionals cfg.steroids [
         nodejs
         # Language servers
+        elixir-ls
         gopls
         # ltex-ls
         lua-language-server

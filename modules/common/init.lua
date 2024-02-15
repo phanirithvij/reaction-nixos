@@ -116,6 +116,7 @@ if steroids then
 	vim.g.vim_markdown_toc_autofit = 1
 
 	-- LSP config
+	lspconfig.elixirls.setup { cmd = { "/run/current-system/sw/bin/elixir-ls" } }
 	lspconfig.gopls.setup {}
 	lspconfig.bashls.setup {}
 	-- lspconfig.ltex.setup {}
