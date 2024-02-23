@@ -1,6 +1,7 @@
 { lib, pkgs, config, ... }:
 let 
   fwlink = pkgs.callPackage ../../pkgs/fwlink {};
+  python = pkgs.python3.withPackages (ps: with ps; [ requests rapidfuzz ]);
 in {
   services.funkwhale = {
     enable = true;
@@ -27,9 +28,7 @@ in {
         "INSTANCE_URL=https://${config.services.funkwhale.domainName}"
       ];
       EnvironmentFile = "/var/secrets/funkwhale/playlistImportToken";
-      ExecStart = let
-        python = pkgs.python3.withPackages (ps: with ps; [ requests rapidfuzz ]);
-      in pkgs.writeScript "funkwhale-playlist-import" ''
+      ExecStart = pkgs.writeScript "funkwhale-playlist-import" ''
         #!${pkgs.runtimeShell}
           set -e
           cd /var/lib/funkwhale-playlist-import
@@ -49,6 +48,11 @@ in {
     };
     startAt = "*-*-02/2 21:00"; # man 5 systemd.time: every 2 days at 20:00
   };
+
+  environment.systemPackages = [ (pkgs.writeScriptBin "funkwhale-playlist-python" ''
+    #!${pkgs.runtimeShell}
+    /run/wrappers/bin/doas -u funkwhale-playlist-import ${python}/bin/python "$@"
+  '') ];
 
   # FunkwhaleLink
 
