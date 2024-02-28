@@ -8,6 +8,7 @@
     ./backup.nix
     ./converter
     ./dolibarr.nix
+    ./dyndns.nix
     ./hardware-configuration.nix
     ./languagetool.nix
     # ./listmonk.nix
