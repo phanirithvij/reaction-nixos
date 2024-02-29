@@ -32,7 +32,7 @@ in {
   systemd.services.slskd.serviceConfig.UMask = "0002";
   users.users.ppom.extraGroups = [ "slskd" ];
 
-  environment.systemPackages = with pkgs; [ beets ];
+  environment.systemPackages = with pkgs; [ beets id3v2 ];
 
   services.reaction.settings.streams.nginx.filters."slskd-failedLogin" = {
     regex = [
