@@ -43,39 +43,39 @@ in {
 
     # Hosts config
     virtualHosts = {
-      "ppom.me" = {
-        # enable and force SSL with Let's Encrypt
-        forceSSL = true;
-        enableACME = true;
-        locations = {
-          "/" = {
-            index = "index.html";
-            root = "/var/www/musi";
-            tryFiles = "$uri $uri.html $uri/ =404";
-          };
-        };
-        extraConfig = ''
-          # do not even try connecting by HTTP
-          # add_header Strict-Transport-Security "max-age=31536000";
-          # do not allow to be framed inside another website
-          add_header X-Frame-Options "DENY";
-          # only allow script and style handling if the MIME type is correct
-          add_header X-Content-Type-Options "nosniff";
-          # tell browsers to only send https://domain.name as Referer
-          add_header Referrer-Policy "strict-origin";
-          # CSP
-          add_header Content-Security-Policy "default-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; frame-ancestors: 'none';";
-        '';
-      };
+      # "ppom.me" = {
+      #   # enable and force SSL with Let's Encrypt
+      #   forceSSL = true;
+      #   enableACME = true;
+      #   locations = {
+      #     "/" = {
+      #       index = "index.html";
+      #       root = "/var/www/musi";
+      #       tryFiles = "$uri $uri.html $uri/ =404";
+      #     };
+      #   };
+      #   extraConfig = ''
+      #     # do not even try connecting by HTTP
+      #     # add_header Strict-Transport-Security "max-age=31536000";
+      #     # do not allow to be framed inside another website
+      #     add_header X-Frame-Options "DENY";
+      #     # only allow script and style handling if the MIME type is correct
+      #     add_header X-Content-Type-Options "nosniff";
+      #     # tell browsers to only send https://domain.name as Referer
+      #     add_header Referrer-Policy "strict-origin";
+      #     # CSP
+      #     add_header Content-Security-Policy "default-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; frame-ancestors: 'none';";
+      #   '';
+      # };
 
-      "www.ppom.me" = {
-        enableACME = true;
-        extraConfig = ''
-          # Standard redirection
-          # Comment this line ↓ to resolve ACME challenge
-          return 301 https://ppom.me;
-        '';
-      };
+      # "www.ppom.me" = {
+      #   enableACME = true;
+      #   extraConfig = ''
+      #     # Standard redirection
+      #     # Comment this line ↓ to resolve ACME challenge
+      #     return 301 https://ppom.me;
+      #   '';
+      # };
 
       "u.ppom.me" = {
         # enable and force SSL with Let's Encrypt
@@ -140,35 +140,35 @@ in {
     "f /data/uploader/index.html 0755 root root - 'Hello!'"
   ];
 
-  systemd.services."acme-www.ppom.me" = {
-    requires = [ "acme-www.ppom.me-post.service" ];
-    before = [ "acme-www.ppom.me-post.service" ];
-    serviceConfig = {
-      ExecStartPre = [ "+${pkgs.writeShellScript "acme-www.ppom.me.pre.sh" ''
-        set -x
+  # systemd.services."acme-www.ppom.me" = {
+  #   requires = [ "acme-www.ppom.me-post.service" ];
+  #   before = [ "acme-www.ppom.me-post.service" ];
+  #   serviceConfig = {
+  #     ExecStartPre = [ "+${pkgs.writeShellScript "acme-www.ppom.me.pre.sh" ''
+  #       set -x
 
-        file=$(mktemp)
-        chmod 644 $file
-        sed 's%return 301 https://ppom.me;%#return 301 https://ppom.me;%' > $file < ${nginxRealPath}
+  #       file=$(mktemp)
+  #       chmod 644 $file
+  #       sed 's%return 301 https://ppom.me;%#return 301 https://ppom.me;%' > $file < ${nginxRealPath}
 
-        rm ${nginxConfPath}
-        cp $file ${nginxConfPath}
-        systemctl reload nginx
-      ''}" ];
-    };
-  };
+  #       rm ${nginxConfPath}
+  #       cp $file ${nginxConfPath}
+  #       systemctl reload nginx
+  #     ''}" ];
+  #   };
+  # };
 
-  # Can't put this as an ExecStartPost of acme-www.ppom.me.service
-  # because there is already one [here](/nix/store/izraszd1vi8fa40kaw0c28lhv4chnw7j-nixos-22.11/nixos/nixos/modules/security/acme/default.nix → L316)
-  # and it's not in a list.
-  systemd.services."acme-www.ppom.me-post" = {
-    script = ''
-        set -x
-        rm ${nginxConfPath}
-        ln -s ${nginxRealPath} ${nginxConfPath}
-        systemctl reload nginx
-    '';
-  };
+  # # Can't put this as an ExecStartPost of acme-www.ppom.me.service
+  # # because there is already one [here](/nix/store/izraszd1vi8fa40kaw0c28lhv4chnw7j-nixos-22.11/nixos/nixos/modules/security/acme/default.nix → L316)
+  # # and it's not in a list.
+  # systemd.services."acme-www.ppom.me-post" = {
+  #   script = ''
+  #       set -x
+  #       rm ${nginxConfPath}
+  #       ln -s ${nginxRealPath} ${nginxConfPath}
+  #       systemctl reload nginx
+  #   '';
+  # };
 
   systemd.services."uploader-auto-delete" = {
     serviceConfig = {
