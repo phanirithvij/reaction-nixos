@@ -1,12 +1,10 @@
 { lib, config, pkgs, ... }:
 let
   websites = [
-    "https://ppom.me"
     "https://video.ppom.me"
     "https://music.ppom.me"
     "https://file.ppom.me"
-    # "https://blog.ppom.me"
-    # "https://u.ppom.me"
+    "https://akesi.ppom.me"
   ];
   dns_test = "dns2.proxad.net";
   log_file = "/home/ao/DOWN";
