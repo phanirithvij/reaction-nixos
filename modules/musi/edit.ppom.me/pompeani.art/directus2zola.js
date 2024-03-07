@@ -48,6 +48,7 @@ async function generate() {
   const posts = await directus.items('posts').readByQuery({
     fields: [ '*', 'technique.nom', 'collection.nom' ],
     filter: { status: { "_eq": "published" } },
+    limit: -1,
   });
 
   // Generate posts content
@@ -141,7 +142,7 @@ async function generate_build() {
   console.log('building');
   await execute("zola", ["build"], "./zola/");
   console.log('uploading');
-  await execute("rsync", ["-az", `--rsh=ssh -i ${process.env.CREDENTIALS_DIRECTORY}/ssh_key`, "./public/", process.env.D2Z_SSH_DEST], "./zola/");
+  await execute("rsync", ["-az", "--delete", `--rsh=ssh -i ${process.env.CREDENTIALS_DIRECTORY}/ssh_key`, "./public/", process.env.D2Z_SSH_DEST], "./zola/");
   console.log('done');
 }
 

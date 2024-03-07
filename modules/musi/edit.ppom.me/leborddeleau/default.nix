@@ -40,7 +40,8 @@ in {
       Restart = "always";
       RestartSec = "10s";
       RestartMaxDelaySec = "2h";
-      RestartSteps = "2d";
+      RestartSteps = "20";
+      LoadCredential = "ssh_key:${common.sshKey}";
       ExecStartPre = "${pkgs.writeShellApplication {
         name = "d2z-bdo-prestart";
         text = ''
@@ -66,7 +67,7 @@ in {
             tailwindcss -i ./main.css -o ./public/css/main.css
             rsync \
               -az --delete \
-              --rsh="ssh -i ${common.sshKey}" \
+              --rsh="ssh -i $CREDENTIALS_DIRECTORY/ssh_key" \
               ./public/ \
               musi-uploader@akesi.ppom.me:/var/www/static/bdo
           }
