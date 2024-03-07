@@ -99,6 +99,14 @@ in {
               add_header X-Frame-Options "DENY";
             '';
           };
+          "/beaumonts/" = {
+            index = "index.html";
+            extraConfig = ''
+              add_header Content-Security-Policy "";
+              add_header X-Content-Type-Options "nosniff";
+              add_header X-Frame-Options "DENY";
+            '';
+          };
         };
         extraConfig = ''
           # add_header Strict-Transport-Security "max-age=31536000";
