@@ -29,7 +29,10 @@ let
     }
     {
       name = "fallstar";
-      ssh = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDhHg9zYgR15EqE8b0gf6ojj276X5cpJfGw8hFa/zrnKt4rh93NFS1Ouvai/XxCF1GD+eGJbkGPauuiQ8ICtyOXjjU5Yp2PcntDpc4F4hyokyaEYc+3CcElLeqXeJIoTZ2g2wCKd7MS92EUtN6Bqb5ld70d/KyV7Nh2k2T91/PYAFUUJhKPvcvy3mMb3BzDdwnDWdavO9THvZOaJfsgZKupctdYKI47uQEyUkm+syDnMYVaTflhWVEM4BK6MwiIif+0wEF8RPo413MpY/ECuo7B5L5MA8l1vD9t8mYqKAfUNWr7DB70hlQ2YLH1macXAiUNx+8sg04QgNXNglSEWfK7 fallstar@hyperion" ];
+      ssh = [
+        "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDhHg9zYgR15EqE8b0gf6ojj276X5cpJfGw8hFa/zrnKt4rh93NFS1Ouvai/XxCF1GD+eGJbkGPauuiQ8ICtyOXjjU5Yp2PcntDpc4F4hyokyaEYc+3CcElLeqXeJIoTZ2g2wCKd7MS92EUtN6Bqb5ld70d/KyV7Nh2k2T91/PYAFUUJhKPvcvy3mMb3BzDdwnDWdavO9THvZOaJfsgZKupctdYKI47uQEyUkm+syDnMYVaTflhWVEM4BK6MwiIif+0wEF8RPo413MpY/ECuo7B5L5MA8l1vD9t8mYqKAfUNWr7DB70hlQ2YLH1macXAiUNx+8sg04QgNXNglSEWfK7 fallstar@hyperion"
+        "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQChX2AiSUnkOPU+F9Rc2BMidg/PXPsjINd0aT+3bc0/eZ03pHby1SI0DXHooc8lACuhf0IKGFC9wzZReG4hngSRimqBgH6/7xo6rruEVcigDU43UHCrtjPUwAr1GAa190TgNVnNQssvAVTYxSXK9mhoXFW/U7j4iygJHkAlSWhIx99gozcYV6RYP68uuArctw5C+QpdZhQgd3LcEpcMxxaEhOnB6DWzJzPHWuGcowDsOJbxHVhJVXmRv0vU4xOWuku70z8G3s0YmMk4IeSALfRE3KidbMdAVOqWAdgSezwDN7rf9lFKRcP4gAlXge5hHk2FLnkn+2PGrskrOM13vOaT funkwhale@dionysos"
+      ];
       uid = 2005;
     }
     {
