@@ -165,8 +165,20 @@ def discrimine(pred, sequence):
 def merge_artists():
     from funkwhale_api.music.models import Artist
 
-    primary_artist = Artist.objects.get(pk=PRIMARY_ARTIST_ID)
-    duplicated_artist = Artist.objects.get(pk=DUPLICATE_ARTIST_ID)
+    if PRIMARY_ARTIST_ID.startswith('http'):
+        primary_artist = Artist.objects.get(fid=PRIMARY_ARTIST_ID)
+    else:
+        primary_artist = Artist.objects.get(pk=PRIMARY_ARTIST_ID)
+
+    print(f"primary_artist: {primary_artist} id: {primary_artist.id} fid: {primary_artist.fid}")
+
+    if DUPLICATE_ARTIST_ID.startswith('http'):
+        duplicated_artist = Artist.objects.get(fid=DUPLICATE_ARTIST_ID)
+    else:
+        duplicated_artist = Artist.objects.get(pk=DUPLICATE_ARTIST_ID)
+
+    print(f"duplicated_artist: {duplicated_artist} id: {duplicated_artist.id} fid: {duplicated_artist.fid}")
+
     merge(primary_artist, duplicated_artist)
 
 

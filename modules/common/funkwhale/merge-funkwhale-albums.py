@@ -151,8 +151,19 @@ DUPLICATE_ALBUM_ID = os.environ['ALBUM2']
 def merge_albums():
     from funkwhale_api.music.models import Album, Track, Upload
 
-    primary_album = Album.objects.get(pk=PRIMARY_ALBUM_ID)
-    duplicated_album = Album.objects.get(pk=DUPLICATE_ALBUM_ID)
+    if PRIMARY_ALBUM_ID.startswith('http'):
+        primary_album = Album.objects.get(fid=PRIMARY_ALBUM_ID)
+    else:
+        primary_album = Album.objects.get(pk=PRIMARY_ALBUM_ID)
+
+    print(f"primary_album: {primary_album} id: {primary_album.id} fid: {primary_album.fid}")
+
+    if DUPLICATE_ALBUM_ID.startswith('http'):
+        duplicated_album = Album.objects.get(fid=DUPLICATE_ALBUM_ID)
+    else:
+        duplicated_album = Album.objects.get(pk=DUPLICATE_ALBUM_ID)
+
+    print(f"duplicated_album: {duplicated_album} id: {duplicated_album.id} fid: {duplicated_album.fid}")
 
     for duplicated_track in Track.objects.filter(album_id=duplicated_album.id):
 
