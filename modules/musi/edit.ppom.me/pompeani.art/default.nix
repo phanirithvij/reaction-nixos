@@ -38,12 +38,13 @@ in {
       Environment = [
         "DIRECTUS_PORT=${builtins.toString directusPort}"
         "D2Z_PORT=${builtins.toString d2zPort}"
-        "D2Z_SSH_KEY=${common.sshKey}"
         "D2Z_SSH_DEST=musi-uploader@akesi.ppom.me:/var/www/pompeani.art/"
       ];
+      LoadCredential = "ssh_key:${common.sshKey}";
       StateDirectory =            "directus2zola-pompeani.art";
       WorkingDirectory = "/var/lib/directus2zola-pompeani.art";
-      ExecStartPre = [ (pkgs.writeScript "directus2zola-pompeani.art-prestart" ''
+      ExecStartPre = [
+        (pkgs.writeScript "directus2zola-pompeani.art-prestart" ''
           #!${pkgs.runtimeShell}
           set -e
           rm -f node_modules package.json index.js

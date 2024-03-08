@@ -65,7 +65,11 @@ prix = "${post.prix_euro ? `${post.prix_euro} €` : ""}"
 collection = "${(post.collection && post.collection.nom) || ""}"
 +++`;
     const dir = join(basedir, post.slug);
-    await mkdir(dir);
+    try {
+      await mkdir(dir);
+    } catch (err) {
+      if (err.code !== 'EEXIST') throw err;
+    }
 
     await writeFile(join(dir, "index.md"), md);
 
@@ -137,7 +141,7 @@ async function generate_build() {
   console.log('building');
   await execute("zola", ["build"], "./zola/");
   console.log('uploading');
-  await execute("rsync", ["-az", `--rsh=ssh -i ${process.env.D2Z_SSH_KEY}`, "./public/", process.env.D2Z_SSH_DEST], "./zola/");
+  await execute("rsync", ["-az", `--rsh=ssh -i ${process.env.CREDENTIALS_DIRECTORY}/ssh_key`, "./public/", process.env.D2Z_SSH_DEST], "./zola/");
   console.log('done');
 }
 

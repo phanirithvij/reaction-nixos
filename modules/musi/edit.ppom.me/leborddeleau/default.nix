@@ -52,7 +52,7 @@ in {
           for _ in $(seq 20)
           do
             sleep 5
-            curl --fail --max-time 5 http://localhost:${toString directusPort}/server/health && break
+            curl --silent --show-error --fail --max-time 5 http://localhost:${toString directusPort}/server/health && break
           done
         '';
       }}/bin/d2z-bdo-prestart";
