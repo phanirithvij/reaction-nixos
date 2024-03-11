@@ -59,12 +59,12 @@ in {
       ] ++ lib.optionals cfg.steroids [
         nodejs
         # Language servers
-        elixir-ls
         gopls
         # ltex-ls
         lua-language-server
         jsonnet-language-server
         jsonnet
+        elixir elixir-ls
         unstable.vscode-langservers-extracted # requires vscode to build
         nodePackages."@tailwindcss/language-server"
         nodePackages.svelte-language-server
@@ -117,6 +117,7 @@ in {
                 vim-visual-multi # multiple cursors with i_ctrl-n
                 vim-svelte
                 vim-jsonnet
+                vim-elixir
                 unstable.vimPlugins.quarto-nvim
                 unstable.vimPlugins.otter-nvim
               ];
