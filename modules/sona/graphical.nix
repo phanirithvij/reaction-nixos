@@ -197,7 +197,7 @@ in lib.mkMerge [
     };
   };
 
-  services.flatpak.enable = true;
+  # services.flatpak.enable = true;
 
   # thunar tumbnail provider
   services.tumbler.enable = true;
@@ -215,19 +215,19 @@ in lib.mkMerge [
   ];
 }
 {
-  # Android
-  programs.adb.enable = true;
-  users.users.ao.extraGroups = ["adbusers"];
-  programs.sway.extraSessionCommands = ''
-    # Fix for some Java AWT applications (e.g. Android Studio),
-    # use this if they aren't displayed properly:
-    export _JAVA_AWT_WM_NONREPARENTING=1
-  '';
-  environment.systemPackages = with pkgs; [
-    android-studio
-  ];
-  # WayDroid
-  virtualisation.waydroid.enable = true;
+  # # Android
+  # programs.adb.enable = true;
+  # users.users.ao.extraGroups = ["adbusers"];
+  # programs.sway.extraSessionCommands = ''
+  #   # Fix for some Java AWT applications (e.g. Android Studio),
+  #   # use this if they aren't displayed properly:
+  #   export _JAVA_AWT_WM_NONREPARENTING=1
+  # '';
+  # environment.systemPackages = with pkgs; [
+  #   android-studio
+  # ];
+  # # WayDroid
+  # virtualisation.waydroid.enable = true;
 }
 {
   # Unfree

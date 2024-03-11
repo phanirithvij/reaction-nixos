@@ -19,19 +19,19 @@
       ## processus
       htop # process viewer
       lsof # list open files
-      cpulimit # limit process CPU usage
+      # cpulimit # limit process CPU usage
 
       ## network
       bind # dig
       iftop # connection viewer
       nmap # local network prober
       librespeed-cli # Speedtest
-      tcpdump
+      # tcpdump
       (lib.lowPrio inetutils)
 
       ## protocols
       curl # HTTP client
-      goaccess # HTTP Log parser
+      # goaccess # HTTP Log parser
 
       ## developpement
       git
@@ -61,9 +61,9 @@
       go # golang
       gopls # go language server
 
-      asciinema # Terminal JSON recorder & player. Check asciinema.org
-      tiv # terminal image viewer
-      rdfind # find duplicates
+      # asciinema # Terminal JSON recorder & player. Check asciinema.org
+      # tiv # terminal image viewer
+      # rdfind # find duplicates
       zip
       unzip
       trash-cli
@@ -71,9 +71,9 @@
 
       ## protocols
       wget # HTTP client
-      lftp # FTP client
-      httping # ping an URL.
-      simple-http-server
+      # lftp # FTP client
+      # httping # ping an URL.
+      # simple-http-server
 
       ## database
       sqlite-interactive # Heavy version with readline and completion support.
@@ -87,7 +87,7 @@
       ffmpeg-full
       # mkvtoolnix
       yt-dlp
-      handbrake
+      # handbrake
       # gpac # MP4Box
 
       # nix-related
@@ -97,7 +97,7 @@
       ## text
       dos2unix
       vtt2srt # VTT to SRT converter
-      subedit # Subtitle Editor
+      # subedit # Subtitle Editor
       subshift # Personal subtitle editor
     ];
 

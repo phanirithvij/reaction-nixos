@@ -11,15 +11,15 @@ in {
     # CLI
     # sshuttle # poor's man VPN
     mosh # alternative to SSH that bootstraps over it
-    sysstat
-    tealdeer # tldr man pages
+    # sysstat # iostat
+    # tealdeer # tldr man pages
     tomb # LUKS wrapper
     rbw # unofficial bitwarden CLI
     pinentry-gnome # GUI password prompt (used by gpg-agent, installing it in global path for rbw & tomb)
     pass # password-store
-    acpi # battery information
-    libossp_uuid # uuid v4
-    pup # jq for HTML
+    # acpi # battery information
+    # libossp_uuid # uuid v4
+    # pup # jq for HTML
     # xsv # jq for CSV
     openvpn
     # lolcat
@@ -28,16 +28,17 @@ in {
     # cowsay
     inotify-tools # Linux filesystem watchdog
     # languagetool # Proofreading program
-    deepl-translate-cli # CLI to use deepl. With a shell wrapper around it, it's fast to use
-    signalbackup-tools # Manipulate Signal smartphone backups.
+    # deepl-translate-cli # CLI to use deepl. With a shell wrapper around it, it's fast to use
+    # signalbackup-tools # Manipulate Signal smartphone backups.
     restic # Backup
 
     # TUI
     # w3m # web browser
     # asuka # gemini browser
-    ytfzf # Youtube scrapper ⨯ fzf
+    # ytfzf # Youtube scrapper ⨯ fzf
     khal # calendar
     vdirsyncer # caldav syncer
+    toot # CLI/TUI for Mastodon
 
     # Desktop environment
     alacritty # terminal
@@ -47,7 +48,7 @@ in {
     libnotify # send notifications
     peek # GIF screenshots
     pavucontrol # Pulseaudio GUI
-    ncpamixer # Pulseaudio TUI
+    # ncpamixer # Pulseaudio TUI
     networkmanagerapplet # NM connection editor
     playerctl # media play pause
 
@@ -56,15 +57,15 @@ in {
     thunderbird # Mail, CalDav, XMPP & Matrix client
     ungoogled-chromium # Alternative browser
     signal-desktop # Signal Messaging client
-    lagrange # Gemini browser
-    element-desktop # Matrix heavy client
+    # lagrange # Gemini browser
+    # element-desktop # Matrix heavy client
     # tor-browser-bundle-bin
-    pcmanfm # File Browser
+    # pcmanfm # File Browser
     evince
     libreoffice
     mpv-no-scripts
     mpv-with-scripts
-    clementine # music player
+    # clementine # music player
     gnome3.cheese # webcam
     qpwgraph # play with pipewire streams
     # ocenaudio # test ardour?
@@ -72,10 +73,10 @@ in {
     inkscape # Vector Image Editor
     deluge # BitTorrent peer
     gparted
-    syncthing # ± P2P file synchronization
-    apache-directory-studio # LDAP client
+    # syncthing # ± P2P file synchronization
+    # apache-directory-studio # LDAP client
     # klavaro # learn to type efficiently
-    tigervnc
+    # tigervnc
 
     # Games
     # superTux superTuxKart
@@ -92,19 +93,19 @@ in {
     gitAndTools.git-filter-repo
     # gource
     gnumake
-    h2 # H2 Database Editor
+    # h2 # H2 Database Editor
     # alejandra # Nix formatter
     zola # static site generator
     tailwindcss # CSS generation framework
     (pkgs.callPackage ../../pkgs/directus2zola {})
     # gcc-wrapper
-    sqlitebrowser
+    # sqlitebrowser
     mmctl # mattermost control (for Picasoft's server management)
-    (quarto.override { rWrapper = null; python3 = null; }) # Markdown environment based on pandoc
+    # (quarto.override { rWrapper = null; python3 = null; }) # Markdown environment based on pandoc
     minisign # small utility to sign files
 
     docker
-    docker-compose # for SiMDE's Portail des assos
+    # docker-compose # for SiMDE's Portail des assos
     # virt-manager
     # wireshark
     # vscodium
@@ -116,22 +117,22 @@ in {
     gcc
 
     # Sysadmin
-    tdns-cli # dig alternative
+    # tdns-cli # dig alternative
 
     # Network
-    wireguard-tools
+    # wireguard-tools
 
     # Media
     imagemagick
-    beets # MP3 tag editor from MusicBrainz
+    # beets # MP3 tag editor from MusicBrainz
     kid3 # MP3 tag editor
     # cdparanoia # CD ripper, `cdparanoia -B`
     # yj # YAML to JSON etc.
-    pandoc
-    texlive.combined.scheme-small
+    # pandoc
+    # texlive.combined.scheme-small
     pdftk # PDF Swiss knife
     # poppler # other PDF manipulations
-    pngquant # png size reducer
+    # pngquant # png size reducer
 
   ];
 
@@ -171,7 +172,7 @@ in {
       ytfzf = super.ytfzf.override { mpv = f-mpv-with-scripts super; };
 
     })
-    (import /home/ao/prg/nix/gomod2nix/overlay.nix)
+    # (import /home/ao/prg/nix/gomod2nix/overlay.nix)
   ];
 
   fonts.packages = with pkgs; with xorg; [

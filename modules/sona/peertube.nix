@@ -1,22 +1,22 @@
 { lib, config, pkgs, ... }:
 {
-  services.postgresql = {
-    enable = true;
-    ensureDatabases = [ "peertube-dev" ];
-    ensureUsers = [ {
-      name = "peertube-dev";
-      ensureDBOwnership = true;
-    } ];
-  };
-  services.redis.servers.peertube-dev = {
-    enable = true;
-    unixSocketPerm = 666;
-  };
+  # services.postgresql = {
+  #   enable = true;
+  #   ensureDatabases = [ "peertube-dev" ];
+  #   ensureUsers = [ {
+  #     name = "peertube-dev";
+  #     ensureDBOwnership = true;
+  #   } ];
+  # };
+  # services.redis.servers.peertube-dev = {
+  #   enable = true;
+  #   unixSocketPerm = 666;
+  # };
 
-  systemd.services.postgresql.wantedBy = lib.mkForce [];
-  systemd.services.redis-peertube-dev = {
-    wantedBy = lib.mkForce [];
-    serviceConfig.RuntimeDirectoryMode = lib.mkForce 0777;
-  };
+  # systemd.services.postgresql.wantedBy = lib.mkForce [];
+  # systemd.services.redis-peertube-dev = {
+  #   wantedBy = lib.mkForce [];
+  #   serviceConfig.RuntimeDirectoryMode = lib.mkForce 0777;
+  # };
 }
 
