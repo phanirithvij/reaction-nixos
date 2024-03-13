@@ -4,6 +4,7 @@ let
 in
 {
   imports = [
+    ./n8n.nix
     # ./ecotheque/default.nix
     # ./chatons/default.nix
     ./pompeani.art/default.nix
