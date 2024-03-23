@@ -1,11 +1,6 @@
 const POSTS_URL = "https://edit.ppom.me/pompeani.art/items/posts?fields[]=*&fields[]=technique.nom&fields[]=collection.nom&filter[status][_eq]=published&limit=-1";
 const PAINTS_URL = "https://edit.ppom.me/pompeani.art/items/pages?fields[]=*&limit=-1";
 
-async function get(url) {
-	const response = await fetch(url);
-	return response.json();
-}
-
 async function posts() {
 	const response = await fetch(POSTS_URL);
 	const posts = await response.json()
