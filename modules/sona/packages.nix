@@ -96,6 +96,7 @@ in {
     # alejandra # Nix formatter
     zola # static site generator
     tailwindcss # CSS generation framework
+    (pkgs.callPackage ../../pkgs/directus2zola {})
     # gcc-wrapper
     sqlitebrowser
     mmctl # mattermost control (for Picasoft's server management)
