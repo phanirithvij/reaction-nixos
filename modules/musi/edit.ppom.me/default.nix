@@ -4,6 +4,7 @@ let
 in
 {
   imports = [
+    ./directus2zola.nix
     ./n8n.nix
     # ./ecotheque/default.nix
     # ./chatons/default.nix
