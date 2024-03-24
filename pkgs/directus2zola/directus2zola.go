@@ -232,6 +232,8 @@ func (p *Project) doBuild() {
 		p.lock.Unlock()
 
 		p.doBuild()
+	} else {
+		p.lock.Unlock()
 	}
 }
 
@@ -263,20 +265,20 @@ func (p *Project) build() {
 		defer wg.Done()
 		_, err := os.Stat(p.gitDirectory)
 		if err != nil {
-			if !p.exec("git", "clone", "-q", p.GitUrl, p.gitDirectory) {
+			if !p.exec(func(cmd *exec.Cmd) { cmd.Dir = "" }, "git", "clone", "-q", p.GitUrl, p.gitDirectory) {
 				isErr = true
 				return
 			}
 		}
-		if !p.exec("git", "clean", "-f", "-q") {
+		if !p.exec(nil, "git", "clean", "-f", "-q") {
 			isErr = true
 			return
 		}
-		if !p.exec("git", "reset", "--hard", "-q") {
+		if !p.exec(nil, "git", "reset", "--hard", "-q") {
 			isErr = true
 			return
 		}
-		if !p.exec("git", "pull", "-q", "--ff-only") {
+		if !p.exec(nil, "git", "pull", "-q", "--ff-only") {
 			isErr = true
 			return
 		}
@@ -345,6 +347,7 @@ func (p *Project) build() {
 						ok = p.mkPath(pData)
 						if !ok {
 							isErr = true
+							return
 						}
 					} else {
 						return
@@ -364,13 +367,13 @@ func (p *Project) build() {
 	}
 
 	// zola build
-	ok := p.exec("zola", "build")
+	ok := p.exec(func(cmd *exec.Cmd) { cmd.Stdout = nil }, "zola", "build")
 	if !ok {
 		return
 	}
 
 	// rsync
-	ok = p.exec("rsync", "-az", "--delete", "--rsh=ssh -i "+p.SSHKeyFile, "./public/", p.PushUrl)
+	ok = p.exec(nil, "rsync", "-az", "--delete", "--rsh=ssh -i "+p.SSHKeyFile, "./public/", p.PushUrl)
 	if !ok {
 		return
 	}
@@ -387,12 +390,15 @@ func (p *Project) Errorf(format string, arg ...any) {
 	fmt.Printf("ERROR %v: "+format+"\n", append([]any{p.Name}, arg...)...)
 }
 
-func (p *Project) exec(command string, arg ...string) bool {
+func (p *Project) exec(customize func(cmd *exec.Cmd), command string, arg ...string) bool {
 	p.Infof("%v %v", command, arg[0])
 	cmd := exec.Command(command, arg...)
 	cmd.Dir = p.gitDirectory
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
+	if customize != nil {
+		customize(cmd)
+	}
 	err := cmd.Run()
 	if err != nil {
 		p.Errorf("'%v %v' failed: %v", command, arg[0], err)
@@ -402,6 +408,10 @@ func (p *Project) exec(command string, arg ...string) bool {
 }
 
 func (p *Project) mkPath(pData UserPath) bool {
+	if pData.Path == "" {
+		p.Errorf("path is empty: %#v", pData)
+		return false
+	}
 	fullPath := path.Join(p.gitDirectory, "content", pData.Path)
 	err := os.MkdirAll(path.Dir(fullPath), 0755)
 	if err != nil {
@@ -410,7 +420,7 @@ func (p *Project) mkPath(pData UserPath) bool {
 	}
 	file, err := os.Create(fullPath)
 	if err != nil {
-		p.Errorf("could not create file %v", fullPath)
+		p.Errorf("could not create file %v: %v", fullPath, err)
 		return false
 	}
 	defer file.Close()
@@ -460,7 +470,7 @@ func (p *Project) writeHeader(w *strings.Builder, header map[string]any) {
 		var format string
 		switch reflect.TypeOf(value).Kind() {
 		case reflect.String:
-			format = "%v = \"%v\"\n"
+			format = "%v = \"\"\"%v\"\"\"\n"
 		default:
 			format = "%v = %v\n"
 		}
