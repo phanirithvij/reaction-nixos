@@ -84,14 +84,42 @@
       atuin init fish --disable-up-arrow | source
     '';
 
-    security.sudo.extraConfig = ''
-      Defaults env_keep += "GIT_AUTHOR_DATE GIT_COMMITTER_DATE"
-    '';
-    security.doas.extraRules = [{
-      groups = ["wheel"];
-      cmd = "git";
-      persist = true;
-      setEnv = [ "GIT_AUTHOR_DATE" "GIT_COMMITTER_DATE" ];
-    }];
+    security = {
+      sudo = {
+        enable = false;
+        extraConfig = ''
+          Defaults env_keep += "GIT_AUTHOR_DATE GIT_COMMITTER_DATE"
+        '';
+      };
+      wrappers.sudo = {
+        setuid = true;
+        owner = "root";
+        group = "root";
+        source = "${pkgs.doas}/bin/doas";
+      };
+      doas = {
+        enable = true;
+        extraRules = [
+          {
+            groups = ["wheel"];
+            persist = true;
+          }
+          {
+            groups = ["wheel"];
+            persist = true;
+            cmd = "git";
+            setEnv = [ "GIT_AUTHOR_DATE" "GIT_COMMITTER_DATE" ];
+          }
+        ] ++ (map
+          (cmd: {
+            inherit cmd;
+            groups = ["wheel"];
+            persist = true;
+            setEnv = [ "NIX_PATH" "NIXPKGS_CONFIG" "NIXPKGS_ALLOW_UNFREE" "NIXPKGS_ALLOW_INSECURE" ];
+          })
+          ["nixos-rebuild" "nix" "nix-shell"]
+        );
+      };
+    };
   };
 }

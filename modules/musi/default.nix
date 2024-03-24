@@ -92,10 +92,6 @@
     keyMap = "fr";
   };
 
-  security.doas = {
-    enable = true;
-  };
-
   nix = {
     settings.allowed-users = [ "root" ];
     gc = {

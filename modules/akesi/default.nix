@@ -69,9 +69,6 @@
   # Only allow paths from /nix/store to be executables
   # fileSystems."/".options = [ "noexec" ];
 
-  # prevent some potentials CVECs
-  security.sudo.execWheelOnly = true;
-
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users = {
     ppom = {
