@@ -42,6 +42,11 @@
 //				"body": "This is the content of the article",
 //			},
 //			{
+//				"path": "../data.json",
+//				"type": "raw",
+//				"raw": "{\"value\": 1}",
+//			},
+//			{
 //				"path": "article/asset.png",
 //				"type": "download",
 //				"url": "data.example.fr/assets/123456.png",
@@ -49,9 +54,11 @@
 //		],
 //	}
 //
-// - type and path are mandatory.
-// - when type is download, url is mandatory too.
-// - when type is text, header, header_extra and body all are optional.
+// - path is relative to zola's content directory. mandatory.
+// - type is one of text, raw, download. mandatory.
+// - when type is download: url is the HTTP GET to make. mandatory.
+// - when type is text:     header, header_extra and body all are optional. omitted means empty.
+// - when type is raw:      raw is optional. omitted means empty.
 
 package main
 
@@ -248,6 +255,8 @@ type UserPath struct {
 	Header      map[string]any `json:"header"`
 	HeaderExtra map[string]any `json:"header_extra"`
 	Body        string         `json:"body"`
+	// Type: raw
+	Raw string `json:"raw"`
 	// Type: download
 	URL string `json:"url"`
 }
@@ -444,6 +453,11 @@ func (p *Project) mkPath(pData UserPath) bool {
 		buffer.WriteString(pData.Body)
 
 		_, err := fmt.Fprint(file, buffer.String())
+		if errmsg(err) {
+			return false
+		}
+	case "raw":
+		_, err := fmt.Fprint(file, pData.Raw)
 		if errmsg(err) {
 			return false
 		}
