@@ -113,6 +113,7 @@ in {
     # python39
     # python39Packages.pip
     # nodejs cargo
+    deno
     rustup
     gcc
 
