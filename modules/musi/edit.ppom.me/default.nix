@@ -5,13 +5,13 @@ in
 {
   imports = [
     ./directus2zola.nix
-    ./n8n.nix
+    ./pompeani.art/default.nix
+    ./leborddeleau.net/default.nix
+    ./5eroue/default.nix
+    # ./n8n.nix
     # ./ecotheque/default.nix
     # ./chatons/default.nix
-    ./pompeani.art/default.nix
-    ./leborddeleau/default.nix
-    ./5eroue/default.nix
-    ./edit/default.nix
+    # ./edit/default.nix
   ];
 
   services.directus.allowDirectusLicense = true;

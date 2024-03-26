@@ -28,9 +28,4 @@ in {
       push_url = "musi-uploader@akesi.ppom.me:/var/www/pompeani.art/";
     }];
   };
-
-  # systemd.services.directus2zola = {
-  #   requires = [ "directus-pompeani.art.service" ];
-  #   after = [ "directus-pompeani.art.service" ];
-  # };
 }
