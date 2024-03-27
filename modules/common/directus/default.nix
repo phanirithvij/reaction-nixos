@@ -279,8 +279,8 @@ in {
 
                 location = mkOption {
                   type = str;
-                  default = "/";
-                  description = "nginx server's location to configure as a proxy";
+                  default = "";
+                  description = "nginx server's location to configure as a proxy. no trailing slash.";
                 };
               };
             };
@@ -343,7 +343,7 @@ in {
       message = "If you set services.directus.servers.<name>.nginx.enable to true, you must also set nginx.location & nginx.serverName";
     }) enabledServers
     ++ lib.mapAttrsToList (name: conf: {
-      assertion = conf.nginx.location != null -> "/" != builtins.substring (-1 + builtins.stringLength conf.nginx.location) 1 conf.nginx.location;
+      assertion = conf.nginx.location != "" -> "/" != builtins.substring (-1 + builtins.stringLength conf.nginx.location) 1 conf.nginx.location;
       message = "services.directus.servers.<name>.nginx.location musn't end with a '/'";
     }) enabledServers ++ [{
       assertion = cfg.allowDirectusLicense || (builtins.hasAttr "allowUnfree" config.nixpkgs.config && config.nixpkgs.config.allowUnfree);
@@ -423,10 +423,8 @@ in {
       enableACME = true;
       forceSSL = true;
       locations = lib.mkMerge (builtins.map (conf: {
-        "${conf.nginx.location}".return = "302 ${conf.nginx.location}/";
         "${conf.nginx.location}/".proxyPass = "http://localhost:${builtins.toString conf.settings.PORT}/";
-        # "${conf.nginx.location}/admin".return = "302 /admin/";
-        # "${conf.nginx.location}/admin/".alias = "${cfg.installDirectory}/node_modules/@directus/app/dist/";
+        "${conf.nginx.location}" = lib.mkIf (conf.nginx.location != "") { return = "302 ${conf.nginx.location}/"; };
       }) confs);
     }) groupedByServerNameConfs;
   }]);
