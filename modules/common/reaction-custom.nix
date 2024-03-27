@@ -128,9 +128,11 @@
         "+${var.iptables} -w -A reaction-log-refuse -j LOG --log-prefix 'reaction banned connection: ' --log-level 6"
         "+${var.iptables} -w -A reaction-log-refuse -j nixos-fw-refuse"
         "+${var.iptables} -w -I INPUT -p all -j reaction"
+        "+${var.iptables} -w -I FORWARD -p all -j reaction"
       ] ++ builtins.map iptablesBanRange bannedIpRanges;
       ExecStopPost = [
         "+${var.iptables} -w -D INPUT -p all -j reaction"
+        "+${var.iptables} -w -D FORWARD -p all -j reaction"
         "+${var.iptables} -w -F reaction"
         "+${var.iptables} -w -X reaction"
         "+${var.iptables} -w -F reaction-log-refuse"
