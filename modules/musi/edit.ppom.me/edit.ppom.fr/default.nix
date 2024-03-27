@@ -4,16 +4,15 @@ let
   common = import ../common.nix {};
 in {
   services.directus.servers = {
-    "edit" = {
+    "edit.ppom.fr" = {
       enable = true;
       settings = common.settings // {
         PORT = directusPort;
-        LOG_LEVEL = "debug";
+        LOG_LEVEL = "info";
       };
       nginx = {
         enable = true;
-        serverName = "edit.ppom.me";
-        location = "/edit";
+        serverName = "edit.ppom.fr";
       };
     };
   };
