@@ -109,21 +109,6 @@
         subshift = super.callPackage ../../pkgs/subshift {};
 
         tailwindcss = (pkgs.nodePackages.tailwindcss.overrideAttrs (old: { plugins = [ pkgs.nodePackages."@tailwindcss/typography" ]; }));
-
-        zola = super.zola.overrideAttrs (final: prev: {
-          patches = [
-            # provides `zola serve --store-html`
-            (pkgs.fetchpatch {
-              url = "https://github.com/getzola/zola/commit/d23eded6bcd95d475340b3bf40d7d4eb17c028e3.diff";
-              sha256 = "sha256-xrxs2Qk3lBTGK7ji7Vxv9WqH6+o0p8EsxvbOqvuDb1c=";
-            })
-            # provides `save_as_file` Tera function
-            (pkgs.fetchpatch {
-              url = "https://github.com/ppom0/zola/commit/404de294ffc3b3e2e15952790c41ade74bb7d935.diff";
-              sha256 = "sha256-KZnYxGEiFNF/6dHIbWLcI7I0QI/Uz8v8edd4XXieD2M=";
-            })
-          ];
-        });
       })
     ];
   };
