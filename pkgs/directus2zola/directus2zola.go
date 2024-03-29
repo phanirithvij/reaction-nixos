@@ -262,37 +262,34 @@ type UserPath struct {
 }
 
 func (p *Project) build() {
-	var isErr bool
-	var wg sync.WaitGroup
-	wg.Add(2)
 
 	start := time.Now()
 	p.Infof("requested to build")
 
-	go func() {
-		// Clean & Pull
-		defer wg.Done()
-		_, err := os.Stat(p.gitDirectory)
-		if err != nil {
-			if !p.exec(func(cmd *exec.Cmd) { cmd.Dir = "" }, "git", "clone", "-q", p.GitUrl, p.gitDirectory) {
-				isErr = true
-				return
-			}
-		}
-		if !p.exec(nil, "git", "clean", "-f", "-q") {
-			isErr = true
+	// Clean & Pull
+	_, err := os.Stat(p.gitDirectory)
+	if err != nil {
+		if !p.exec(func(cmd *exec.Cmd) { cmd.Dir = "" }, "git", "clone", "-q", p.GitUrl, p.gitDirectory) {
 			return
 		}
-		if !p.exec(nil, "git", "reset", "--hard", "-q") {
-			isErr = true
-			return
-		}
-		if !p.exec(nil, "git", "pull", "-q", "--ff-only") {
-			isErr = true
-			return
-		}
+	}
+	if !p.exec(nil, "git", "clean", "-f", "-q") {
+		return
+	}
+	if !p.exec(nil, "git", "reset", "--hard", "-q") {
+		return
+	}
+	if !p.exec(nil, "git", "pull", "-q", "--ff-only") {
+		return
+	}
 
-		// Recreate content directory
+	var wg sync.WaitGroup
+	var isErr bool
+
+	// Recreate content directory
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
 		p.Infof("recreate content directory")
 		contentDirectory := path.Join(p.gitDirectory, "content")
 		err = os.RemoveAll(contentDirectory)
@@ -311,10 +308,7 @@ func (p *Project) build() {
 
 	// Run user script
 	var data UserData
-	r, w, err := os.Pipe()
-	if err != nil {
-		Fatal("Could not create pipe: ", err)
-	}
+	r, w := io.Pipe()
 	go func() {
 		script := exec.Command(p.Script[0], p.Script[1:]...)
 		script.Stdout = w
@@ -326,6 +320,7 @@ func (p *Project) build() {
 			return
 		}
 	}()
+	wg.Add(1)
 	go func() {
 		defer wg.Done()
 		err = json.NewDecoder(r).Decode(&data)
@@ -349,17 +344,16 @@ func (p *Project) build() {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			for {
+			var pData UserPath
+			ok := true
+			for ok {
 				select {
-				case pData, ok := <-pathsC:
+				case pData, ok = <-pathsC:
 					if ok {
 						ok = p.mkPath(pData)
 						if !ok {
 							isErr = true
-							return
 						}
-					} else {
-						return
 					}
 				}
 			}
