@@ -9,7 +9,7 @@ let
 in {
   environment.systemPackages = with pkgs; [
     # CLI
-    # sshuttle # poor's man VPN
+    sshuttle # VPN-over-SSH
     mosh # alternative to SSH that bootstraps over it
     # sysstat # iostat
     # tealdeer # tldr man pages
