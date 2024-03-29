@@ -23,7 +23,7 @@ in {
   ppom.directus2zola.settings = {
     projects = [{
       name = "pompeani.art";
-      script = [ "${pkgs.deno}/bin/deno" "run" "--allow-net" ./pompeani.art.js ];
+      script = [ "${pkgs.deno}/bin/deno" "run" "--allow-net" "./content.js" ];
       git_url = "https://framagit.org/ppom/pompeani.art.git";
       push_url = "musi-uploader@akesi.ppom.me:/var/www/pompeani.art/";
     }];

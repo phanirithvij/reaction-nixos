@@ -310,12 +310,7 @@ func (p *Project) build() {
 	var data UserData
 	r, w := io.Pipe()
 	go func() {
-		script := exec.Command(p.Script[0], p.Script[1:]...)
-		script.Stdout = w
-		script.Stderr = os.Stderr
-		err = script.Run()
-		if err != nil {
-			p.Errorf("Could not run script: %v", err)
+		if !p.exec(func(cmd *exec.Cmd) { cmd.Stdout = w }, p.Script[0], p.Script[1:]...) {
 			isErr = true
 			return
 		}
