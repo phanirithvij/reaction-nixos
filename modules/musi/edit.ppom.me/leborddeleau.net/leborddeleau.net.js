@@ -1,5 +1,5 @@
 const INSTANCE = "https://edit.ppom.me/leborddeleau";
-const PAGES_URL = `${INSTANCE}/items/bdo_pages?fields[]=*&fields[]=images.directus_files_id&deep[images][_sort]=order`;
+const PAGES_URL = `${INSTANCE}/items/bdo_pages?fields[]=*&fields[]=vignettes.*&fields[]=images.directus_files_id&deep[images][_sort]=order`;
 const NEWS_URL = `${INSTANCE}/items/bdo_actualites?fields[]=*&sort[]=date_debut&filter[date_fin][_gte]=$NOW(-1day)`;
 const SETTINGS_URL = `${INSTANCE}/items/bdo_parametres`;
 
@@ -30,6 +30,16 @@ async function pages() {
 			path: `${page.slug}/image-${index}.webp`,
 			url: `${INSTANCE}/assets/${imageid}?key=big`,
 		})),
+		{
+			type: "raw",
+			path: `${page.slug}/vignettes.json`,
+			raw: JSON.stringify(page.vignettes),
+		},
+		...page.vignettes.map(({ image }) => ({
+			type: "download",
+			path: `../static/img/smallsquare-${image}.webp`,
+			url: `${INSTANCE}/assets/${image}?key=smallsquare`,
+		})),
 	]));
 }
 
@@ -45,7 +55,7 @@ async function news() {
 		},
 		...news.data.map(actualite => ({
 			type: "download",
-			path: `../static/img/${actualite.image}.webp`,
+			path: `../static/img/smallsquare-${actualite.image}.webp`,
 			url: `${INSTANCE}/assets/${actualite.image}?key=smallsquare`,
 		})),
 	];
@@ -67,6 +77,7 @@ async function settings() {
 function redirects() {
 	return Object.entries({
 		'bdo': 'projet',
+		'collectif': 'salariees',
 		'ressources': 'espaces-de-travail',
 		'activites': 'formation'
 	}).map(([k, v]) => ({
