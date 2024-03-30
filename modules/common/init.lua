@@ -110,6 +110,11 @@ if enableNixd then
 	lspconfig.nixd.setup {}
 end
 
+if enableGo then
+	local lspconfig = require 'lspconfig'
+	lspconfig.gopls.setup {}
+end
+
 if steroids then
 	local lspconfig = require 'lspconfig'
 	vim.g.vim_markdown_folding_disabled = 1
@@ -117,7 +122,6 @@ if steroids then
 
 	-- LSP config
 	lspconfig.elixirls.setup { cmd = { "/run/current-system/sw/bin/elixir-ls" } }
-	lspconfig.gopls.setup {}
 	lspconfig.bashls.setup {}
 	-- lspconfig.ltex.setup {}
 	lspconfig.rust_analyzer.setup {}

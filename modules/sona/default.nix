@@ -20,6 +20,7 @@
     packages.more = true;
     git.email = "sona@ppom.me";
     nvim.steroids = true;
+    nvim.enableGo = true;
   };
 
   boot = {

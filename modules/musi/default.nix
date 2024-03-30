@@ -47,6 +47,7 @@
       fromMail = "musi@ppom.me";
     };
     nvim.enableNixd = false;
+    nvim.enableGo = true;
   };
 
   services.reaction.settings.patterns.ip.ignore = [ "192.168.1.253" ];

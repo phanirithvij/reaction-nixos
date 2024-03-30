@@ -41,6 +41,11 @@ in {
       default = true;
       description = "Enable nixd language server (unstable)";
     };
+    enableGo = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Enable go language server";
+    };
   };
 
   config = let
@@ -56,10 +61,11 @@ in {
         neovim
       ] ++ lib.optionals cfg.enableNixd [
         unstable.nixd
+      ] ++ lib.optionals cfg.enableGo [
+        gopls
       ] ++ lib.optionals cfg.steroids [
         nodejs
         # Language servers
-        gopls
         # ltex-ls
         lua-language-server
         jsonnet-language-server
@@ -82,8 +88,9 @@ in {
           configure = {
             customRC = ''
               lua << EOF
-              enableNixd = ${if cfg.enableNixd == true then "true" else "false"}
-              steroids = ${if cfg.steroids == true then "true" else "false"}
+              enableNixd = ${if cfg.enableNixd then "true" else "false"}
+              enableGo = ${if cfg.enableGo then "true" else "false"}
+              steroids = ${if cfg.steroids then "true" else "false"}
               ${builtins.readFile ./init.lua}
               EOF
             '';
@@ -108,7 +115,7 @@ in {
                 (super.vimPlugins.gruvbox.overrideAttrs (oldAttrs: {
                   patches = [ ./true_black_gruvbox.patch ];
                 }))
-              ] ++ lib.optionals (cfg.steroids || cfg.enableNixd) [
+              ] ++ lib.optionals (cfg.steroids || cfg.enableNixd || cfg.enableGo) [
                 unstable.vimPlugins.nvim-lspconfig
               ] ++ lib.optionals cfg.steroids [
                 tabular # used by vim-markdown
