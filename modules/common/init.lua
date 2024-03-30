@@ -57,7 +57,12 @@ vim.g.netrw_winsize = 25
 -- Far
 vim.g["far#source"] = "rg"
 vim.g["far#glob_mode"] = "native"
+vim.g['far#enable_undo'] = 1
 
+-- Show space line endings
+vim.cmd.match([[WarningMsg /\s\+$/]])
+
+-- Highlight yanks
 vim.api.nvim_create_autocmd('TextYankPost', {
 	callback = function()
 		-- silent!
@@ -105,48 +110,107 @@ stdoutautocmd('lua', 'print("<Esc>pa:", <Esc>pa)')
 
 -- LSP config
 
-if enableNixd then
-	local lspconfig = require 'lspconfig'
-	lspconfig.nixd.setup {}
+if steroids or enableGo or enableNixd then
+	-- nvim_lspconfig
+	-- See `:help vim.diagnostic.*` for documentation on any of the below functions
+	vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float)
+	vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
+	vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
+	vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist)
+
+	-- Use LspAttach autocommand to only map the following keys
+	-- after the language server attaches to the current buffer
+	vim.api.nvim_create_autocmd('LspAttach', {
+		group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+		callback = function(ev)
+			-- Enable completion triggered by <c-x><c-o>
+			vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+
+			local client = vim.lsp.get_client_by_id(ev.data.client_id)
+
+			-- Format on save
+			if client.server_capabilities.documentFormattingProvider then
+				vim.api.nvim_create_autocmd('BufWritePre', {
+					callback = function()
+						vim.lsp.buf.format()
+					end,
+					group = vim.api.nvim_create_augroup('UserLspConfigLocal', { clear = true }),
+					buffer = ev.buf,
+				})
+			end
+
+			-- Buffer local mappings.
+			-- See `:help vim.lsp.*` for documentation on any of the below functions
+			local opts = { buffer = ev.buf }
+			vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
+			vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+			vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+			vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+			vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
+			vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
+			vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
+			vim.keymap.set('n', '<space>wl', function()
+				print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+			end, opts)
+			vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts)
+			vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
+			vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts)
+			vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+			vim.keymap.set('n', '<space>f', function()
+				vim.lsp.buf.format { async = true }
+			end, opts)
+		end,
+	})
+
+	if enableNixd then
+		local lspconfig = require 'lspconfig'
+		lspconfig.nixd.setup {}
+	end
+
+	if enableGo then
+		vim.api.nvim_create_autocmd('FileType',
+			{
+				pattern = 'go',
+				group = vim.api.nvim_create_augroup('gotab', { clear = true }),
+				command = "set tabstop=4 shiftwidth=4 softtabstop=-1"
+			})
+
+		local lspconfig = require 'lspconfig'
+		lspconfig.gopls.setup {}
+	end
+
+	if steroids then
+		local lspconfig = require 'lspconfig'
+		vim.g.vim_markdown_folding_disabled = 1
+		vim.g.vim_markdown_toc_autofit = 1
+
+		-- LSP config
+		lspconfig.elixirls.setup { cmd = { "/run/current-system/sw/bin/elixir-ls" } }
+		lspconfig.bashls.setup {}
+		-- lspconfig.ltex.setup {}
+		lspconfig.rust_analyzer.setup {}
+		lspconfig.jsonnet_ls.setup {}
+
+		lspconfig.html.setup {}
+		lspconfig.jsonls.setup {}
+		lspconfig.cssls.setup {}
+
+		lspconfig.tailwindcss.setup {}
+		lspconfig.tsserver.setup {}
+		lspconfig.svelte.setup {}
+
+		lspconfig.lua_ls.setup { settings = {
+			Lua = {
+				runtime = { version = 'LuaJIT' },
+				diagnostics = { globals = { 'vim' } }, -- recognize the `vim` global
+				workspace = {     -- aware of Neovim runtime files (long)
+					library = vim.api.nvim_get_runtime_file("", true)
+				},
+				telemetry = { enable = false },
+			}
+		} }
+	end
 end
-
-if enableGo then
-	local lspconfig = require 'lspconfig'
-	lspconfig.gopls.setup {}
-end
-
-if steroids then
-	local lspconfig = require 'lspconfig'
-	vim.g.vim_markdown_folding_disabled = 1
-	vim.g.vim_markdown_toc_autofit = 1
-
-	-- LSP config
-	lspconfig.elixirls.setup { cmd = { "/run/current-system/sw/bin/elixir-ls" } }
-	lspconfig.bashls.setup {}
-	-- lspconfig.ltex.setup {}
-	lspconfig.rust_analyzer.setup {}
-	lspconfig.jsonnet_ls.setup {}
-
-	lspconfig.html.setup {}
-	lspconfig.jsonls.setup {}
-	lspconfig.cssls.setup {}
-
-	lspconfig.tailwindcss.setup {}
-	lspconfig.tsserver.setup {}
-	lspconfig.svelte.setup {}
-
-	lspconfig.lua_ls.setup { settings = {
-		Lua = {
-			runtime = { version = 'LuaJIT' },
-			diagnostics = { globals = { 'vim' } }, -- recognize the `vim` global
-			workspace = {     -- aware of Neovim runtime files (long)
-				library = vim.api.nvim_get_runtime_file("", true)
-			},
-			telemetry = { enable = false },
-		}
-	} }
-end
-
 
 local source_if_exists = function(filename)
 	local file_exists = function(filename)
