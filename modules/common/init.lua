@@ -108,6 +108,15 @@ stdoutautocmd('c', 'printf("<Esc>pa: %s", <Esc>pa);')
 stdoutautocmd('go', 'fmt.Printf("<Esc>pa: %v\\n", <Esc>pa)')
 stdoutautocmd('lua', 'print("<Esc>pa:", <Esc>pa)')
 
+vim.api.nvim_create_autocmd('Filetype', {
+	pattern = "markdown",
+	callback = function()
+		vim.keymap.set('n', 'o', 'A<cr>')
+		vim.keymap.set('n', 'O', 'kA<cr>')
+	end,
+	group = vim.api.nvim_create_augroup('md:fix-o-bug', { clear = true })
+})
+
 -- LSP config
 
 if steroids or enableGo or enableNixd then
