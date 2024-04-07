@@ -2,7 +2,7 @@
 let
   directusPort = 8055;
   d2zPort = 8056;
-  common = import ../common.nix {};
+  common = import ./common.nix {};
 in {
   services.directus.servers = {
     "pompeani.art" = {

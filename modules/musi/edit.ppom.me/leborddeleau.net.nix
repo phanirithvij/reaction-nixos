@@ -2,7 +2,7 @@
 let
   directusPort = 8057;
   d2zPort = 8059;
-  common = import ../common.nix {};
+  common = import ./common.nix {};
 in {
   services.directus.servers = {
     "leborddeleau" = {

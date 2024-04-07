@@ -1,7 +1,7 @@
 { lib, pkgs, config, ... }:
 let
   directusPort = 8063;
-  common = import ../common.nix {};
+  common = import ./common.nix {};
 in {
   services.directus.servers = {
     "5eroue" = {

@@ -1,7 +1,7 @@
 { lib, pkgs, config, ... }:
 let
   directusPort = 8064;
-  common = import ../common.nix {};
+  common = import ./common.nix {};
 in {
   services.directus.servers = {
     "edit.ppom.fr" = {

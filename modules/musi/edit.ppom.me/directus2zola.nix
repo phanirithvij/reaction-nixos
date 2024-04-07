@@ -31,6 +31,7 @@ in {
     users.users."directus2zola" = {
       isSystemUser = true;
       group = "directus2zola";
+      home = "/var/lib/directus2zola";
     };
 
     systemd.services.directus2zola = {
