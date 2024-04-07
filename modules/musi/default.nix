@@ -93,16 +93,6 @@
     keyMap = "fr";
   };
 
-  nix = {
-    settings.allowed-users = [ "root" ];
-    gc = {
-      automatic = true;
-      dates = "04:00";
-      options = "--delete-older-than 15d";
-      persistent = false;
-    };
-  };
-
   # Update all channels on upgrade, not only the default one.
   systemd.services.nixos-upgrade.serviceConfig.ExecStartPre = [ "${config.nix.package}/bin/nix-channel --update" ];
 

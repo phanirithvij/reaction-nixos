@@ -73,7 +73,7 @@
 
   nix = {
     settings = {
-      # Only allow root and sudo users
+      # Allow sudo/doas users
       allowed-users = [ "@wheel" ];
       experimental-features = "nix-command flakes";
     };

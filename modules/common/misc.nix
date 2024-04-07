@@ -9,6 +9,13 @@
         connect-timeout = 5;
         log-lines = 25;
         auto-optimise-store = true;
+        allowed-users = [ "root" ];
+      };
+      gc = {
+        automatic = true;
+        dates = "04:00";
+        options = "--delete-older-than 15d";
+        persistent = false;
       };
       # FIXME update to daemonIOSchedClass daemonIOSchedPriority
       # daemonIONiceLevel = 7;

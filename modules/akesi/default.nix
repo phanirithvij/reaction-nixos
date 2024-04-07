@@ -58,14 +58,6 @@
 
   boot.tmp.cleanOnBoot = true;
 
-  nix = {
-    settings.allowed-users = [ "root" ];
-    gc = {
-      automatic = true;
-      options = "--delete-older-than 15d";
-    };
-  };
-
   # Only allow paths from /nix/store to be executables
   # fileSystems."/".options = [ "noexec" ];
 
