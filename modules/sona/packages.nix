@@ -17,7 +17,7 @@ in {
     rbw # unofficial bitwarden CLI
     pinentry-gnome # GUI password prompt (used by gpg-agent, installing it in global path for rbw & tomb)
     pass # password-store
-    # acpi # battery information
+    acpi # battery information
     # libossp_uuid # uuid v4
     # pup # jq for HTML
     # xsv # jq for CSV
