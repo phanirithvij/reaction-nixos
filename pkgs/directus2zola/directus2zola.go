@@ -223,7 +223,16 @@ func (p *Project) doBuild() {
 	p.wantsToBuild = false
 	p.lock.Unlock()
 
-	p.build()
+	start := time.Now()
+	p.Infof("requested to build")
+	var finished string
+	if p.build() {
+		finished = "finished"
+	} else {
+		finished = "failed"
+	}
+	elapsed := time.Now().Sub(start).Milliseconds()
+	p.Infof("%v to build in %v seconds", finished, float64(elapsed)/1000.0)
 
 	p.lock.Lock()
 	p.isBuilding = false
@@ -253,27 +262,25 @@ type UserPath struct {
 	URL string `json:"url"`
 }
 
-func (p *Project) build() {
+func (p *Project) build() bool {
 	var err error
-	start := time.Now()
-	p.Infof("requested to build")
 
 	if !p.ScriptOnly {
 		// Clean & Pull
 		_, err = os.Stat(p.gitDirectory)
 		if err != nil {
 			if !p.exec(func(cmd *exec.Cmd) { cmd.Dir = "" }, "git", "clone", "-q", p.GitUrl, p.gitDirectory) {
-				return
+				return false
 			}
 		}
 		if !p.exec(nil, "git", "clean", "-f", "-q") {
-			return
+			return false
 		}
 		if !p.exec(nil, "git", "reset", "--hard", "-q") {
-			return
+			return false
 		}
 		if !p.exec(nil, "git", "pull", "-q", "--ff-only") {
-			return
+			return false
 		}
 	}
 
@@ -323,7 +330,7 @@ func (p *Project) build() {
 
 	wg.Wait()
 	if isErr {
-		return
+		return false
 	}
 
 	p.Infof("populating content directory")
@@ -354,25 +361,24 @@ func (p *Project) build() {
 
 	wg.Wait()
 	if isErr {
-		return
+		return false
 	}
 
 	if !p.ScriptOnly {
 		// zola build
 		ok := p.exec(func(cmd *exec.Cmd) { cmd.Stdout = nil }, "zola", "build")
 		if !ok {
-			return
+			return false
 		}
 
 		// rsync
 		ok = p.exec(nil, "rsync", "-az", "--delete", "--rsh=ssh -i "+p.SSHKeyFile, "./public/", p.PushUrl)
 		if !ok {
-			return
+			return false
 		}
 	}
 
-	elapsed := time.Now().Sub(start).Milliseconds()
-	p.Infof("finished to build in %v seconds", float64(elapsed)/1000.0)
+	return true
 }
 
 func (p *Project) Infof(format string, arg ...any) {
