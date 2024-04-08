@@ -471,12 +471,15 @@ func (p *Project) mkPath(pData UserPath) bool {
 func (p *Project) writeHeader(w *strings.Builder, header map[string]any) {
 	for key, value := range header {
 		var format string
-		switch reflect.TypeOf(value).Kind() {
-		case reflect.String:
-			format = "%v = \"\"\"%v\"\"\"\n"
-		default:
-			format = "%v = %v\n"
+		valueType := reflect.TypeOf(value)
+		if valueType != nil {
+			switch valueType.Kind() {
+			case reflect.String:
+				format = "%v = \"\"\"%v\"\"\"\n"
+			default:
+				format = "%v = %v\n"
+			}
+			fmt.Fprintf(w, format, key, value)
 		}
-		fmt.Fprintf(w, format, key, value)
 	}
 }
