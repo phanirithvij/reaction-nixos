@@ -127,10 +127,12 @@ if steroids or enableGo or enableNixd then
 	vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
 	vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist)
 
+	local lspgroup = vim.api.nvim_create_augroup('UserLspConfig', { clear = true })
+
 	-- Use LspAttach autocommand to only map the following keys
 	-- after the language server attaches to the current buffer
 	vim.api.nvim_create_autocmd('LspAttach', {
-		group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+		group = lspgroup,
 		callback = function(ev)
 			-- Enable completion triggered by <c-x><c-o>
 			vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
@@ -143,7 +145,7 @@ if steroids or enableGo or enableNixd then
 					callback = function()
 						vim.lsp.buf.format()
 					end,
-					group = vim.api.nvim_create_augroup('UserLspConfigLocal', { clear = true }),
+					group = lspgroup,
 					buffer = ev.buf,
 				})
 			end
