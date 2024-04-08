@@ -90,6 +90,7 @@ type Project struct {
 	PushUrl    string   `json:"push_url"`
 	SSHKeyFile string   `json:"ssh_key_file"`
 	Script     []string `json:"script"`
+	ScriptOnly bool     `json:"script_only"`
 
 	gitDirectory string
 
@@ -204,24 +205,15 @@ func testRequirements(conf *Configuration) {
 }
 
 func (p *Project) init() {
-	buildOrders := make(chan bool)
-
-	go func() {
-		for {
-			<-buildOrders
-			p.lock.Lock()
-			if p.isBuilding {
-				p.wantsToBuild = true
-			} else {
-				go p.doBuild()
-			}
-			p.lock.Unlock()
-		}
-	}()
-
 	http.HandleFunc("/"+p.Name, func(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, "building")
-		buildOrders <- true
+		p.lock.Lock()
+		if p.isBuilding {
+			p.wantsToBuild = true
+		} else {
+			go p.doBuild()
+		}
+		p.lock.Unlock()
 	})
 }
 
@@ -262,25 +254,27 @@ type UserPath struct {
 }
 
 func (p *Project) build() {
-
+	var err error
 	start := time.Now()
 	p.Infof("requested to build")
 
-	// Clean & Pull
-	_, err := os.Stat(p.gitDirectory)
-	if err != nil {
-		if !p.exec(func(cmd *exec.Cmd) { cmd.Dir = "" }, "git", "clone", "-q", p.GitUrl, p.gitDirectory) {
+	if !p.ScriptOnly {
+		// Clean & Pull
+		_, err = os.Stat(p.gitDirectory)
+		if err != nil {
+			if !p.exec(func(cmd *exec.Cmd) { cmd.Dir = "" }, "git", "clone", "-q", p.GitUrl, p.gitDirectory) {
+				return
+			}
+		}
+		if !p.exec(nil, "git", "clean", "-f", "-q") {
 			return
 		}
-	}
-	if !p.exec(nil, "git", "clean", "-f", "-q") {
-		return
-	}
-	if !p.exec(nil, "git", "reset", "--hard", "-q") {
-		return
-	}
-	if !p.exec(nil, "git", "pull", "-q", "--ff-only") {
-		return
+		if !p.exec(nil, "git", "reset", "--hard", "-q") {
+			return
+		}
+		if !p.exec(nil, "git", "pull", "-q", "--ff-only") {
+			return
+		}
 	}
 
 	var wg sync.WaitGroup
@@ -364,16 +358,18 @@ func (p *Project) build() {
 		return
 	}
 
-	// zola build
-	ok := p.exec(func(cmd *exec.Cmd) { cmd.Stdout = nil }, "zola", "build")
-	if !ok {
-		return
-	}
+	if !p.ScriptOnly {
+		// zola build
+		ok := p.exec(func(cmd *exec.Cmd) { cmd.Stdout = nil }, "zola", "build")
+		if !ok {
+			return
+		}
 
-	// rsync
-	ok = p.exec(nil, "rsync", "-az", "--delete", "--rsh=ssh -i "+p.SSHKeyFile, "./public/", p.PushUrl)
-	if !ok {
-		return
+		// rsync
+		ok = p.exec(nil, "rsync", "-az", "--delete", "--rsh=ssh -i "+p.SSHKeyFile, "./public/", p.PushUrl)
+		if !ok {
+			return
+		}
 	}
 
 	elapsed := time.Now().Sub(start).Milliseconds()
