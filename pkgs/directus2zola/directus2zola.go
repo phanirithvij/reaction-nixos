@@ -338,9 +338,8 @@ func (p *Project) build() {
 			for ok {
 				select {
 				case pData, ok = <-pathsC:
-					if ok {
-						ok = p.mkPath(pData)
-						if !ok {
+					if ok && !isErr {
+						if !p.mkPath(pData) {
 							isErr = true
 						}
 					}
@@ -450,8 +449,13 @@ func (p *Project) mkPath(pData UserPath) bool {
 		response, err := http.Get(pData.URL)
 		if err != nil {
 			p.Errorf("could not download url %v: %v", pData.URL, err)
+			return false
 		}
 		defer response.Body.Close()
+		if response.StatusCode < 200 || response.StatusCode > 299 {
+			p.Errorf("invalid http code while downloading url %v: %v", pData.URL, response.StatusCode)
+			return false
+		}
 
 		_, err = io.Copy(file, response.Body)
 		if errmsg(err) {
