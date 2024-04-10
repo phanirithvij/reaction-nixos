@@ -22,6 +22,9 @@ in {
       # mail_smtpname     = "paco@ecomail.io";
       # mail_smtppassword = "' . trim(file_get_contents('/var/secrets/mail/ecomail')) . '";
     };
+    phpOptions = {
+      "pm.start_servers" = "4";
+    };
   };
 
   users.users.nextcloud.extraGroups = [ "postmaster" ];
