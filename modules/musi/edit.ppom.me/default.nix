@@ -10,6 +10,7 @@ in
     ./lili-bel.com.nix
     ./5eroue.nix
     ./edit.ppom.fr.nix
+    ./coco.nix
   ];
 
   services.directus.allowDirectusLicense = true;
