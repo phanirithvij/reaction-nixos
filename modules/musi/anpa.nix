@@ -40,6 +40,11 @@ let
       ssh = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDLNfnP6zlA9+RDf9cVmwlzFBwAxGIPnoWcSp0oRWIJl5EEsqakAdPhuJRRi3xfbmpJwkQHpBC1G2IGaicuMdKZjUnwuYJm4NsxaSr7sVMRTbbm1DBnF21KMMhZxQ3upwoD+26bl8o3AhqreQ1gX7z8AjpDm2yAaWQEXtr3cseLKNJjwtLldZQd48e3w1UZgATLkQuw0Tno1FEjAiYJQpuZLZ3Di3wp+uHMmDTQl6CBhR6kUy1BsnccLNykRE8LYlsy/SSlBnkH3LKfz9i1GdgAdzHAifISaecRlV9SqOwZIMdbHlIR/RqdYen13by3wntECFfGZHfvzmr0uNLm8avnPKQNsoYDpPia1sptcnABSnqtWP63QdLYEnct2BW5tYdeICPary6HIr6jFZfGTgtPGigXiUBH7AbirB+Byn3wBal2wV2jI56FBRLCvcXfGlFcTSE6z+75SFEG3iW937tf0jody+Jez4dYn6MaAaPI2zf62Kd2vvdRohbi4z/WwKc= guillaume@desktop" ];
       uid = 2006;
     }
+    {
+      name = "babos";
+      ssh = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCuWuggpkvPYEZhKva+VrC/TE9HZj9dQNgtMO4NeT3bxjvZ6RLI4GrTCfxErKEVrS6U9pa03aFrIqYiKRl8QKNNstMEhpRfuSEkeVKHKPVI+1IMasL+77nyR1FhKX4rb9h6PBNTYB1yWRYsqxCL27TqjjaXwcQdsdtkYrhV7m0VrZVvFfMVqBohH3t1r0Fw+0+7hDYFuiEjqgpKSL17NhUY9NY9OwFF7btb1J8F2A4DgTwXbQO5tnmxQUncaKMVfskArtjHu0wvnAcPhmaa3uNC+Z+6mJkH9JlUrU84Qk3tdD0MJlVVaQLXZxB6rJbmslC9CqG8QOUSVcRflvattldyEae0c4KtUjx3siioq7eUF0hlwA0veWB4G3YCxGwoG49FGRBQO2BEtdbeFJka6SeWlO+RMTQqqFZqG450ruZVg1NNo79m18QKllcACrYUYh62iX8t3GAJ66L9J3CU1A3olxDmy5V2d0W90UQonvc6jb7O58AR5x/YL2Ldh9i8T3s= bertille@marvin" ];
+      uid = 2007;
+    }
   ];
   transitDir   = user: "/data/user-uploads/${user.name}";
   containerDir = user: "/home/${user.name}/upload-here";
