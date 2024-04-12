@@ -107,8 +107,6 @@
         # go vtt2srt script
         vtt2srt = super.callPackage ../../pkgs/vtt2srt {};
         subshift = super.callPackage ../../pkgs/subshift {};
-
-        tailwindcss = (pkgs.nodePackages.tailwindcss.overrideAttrs (old: { plugins = [ pkgs.nodePackages."@tailwindcss/typography" ]; }));
       })
     ];
   };

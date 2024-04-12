@@ -187,6 +187,8 @@ in {
         ];
       });
 
+      tailwindcss = (unstable.pkgs.tailwindcss.overrideAttrs (old: { plugins = [ unstable.pkgs.nodePackages."@tailwindcss/typography" ]; }));
+
     })
     # (import /home/ao/prg/nix/gomod2nix/overlay.nix)
   ];
