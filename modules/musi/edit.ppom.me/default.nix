@@ -25,14 +25,15 @@ in
     <html>
       <head>
         <meta charset="utf8">
-        <title>Sites d'édition Directus</title>
+        <title>Sites d'édition ppom</title>
       </head>
       <body>
-        <h1>Sites d'édition Directus</h1>
+        <h1>Sites d'édition</h1>
         <ul>
-          <li><a href="/pompeani.art">Pompeani.art</a></li>
-          <li><a href="/leborddeleau">Le bord de l'eau</a></li>
-          <li><a href="/5eroue">La 5e Roue</a></li>
+          <li><a href="/pompeani.art">pompeani.art</a></li>
+          <li><a href="/leborddeleau">leborddeleau.net</a></li>
+          <li><a href="/5eroue">5e roue</a></li>
+          <li><a href="https://edit.ppom.fr">lili-bel.com</a></li>
         </ul>
       </body>
     </html>
