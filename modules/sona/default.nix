@@ -48,7 +48,7 @@
       enable = true;
       allowedTCPPorts = [
         # 58432 # SoulseekQT
-        8000 # simple-http-server
+        8001 # simple-http-server
       ];
     };
   };
