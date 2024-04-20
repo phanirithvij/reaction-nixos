@@ -1,6 +1,7 @@
 { lib, pkgs, config, ... }:
 let
   common = import ./common.nix {};
+    var = import ../../common/reaction-variables.nix { inherit pkgs; };
   d2zPort = 8100;
   cfg = config.ppom.directus2zola;
 
@@ -65,5 +66,30 @@ in {
         RestrictSUIDSGID = true;
       };
     };
+
+    services.reaction.settings = {
+      patterns.untilEOL = {
+        regex = ''.*$'';
+      };
+      streams.directus2zola = {
+        cmd = [ var.journalctl "-fn0" "-u" "directus2zola.service" ];
+        filters.error = {
+          regex = [
+            "ERROR <untilEOL>"
+          ];
+          actions.sendmsg.cmd = [
+            "${pkgs.curl}/bin/curl"
+            "--fail"
+            "--silent"
+            "--show-error"
+            "--variable" "USER@/var/secrets/mobileapi-user"
+            "--variable" "PASS@/var/secrets/mobileapi-pass"
+            "--variable" "MSG=<untilEOL>"
+            "--expand-url" "https://smsapi.free-mobile.fr/sendmsg?user={{USER:trim}}&pass={{PASS:trim}}&msg={{MSG:trim:url}}"
+          ];
+        };
+      };
+    };
+
   };
 }
