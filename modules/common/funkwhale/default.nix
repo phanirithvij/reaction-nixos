@@ -83,7 +83,6 @@
       redisPort = 8325;
       inherit secretsDir;
       redisSecretFile = "${secretsDir}/redis.secret";
-      postgresSecretFile = "${secretsDir}/postgres.secret";
       pythonSecretFile = "${secretsDir}/env.secret";
       # filled by the API container, served by host NGINX
       frontendDir = "/var/lib/funkwhale/frontend";
@@ -117,6 +116,7 @@
 
     dockerServiceOverrides = {
       after = [ "funkwhale-init.service" ];
+      requires = [ "funkwhale-init.service" ];
     };
 
   in lib.mkIf cfg.enable {
@@ -151,7 +151,7 @@
         description = "Secret generation for Funkwhale";
         wantedBy = [ "multi-user.target" ];
         after = [ "postgresql.service" ];
-        before = [ "redis.service" ] ++ lib.optionals cfg.enableLocalTypesense [ "typesense.service" ];
+        before = [ "redis-funkwhale.service" ] ++ lib.optionals cfg.enableLocalTypesense [ "typesense.service" ];
         serviceConfig = {
           Type = "oneshot";
           User = "root";
@@ -170,18 +170,15 @@
             REDIS_PASSWORD=$(genPasswd)
             POSTGRES_PASSWORD=$(genPasswd)
             DJANGO_PASSWORD=$(genPasswd)
-            touch ${redisSecretFile} ${postgresSecretFile} ${pythonSecretFile}
-            chmod 640 ${redisSecretFile} ${postgresSecretFile} ${pythonSecretFile}
+            touch ${redisSecretFile} ${pythonSecretFile}
+            chmod 640 ${redisSecretFile} ${pythonSecretFile}
             chown root:funkwhale ${pythonSecretFile}
             chown root:redis-funkwhale ${redisSecretFile}
-            chown root:postgres ${postgresSecretFile}
 
-            /run/wrappers/bin/su -c \
-              "psql -c \"ALTER USER funkwhale WITH PASSWORD '$POSTGRES_PASSWORD';\"" \
-              postgres
+            /run/wrappers/bin/doas -u postgres \
+              psql -c "ALTER USER funkwhale WITH PASSWORD '$POSTGRES_PASSWORD';"
 
-            echo $REDIS_PASSWORD > ${redisSecretFile}
-            echo $POSTGRES_PASSWORD > ${postgresSecretFile}
+            echo "$REDIS_PASSWORD" > ${redisSecretFile}
             cat > ${pythonSecretFile} <<EOF
           CACHE_URL=redis://:$REDIS_PASSWORD@localhost:${toString redisPort}/0
           DJANGO_SECRET_KEY=$DJANGO_PASSWORD
@@ -201,7 +198,7 @@
           fi
           # This is done everytime in case a human changes the secret. Better to have a SSOT.
           sed -i -e '/TYPESENSE_API_KEY/d' \
-                 -e "aTYPESENSE_API_KEY=$(cat "${apiKeyFile}")" \
+                 -e '$'"aTYPESENSE_API_KEY=$(cat "${apiKeyFile}")" \
                  ${pythonSecretFile}
           ''}
         '';
