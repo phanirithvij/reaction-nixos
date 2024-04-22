@@ -312,6 +312,7 @@ func (p *Project) build() bool {
 	r, w := io.Pipe()
 	go func() {
 		if !p.exec(func(cmd *exec.Cmd) { cmd.Stdout = w }, p.Script[0], p.Script[1:]...) {
+			w.Close()
 			isErr = true
 			return
 		}
