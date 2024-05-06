@@ -33,10 +33,8 @@ do
 	then
 		if test $ALREADY_NO_TODO -eq 0
 		then
-			echo -n "Nothing in $TODO_DIRECTORY, retrying in 1min"
+			echo -n "Waiting for order in $TODO_DIRECTORY"
 			ALREADY_NO_TODO=1
-		else
-			echo -n .
 		fi
 		sleep 5s
 		continue
