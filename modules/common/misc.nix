@@ -49,7 +49,10 @@
 
     environment.homeBinInPath = true;
 
+    services.sysstat.enable = true;
+
     environment.systemPackages = with pkgs; [
+      sysstat
       atuin
     ];
 
