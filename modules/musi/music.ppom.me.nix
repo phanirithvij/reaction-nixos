@@ -17,6 +17,16 @@ in {
     };
   };
 
+  # Don't store typesense logging to disk
+  systemd.services.typesense.serviceConfig = {
+    LogNamespace = "noisy";
+  };
+  environment.etc."systemd/journald@noisy.conf".text = ''
+    [Journal]
+    Storage=volatile
+    RuntimeMaxUse=10M
+  '';
+
   users.users.funkwhale-playlist-import = {
     isSystemUser = true;
     group = "funkwhale";
