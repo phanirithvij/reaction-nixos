@@ -51,6 +51,11 @@
         8001 # simple-http-server
       ];
     };
+
+    extraHosts = ''
+      10.0.255.124	awx.poleinfo.coopaname.coop
+      10.0.255.141	logs.poleinfo.coopaname.coop
+    '';
   };
   # use FDN's DNS. Override Internet provider's DNS
   # environment.etc."resolv.conf".text = ''

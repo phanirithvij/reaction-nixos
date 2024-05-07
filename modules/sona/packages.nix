@@ -103,6 +103,7 @@ in {
     mmctl # mattermost control (for Picasoft's server management)
     # (quarto.override { rWrapper = null; python3 = null; }) # Markdown environment based on pandoc
     minisign # small utility to sign files
+    ansible
 
     docker
     # docker-compose # for SiMDE's Portail des assos
@@ -121,7 +122,7 @@ in {
     # tdns-cli # dig alternative
 
     # Network
-    # wireguard-tools
+    wireguard-tools
 
     # Media
     imagemagick

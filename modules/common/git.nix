@@ -32,6 +32,7 @@
           s = "status";
           a = "add -A";
           cm = "commit -m";
+          logc = "log -n10 --pretty=format:'%Cred%h%Creset %C(bold blue)(%an) %Creset%Cgreen(%cr)%Creset - %s %C(yellow)%d%Creset' --abbrev-commit";
         };
       };
     };
