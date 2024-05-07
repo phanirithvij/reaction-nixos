@@ -3,11 +3,15 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
 	"strings"
 )
+
+func die(msg ...any) {
+	fmt.Println(append([]any{"FATAL"}, msg...))
+	os.Exit(1)
+}
 
 // Executes a command and channel-send its stdout
 func cmdStdout(commandline []string) chan *string {
@@ -17,10 +21,10 @@ func cmdStdout(commandline []string) chan *string {
 		cmd := exec.Command(commandline[0], commandline[1:]...)
 		stdout, err := cmd.StdoutPipe()
 		if err != nil {
-			log.Fatal("couldn't open stdout on command:", err)
+			die("couldn't open stdout on command:", err)
 		}
 		if err := cmd.Start(); err != nil {
-			log.Fatal("couldn't start command:", err)
+			die("couldn't start command:", err)
 		}
 		defer stdout.Close()
 
@@ -66,7 +70,7 @@ func DirectoriesFilenameSource(line *string) (string, string, string) {
 func extension(source string) string {
 	lastDot := strings.LastIndex(source, ".")
 	if lastDot == -1 {
-		log.Println("no extension:", source)
+		fmt.Println("no extension:", source)
 		return ".mp3"
 	}
 	return source[lastDot:]
@@ -100,19 +104,21 @@ WHERE (u.audio_file <> '' OR u.source LIKE 'file:///%');`}
 
 func main() {
 	var err error
-	log.Println("Starting")
+	fmt.Println("Starting")
 
 	if len(os.Args) < 2 || len(os.Args[1]) < 1 {
-		log.Fatalln("First argument must be the destination dir")
+		die("First argument must be the destination dir")
 	}
 	root := os.Args[1]
 	err = os.MkdirAll(root, 0755)
 	if err != nil {
-		log.Fatalln("mkdir error", err)
+		die("mkdir error", err)
 	}
 
 	lines := cmdStdout(request)
 
+	var successCount int
+	var errorCount int
 
 	for line := range lines {
 		directories, filename, source := DirectoriesFilenameSource(line)
@@ -125,12 +131,18 @@ func main() {
 
 		err = os.MkdirAll(dir, 0755)
 		if err != nil {
-			log.Println("mkdir error", err)
+			errorCount++
+			continue
 		}
 
 		err = os.Link(source, filepath)
 		if err != nil {
-			log.Println("link error", err)
+			errorCount++
+			continue
 		}
+
+		successCount++
 	}
+
+	fmt.Printf("Finished with %v success and %v errors\n", successCount, errorCount)
 }
