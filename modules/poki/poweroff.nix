@@ -7,6 +7,7 @@
       musi_processes="$(${pkgs.procps}/bin/pgrep -u musi | wc -l)"
       connected_users="$(who | wc -l)"
       flag_file=/tmp/no_remote_activity
+      echo "musi_processes=$musi_processes connected_users=$connected_users"
       if test "$musi_processes" -eq 0 && test "$connected_users" -eq 0
       then
         if test ! -e $flag_file
