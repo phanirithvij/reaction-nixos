@@ -65,7 +65,7 @@ in {
       ${pkgs.wakelan}/bin/wakelan A0:B3:CC:E9:4C:9C
       for _ in $(seq 60)
       do
-        sleep 5
+        sleep 15
         ssh ${pokiHost} -i ${pokiKey} -o ConnectTimeout=10 true && break
       done
     ''}";
