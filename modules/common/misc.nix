@@ -127,7 +127,7 @@
             persist = true;
             setEnv = [ "NIX_PATH" "NIXPKGS_CONFIG" "NIXPKGS_ALLOW_UNFREE" "NIXPKGS_ALLOW_INSECURE" ];
           })
-          ["nixos-rebuild" "nix" "nix-shell"]
+          ["nixos-rebuild" "nix" "nix-shell" "nix-build"]
         );
       };
     };
