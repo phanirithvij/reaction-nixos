@@ -22,6 +22,7 @@
     };
     reaction = {
       enable = true;
+      enableNginx = false;
     };
     monit = {
       enable = true;
