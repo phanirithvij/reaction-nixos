@@ -58,6 +58,7 @@ vim.g.netrw_winsize = 25
 vim.g["far#source"] = "rg"
 vim.g["far#glob_mode"] = "native"
 vim.g['far#enable_undo'] = 1
+vim.g['far#auto_preview'] = 0
 
 -- Show space line endings
 vim.cmd.match([[WarningMsg /\s\+$/]])
@@ -140,6 +141,12 @@ if steroids or enableGo or enableNixd then
 			local client = vim.lsp.get_client_by_id(ev.data.client_id)
 
 			-- Format on save
+			vim.api.nvim_create_user_command('W', function()
+				vim.lsp.buf.format()
+				vim.cmd("w")
+			end, { force = true })
+
+			--[[
 			if client.server_capabilities.documentFormattingProvider then
 				vim.api.nvim_create_autocmd('BufWritePre', {
 					callback = function()
@@ -149,6 +156,7 @@ if steroids or enableGo or enableNixd then
 					buffer = ev.buf,
 				})
 			end
+			]]
 
 			-- Buffer local mappings.
 			-- See `:help vim.lsp.*` for documentation on any of the below functions
@@ -214,7 +222,7 @@ if steroids or enableGo or enableNixd then
 			Lua = {
 				runtime = { version = 'LuaJIT' },
 				diagnostics = { globals = { 'vim' } }, -- recognize the `vim` global
-				workspace = {     -- aware of Neovim runtime files (long)
+				workspace = { -- aware of Neovim runtime files (long)
 					library = vim.api.nvim_get_runtime_file("", true)
 				},
 				telemetry = { enable = false },
