@@ -1,5 +1,5 @@
 # This configuration file is designed to only contain package-related entries.
-{ lib, config, pkgs, ... }:
+{ lib, pkgs, ... }:
 
 let 
   unstable = import <nixos-unstable> {};
@@ -117,6 +117,8 @@ in {
     deno
     rustup
     gcc
+    (lib.hiPrio unstable.go)
+    (lib.hiPrio unstable.gopls)
 
     # Sysadmin
     # tdns-cli # dig alternative
