@@ -38,7 +38,7 @@ let
     set -eu
     set -o pipefail
     rbw unlock
-    rbw ls --fields folder,name,user | sed 's/\t/\//g' | sort | ${pkgs.wofi}/bin/wofi --dmenu | sed 's/^[^\/]*\///' | sed 's/\// /' | xargs -r rbw get | wl-copy -o
+    rbw ls --fields folder,name,user | sed 's@\t@/@g' | sort | ${pkgs.wofi}/bin/wofi --dmenu | sed -e 's@.*/\(.*\)/\(.*\)@"\1" "\2"@' -e 's@""@@' | xargs -r rbw get | wl-copy -o
   '');
   passwofi = (pkgs.writeScriptBin "passwofi" ''
     #${pkgs.runtimeShell}
