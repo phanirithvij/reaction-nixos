@@ -87,6 +87,8 @@ in lib.mkMerge [
     wlsunset
     wev
 
+    easyeffects # audio effects
+
     conky # status bar
 
     kanshi # auto change randr
