@@ -216,6 +216,7 @@ if steroids or enableGo or enableNixd then
 
 		lspconfig.tailwindcss.setup {}
 		lspconfig.tsserver.setup {}
+		lspconfig.vuels.setup{}
 		lspconfig.svelte.setup {}
 
 		lspconfig.lua_ls.setup { settings = {

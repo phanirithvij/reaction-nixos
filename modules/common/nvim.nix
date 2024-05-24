@@ -75,6 +75,7 @@ in {
         nodePackages."@tailwindcss/language-server"
         nodePackages.svelte-language-server
         nodePackages.typescript-language-server
+        nodePackages.vls # vue-language-server
         nodePackages.bash-language-server
       ];
     };
