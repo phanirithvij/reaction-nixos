@@ -52,31 +52,32 @@ in {
     cfg = config.ppom.nvim;
   in lib.mkIf cfg.enable {
 
-    environment = with pkgs; {
+    environment = {
       variables = {
         EDITOR = "nvim";
         VISUAL = "nvim";
       };
-      systemPackages = [
-        neovim
+      systemPackages = let nodes = pkgs.nodePackages; in [
+        pkgs.neovim
       ] ++ lib.optionals cfg.enableNixd [
         unstable.nixd
       ] ++ lib.optionals cfg.enableGo [
-        gopls
+        pkgs.gopls
       ] ++ lib.optionals cfg.steroids [
-        nodejs
+        pkgs.nodejs
         # Language servers
-        # ltex-ls
-        lua-language-server
-        jsonnet-language-server
-        jsonnet
-        elixir elixir-ls
+        # pkgs.ltex-ls
+        pkgs.lua-language-server
+        pkgs.jsonnet-language-server
+        pkgs.jsonnet
+        pkgs.elixir
+        pkgs.elixir-ls
         unstable.vscode-langservers-extracted # requires vscode to build
-        nodePackages."@tailwindcss/language-server"
-        nodePackages.svelte-language-server
-        nodePackages.typescript-language-server
-        nodePackages.vls # vue-language-server
-        nodePackages.bash-language-server
+        nodes."@tailwindcss/language-server"
+        nodes.svelte-language-server
+        nodes.typescript-language-server
+        nodes.vls # vue-language-server
+        nodes.bash-language-server
       ];
     };
 
@@ -84,6 +85,7 @@ in {
       (self: super: {
         neovim = super.neovim.override {
           withNodeJs = cfg.steroids;
+          withRuby = true; # todo replace undoquit-vim and get rid of ruby
           viAlias = true;
           vimAlias = true;
           configure = {
@@ -95,39 +97,39 @@ in {
               ${builtins.readFile ./init.lua}
               EOF
             '';
-            packages.myVimPackage = with pkgs.vimPlugins; {
+            packages.myVimPackage = let plugins = pkgs.vimPlugins; in {
               start = [
                 # Waiting for https://github.com/LnL7/vim-nix/issues/49 to be fixed
                 (super.vimPlugins.vim-nix.overrideAttrs (oldAttrs: {
                   patches = [ ./vim_nix_comment.patch ];
                 }))
-                far-vim # Find and replace across entire directory
-                guess-indent-nvim # Does it really work?
-                mkdir-nvim # Automatically creates directories on file saving
-                undoquit-vim # Reopen closed window with ctrl-w_ctrl-u
-                vim-commentary # Comment/Uncomment with gc operator
-                vim-fish
-                vim-fugitive # Git support. :Gdiffsplit etc.
-                vim-repeat # Provide undo/redo for vim-commentary & vim-surround
-                vim-surround # ds ys operators for delete or add surrounding "'( etc.
-                # vim-unimpaired # useful but you have to learn the all the shortcuts
-                # nvim-cmp cmp-buffer cmp-path # useful but I start keeping things simple
-                papercolor-theme # Light theme
+                plugins.far-vim # Find and replace across entire directory
+                plugins.guess-indent-nvim # Does it really work?
+                plugins.mkdir-nvim # Automatically creates directories on file saving
+                undoquit-vim # Reopen closed window with ctrl-w_ctrl-u # uses Ruby
+                plugins.vim-commentary # Comment/Uncomment with gc operator
+                plugins.vim-fish
+                plugins.vim-fugitive # Git support. :Gdiffsplit etc.
+                plugins.vim-repeat # Provide undo/redo for vim-commentary & vim-surround
+                plugins.vim-surround # ds ys operators for delete or add surrounding "'( etc.
+                # plugins.vim-unimpaired # useful but you have to learn the all the shortcuts
+                # plugins.nvim-cmp plugins.cmp-buffer plugins.cmp-path # useful but I start keeping things simple
+                plugins.papercolor-theme # Light theme
                 (super.vimPlugins.gruvbox.overrideAttrs (oldAttrs: {
                   patches = [ ./true_black_gruvbox.patch ];
                 }))
               ] ++ lib.optionals (cfg.steroids || cfg.enableNixd || cfg.enableGo) [
                 unstable.vimPlugins.nvim-lspconfig
               ] ++ lib.optionals cfg.steroids [
-                tabular # used by vim-markdown
-                unicode-vim # search unicode with :Unicode & i_ctrl-x_ctrl-z
-                vim-markdown
-                vim-visual-multi # multiple cursors with i_ctrl-n
+                plugins.tabular # used by vim-markdown
+                plugins.unicode-vim # search unicode with :Unicode & i_ctrl-x_ctrl-z
+                plugins.vim-markdown
+                plugins.vim-visual-multi # multiple cursors with i_ctrl-n
                 vim-svelte
-                vim-jsonnet
-                vim-elixir
+                plugins.vim-jsonnet
+                plugins.vim-elixir # uses Ruby
                 unstable.vimPlugins.quarto-nvim
-                unstable.vimPlugins.otter-nvim
+                unstable.vimPlugins.otter-nvim # used by quarto-nvim
               ];
               opt = [ ];
             };
