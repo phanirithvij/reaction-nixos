@@ -1,4 +1,4 @@
-{ lib, config, pkgs, ... }:
+{ pkgs, ... }:
 {
   imports = [
     # <nixos-hardware/dell/precision/5530>
@@ -25,16 +25,18 @@
 
   boot = {
     loader = {
-      systemd-boot.enable = true;
-      systemd-boot.editor = false;
+      systemd-boot = {
+        enable = true;
+        editor = false;
+        configurationLimit = 30;
+        consoleMode = "auto";
+        memtest86.enable = true;
+      };
       efi.canTouchEfiVariables = true;
-      timeout = 1;
+      timeout = 0;
     };
     tmp.useTmpfs = true;
     supportedFilesystems = [ "ntfs" ];
-
-    # The 5.15 mainline has a "dim brightness" bug for me
-    kernelPackages = pkgs.linuxKernel.packages.linux_6_1;
   };
 
   # Networking
