@@ -7,11 +7,15 @@ tmpDir="$(mktemp -d)"
 cp package.json "$tmpDir"
 
 pushd "$tmpDir"
-npm update
+npm update --save
 npm i
 popd
 
 cp -f "$tmpDir/package.json" "$tmpDir/package-lock.json" .
+
+# Remove this line:
+# "rollup": "^2.63.0"
+sed -i '/"\^2.63.0"/d' ./package-lock.json
 
 npmDepsHash=$(prefetch-npm-deps package-lock.json)
 directusVersion="$(jq -r '.dependencies.directus' < "$tmpDir/package.json" | tr -d '^')"
