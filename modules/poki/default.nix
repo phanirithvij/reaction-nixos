@@ -76,5 +76,18 @@
       extraGroups = [ "users" ];
       openssh.authorizedKeys.keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMejg0vhFiS9vjVYX8IiXgq4kRy8c+XXbkaaio6i4BXP root@musi" ];
     };
+    bertille = {
+      isNormalUser = true;
+      extraGroups = [ "users" ];
+      openssh.authorizedKeys.keys = [
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBrSvK7feOr37nP0hdOylZG1GzYBssHtVrWGs3/0zFha bertille@ordi"
+      ];
+    };
   };
+
+  systemd.tmpfiles.rules = [
+    "d /backup/musi     0700 musi     root - -"
+    "d /backup/ppom     0700 ppom     root - -"
+    "d /backup/bertille 0700 bertille root - -"
+  ];
 }
