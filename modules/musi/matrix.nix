@@ -33,7 +33,8 @@ in {
   };
 
   services.matrix-conduit = {
-    enable = true;
+    # because CVE
+    # enable = true;
     settings.global = {
       address = "127.0.0.1";
       allow_registration = false;
