@@ -22,10 +22,18 @@ lib.mkMerge [
         # mail_smtpname     = "paco@ecomail.io";
         # mail_smtppassword = "' . trim(file_get_contents('/var/secrets/mail/ecomail')) . '";
       };
-      phpOptions = {
+      poolSettings = /* config.services.nextcloud.poolSettings.default // */ {
+        "pm" = "dynamic";
+        "pm.max_children" = "32";
         "pm.start_servers" = "4";
+        "pm.min_spare_servers" = "2";
+        "pm.max_spare_servers" = "4";
+        "pm.max_requests" = "500";
+      };
+      phpOptions = {
         "opcache.interned_strings_buffer" = "12";
       };
+      fastcgiTimeout = 360; # for NextPush: UnifiedPush Provider
     };
 
     users.users.nextcloud.extraGroups = [ "postmaster" ];
