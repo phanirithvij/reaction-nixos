@@ -45,6 +45,10 @@ in {
 
       "www.ppom.fr" = host { return = "301 https://ppom.fr$request_uri"; };
 
+      "lili-bel.com" = host { root = "/var/www/lili-bel.com"; };
+
+      "www.lili-bel.com" = host { return = "301 https://lili-bel.com$request_uri"; };
+
       "paris-loyers.fr" = host {
         root = "/var/www/paris-loyers.fr";
         extra = {
