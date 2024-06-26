@@ -52,6 +52,8 @@
 
     services.sysstat.enable = true;
 
+    services.fstrim.enable = true;
+
     environment.systemPackages = with pkgs; [
       sysstat
       atuin
