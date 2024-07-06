@@ -91,7 +91,6 @@ in lib.mkMerge [
 
     conky # status bar
 
-    kanshi # auto change randr
     wlr-randr # manage displays/monitors
 
     wl-clipboard # wl-copy and wl-paste for copy/paste from stdin / stdout
