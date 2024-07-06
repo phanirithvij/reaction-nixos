@@ -1,46 +1,124 @@
-let
-  pkgs = import <nixpkgs> {};
+{ lib, modulesPath, pkgs, ... }:
+{
+  imports = [
+    # For cloud vms. See https://nixos.org/manual/nixos/stable/index.html#sec-profile-headless
+    # (modulesPath + "/profiles/headless.nix")
+    (modulesPath + "/profiles/qemu-guest.nix")
 
-  debugVm = { modulesPath, ... }: {
-    imports = [
-      # The qemu-vm NixOS module gives us the `vm` attribute that we will later
-      # use, and other VM-related settings
-      "${modulesPath}/virtualisation/qemu-vm.nix"
+    ../common
+  ];
 
-      ../common
-    ];
+  environment.systemPackages = with pkgs; [
+    moreutils
+    htop
+    fd
+    ripgrep
+    jq
+    du-dust
+    file
+  ];
 
-    ppom = {
-      enable = true;
-      git.email = "pakala@ppom.me";
-      nvim.enableNixd = false;
-    };
-
-    services.reaction = {
-      enable = true;
-      settingsFile = "/root/reaction.jsonnet";
-    };
-
-    system.stateVersion = "23.11";
-
-    # Forward the hosts's port 2222 to the guest's SSH port.
-    # Also, forward the MQTT port 1883 1:1 from host to guest.
-    virtualisation.forwardPorts = [
-      { from = "host"; host.port = 2222; guest.port = 22; }
-    ];
-
-    # Use nftables
-    networking = {
-      nftables.enable = true;
-    };
-    # environment.systemPackages = with pkgs; [ nftables ];
-
-    # Root user without password and enabled SSH for playing around
-    services.openssh = {
-      enable = true;
-      settings.PermitRootLogin = "yes";
-    };
-    users.extraUsers.root.password = "";
+  environment.shellAliases = {
+    n = "cd /etc/nixos/modules";
+    ll = "ls -lh";
+    la = "ls -a";
   };
-in
-  (pkgs.nixos [ debugVm ]).config.system.build.vm
+
+  programs.bash.interactiveShellInit = ''
+    [ -f ${pkgs.fzf}/share/fzf/key-bindings.bash ] && source ${pkgs.fzf}/share/fzf/key-bindings.bash
+    function nix-dir()  { echo "$(dirname "$(dirname "$(realpath "$(which "$1")")")")"; }
+    function nix-cd()   { cd "$(nix-dir "$1")"; }
+    function nix-pkgs() { cd /nix/var/nix/profiles/per-user/root/channels/nixos; }
+    function nix()      { command nix --offline "$@"; }
+    function vm() {
+      # CFILE=/tmp/shared/file
+      # sudo touch $CFILE
+      # sudo chown ppom $CFILE
+      # COUNT=$(tail -n1 $CFILE 2>/dev/null || echo 0)
+      # echo $(($COUNT + 1)) >> $CFILE
+      # echo
+      # cat $CFILE
+      # echo
+      # sleep 2
+
+      export QEMU_KERNEL_PARAMS=console=ttyS0
+      script="$(ls /nix/store/*-nixos-vm/bin/run-pakala-vm | xargs grep -l $(readlink -f /run/current-system))"
+      ram=$(grep MemAvailable /proc/meminfo | sed 's/.* \([0-9]*\) .*/\1/')
+      # From kB to MB, leave 100MB for "host"
+      ram=$(($ram / 1000 - 100))
+
+      exit=1
+      while test $exit -ne 0 && test $ram -gt 100
+      do
+        $script \
+          -nographic \
+          -m $ram
+
+        exit=$?
+
+        ram=$(($ram - 100))
+      done
+    }
+
+    free -h
+    sleep 1
+    vm
+  '';
+
+
+  system.stateVersion = "24.05";
+
+  systemd = {
+    enableEmergencyMode = false;
+    # Remove systemd-oomd
+    oomd.enable = false;
+  };
+
+  # Remove systemd user instance
+  security.pam.services.login.startSession = lib.mkForce false;
+
+  # Remove nscd
+  services.nscd.enable = false;
+  system.nssModules = lib.mkForce [];
+
+  # remove dbus
+  services.dbus.enable = lib.mkForce false;
+
+  # remove logind
+  systemd.services.systemd-logind.enable = lib.mkForce false;
+
+  networking = {
+    hostName = "pakala"; # Define your hostname.
+    firewall.enable = false;
+    # Remove dhcp
+    dhcpcd.enable = false;
+  };
+
+  services.udev.extraRules = ''
+    net.ifnames=0
+  '';
+
+  time.timeZone = "Europe/Paris";
+  i18n.defaultLocale = "en_US.UTF-8";
+
+  boot.tmp.cleanOnBoot = true;
+
+  # Define a user account. Don't forget to set a password with ‘passwd’.
+  users.users.ppom = {
+    isNormalUser = true;
+    extraGroups = [ "wheel" ];
+    initialPassword = "toto";
+  };
+  # No passwoooooord
+  services.getty.autologinUser = "ppom";
+  security.sudo.wheelNeedsPassword = false;
+
+  # Hardware configuration
+  boot.loader.grub.device = "/dev/sda";
+  boot.initrd.kernelModules = [ "nvme" ];
+  fileSystems."/" = {
+    device = "/dev/sda1";
+    fsType = "ext4";
+    options = [ "noexec" ];
+  };
+}
