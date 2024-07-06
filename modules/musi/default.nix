@@ -18,7 +18,6 @@
     ./postgresql.nix
     # ./photoprism.nix
     ./rssify/default.nix
-    ./rustdesk.nix
     ./streama.nix
     ./slskd.nix
     ./tor.nix

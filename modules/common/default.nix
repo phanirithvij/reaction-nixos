@@ -10,7 +10,6 @@
     ./packages.nix
     ./reaction.nix
     ./reaction-custom.nix
-    ./rustdesk-server.nix
     ./ssh.nix
     ./tmux.nix
   ];
