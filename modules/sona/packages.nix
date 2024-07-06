@@ -61,6 +61,8 @@ in {
     # element-desktop # Matrix heavy client
     # tor-browser-bundle-bin
     # pcmanfm # File Browser
+    gnome.gnome-keyring # for fractal
+    fractal # Gnome Matrix desktop client
     evince
     libreoffice
     mpv-no-scripts
