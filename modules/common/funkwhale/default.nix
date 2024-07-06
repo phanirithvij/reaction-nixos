@@ -182,7 +182,7 @@
             cat > ${pythonSecretFile} <<EOF
           CACHE_URL=redis://:$REDIS_PASSWORD@localhost:${toString redisPort}/0
           DJANGO_SECRET_KEY=$DJANGO_PASSWORD
-          DATABASE_URL=postgresql://funkwhale:$POSTGRES_PASSWORD@localhost:${toString config.services.postgresql.port}/funkwhale
+          DATABASE_URL=postgresql://funkwhale:$POSTGRES_PASSWORD@localhost:${toString config.services.postgresql.settings.port}/funkwhale
           EOF
           fi
 

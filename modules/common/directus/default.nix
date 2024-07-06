@@ -54,7 +54,7 @@ in {
                 DB_FILENAME = null; # remove DB_FILENAME default-coded value
                 DB_CLIENT = "postgres";
                 DB_HOST = "localhost";
-                DB_PORT = config.services.postgresql.port;
+                DB_PORT = config.services.postgresql.settings.port;
               }
               ```
 

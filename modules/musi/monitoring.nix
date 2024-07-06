@@ -66,27 +66,4 @@ in {
     };
     startAt = "minutely";
   };
-
-  services.netdata = {
-    enable = true;
-    config = {
-      global = {
-        "update every" = 10;
-      };
-    };
-    configDir = {
-      ".opt-out-from-anonymous-statistics" = pkgs.writeText "empty" "";
-    };
-  };
-  services.nginx.virtualHosts."ppom.me".locations= {
-    "/netdata".return = "301 /netdata/";
-    "/netdata/" = {
-      proxyPass = "http://localhost:19999/";
-      proxyWebsockets = true;
-      extraConfig = ''
-        auth_basic "Credentials";
-        auth_basic_user_file /var/secrets/basic_auth_nginx/monit;
-      '';
-    };
-  };
 }

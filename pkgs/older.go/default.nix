@@ -16,7 +16,7 @@ stdenv.mkDerivation {
   meta = with lib; {
     description = "A script that deletes to-be-deleted files in a directory";
     homepage = "https://framagit.org/ppom/nixos";
-    license = licenses.agpl3;
+    license = licenses.agpl3Plus;
     maintainers = with maintainers; [ ppom ];
     platforms = platforms.linux;
   };

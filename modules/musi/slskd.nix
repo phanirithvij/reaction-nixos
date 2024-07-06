@@ -6,13 +6,12 @@ in {
   services.slskd = {
     enable = true;
     # package = unstable.slskd;
-    rotateLogs = true;
     openFirewall = true;
     environmentFile = "/var/secrets/slskd";
+    domain = "ppom.me";
     nginx = {
-      enable = true;
-      domainName = "ppom.me";
-      contextPath = "/slskd";
+      enableACME = true;
+      forceSSL = true;
     };
     settings = {
       soulseek = {
@@ -20,7 +19,10 @@ in {
         listen_port = 2332;
         diagnostic_level = "Warning";
       };
-      web.authentication.username = "ppom";
+      web = {
+        url_base = "/slskd";
+        authentication.username = "ppom";
+      };
       shares.directories = [
         "[music]/data/music-export/music"
         "[movies]/data/streama/movies"

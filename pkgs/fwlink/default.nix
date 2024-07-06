@@ -30,7 +30,7 @@ stdenv.mkDerivation rec {
   meta = with lib; {
     description = "A script that symlinks Funkwhale-organised tracks to a tag-organised directory";
     homepage = "https://framagit.org/ppom/nixos";
-    license = licenses.agpl3;
+    license = licenses.agpl3Plus;
     maintainers = with maintainers; [ ppom ];
     platforms = platforms.linux;
   };
