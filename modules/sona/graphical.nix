@@ -190,14 +190,8 @@ in lib.mkMerge [
     startAt = "*-*-* *:0/2:00";
   };
 
-  # Programs
-  programs = {
-    # Udev rules
-    light.enable = true;
-    gnupg.agent = {
-      pinentryFlavor = "gnome3";
-    };
-  };
+  # Udev rules
+  programs.light.enable = true;
 
   # services.flatpak.enable = true;
 

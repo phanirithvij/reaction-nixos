@@ -19,7 +19,7 @@ rustPlatform.buildRustPackage {
   meta = with lib; {
     description = "Subtitle editor on the command line";
     homepage = url;
-    license = licenses.agpl3;
-    maintainers = with maintainers; [];
+    license = licenses.agpl3Plus;
+    maintainers = with maintainers; [ ppom ];
   };
 }

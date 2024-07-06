@@ -15,7 +15,6 @@ in {
     # tealdeer # tldr man pages
     tomb # LUKS wrapper
     rbw # unofficial bitwarden CLI
-    pinentry-gnome # GUI password prompt (used by gpg-agent, installing it in global path for rbw & tomb)
     pass # password-store
     acpi # battery information
     # libossp_uuid # uuid v4
