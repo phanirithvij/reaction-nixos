@@ -14,6 +14,7 @@ in {
     # sysstat # iostat
     # tealdeer # tldr man pages
     tomb # LUKS wrapper
+    pinentry-gnome3 # GUI password prompt (used by gpg-agent, installing it in global path for rbw & tomb)
     rbw # unofficial bitwarden CLI
     pass # password-store
     acpi # battery information
