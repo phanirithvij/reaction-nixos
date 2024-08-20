@@ -70,7 +70,7 @@ do
 		--optimize \
 		--rate 24 --pfr \
 		--quality 23 \
-		--two-pass --turbo \
+		--turbo \
 		--subtitle-lang-list fra,eng,ita,spa \
 		-i "$FILE" \
 		-o "$DEST" |& tee "$LOG_FILE"
