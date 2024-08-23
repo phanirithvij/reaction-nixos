@@ -43,23 +43,25 @@ def getIp():
 
     return ipv6
 
-def updateIp(newIp):
+def updateIp(newIp, domainName):
     client = ovh.Client()
 
-    recordId = client.get("/domain/zone/ppom.me/record?fieldType=AAAA")
+    recordId = client.get(f"/domain/zone/{domainName}/record?fieldType=AAAA")
     if not len(recordId):
-        print(f"error no AAAA ppom.me. record", file=sys.stderr)
+        print(f"error no AAAA {domainName}. record", file=sys.stderr)
         sys.exit(1)
     recordId = recordId[0]
 
-    recordData = client.get(f"/domain/zone/ppom.me/record/{recordId}")
+    recordData = client.get(f"/domain/zone/{domainName}/record/{recordId}")
     oldIp = recordData['target']
 
     if oldIp != newIp:
-        client.put(f"/domain/zone/ppom.me/record/{recordId}", target=newIp)
-        client.post("/domain/zone/ppom.me/refresh")
-        print(f"update from {oldIp} to {newIp}")
+        client.put(f"/domain/zone/{domainName}/record/{recordId}", target=newIp)
+        client.post(f"/domain/zone/{domainName}/refresh")
+        print(f"{domainName}: update from {oldIp} to {newIp}")
     else:
-        print(f"unchanged {oldIp}")
+        print(f"{domainName}: unchanged {oldIp}")
 
-updateIp(getIp())
+newIp = getIp()
+updateIp(newIp, "ppom.me")
+updateIp(newIp, "fesse.cloud")
