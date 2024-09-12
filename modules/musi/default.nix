@@ -29,6 +29,7 @@
     ./music.ppom.me.nix
     ./edit.ppom.me
     ./file.ppom.me.nix
+    ./fesse.cloud.nix
   ];
 
   ppom = {
