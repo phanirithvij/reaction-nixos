@@ -1,5 +1,7 @@
 { lib, pkgs, config, ... }:
-{
+let
+    cfg = config.ppom.monit;
+in {
   options.ppom.monit = {
     enable = lib.mkEnableOption "enable Monit with ppom conf";
 
@@ -29,19 +31,17 @@
     mailAccount = lib.mkOption {
       type = lib.types.str;
       description = "mail account";
-      default = "monit@ppom.me";
+      default = cfg.fromMail;
     };
 
     mailAccountPasswordFile = lib.mkOption {
       type = lib.types.path;
       description = "file containing the password";
-      default = "/var/secrets/mail/monit@ppom.me";
+      default = "/var/secrets/mail/${cfg.fromMail}";
     };
   };
 
   config = let
-    cfg = config.ppom.monit;
-
     systemdCheck = pkgs.writeScript "systemctl-status-ok" ''
       #!${pkgs.runtimeShell}
 
