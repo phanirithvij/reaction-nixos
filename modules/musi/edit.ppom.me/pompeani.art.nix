@@ -18,7 +18,7 @@ in {
     };
   };
 
-  users.users."directus-pompeani.art".extraGroups = [ "postmaster" ];
+  users.users."directus-pompeani.art".extraGroups = [ "directus" ];
 
   ppom.directus2zola.settings = {
     projects = [{

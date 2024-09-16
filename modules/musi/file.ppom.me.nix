@@ -16,11 +16,11 @@ lib.mkMerge [
         adminuser = "admin";
         # Not possible because services.nextcloud.config is not of freeform type
         # mail_smtpmode = "smtp";
-        # mail_smtphost = "smtp.ecomail.fr";
+        # mail_smtphost = "mail.girofle.org";
         # mail_smtpsecure = "ssl";
         # mail_smtpauthtype = "LOGIN";
-        # mail_smtpname     = "paco@ecomail.io";
-        # mail_smtppassword = "' . trim(file_get_contents('/var/secrets/mail/ecomail')) . '";
+        # mail_smtpname     = "file@ppom.me";
+        # mail_smtppassword = "' . trim(file_get_contents('/var/secrets/mail/file@ppom.me')) . '";
       };
       poolSettings = /* config.services.nextcloud.poolSettings.default // */ {
         "pm" = "dynamic";
@@ -35,8 +35,6 @@ lib.mkMerge [
       };
       fastcgiTimeout = 360; # for NextPush: UnifiedPush Provider
     };
-
-    users.users.nextcloud.extraGroups = [ "postmaster" ];
 
     services.nginx.virtualHosts = {
       "file.ppom.me" = {

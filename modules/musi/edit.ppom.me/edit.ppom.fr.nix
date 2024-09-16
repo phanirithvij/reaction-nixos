@@ -16,4 +16,5 @@ in {
       };
     };
   };
+  users.users."directus-edit.ppom.fr".extraGroups = [ "directus" ];
 }

@@ -17,7 +17,7 @@ in {
     };
   };
 
-  users.users."directus-leborddeleau".extraGroups = [ "postmaster" ];
+  users.users."directus-leborddeleau".extraGroups = [ "directus" ];
 
   ppom.directus2zola.settings = {
     projects = [{

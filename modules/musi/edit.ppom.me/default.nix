@@ -10,7 +10,6 @@ in
     ./lili-bel.com.nix
     ./5eroue.nix
     ./edit.ppom.fr.nix
-    ./coco.nix
   ];
 
   services.directus.allowDirectusLicense = true;
@@ -56,4 +55,5 @@ in
   };
 
   users.groups.directus2zola = {};
+  users.groups.directus = {};
 }

@@ -36,7 +36,7 @@ in {
     };
   };
 
-  users.users."directus-babos".extraGroups = [ "postmaster" ];
+  users.users."directus-babos".extraGroups = [ "directus" ];
   users.users."bertille".extraGroups = [ "directus-babos" ];
 
   security.doas.extraRules = [{

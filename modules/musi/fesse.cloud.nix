@@ -42,7 +42,14 @@ in {
           well_known = "/data/fesse/well_known/";
           client_overrides = "/data/fesse/client_overrides/";
       };
+      smtp = {
+        hostname = "mail.girofle.org";
+        port = 465;
+        username = "admin@fesse.cloud";
+        from_address = "admin@fesse.cloud";
+      };
     };
+    smtp.passwordFile = "/var/secrets/mail/admin@fesse.cloud";
   };
 
   systemd.tmpfiles.rules = [

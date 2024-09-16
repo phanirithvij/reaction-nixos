@@ -12,7 +12,6 @@
     ./hardware-configuration.nix
     ./languagetool.nix
     # ./listmonk.nix
-    ./mail.nix
     ./matrix.nix
     ./monitoring.nix
     ./postgresql.nix

@@ -49,6 +49,7 @@ in {
   users.users."directus-5eroue" = {
     shell = pkgs.bashInteractive;
     openssh.authorizedKeys.keys = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDbkvImtAGpSFQ8XesQ21whnATnW1CjCsHgy6YUdWSwNz9QE6FEavlZUJHqcuYtrg5326+smwEhEV60JEMfkBXm7Og3pIthazBT51/4mjwytKXDo75OxH1Fp9lNmHR54Dde0CWZHEVufCFDNp8rVp+kEfcf8Lv73TyObMqkrnLdPym/cn3jBphV5z8xQg3sFsQ4R28GAhzplCwLAyTvvDLbzGZehM/SBuZH/54HxMFrn/AqUag98vPCePfkQW+PMb84xE8AbldULCO5A/uPCyns34zOjZ0guAigNp/lDVeQrloxt/PUoNjsUYYxNR5VDy50lkRZw8c63oqMqK3qPvzS4X+dTzYvxKwqyWeZPvqaHnq92Xj8vRI12t1qz3znj6IaeUKsv9kczIVjNLBZZCBNIcOEUJXUPSiA/Qr23sPZ76oCa5zOSZ5Sl0NUsWDRgokDSP+X4rcirAJ5xuTM/o7aBqxdBGHPXZcFXoRH2HPbQ6HmmabmNLv/tp2h3tzOqsM=" ];
+    extraGroups = [ "directus" ];
   };
 
   security.doas.extraRules = let

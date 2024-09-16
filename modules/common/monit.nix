@@ -11,7 +11,7 @@
     destinationMail = lib.mkOption {
       type = lib.types.str;
       description = "Which email address Monit must send emails to";
-      default = "ppom@ecomail.fr";
+      default = "monit@ppom.me";
     };
 
     interface = lib.mkOption {
@@ -23,19 +23,19 @@
     mailServer = lib.mkOption {
       type = lib.types.str;
       description = "mail server";
-      default = "smtp.ecomail.fr";
+      default = "mail.girofle.org";
     };
 
     mailAccount = lib.mkOption {
       type = lib.types.str;
       description = "mail account";
-      default = "paco@ecomail.io";
+      default = "monit@ppom.me";
     };
 
     mailAccountPasswordFile = lib.mkOption {
       type = lib.types.path;
       description = "file containing the password";
-      default = "/var/secrets/mail/ecomail";
+      default = "/var/secrets/mail/monit@ppom.me";
     };
   };
 
