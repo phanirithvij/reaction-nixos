@@ -22,6 +22,7 @@ lib.mkMerge [
         # mail_smtpname     = "file@ppom.me";
         # mail_smtppassword = "' . trim(file_get_contents('/var/secrets/mail/file@ppom.me')) . '";
       };
+      maxUploadSize = "10G";
       poolSettings = /* config.services.nextcloud.poolSettings.default // */ {
         "pm" = "dynamic";
         "pm.max_children" = "32";
