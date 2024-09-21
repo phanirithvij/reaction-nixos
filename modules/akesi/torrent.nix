@@ -3,7 +3,7 @@
 let
   sshMountPath = "/musi";
   sshHostPart = "akesi@musi.ppom.me";
-  sshPathPart = "/home/akesi/";
+  sshPathPart = "/home/akesi/upload-here";
   sshFullPath =  "${sshHostPart}:${sshPathPart}";
   sshPrivateKey = "/var/secrets/musi/id_rsa";
 in
