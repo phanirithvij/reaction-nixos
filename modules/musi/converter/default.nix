@@ -51,5 +51,5 @@ in {
     };
   };
 
-  environment.systemPackages = [ convertd cnv ];
+  environment.systemPackages = [ convertd cnv pkgs.handbrake ];
 }

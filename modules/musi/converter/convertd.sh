@@ -71,6 +71,7 @@ do
 		--rate 24 --pfr \
 		--quality 23 \
 		--turbo \
+		--audio-lang-list eng,fra,ita,spa \
 		--subtitle-lang-list fra,eng,ita,spa \
 		-i "$FILE" \
 		-o "$DEST" |& tee "$LOG_FILE"
