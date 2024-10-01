@@ -54,6 +54,11 @@
 
     services.fstrim.enable = true;
 
+    services.locate = {
+      enable = true;
+      package = pkgs.plocate;
+    };
+
     environment.systemPackages = with pkgs; [
       sysstat
       atuin
