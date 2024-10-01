@@ -15,7 +15,7 @@ in {
     # tealdeer # tldr man pages
     tomb # LUKS wrapper
     pinentry-gnome3 # GUI password prompt (used by gpg-agent, installing it in global path for rbw & tomb)
-    rbw # unofficial bitwarden CLI
+    unstable.rbw # unofficial bitwarden CLI
     pass # password-store
     acpi # battery information
     # libossp_uuid # uuid v4
@@ -106,6 +106,8 @@ in {
     # (quarto.override { rWrapper = null; python3 = null; }) # Markdown environment based on pandoc
     minisign # small utility to sign files
     ansible
+    tokei # SLOC counter
+    hexyl # pretty hexdump
 
     docker
     # docker-compose # for SiMDE's Portail des assos
