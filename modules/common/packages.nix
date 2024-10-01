@@ -15,6 +15,12 @@
       nixos-option # print the actual value of a NixOS option
       nvd # print versions and changes of packages across nix closures
       nix-diff # prints differences between two derivations, ex: `nix-diff /nix/var/nix/profiles/system-{n,n+1}-link`
+      (import (fetchFromGitHub {
+        owner = "diamondburned";
+        repo = "nix-search";
+        rev = "v0.3.1";
+        sha256 = "sha256-2N1xy9BK9o7j/vk42Pg/nvDjDt7nZlannCLCcS8Puuk=";
+      }))
 
       ## processus
       htop # process viewer
