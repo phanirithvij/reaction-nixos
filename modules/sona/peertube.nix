@@ -2,6 +2,7 @@
 {
   # services.postgresql = {
   #   enable = true;
+  #   package = pkgs.postgresql_16;
   #   ensureDatabases = [ "peertube-dev" ];
   #   ensureUsers = [ {
   #     name = "peertube-dev";
