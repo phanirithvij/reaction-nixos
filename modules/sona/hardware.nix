@@ -14,7 +14,7 @@
   };
 
   fileSystems."/home/hdd" = {
-    device = "/dev/disk/by-uuid/0ebcabd7-c195-4ac7-801e-b14f3738f32c";
+    device = "/dev/disk/by-uuid/8c1f7b44-3520-4889-b4a1-c43e9315122a";
     fsType = "ext4";
   };
 
@@ -22,6 +22,10 @@
     reusePassphrases = true;
     devices."crypted" = {
       device = "/dev/disk/by-uuid/51e426d1-48ca-4387-80c0-883593c7108b";
+      bypassWorkqueues = true;
+    };
+    devices."hdd" = {
+      device = "/dev/disk/by-uuid/59ba551d-cf29-4488-ac92-ddf5646f78cd";
       bypassWorkqueues = true;
     };
   };
