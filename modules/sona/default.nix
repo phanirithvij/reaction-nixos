@@ -57,6 +57,10 @@
     extraHosts = ''
       10.0.255.124	awx.poleinfo.coopaname.coop
       10.0.255.141	logs.poleinfo.coopaname.coop
+      #80.67.182.69 pica03.picasoft.net pass.picasoft.net
+      #80.67.182.68 caribou.picasoft.net ns01.picasoft.net
+      #91.224.148.85 bob.picasoft.net ns02.picasoft.net
+      #91.224.148.61 monitoring.picasoft.net
     '';
   };
   # use FDN's DNS. Override Internet provider's DNS
