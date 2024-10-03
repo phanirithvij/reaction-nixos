@@ -9,6 +9,10 @@ let
         root = root;
         index = "index.html";
         tryFiles = "$uri $uri.html $uri/ =404";
+        extraConfig = ''
+          proxy_intercept_errors on;
+          error_page 404 /404.html;
+        '';
       } else {
         inherit return;
       }) // extra;
