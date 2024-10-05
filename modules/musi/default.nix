@@ -15,7 +15,7 @@
     ./matrix.nix
     ./monitoring.nix
     ./postgresql.nix
-    # ./photoprism.nix
+    ./photoprism.nix
     ./rssify/default.nix
     ./streama.nix
     ./slskd.nix
