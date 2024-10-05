@@ -1,6 +1,7 @@
 { lib, pkgs, config, ... }:
 let
   settingsFormat = pkgs.formats.yaml {};
+  unstable = import <nixos-unstable> {};
 in {
   options.services.reaction = with lib; with types; {
     enable = mkEnableOption "enable reaction";
@@ -8,7 +9,7 @@ in {
     package = mkOption {
       type = package;
       description = "The reaction package to use";
-      default = pkgs.callPackage ../../pkgs/reaction {};
+      default = unstable.reaction;
     };
 
     settings = mkOption {
