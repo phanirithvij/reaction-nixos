@@ -65,13 +65,15 @@ in {
         pkgs.gopls
       ] ++ lib.optionals cfg.steroids [
         pkgs.nodejs
-        # Language servers
-        # pkgs.ltex-ls
+
         pkgs.lua-language-server
+
+        pkgs.jdk11
+        pkgs.jdt-language-server
+
         pkgs.jsonnet-language-server
         pkgs.jsonnet
-        pkgs.elixir
-        pkgs.elixir-ls
+
         unstable.vscode-langservers-extracted # requires vscode to build
         nodes."@tailwindcss/language-server"
         nodes.svelte-language-server
@@ -127,7 +129,7 @@ in {
                 plugins.vim-visual-multi # multiple cursors with i_ctrl-n
                 vim-svelte
                 plugins.vim-jsonnet
-                plugins.vim-elixir # uses Ruby
+                plugins.nvim-jdtls
                 unstable.vimPlugins.quarto-nvim
                 unstable.vimPlugins.otter-nvim # used by quarto-nvim
               ];
