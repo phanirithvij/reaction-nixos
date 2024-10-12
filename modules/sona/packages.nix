@@ -145,6 +145,14 @@ in {
 
   ];
 
+  # programs.sniffnet.enable = true; # Equivalent but fix only on unstable
+  security.wrappers.sniffnet = {
+    owner = "root";
+    group = "root";
+    capabilities = "cap_net_raw,cap_net_admin=eip";
+    source = "${unstable.sniffnet}/bin/sniffnet";
+  };
+
   nixpkgs.overlays = [
     (self: super: {
       # add rofi-emoji plugin
