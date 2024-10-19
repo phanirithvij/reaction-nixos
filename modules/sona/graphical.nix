@@ -1,4 +1,4 @@
-{ lib, config, pkgs, ... }:
+{ lib, pkgs, ... }:
 # from https://nixos.wiki/wiki/Sway
 let
   # bash script to let dbus know about important env variables and
@@ -187,6 +187,23 @@ in lib.mkMerge [
       User = "ao";
     };
     startAt = "*-*-* *:0/2:00";
+  };
+
+  systemd.services.nixos-upgrade = {
+    serviceConfig = {
+      ExecStartPre = "/run/wrappers/bin/doas -u ao ${pkgs.writeShellApplication {
+        name = "notify-upgrade";
+        runtimeInputs = with pkgs; [ libnotify ];
+        text = ''
+          export DISPLAY=${"\$"}{DISPLAY:=":0"}
+          export XDG_RUNTIME_DIR=${"\$"}{XDG_RUNTIME_DIR:=/run/user/$(id -u)}
+          export DBUS_SESSION_BUS_ADDRESS=${"\$"}{DBUS_SESSION_BUS_ADDRESS:="unix:path=${"\$"}{XDG_RUNTIME_DIR}/bus"}
+          notify-send --urgency=critical --expire-time 60000 "Mise à jour de NixOS dans 1 minute"
+          sleep 1m
+        '';
+        }
+      }/bin/notify-upgrade";
+    };
   };
 
   # Udev rules
