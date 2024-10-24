@@ -1,29 +1,29 @@
 {
 stdenv
 , linkFarm
-, buildGoModule
 , fetchFromGitLab
+, rustPlatform
 }:
 let
   pname = "reaction";
-  version = "v1.1.0";
+  # version = "v2.0.0-rc1";
+  version = "21e2cf67dc1e04c748db209b3f68a143f776cdcd";
   src = fetchFromGitLab {
     domain = "framagit.org";
     owner = "ppom";
     repo = pname;
     rev = version;
-    sha256 = "sha256-SSSd15nS6AgP9akKscvuUL4t5QRiMdgVfObX5BZOH3Q=";
+    sha256 = "sha256-o4YCACcbtft//jf7bcPmg/h7z2roXqVeNRuDA4t+v+M=";
   };
-  reaction = buildGoModule {
+  reaction = rustPlatform.buildRustPackage {
     inherit pname version src;
-
-    vendorHash = "sha256-THUIoWFzkqaTofwH4clBgsmtUlLS9WIB2xjqW7vkhpg=";
+    cargoSha256 = "sha256-KgYsiSVTLyvEbnSv3z2v+SwVgzHZL5FjJzbFoLzOmOs=";
   };
   ip46tables = stdenv.mkDerivation {
     inherit version src;
     pname = "ip46tables";
     buildPhase = ''
-      gcc ip46tables.d/ip46tables.c -o ip46tables
+      gcc helpers_c/ip46tables.c -o ip46tables
     '';
     installPhase = ''
       mkdir -p $out/bin

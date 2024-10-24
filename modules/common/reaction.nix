@@ -9,7 +9,7 @@ in {
     package = mkOption {
       type = package;
       description = "The reaction package to use";
-      default = unstable.reaction;
+      default = pkgs.callPackage ../../pkgs/reaction {};
     };
 
     settings = mkOption {
