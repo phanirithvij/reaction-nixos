@@ -109,4 +109,16 @@ in {
     };
     startAt = "daily";
   };
+
+  services.nginx.virtualHosts."music.ppom.me".locations = {
+    "/kdo".return = "302 /kdo/";
+    "/kdo/" = {
+      root = "/data/music-export/music";
+      extraConfig = ''
+        rewrite ^/kdo(/.*)$ $1 break;
+        fancyindex on;
+        fancyindex_exact_size off;
+      '';
+    };
+  };
 }
