@@ -1,7 +1,7 @@
 { config, lib, ... }:
 let
   hostName = config.networking.hostName;
-  hosts = builtins.fromTOML (builtins.readFile ./hosts.toml);
+  hosts = builtins.fromTOML (builtins.readFile ../common/hosts.toml);
   host = hosts.${hostName};
 in {
   services.nfs.server = {
