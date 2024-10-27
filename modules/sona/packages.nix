@@ -108,6 +108,7 @@ in {
     ansible
     tokei # SLOC counter
     hexyl # pretty hexdump
+    reveal-md
 
     docker
     # docker-compose # for SiMDE's Portail des assos
