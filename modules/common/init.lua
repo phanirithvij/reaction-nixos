@@ -123,10 +123,10 @@ vim.api.nvim_create_autocmd('Filetype', {
 if steroids or enableGo or enableNixd then
 	-- nvim_lspconfig
 	-- See `:help vim.diagnostic.*` for documentation on any of the below functions
-	vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float)
+	vim.keymap.set('n', '<space>e', vim.diagnostic.open_float)
 	vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
 	vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
-	vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist)
+	vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist)
 
 	local lspgroup = vim.api.nvim_create_augroup('UserLspConfig', { clear = true })
 
