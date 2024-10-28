@@ -1,0 +1,16 @@
+[akesi]
+address = "10.1.1.1"
+publicKey = "rJ91zWvjJwj5ByxLx1tiyiRR3m8qRmZ4sQm7RctSTlc="
+endpoint = "akesi.ppom.me:58234"
+listenPort = 58234
+
+[musi]
+address = "10.1.1.2"
+publicKey = "/Tcl/+rIl3OVZXyLUz9e3hhHKJdhFspEbwztQzT0mFg="
+endpoint = "musi.ppom.me:58234"
+listenPort = 58234
+
+[sona]
+address = "10.1.1.3"
+publicKey = "UYjsvFMCc+yRBPxX4rHiuRx1jQd1WntClaAueNXNmh4="
+listenPort = 58234

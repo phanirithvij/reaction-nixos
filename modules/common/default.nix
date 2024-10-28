@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, ... }:
 {
   imports = [
     ./directus
@@ -6,6 +6,7 @@
     ./git.nix
     ./misc.nix
     ./monit.nix
+    ./nasin.nix
     ./nvim.nix
     ./packages.nix
     ./reaction.nix

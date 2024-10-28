@@ -1,30 +1,11 @@
 { lib, config, pkgs, ... }:
 let
-  port = 58234;
-  ip = "10.1.1.1";
-  musiIp = "10.1.1.2";
+  hostName = config.networking.hostName;
+  hosts = builtins.fromTOML (builtins.readFile ./hosts.toml);
+  host = hosts.${hostName};
   mountName = "musi";
   mountPath = "/${mountName}";
 in lib.mkMerge [
-  # Wireguard
-  {
-    environment.systemPackages = [ pkgs.wireguard-tools ];
-    networking = {
-      firewall.allowedUDPPorts = [ port ];
-      wg-quick.interfaces.nasin = {
-        address = [ "${ip}/32" ];
-        privateKeyFile = "/var/secrets/wireguard/privatekey";
-        listenPort = port;
-        peers = [
-          {
-            endpoint = "musi.ppom.me:${toString port}";
-            publicKey = "/Tcl/+rIl3OVZXyLUz9e3hhHKJdhFspEbwztQzT0mFg=";
-            allowedIPs = [ "${musiIp}/32" ];
-          }
-        ];
-      };
-    };
-  }
   # NFS
   {
     services.nfs.server.enable = true;
@@ -33,7 +14,7 @@ in lib.mkMerge [
     systemd.mounts = [
       {
         type = "nfs";
-        what = "${musiIp}:/data/akesi";
+        what = "${hosts.musi.address}:/data/akesi";
         where = mountPath;
       }
     ];
@@ -47,7 +28,6 @@ in lib.mkMerge [
     services.transmission = {
       enable = true;
       openPeerPorts = true;
-      # openRPCPort = true; # FIXME uncomment
       performanceNetParameters = true;
       # credentialsFile = "/var/secrets/transmission/auth.json";
       settings = {
@@ -57,18 +37,18 @@ in lib.mkMerge [
         watch-dir-enabled = true;
         speed-limit-up = 2 * 1024; # KB/s
         speed-limit-up-enabled = true;
-        rpc-bind-address = ip;
+        rpc-bind-address = host.address;
         rpc-username = "ppom";
         rpc_authentication_required = false;
       };
     };
 
     networking.firewall.extraCommands = ''
-      iptables -A nixos-fw -p udp --dport 9091 -s ${musiIp}/24 -j nixos-fw-accept
+      iptables -A nixos-fw -p udp --dport 9091 -s ${hosts.sona.address}/24 -j nixos-fw-accept
     '';
 
-    environment.systemPackages = with pkgs; [
-      # stig # currently broken
+    environment.systemPackages = [
+      # pkgs.stig # currently broken
     ];
 
     # stig currenlty broken

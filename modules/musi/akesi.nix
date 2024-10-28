@@ -1,14 +1,14 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, ... }:
 let
-  port = 58234;
-  ip = "10.1.1.2";
-  akesiIp = "10.1.1.1";
+  hostName = config.networking.hostName;
+  hosts = builtins.fromTOML (builtins.readFile ./hosts.toml);
+  host = hosts.${hostName};
 in {
   services.nfs.server = {
     enable = true;
     # Doc: https://www.man7.org/linux/man-pages/man5/exports.5.html
     exports = ''
-      /data/akesi ${akesiIp}(${lib.concatStringsSep "," [
+      /data/akesi ${hosts.akesi.address}(${lib.concatStringsSep "," [
         # Allow writes
         "rw"
         # Strong consistency
@@ -21,7 +21,7 @@ in {
         "anongid=${toString config.users.groups."nfsakesi".gid}"
       ]})
     '';
-    hostName = ip;
+    hostName = host.address;
   };
 
   users.users.nfsakesi = {
@@ -30,30 +30,12 @@ in {
   };
   users.groups.nfsakesi.gid = 70;
 
-  environment.systemPackages = [ pkgs.wireguard-tools ];
-  networking = {
-    firewall = {
-      # Only allow akesi to connect to the NFS server via its Wireguard IP
-      # Accept both udp and tcp
-      extraCommands = ''
-        iptables -A nixos-fw -p udp --dport 2049 -s ${akesiIp} -j nixos-fw-accept
-        iptables -A nixos-fw -p tcp --dport 2049 -s ${akesiIp} -j nixos-fw-accept
-      '';
-      allowedUDPPorts = [ port ];
-    };
-    wg-quick.interfaces.nasin = {
-      address = [ "${ip}/32" ];
-      privateKeyFile = "/var/secrets/nasin.key";
-      listenPort = port;
-      peers = [
-        {
-          endpoint = "akesi.ppom.me:${toString port}";
-          publicKey = "rJ91zWvjJwj5ByxLx1tiyiRR3m8qRmZ4sQm7RctSTlc=";
-          allowedIPs = [ "${akesiIp}/32" ];
-        }
-      ];
-    };
-  };
+  # Only allow akesi to connect to the NFS server via its Wireguard IP
+  # Accept both udp and tcp
+  networking.firewall.extraCommands = ''
+    iptables -A nixos-fw -p udp --dport 2049 -s ${hosts.akesi.address} -j nixos-fw-accept
+    iptables -A nixos-fw -p tcp --dport 2049 -s ${hosts.akesi.address} -j nixos-fw-accept
+  '';
 
-  services.reaction.settings.patterns.ip.ignore = [ akesiIp ];
+  services.reaction.settings.patterns.ip.ignore = [ hosts.akesi.address ];
 }
