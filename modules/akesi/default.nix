@@ -8,8 +8,6 @@
     ../common
 
     ./hardware-configuration.nix
-    ./nebula.nix
-    ./nfs.nix
     ./musi-websites.nix
     ./torrent.nix
     ./webserver.nix
