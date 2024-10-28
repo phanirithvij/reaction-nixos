@@ -22,8 +22,8 @@ in lib.mkMerge [
   # Transmission
   {
     systemd.services.transmission = {
-      after = [ mountName ];
-      requires = [ mountName ];
+      after = [ "${mountName}.mount" ];
+      requires = [ "${mountName}.mount" ];
     };
     services.transmission = {
       enable = true;
