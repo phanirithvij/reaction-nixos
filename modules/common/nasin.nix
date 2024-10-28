@@ -20,7 +20,7 @@ in lib.mkIf (builtins.hasAttr hostName hosts) {
     firewall.allowedUDPPorts = [ host.listenPort ];
 
     wg-quick.interfaces.nasin = {
-      address = [ "${host.address}/32" ];
+      address = [ "${host.address}/24" ];
       privateKeyFile = "/var/secrets/nasin.key";
       listenPort = host.listenPort;
       peers = peers;

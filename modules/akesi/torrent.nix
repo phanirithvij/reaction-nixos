@@ -39,12 +39,15 @@ in lib.mkMerge [
         speed-limit-up-enabled = true;
         rpc-bind-address = host.address;
         rpc-username = "ppom";
+        rpc-whitelist = "127.0.0.1,${hosts.sona.address}";
         rpc_authentication_required = false;
       };
     };
 
+    services.reaction.settings.patterns.ip.ignore = [ hosts.sona.address ];
+
     networking.firewall.extraCommands = ''
-      iptables -A nixos-fw -p udp --dport 9091 -s ${hosts.sona.address}/24 -j nixos-fw-accept
+      iptables -A nixos-fw -p tcp --dport 9091 -s ${hosts.sona.address} -j nixos-fw-accept
     '';
 
     environment.systemPackages = [
