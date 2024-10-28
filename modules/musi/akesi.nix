@@ -32,10 +32,19 @@ in {
 
   # Only allow akesi to connect to the NFS server via its Wireguard IP
   # Accept both udp and tcp
+  # Also allow access to the binary cache
   networking.firewall.extraCommands = ''
     iptables -A nixos-fw -p udp --dport 2049 -s ${hosts.akesi.address} -j nixos-fw-accept
     iptables -A nixos-fw -p tcp --dport 2049 -s ${hosts.akesi.address} -j nixos-fw-accept
+    iptables -A nixos-fw -p tcp --dport ${builtins.toString config.services.nix-serve.port} -s ${hosts.akesi.address} -j nixos-fw-accept
   '';
 
   services.reaction.settings.patterns.ip.ignore = [ hosts.akesi.address ];
+
+  services.nix-serve = {
+    enable = true;
+    bindAddress = host.address;
+    port = 4977;
+    secretKeyFile = "/var/secrets/binarycache/key";
+  };
 }
