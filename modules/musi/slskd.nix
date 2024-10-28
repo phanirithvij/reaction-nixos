@@ -21,7 +21,13 @@ in {
       };
       web = {
         url_base = "/slskd";
-        authentication.username = "ppom";
+        authentication = {
+          username = "ppom";
+          # api_keys.local = {
+          #   key = "6KAhjnXtk3rcgXO2DHHEWa8tEkCqsZ4Gijrbqy2T3yb";
+          #   cidr = "127.0.0.1";
+          # };
+        };
       };
       shares.directories = [
         "[music]/data/music-export/music"
