@@ -62,8 +62,14 @@ in {
     serviceConfig = {
       User = "ppom";
       ExecStart = "${check}/bin/check_co.sh";
-      LogNamespace = "trash";
+      LogNamespace = "noisy";
     };
     startAt = "minutely";
   };
+  # Don't store check-co logging to disk
+  environment.etc."systemd/journald@noisy.conf".text = ''
+    [Journal]
+    Storage=volatile
+    RuntimeMaxUse=10M
+  '';
 }
