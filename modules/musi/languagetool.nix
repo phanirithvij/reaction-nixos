@@ -13,7 +13,8 @@ in {
     enable = true;
     description = "Language Tool self-hosted server";
     after = ["network.target"];
-    wantedBy = [ "multi-user.target" ];
+    # Low prio startup
+    wantedBy = [ "multi-user3.target" ];
     serviceConfig = {
       Type = "simple";
       User = "languagetool";

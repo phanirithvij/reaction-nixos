@@ -65,6 +65,9 @@ in {
 
   systemd.services.syncthing.serviceConfig.UMask = "0057";
 
+  systemd.services.syncthing.wantedBy = lib.mkForce [ "multi-user3.target" ];
+  systemd.services.syncthing-init.wantedBy = lib.mkForce [ "multi-user3.target" ];
+
   services.nginx.virtualHosts."ppom.me".locations."/sync/" = {
     proxyPass = "http://localhost:8384/";
     proxyWebsockets = true;

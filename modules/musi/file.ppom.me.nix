@@ -60,6 +60,10 @@ lib.mkMerge [
         actions = var.banFor "1h";
       };
     };
+
+    systemd.services."nextcloud-setup".wantedBy = lib.mkForce [ "multi-user2.target" ];
+    systemd.services."redis-nextcloud".wantedBy = lib.mkForce [ "multi-user2.target" ];
+    systemd.targets."php-fpm".wantedBy = lib.mkForce [ "multi-user2.target" ];
   }
 
   # doas/sudo workaround for nextcloud-occ

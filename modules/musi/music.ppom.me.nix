@@ -121,4 +121,13 @@ in {
       '';
     };
   };
+
+  # Low prio startup
+  systemd.services."docker-funkwhale-api".wantedBy = lib.mkForce [ "multi-user2.target" ];
+  systemd.services."docker-funkwhale-celerybeat".wantedBy = lib.mkForce [ "multi-user2.target" ];
+  systemd.services."docker-funkwhale-celeryworker".wantedBy = lib.mkForce [ "multi-user2.target" ];
+  systemd.services."docker-funkwhale-front".wantedBy = lib.mkForce [ "multi-user2.target" ];
+  systemd.services."funkwhale-init".wantedBy = lib.mkForce [ "multi-user2.target" ];
+  systemd.services."redis-funkwhale".wantedBy = lib.mkForce [ "multi-user2.target" ];
+  systemd.services.typesense.wantedBy = lib.mkForce [ "multi-user3.target" ];
 }

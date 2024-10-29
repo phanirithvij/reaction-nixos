@@ -60,6 +60,9 @@ in {
   # systemd.services.peertube.serviceConfig.ExecStart = lib.mkForce ["true"];
   # systemd.services.peertube.serviceConfig.ExecStartPre = lib.mkForce ["true"];
 
+  systemd.services."peertube".wantedBy = lib.mkForce [ "multi-user2.target" ];
+  systemd.services."redis-peertube".wantedBy = lib.mkForce [ "multi-user2.target" ];
+
   users = {
     users.fesse = {
       isSystemUser = true;

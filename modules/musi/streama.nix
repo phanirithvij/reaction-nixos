@@ -62,7 +62,8 @@ in {
   systemd.services.streama = {
     enable = true;
     description = "Streama, video streaming server";
-    wantedBy = [ "multi-user.target" ];
+    # low prio
+    wantedBy = [ "multi-user2.target" ];
     after = [ "network.target" ];
     serviceConfig = {
       Type = "simple";
