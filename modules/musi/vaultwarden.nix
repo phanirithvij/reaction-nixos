@@ -48,7 +48,4 @@ in {
       actions = var.banFor "2h";
     };
   };
-
-  # Low prio startup
-  systemd.services.vaultwarden.wantedBy = lib.mkForce [ "multi-user2.target" ];
 }

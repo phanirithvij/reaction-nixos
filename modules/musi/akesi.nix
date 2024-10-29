@@ -47,6 +47,4 @@ in {
     port = 4977;
     secretKeyFile = "/var/secrets/binarycache/key";
   };
-
-  systemd.services.nix-serve.wantedBy = lib.mkForce [ "multi-user3.target" ];
 }

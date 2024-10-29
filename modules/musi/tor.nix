@@ -19,7 +19,4 @@ in
       ORPort = torPort;
     };
   };
-
-  # Low prio startup
-  systemd.services.tor.wantedBy = lib.mkForce [ "multi-user3.target" ];
 }

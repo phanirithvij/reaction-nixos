@@ -51,7 +51,4 @@ in {
     retryperiod = "1h";
     actions = var.banFor "6h";
   };
-
-  # Low prio startup
-  systemd.services.slskd.wantedBy = lib.mkForce [ "multi-user3.target" ];
 }

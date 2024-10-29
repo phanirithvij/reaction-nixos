@@ -18,8 +18,7 @@ in {
   systemd.services.convertd = {
     enable = true;
     description = "Queue-controlled video converter";
-    # Low prio
-    wantedBy = [ "multi-user3.target" ];
+    wantedBy = [ "multi-user.target" ];
     serviceConfig = {
       Type = "simple";
       User = "media";

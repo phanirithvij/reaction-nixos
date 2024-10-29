@@ -20,6 +20,7 @@ in {
   systemd.services.rssify = {
     enable = true;
     after = [ "network.target" ];
+    wantedBy = [ "multi-user.target" ];
     serviceConfig = {
       User = "rssify";
       UMask = "022";

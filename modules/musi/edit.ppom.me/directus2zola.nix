@@ -37,7 +37,7 @@ in {
 
     systemd.services.directus2zola = {
       enable = true;
-      wantedBy = [ "multi-user2.target" ];
+      wantedBy = [ "multi-user.target" ];
       path = with pkgs; [ git zola rsync openssh ];
       serviceConfig = {
         Slice = "system-directus.slice";
