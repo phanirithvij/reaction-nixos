@@ -59,8 +59,8 @@ def updateIp(newIp, domainName):
         client.put(f"/domain/zone/{domainName}/record/{recordId}", target=newIp)
         client.post(f"/domain/zone/{domainName}/refresh")
         print(f"{domainName}: update from {oldIp} to {newIp}")
-    else:
-        print(f"{domainName}: unchanged {oldIp}")
+    # else:
+    #     print(f"{domainName}: unchanged {oldIp}")
 
 newIp = getIp()
 updateIp(newIp, "ppom.me")
