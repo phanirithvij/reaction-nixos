@@ -64,22 +64,24 @@ in {
       ] ++ lib.optionals cfg.enableGo [
         pkgs.gopls
       ] ++ lib.optionals cfg.steroids [
-        pkgs.nodejs
-
-        pkgs.lua-language-server
-
+        # pkgs.nodejs
+        # pkgs.pylizer # not packaged yet
+        nodes."@tailwindcss/language-server"
+        nodes.bash-language-server
+        # nodes.svelte-language-server
+        # nodes.typescript-language-server
+        # nodes.vls # vue-language-server
+        pkgs.ansible-language-server
+        pkgs.ansible-lint
+        pkgs.ccls
         pkgs.jdk11
         pkgs.jdt-language-server
-
-        pkgs.jsonnet-language-server
         pkgs.jsonnet
-
+        pkgs.jsonnet-language-server
+        pkgs.lua-language-server
+        pkgs.ruff
+        pkgs.yaml-language-server
         unstable.vscode-langservers-extracted # requires vscode to build
-        nodes."@tailwindcss/language-server"
-        nodes.svelte-language-server
-        nodes.typescript-language-server
-        nodes.vls # vue-language-server
-        nodes.bash-language-server
       ];
     };
 

@@ -204,19 +204,23 @@ if steroids or enableGo or enableNixd then
 		vim.g.vim_markdown_toc_autofit = 1
 
 		-- LSP config
-		lspconfig.bashls.setup {}
-		-- lspconfig.ltex.setup {}
-		lspconfig.rust_analyzer.setup {}
-		lspconfig.jsonnet_ls.setup {}
 
+		lspconfig.ansiblels.setup {}
+		lspconfig.bashls.setup {}
+		lspconfig.ccls.setup {}
+		lspconfig.cssls.setup {}
 		lspconfig.html.setup {}
 		lspconfig.jsonls.setup {}
-		lspconfig.cssls.setup {}
-
+		lspconfig.jsonnet_ls.setup {}
+		-- lspconfig.ltex.setup {}
+		-- lspconfig.pylizer.setup {}
+		lspconfig.ruff.setup {}
+		lspconfig.rust_analyzer.setup {}
+		lspconfig.svelte.setup {}
 		lspconfig.tailwindcss.setup {}
 		lspconfig.ts_ls.setup {}
 		lspconfig.vuels.setup{}
-		lspconfig.svelte.setup {}
+		lspconfig.yamlls.setup {}
 
 		lspconfig.lua_ls.setup { settings = {
 			Lua = {
