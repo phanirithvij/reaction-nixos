@@ -135,12 +135,12 @@ in {
     # Media
     imagemagick
     # beets # MP3 tag editor from MusicBrainz
-    kid3 # MP3 tag editor
+    # kid3 # MP3 tag editor
     # cdparanoia # CD ripper, `cdparanoia -B`
     # yj # YAML to JSON etc.
     # pandoc
     # texlive.combined.scheme-small
-    pdftk # PDF Swiss knife
+    # pdftk # PDF Swiss knife
     # poppler # other PDF manipulations
     # pngquant # png size reducer
 
