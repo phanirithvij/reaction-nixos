@@ -205,7 +205,12 @@ if steroids or enableGo or enableNixd then
 
 		-- LSP config
 
-		lspconfig.ansiblels.setup {}
+		lspconfig.ansiblels.setup { settings = {
+			ansible = {
+				ansible = { useFullyQualifiedCollectionNames = false },
+				validation = { lint = { arguments = "--skip-list fqcn[action-core]" } }
+			}
+		} }
 		lspconfig.bashls.setup {}
 		lspconfig.ccls.setup {}
 		lspconfig.cssls.setup {}
@@ -219,7 +224,7 @@ if steroids or enableGo or enableNixd then
 		lspconfig.svelte.setup {}
 		lspconfig.tailwindcss.setup {}
 		lspconfig.ts_ls.setup {}
-		lspconfig.vuels.setup{}
+		lspconfig.vuels.setup {}
 		lspconfig.yamlls.setup {}
 
 		lspconfig.lua_ls.setup { settings = {
