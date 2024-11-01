@@ -39,10 +39,12 @@
 
     environment.shellAliases = {
       n = "cd /etc/nixos/modules";
+      sys = "cd /etc/systemd/system";
       ll = "ls -lh";
       la = "ls -a";
       lla = "ls -lha";
       dc = "cd -";
+      gti = "git";
       ffmpeg = "ffmpeg -hide_banner";
       ffprobe = "ffprobe -hide_banner";
       booted = ''cat /run/booted-system/boot.json /run/current-system/boot.json | jq -r '."org.nixos.bootspec.v1".kernel' | rg --color never -o "linux-[^/]*"'';

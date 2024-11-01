@@ -26,12 +26,13 @@
         commit.verbose = true;
         pull.rebase = false;
         alias = {
+          c = "commit";
+          ca = "commit --amend";
           d = "diff --ignore-all-space";
           dc = "diff --ignore-all-space --cached";
           dt = "difftool";
           s = "status";
           a = "add -A";
-          cm = "commit -m";
           logc = "log -n10 --pretty=format:'%Cred%h%Creset %C(bold blue)(%an) %Creset%Cgreen(%cr)%Creset - %s %C(yellow)%d%Creset' --abbrev-commit";
         };
       };
