@@ -387,7 +387,7 @@ in {
           [[ -e secrets/secret ]] || genPasswd > secrets/secret
           chmod 600 secrets/secret secrets/key
           ln -sf ${cfg.package}/lib/package.json .
-          ${cfg.package}/bin/directus bootstrap
+          # ${cfg.package}/bin/directus bootstrap
         '';
         ExecStart = "${cfg.package}/bin/directus start";
         UMask = "0027";
