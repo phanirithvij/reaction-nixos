@@ -31,6 +31,7 @@
       enable = true;
       fromMail = "poki@ppom.me";
     };
+    musi-cache.enable = true;
   };
 
   services.openssh.allowSFTP = true;

@@ -6,6 +6,7 @@
     ./git.nix
     ./misc.nix
     ./monit.nix
+    ./musi-cache.nix
     ./nasin.nix
     ./nvim.nix
     ./packages.nix

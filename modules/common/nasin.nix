@@ -10,6 +10,8 @@ let
     allowedIPs = [ "${conf.address}/32" ];
   } // lib.optionalAttrs (builtins.hasAttr "endpoint" conf) {
     endpoint = conf.endpoint;
+  } // lib.optionalAttrs ((builtins.hasAttr "server" conf) && (builtins.hasAttr "client" host)) {
+    persistentKeepalive = 30;
   }) filtered;
 
 in lib.mkIf (builtins.hasAttr hostName hosts) {

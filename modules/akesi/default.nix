@@ -27,6 +27,7 @@
       enable = true;
       fromMail = "akesi@ppom.me";
     };
+    musi-cache.enable = true;
   };
 
   system.stateVersion = "22.05";
