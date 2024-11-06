@@ -3,13 +3,16 @@
 {
   imports = [
     # For cloud vms. See https://nixos.org/manual/nixos/stable/index.html#sec-profile-headless
-    <nixpkgs/nixos/modules/profiles/headless.nix>
+    # <nixpkgs/nixos/modules/profiles/headless.nix>
 
     ../common
 
     ./hardware-configuration.nix
     ./poweroff.nix
   ];
+
+  # Cherry-picked from the headless profile
+  boot.loader.grub.splashImage = null;
 
   ppom = {
     enable = true;
