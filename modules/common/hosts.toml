@@ -14,3 +14,13 @@ listenPort = 58234
 address = "10.1.1.3"
 publicKey = "UYjsvFMCc+yRBPxX4rHiuRx1jQd1WntClaAueNXNmh4="
 listenPort = 58234
+
+[kili]
+address = "10.1.1.4"
+publicKey = "24mNU4R5JgsiXRdeCtWSin9UPtgmWKrNMHyLIvexyQA="
+listenPort = 58234
+
+[poki]
+address = "10.1.1.5"
+publicKey = "q/pcH81V8mv6NeLaESu9Wbh0E5iEs+/NRu4Ow0/88UI="
+listenPort = 58234
