@@ -7,17 +7,17 @@ stdenv
 let
   pname = "reaction";
   # version = "v2.0.0-rc1";
-  version = "21e2cf67dc1e04c748db209b3f68a143f776cdcd";
+  version = "b747e52e94e5698090ddb924490eaa4318e127eb";
   src = fetchFromGitLab {
     domain = "framagit.org";
     owner = "ppom";
     repo = pname;
     rev = version;
-    sha256 = "sha256-o4YCACcbtft//jf7bcPmg/h7z2roXqVeNRuDA4t+v+M=";
+    sha256 = "sha256-B+jxity7ztbLAoUYu3MXLlyvKaDCY5bO7WG6/59eQeQ=";
   };
   reaction = rustPlatform.buildRustPackage {
     inherit pname version src;
-    cargoSha256 = "sha256-KgYsiSVTLyvEbnSv3z2v+SwVgzHZL5FjJzbFoLzOmOs=";
+    cargoSha256 = "sha256-gA4SZDA7yJQM7RWpowI12nvUnbKVA0Y2XSqlhJ4fewQ=";
   };
   ip46tables = stdenv.mkDerivation {
     inherit version src;
