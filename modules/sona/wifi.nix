@@ -17,53 +17,53 @@ in
   # It could work properly wherever I am and whathever network it is in, by using a local network
 
   # IP forwarding
-  boot.kernel.sysctl = {
-    "net.ipv4.conf.all.forwarding" = lib.mkOverride 97 true;
-    "net.ipv4.conf.default.forwarding" = lib.mkOverride 97 true;
-  };
+  # boot.kernel.sysctl = {
+  #   "net.ipv4.conf.all.forwarding" = lib.mkOverride 97 true;
+  #   "net.ipv4.conf.default.forwarding" = lib.mkOverride 97 true;
+  # };
 
   # Hardware level
-  hardware.enableRedistributableFirmware = true;
-  networking.wireless.enable = true;
-  # Bridge ethernet and wifi
-  networking.bridges.br0.interfaces = [ ethernetInterfaceName wifiInterfaceName ];
+  # hardware.enableRedistributableFirmware = true;
+  # networking.wireless.enable = true;
+  # # Bridge ethernet and wifi
+  # networking.bridges.br0.interfaces = [ ethernetInterfaceName wifiInterfaceName ];
 
   # Disable networkmanager-related things
-  networking.networkmanager.unmanaged = [ wifiInterfaceName ];
-  systemd.services.wpa_supplicant.enable = false;
+  # networking.networkmanager.unmanaged = [ wifiInterfaceName ];
+  # systemd.services.wpa_supplicant.enable = false;
 
   # Wireless static IP address
-  networking.interfaces."${wifiInterfaceName}" = {
-    ip4 = lib.mkOverride 0 [ ];
-    ipv4.addresses = [{ address = "192.168.0.2"; prefixLength = 24; }];
-  };
+  # networking.interfaces."${wifiInterfaceName}" = {
+  #   ip4 = lib.mkOverride 0 [ ];
+  #   ipv4.addresses = [{ address = "192.168.0.2"; prefixLength = 24; }];
+  # };
 
   # FIXME Don't know why
-  networking.firewall.allowedUDPPorts = [53 67];
+  # networking.firewall.allowedUDPPorts = [53 67];
 
   # Haveged refills /dev/random when low
-  services.haveged.enable = true;
+  # services.haveged.enable = true;
 
   # Access point daemon
-  services.hostapd = {
-    enable = true;
-    hwMode = "g";
-    interface = wifiInterfaceName;
-    ssid = "sona";
-    wpa = true;
-    wpaPassphrase = passphrase;
-    # driver = "wilwifi";
-  };
+  # services.hostapd = {
+  #   enable = true;
+  #   hwMode = "g";
+  #   interface = wifiInterfaceName;
+  #   ssid = "sona";
+  #   wpa = true;
+  #   wpaPassphrase = passphrase;
+  #   # driver = "wilwifi";
+  # };
 
   # DNS
-  services.dnsmasq = {
-    enable = true;
-    extraConfig = ''
-      interface=${wifiInterfaceName}
-      bind-interfaces
-      dhcp-range=192.168.0.60,192.168.0.70,24h
-    '';
-  };
+  # services.dnsmasq = {
+  #   enable = true;
+  #   extraConfig = ''
+  #     interface=${wifiInterfaceName}
+  #     bind-interfaces
+  #     dhcp-range=192.168.0.60,192.168.0.70,24h
+  #   '';
+  # };
 
   # DHCP
   # networking.dhcpd = {
