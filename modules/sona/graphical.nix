@@ -217,14 +217,14 @@ in lib.mkMerge [
   environment.variables.BROWSER = "firefox";
 }
 {
-  # Steam
-  hardware.opengl = {
-    driSupport32Bit = true;
-    extraPackages32 = with pkgs.pkgsi686Linux; [ libva ];
-  };
-  environment.systemPackages = with pkgs; [
-    steam
-  ];
+  # # Steam
+  # hardware.opengl = {
+  #   driSupport32Bit = true;
+  #   extraPackages32 = with pkgs.pkgsi686Linux; [ libva ];
+  # };
+  # environment.systemPackages = with pkgs; [
+  #   steam
+  # ];
 }
 {
   # # Android
@@ -243,6 +243,6 @@ in lib.mkMerge [
 }
 {
   # Unfree
-  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) ([ "steam" "steam-original" ] ++ map lib.getName [ pkgs.android-studio ]);
+  # nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) ([ "steam" "steam-original" ] ++ map lib.getName [ pkgs.android-studio ]);
 }
 ]
