@@ -51,6 +51,7 @@ in {
     # ncpamixer # Pulseaudio TUI
     networkmanagerapplet # NM connection editor
     playerctl # media play pause
+    wl-mirror
 
     # GUI apps
     (wrapFirefox (firefox-unwrapped.override { pipewireSupport = true;}) {}) # Best browser ever
