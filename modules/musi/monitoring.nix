@@ -7,9 +7,7 @@ let
     TEST_HOST="google.fr"
   '';
 
-  check = pkgs.writeScriptBin "check_co.sh" ''
-    #!${pkgs.runtimeShell}
-
+  check = pkgs.writeShellScriptBin "check_co.sh" ''
     ${VARS}
 
     ${pkgs.coreutils}/bin/mkdir -p $DATA_DIR
@@ -21,9 +19,7 @@ let
     ${pkgs.coreutils}/bin/tee -a $DATA_FILE
   '';
 
-  print = pkgs.writeScriptBin "print_co.sh" ''
-    #!${pkgs.runtimeShell}
-
+  print = pkgs.writeShellScriptBin "print_co.sh" ''
     ${VARS}
 
     # Print only first column of lines non ending with zero code

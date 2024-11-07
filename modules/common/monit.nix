@@ -42,9 +42,7 @@ in {
   };
 
   config = let
-    systemdCheck = pkgs.writeScript "systemctl-status-ok" ''
-      #!${pkgs.runtimeShell}
-
+    systemdCheck = pkgs.writeShellScript "systemctl-status-ok" ''
       ${config.systemd.package}/bin/systemctl list-units --failed | grep -q "0 loaded units listed"
       if test $? = 0
       then

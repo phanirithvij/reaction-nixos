@@ -250,8 +250,7 @@
             "${./merge-funkwhale-albums.py}:/app/merge-funkwhale-albums.py:ro"
             "${./merge-funkwhale-artists.py}:/app/merge-funkwhale-artists.py:ro"
             "${./merge-funkwhale-tracks.py}:/app/merge-funkwhale-tracks.py:ro"
-            "${pkgs.writeScript "merge.sh" ''
-              #!/usr/bin/env bash
+            "${pkgs.writeShellScript "merge.sh" ''
               case "$1" in
                 tracks|track)
                   TRACK1="$2" TRACK2="$3" python merge-funkwhale-tracks.py ;;
@@ -269,8 +268,7 @@
         funkwhale-front = basicOptions // {
           volumes = mediaVolumes ++ codeVolumes ++ [
             # FIXME this fix should not be necessary in 1.3.3
-            "${pkgs.writeScript "edit-upstream" ''
-              #!/bin/sh
+            "${pkgs.writeShellScript "edit-upstream" ''
               # Add this missing conf before when templates are evaluated in 20
               # See https://github.com/nginxinc/docker-nginx/tree/2879b26c7dedf1d958b1894a5c1b1dec3c026369/entrypoint
               /bin/sed \
@@ -279,8 +277,7 @@
             ''}:/docker-entrypoint.d/19-edit-upstream.sh"
             # FIXME this fix should not be necessary in 1.3.3
             # See how to use upstream env substitution
-            "${pkgs.writeScript "edit-upstream" ''
-              #!/bin/sh
+            "${pkgs.writeShellScript "edit-upstream" ''
               # Change the generated conf at the last moment (after 99)
               /bin/sed \
                   -e 's/api:5000/localhost:${toString cfg.hostPort}/' \
@@ -339,8 +336,7 @@
           "BASE_URL=https://${cfg.domainName}/api/v1"
         ];
         EnvironmentFile = cfg.autoScan.passwordFile;
-        ExecStart = pkgs.writeScript "funkwhale-scan" ''
-          #!${pkgs.runtimeShell}
+        ExecStart = pkgs.writeShellScript "funkwhale-scan" ''
           set -e
 
           REQUEST=$(${pkgs.curl}/bin/curl -s --oauth2-bearer "$TOKEN" "$BASE_URL/federation/follows/library/all")

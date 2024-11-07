@@ -28,20 +28,18 @@ let
   configure-gtk = let
     schema = pkgs.gsettings-desktop-schemas;
     datadir = "${schema}/share/gsettings-schemas/${schema.name}";
-  in pkgs.writeScriptBin "configure-gtk" ''
+  in pkgs.writeShellScriptBin "configure-gtk" ''
     export XDG_DATA_DIRS=${datadir}:$XDG_DATA_DIRS
     gsettings set org.gnome.desktop.interface gtk-theme 'Qogir-Light'
   '';
 
-  rbw-wofi = (pkgs.writeScriptBin "rbw-wofi" ''
-    #!${pkgs.runtimeShell}
+  rbw-wofi = (pkgs.writeShellScriptBin "rbw-wofi" ''
     set -eu
     set -o pipefail
     rbw unlock
     rbw ls --fields folder,name,user | sed 's@\t@/@g' | sort | ${pkgs.wofi}/bin/wofi --dmenu | sed -e 's@.*/\(.*\)/\(.*\)@"\1" "\2"@' -e 's@""@@' | xargs -r rbw get | wl-copy -o
   '');
-  passwofi = (pkgs.writeScriptBin "passwofi" ''
-    #${pkgs.runtimeShell}
+  passwofi = (pkgs.writeShellScriptBin "passwofi" ''
     shopt -s nullglob globstar
 
     prefix=$\{PASSWORD_STORE_DIR-~/.password-store}

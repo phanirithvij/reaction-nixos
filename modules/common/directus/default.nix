@@ -379,8 +379,7 @@ in {
         User  = "directus-${name}";
         Group = "directus-${name}";
         Environment = [ "CONFIG_PATH=${settings}" ];
-        ExecStartPre = pkgs.writeScript "directus-${name}-init" ''
-          #!${pkgs.runtimeShell}
+        ExecStartPre = pkgs.writeShellScript "directus-${name}-init" ''
           set -e
           genPasswd() {
             ${pkgs.libressl}/bin/openssl rand -base64 40 | tr -cd '[:alnum:]'

@@ -118,8 +118,7 @@ in {
     # Additional parenthesis added in the nested SELECT because of this: https://groups.google.com/g/h2-database/c/dBeNlTTXz-U
     script = ''
       ${pkgs.h2}/bin/h2tool.sh org.h2.tools.RunScript -url "${dbPath}" -user root -password "" -script ${
-        pkgs.writeScript
-        "streama-clean-updates-script"
+        pkgs.writeScript "streama-clean-updates-script"
         ''
           DELETE FROM viewing_status
           WHERE (user_id, video_id, last_updated) NOT IN (

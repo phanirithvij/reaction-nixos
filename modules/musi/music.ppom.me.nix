@@ -38,8 +38,7 @@ in {
         "INSTANCE_URL=https://${config.services.funkwhale.domainName}"
       ];
       EnvironmentFile = "/var/secrets/funkwhale/playlistImportToken";
-      ExecStart = pkgs.writeScript "funkwhale-playlist-import" ''
-        #!${pkgs.runtimeShell}
+      ExecStart = pkgs.writeShellScript "funkwhale-playlist-import" ''
           set -e
           cd /var/lib/funkwhale-playlist-import
           [ -e ./funkwhale-playlist-import ] || ${pkgs.git}/bin/git clone https://framagit.org/ppom/funkwhale-playlist-import funkwhale-playlist-import
@@ -59,9 +58,8 @@ in {
     startAt = "*-*-02/2 21:00"; # man 5 systemd.time: every 2 days at 20:00
   };
 
-  environment.systemPackages = [ (pkgs.writeScriptBin "funkwhale-playlist-python" ''
-    #!${pkgs.runtimeShell}
-    /run/wrappers/bin/doas -u funkwhale-playlist-import ${python}/bin/python "$@"
+  environment.systemPackages = [ (pkgs.writeShellScriptBin "funkwhale-playlist-python" ''
+    exec /run/wrappers/bin/doas -u funkwhale-playlist-import ${python}/bin/python "$@"
   '') ];
 
   # FunkwhaleLink

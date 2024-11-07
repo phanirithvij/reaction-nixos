@@ -8,9 +8,7 @@ let
   ];
   dns_test = "dns2.proxad.net";
   log_file = "/home/ao/DOWN";
-  down_detector = pkgs.writeScriptBin "down_detector.sh" ''
-    #!${pkgs.runtimeShell}
-
+  down_detector = pkgs.writeShellScriptBin "down_detector.sh" ''
     LOG_FILE="${log_file}"
 
     SITES="${lib.concatStringsSep " " websites}"

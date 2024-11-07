@@ -24,8 +24,7 @@ in {
     serviceConfig = {
       User = "rssify";
       UMask = "022";
-      ExecStartPre = pkgs.writeScript "rssify-pre.sh" ''
-        #!${pkgs.runtimeShell}
+      ExecStartPre = pkgs.writeShellScript "rssify-pre.sh" ''
         set -e
         rm -f ./config.ini
         ln -s ${./config.ini} ./config.ini
