@@ -268,7 +268,8 @@
         funkwhale-front = basicOptions // {
           volumes = mediaVolumes ++ codeVolumes ++ [
             # FIXME this fix should not be necessary in 1.3.3
-            "${pkgs.writeShellScript "edit-upstream" ''
+            "${pkgs.writeScript "edit-upstream" ''
+              #!/usr/bin/env bash
               # Add this missing conf before when templates are evaluated in 20
               # See https://github.com/nginxinc/docker-nginx/tree/2879b26c7dedf1d958b1894a5c1b1dec3c026369/entrypoint
               /bin/sed \
@@ -277,7 +278,8 @@
             ''}:/docker-entrypoint.d/19-edit-upstream.sh"
             # FIXME this fix should not be necessary in 1.3.3
             # See how to use upstream env substitution
-            "${pkgs.writeShellScript "edit-upstream" ''
+            "${pkgs.writeScript "edit-upstream" ''
+              #!/usr/bin/env bash
               # Change the generated conf at the last moment (after 99)
               /bin/sed \
                   -e 's/api:5000/localhost:${toString cfg.hostPort}/' \
