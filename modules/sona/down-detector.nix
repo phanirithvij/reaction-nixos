@@ -13,6 +13,8 @@ let
     "https://paris-loyers.fr"
     "https://pompeani.art"
     "https://ppom.fr"
+    "https://ppom.me"
+    "https://ppom.me/vault"
     "https://static.ppom.fr"
     "https://tokipona.ppom.me"
     "https://u.ppom.me"
