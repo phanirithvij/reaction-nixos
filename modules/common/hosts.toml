@@ -3,6 +3,7 @@ address = "10.1.1.1"
 publicKey = "rJ91zWvjJwj5ByxLx1tiyiRR3m8qRmZ4sQm7RctSTlc="
 endpoint = "akesi.ppom.me:58234"
 listenPort = 58234
+server = true
 
 [musi]
 address = "10.1.1.2"
