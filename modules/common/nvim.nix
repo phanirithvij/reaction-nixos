@@ -71,8 +71,6 @@ in {
         # nodes.svelte-language-server
         # nodes.typescript-language-server
         # nodes.vls # vue-language-server
-        pkgs.ansible-language-server
-        pkgs.ansible-lint
         pkgs.ccls
         pkgs.jdk11
         pkgs.jdt-language-server

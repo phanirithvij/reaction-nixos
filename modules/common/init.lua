@@ -204,13 +204,6 @@ if steroids or enableGo or enableNixd then
 		vim.g.vim_markdown_toc_autofit = 1
 
 		-- LSP config
-
-		lspconfig.ansiblels.setup { settings = {
-			ansible = {
-				ansible = { useFullyQualifiedCollectionNames = false },
-				validation = { lint = { arguments = "--skip-list fqcn[action-core]" } }
-			}
-		} }
 		lspconfig.bashls.setup {}
 		lspconfig.ccls.setup {}
 		lspconfig.cssls.setup {}
