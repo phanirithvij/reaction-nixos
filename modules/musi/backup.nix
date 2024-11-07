@@ -1,17 +1,11 @@
 { lib, pkgs, config, ... }:
-with lib;
 let
+  hosts = builtins.fromTOML (builtins.readFile ./hosts.toml);
 in {
   services.postgresqlBackup = {
     enable = true;
     # every 6 hours, it only costs 2s of CPU time for now
     startAt = "*-*-* 0/6:15";
-  };
-
-  services.mysqlBackup = {
-    enable = true;
-    # every 6 hours, it only costs 2s of CPU time for now
-    calendar = "*-*-* 0/6:15";
   };
 
   # services.restic.backups.data = {
@@ -38,7 +32,8 @@ in {
   # };
 
   services.restic.backups.data2 = let
-    pokiHost = "musi@192.168.1.74";
+    kiliHost = "musi@${hosts.kili.address}";
+    pokiHost = "musi@${hosts.musi.address}";
     pokiKey = "/var/secrets/backups/data2/sshkey";
   in {
     paths = [ "/data/" "/var/" "/etc/nixos/" "/home/" "/root/" "/nix/var/nix/" ];
@@ -61,8 +56,8 @@ in {
       OnCalendar = [ "04:00" ];
       RandomizedDelaySec = "30m";
     };
-    backupPrepareCommand = "${pkgs.writeScript "wake-poki" ''
-      ${pkgs.wakelan}/bin/wakelan A0:B3:CC:E9:4C:9C
+    backupPrepareCommand = "${pkgs.writeShellScript "wake-poki" ''
+      ssh ${kiliHost} -i ${pokiKey} wakelan A0:B3:CC:E9:4C:9C || exit 1
       for _ in $(seq 60)
       do
         sleep 15
