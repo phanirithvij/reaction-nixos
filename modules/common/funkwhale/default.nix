@@ -269,7 +269,7 @@
           volumes = mediaVolumes ++ codeVolumes ++ [
             # FIXME this fix should not be necessary in 1.3.3
             "${pkgs.writeScript "edit-upstream" ''
-              #!/usr/bin/env bash
+              #!/bin/sh
               # Add this missing conf before when templates are evaluated in 20
               # See https://github.com/nginxinc/docker-nginx/tree/2879b26c7dedf1d958b1894a5c1b1dec3c026369/entrypoint
               /bin/sed \
@@ -279,7 +279,7 @@
             # FIXME this fix should not be necessary in 1.3.3
             # See how to use upstream env substitution
             "${pkgs.writeScript "edit-upstream" ''
-              #!/usr/bin/env bash
+              #!/bin/sh
               # Change the generated conf at the last moment (after 99)
               /bin/sed \
                   -e 's/api:5000/localhost:${toString cfg.hostPort}/' \
