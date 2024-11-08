@@ -14,4 +14,15 @@ rec {
       after = duration;
     };
   };
+  freeMsg = msg: [
+    "${pkgs.curl}/bin/curl"
+    "--fail"
+    "--silent"
+    "--show-error"
+    "--variable" "USER@/var/secrets/mobileapi-user"
+    "--variable" "PASS@/var/secrets/mobileapi-pass"
+    "--variable" "MSG=${msg}"
+    "--expand-url"
+    "https://smsapi.free-mobile.fr/sendmsg?user={{USER:trim}}&pass={{PASS:trim}}&msg={{MSG:trim:url}}"
+  ];
 }

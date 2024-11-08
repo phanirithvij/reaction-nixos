@@ -77,16 +77,7 @@ in {
           regex = [
             "ERROR <untilEOL>"
           ];
-          actions.sendmsg.cmd = [
-            "${pkgs.curl}/bin/curl"
-            "--fail"
-            "--silent"
-            "--show-error"
-            "--variable" "USER@/var/secrets/mobileapi-user"
-            "--variable" "PASS@/var/secrets/mobileapi-pass"
-            "--variable" "MSG=<untilEOL>"
-            "--expand-url" "https://smsapi.free-mobile.fr/sendmsg?user={{USER:trim}}&pass={{PASS:trim}}&msg={{MSG:trim:url}}"
-          ];
+          actions.sendmsg.cmd = var.freeMsg "<untilEOL>";
         };
       };
     };
