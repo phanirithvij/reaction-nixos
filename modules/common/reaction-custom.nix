@@ -102,9 +102,31 @@
                 actions = var.banFor "${toString (30 * 24)}h";
               };
               gptbot = lib.mkIf cfg.enableGPTBot {
-                regex = [
-                  ''^<ip>.*GPTBot/1.0''
-                ];
+                regex = (builtins.map (bot: ''^<ip>.*"[^"]*${bot}[^"]*"$'') [
+                  # Based on https://darkvisitors.com/agents
+                  "AI2Bot"
+                  "Amazonbot"
+                  "Applebot"
+                  "Applebot-Extended"
+                  "Bytespider"
+                  "CCBot"
+                  "ChatGPT-User"
+                  "ClaudeBot"
+                  "Diffbot"
+                  "DuckAssistBot"
+                  "FacebookBot"
+                  "GPTBot"
+                  "Google-Extended"
+                  "Kangaroo Bot"
+                  "Meta-ExternalAgent"
+                  "Meta-ExternalFetcher"
+                  "OAI-SearchBot"
+                  "PerplexityBot"
+                  "Timpibot"
+                  "Webzio-Extended"
+                  "YouBot"
+                  "omgili"
+                ]);
                 actions = var.banFor "${toString (30 * 24)}h";
               };
 
