@@ -18,11 +18,12 @@
 
   ppom = {
     enable = true;
-    tmux.desktop = true;
-    packages.more = true;
     git.email = "sona@ppom.me";
-    nvim.steroids = true;
     nvim.enableGo = true;
+    nvim.steroids = true;
+    packages.more = true;
+    tmux.desktop = true;
+    user.fish.enable = true;
   };
 
   boot = {
@@ -119,18 +120,23 @@
       "media"
     ];
   };
+  users.users.ppom.extraGroups = [
+    "networkmanager"
+    "network"
+    "video"
+    "docker"
+    "adbusers"
+    "media"
+  ];
 
   # I want autologin only on tty1.
   # services.getty.autologinUser = "ao";
   # From /nix/var/nix/profiles/per-user/root/nixos/nixos/modules/services/ttys/getty.nix
   # From /etc/systemd/system/getty@.service
   systemd.services."getty@tty1" = {
-    serviceConfig.ExecStart = [ "" "@${pkgs.util-linux}/sbin/agetty agetty '--login-program' '${pkgs.shadow}/bin/login' '--autologin' 'ao' %I --keep-baud $TERM" ];
+    serviceConfig.ExecStart = [ "" "@${pkgs.util-linux}/sbin/agetty agetty '--login-program' '${pkgs.shadow}/bin/login' '--autologin' 'ppom' %I --keep-baud $TERM" ];
     overrideStrategy = "asDropin";
   };
-
-  programs.fish.enable = true;
-  environment.pathsToLink = [ "/share/fish" ];
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

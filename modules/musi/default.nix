@@ -47,6 +47,7 @@
     };
     nvim.enableNixd = false;
     nvim.enableGo = true;
+    user.fish = true;
   };
 
   services.reaction.settings.patterns.ip.ignore = [ "192.168.1.253" ];

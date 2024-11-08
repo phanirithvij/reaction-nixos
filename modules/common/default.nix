@@ -14,6 +14,7 @@
     ./reaction-custom.nix
     ./ssh.nix
     ./tmux.nix
+    ./user.nix
   ];
 
   options.ppom.enable = lib.mkEnableOption "enable default ppom environment";
@@ -24,6 +25,7 @@
     ppom.tmux.enable = true;
     ppom.nvim.enable = true;
     ppom.git.enable = true;
+    ppom.user.enable = true;
     # server-side
     # ppom.reaction.enable = true;
     # ppom.ssh.enable = true;
