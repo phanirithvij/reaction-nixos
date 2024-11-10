@@ -15,7 +15,7 @@ let
     "https://ppom.fr"
     "https://ppom.me"
     "https://ppom.me/vault"
-    "https://static.ppom.fr"
+    "https://static.ppom.me"
     "https://tokipona.ppom.me"
     "https://u.ppom.me"
     "https://video.ppom.me"
