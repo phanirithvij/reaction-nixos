@@ -62,6 +62,6 @@ in
       ExecStart = "${down_detector}/bin/down_detector.sh";
       User = "ao";
     };
-    startAt = "minutely";
+    startAt = "*:0/2";
   };
 }
