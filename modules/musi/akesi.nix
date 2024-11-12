@@ -50,4 +50,6 @@ in {
     port = 4977;
     secretKeyFile = "/var/secrets/binarycache/key";
   };
+
+  nix.settings.allowed-users = [ "nix-serve" ];
 }
