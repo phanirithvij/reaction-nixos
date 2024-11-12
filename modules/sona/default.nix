@@ -10,6 +10,7 @@
     ./hardware.nix
     ./packages.nix
     ./peertube.nix
+    ./syncthing.nix
     ./torrent.nix
     ./virt.nix
     ./vpnc.nix
