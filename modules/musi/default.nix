@@ -19,6 +19,7 @@
     ./rssify/default.nix
     ./streama.nix
     ./slskd.nix
+    ./syncthing.nix
     ./tor.nix
     ./users.nix
     ./vaultwarden.nix
