@@ -52,6 +52,8 @@ in {
     smtp.passwordFile = "/var/secrets/mail/admin@fesse.cloud";
   };
 
+  services.postgresqlBackup.databases = [ "fesse" ];
+
   systemd.tmpfiles.rules = [
     "f /var/secrets/fesse 640 root fesse -"
     "d /data/fesse 700 fesse fesse -"
