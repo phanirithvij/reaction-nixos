@@ -1,7 +1,16 @@
 { lib, config, pkgs, ... }:
 let
-  host = { root ? null, return ? null, extra ? {} }:
-  assert (root == null && return != null) || (return == null && root != null); {
+  host = { root ? null, return ? null, extra ? {}, csp ? {} }: let
+    csp' = {
+      "default-src" = [ "'self'" "u.ppom.me" "static.ppom.me" ];
+      "img-src" = [ "'self'" ];
+      "script-src" = [ "'self'" "'unsafe-inline'" ];
+      "style-src" = [ "'self'" "'unsafe-inline'" ];
+      "frame-ancestors" = [ "'none'" ];
+      "base-uri" = [ "'none'" ];
+      "form-action" = [ "'none'" ];
+    } // csp;
+  in assert (root == null && return != null) || (return == null && root != null); {
     enableACME = true;
     forceSSL = true;
     locations = {
@@ -21,7 +30,7 @@ let
       add_header X-Frame-Options "DENY";
       add_header Referrer-Policy "strict-origin";
       add_header X-Content-Type-Options "nosniff";
-      add_header Content-Security-Policy "default-src 'self' u.ppom.me static.ppom.me; img-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'";
+      add_header Content-Security-Policy "${builtins.concatStringsSep " " (lib.mapAttrsToList (name: values: "${name} ${builtins.concatStringsSep " " values};") csp')}";
     '';
   };
 in {
@@ -49,7 +58,12 @@ in {
 
       "www.ppom.fr" = host { return = "301 https://ppom.fr$request_uri"; };
 
-      "cours.ppom.fr" = host { root = "/var/www/cours.ppom.fr"; };
+      "cours.ppom.fr" = let
+        src = [ "'self'" "'unsafe-inline'" "clic.ppom.me" ];
+      in host {
+        root = "/var/www/cours.ppom.fr";
+        csp = { "script-src" = src; "connect-src" = src; };
+      };
 
       "lili-bel.com" = host { root = "/var/www/lili-bel.com"; };
 
