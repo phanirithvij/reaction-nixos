@@ -35,7 +35,7 @@ in lib.mkMerge [
         download-dir = "${mountPath}/upload-here";
         watch-dir = "${mountPath}/dot.torrents";
         watch-dir-enabled = true;
-        speed-limit-up = 2 * 1024; # KB/s
+        speed-limit-up = 1024; # KB/s
         speed-limit-up-enabled = true;
         rpc-bind-address = host.address;
         rpc-username = "ppom";
