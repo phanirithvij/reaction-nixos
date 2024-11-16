@@ -33,6 +33,38 @@ in {
         "[music]/data/music-export/music"
         "[movies]/data/streama/movies"
       ];
+      global.upload = {
+        slots = 6;
+        speed_limit = 5 * 1000;
+      };
+      groups = let
+        groupSettings = {
+          upload = {
+            priority = 1;
+            strategy = "roundrobin";
+            slots = 10;
+          };
+          limits = {
+            queued = {
+              files = 2147483647;
+              megabytes = 2147483647;
+            };
+            daily = {
+              files = 2147483647;
+              megabytes = 2147483647;
+              failures = 2147483647;
+            };
+            weekly = {
+              files = 2147483647;
+              megabytes = 2147483647;
+              failures = 2147483647;
+            };
+          };
+        };
+      in {
+        leechers = groupSettings;
+        default = groupSettings;
+      };
     };
   };
 
