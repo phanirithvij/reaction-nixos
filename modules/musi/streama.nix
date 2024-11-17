@@ -75,11 +75,14 @@ in {
       StateDirectoryMode = 0700;
       Restart = "on-success"; # If oom-killed
       ReadWritePaths = [ "/var/lib/streama" "/data/streama/uploads" ];
+      CapabilityBoundingSet = [ "" ];
       LockPersonality = true;
       NoNewPrivileges = true;
       PrivateDevices = true;
       PrivateMounts = true;
       PrivateTmp = true;
+      PrivateUsers = true;
+      ProcSubset = "pid";
       ProtectClock = true;
       ProtectControlGroups = true;
       ProtectHome = true;
@@ -90,8 +93,12 @@ in {
       ProtectProc = "invisible";
       ProtectSystem = "strict";
       RemoveIPC = true;
+      RestrictAddressFamilies = [ "AF_INET" "AF_INET6" "AF_UNIX" ];
       RestrictNamespaces = true;
       RestrictSUIDSGID = true;
+      SystemCallArchitectures = "native";
+      SystemCallFilter = [ "@system-service" "~@privileged" ];
+      UMask = "0077";
     };
   };
 
