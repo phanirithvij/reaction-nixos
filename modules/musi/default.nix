@@ -51,7 +51,10 @@
     user.fish = true;
   };
 
-  services.reaction.settings.patterns.ip.ignore = [ "192.168.1.253" ];
+  services.reaction = {
+    settings.patterns.ip.ignore = [ "192.168.1.253" ];
+    loglevel = "DEBUG";
+  };
 
   boot = {
     loader = {

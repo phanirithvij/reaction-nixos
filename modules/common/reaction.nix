@@ -39,6 +39,14 @@ in {
       type = nullOr path;
     };
 
+    loglevel = mkOption {
+      description = ''
+        Daemon's loglevel, one of DEBUG, INFO, WARN, ERROR
+      '';
+      default = null;
+      type = nullOr (enum ["DEBUG" "INFO" "WARN" "ERROR"]);
+    };
+
     # Not working, no ExecReloadPre
     # stopForFirewall = mkOption {
     #   type = bool;
@@ -110,7 +118,9 @@ in {
       serviceConfig = {
         Type = "simple";
         User = lib.mkIf (!cfg.runAsRoot) "reaction";
-        ExecStart = ''${cfg.package}/bin/reaction start -c ${settingsFile}'';
+        ExecStart = ''${cfg.package}/bin/reaction start -c ${settingsFile} ${
+          lib.optionalString (cfg.loglevel != null) "-l ${cfg.loglevel}"
+        }'';
         StateDirectory = "reaction";
         RuntimeDirectory = "reaction";
         WorkingDirectory = "/var/lib/reaction";
