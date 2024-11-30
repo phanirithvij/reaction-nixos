@@ -1,6 +1,6 @@
 { pkgs, ... }:
 let
-  convertd = pkgs.callPackage ../../pkgs/convertd {};
+  convertd = pkgs.callPackage ../../../pkgs/convertd {};
 
   runDir = "RUNTIME_DIRECTORY=/data/convertd";
   cnv = pkgs.writeShellApplication {
