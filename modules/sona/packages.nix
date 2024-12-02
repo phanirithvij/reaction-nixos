@@ -39,6 +39,7 @@ in {
     khal # calendar
     vdirsyncer # caldav syncer
     toot # CLI/TUI for Mastodon
+    helix # neovim alternative
 
     # Desktop environment
     alacritty # terminal
@@ -107,6 +108,7 @@ in {
     # (quarto.override { rWrapper = null; python3 = null; }) # Markdown environment based on pandoc
     minisign # small utility to sign files
     ansible
+    opentofu
     tokei # SLOC counter
     hexyl # pretty hexdump
     reveal-md
@@ -145,14 +147,6 @@ in {
     # pngquant # png size reducer
 
   ];
-
-  # programs.sniffnet.enable = true; # Equivalent but fix only on unstable
-  security.wrappers.sniffnet = {
-    owner = "root";
-    group = "root";
-    capabilities = "cap_net_raw,cap_net_admin=eip";
-    source = "${unstable.sniffnet}/bin/sniffnet";
-  };
 
   nixpkgs.overlays = [
     (self: super: {
