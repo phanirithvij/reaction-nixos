@@ -72,6 +72,9 @@ in {
   systemd.services.slskd.serviceConfig.UMask = "0002";
   users.users.ppom.extraGroups = [ "slskd" ];
 
+  # Wait a bit before starting on boot
+  systemd.services.slskd.serviceConfig.ExecStartPre = [''${pkgs.runtimeShell} -c "test $(cat /proc/uptime | cut -d. -f1) -le 100 && sleep 8m''];
+
   environment.systemPackages = with pkgs; [ beets id3v2 ];
 
   services.reaction.settings.streams.nginx.filters."slskd-failedLogin" = {
