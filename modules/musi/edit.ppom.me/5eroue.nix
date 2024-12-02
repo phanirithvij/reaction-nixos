@@ -5,7 +5,7 @@ let
 in {
   services.directus.servers = {
     "5eroue" = {
-      enable = true;
+      enable = false;
       settings = common.settings // {
         PORT = directusPort;
         LOG_LEVEL = "debug";

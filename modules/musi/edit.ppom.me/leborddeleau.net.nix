@@ -5,7 +5,7 @@ let
 in {
   services.directus.servers = {
     "leborddeleau" = {
-      enable = true;
+      enable = false;
       settings = common.settings // {
         PORT = directusPort;
       };
