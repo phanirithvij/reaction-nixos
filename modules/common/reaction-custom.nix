@@ -144,11 +144,8 @@
     systemd.services.reaction.serviceConfig = {
       ExecStartPre= [
         "+${var.iptables} -w -N reaction"
-        "+${var.iptables} -w -N reaction-log-refuse"
         "+${var.iptables} -w -A reaction -s 127.0.0.1 -j RETURN"
         "+${var.iptables} -w -A reaction -s 192.168.1.0/24 -j RETURN"
-        "+${var.iptables} -w -A reaction-log-refuse -j LOG --log-prefix 'reaction banned connection: ' --log-level 6"
-        "+${var.iptables} -w -A reaction-log-refuse -j nixos-fw-refuse"
         "+${var.iptables} -w -I INPUT -p all -j reaction"
         "+${var.iptables} -w -I FORWARD -p all -j reaction"
       ] ++ builtins.map iptablesBanRange bannedIpRanges;
@@ -157,8 +154,6 @@
         "+${var.iptables} -w -D FORWARD -p all -j reaction"
         "+${var.iptables} -w -F reaction"
         "+${var.iptables} -w -X reaction"
-        "+${var.iptables} -w -F reaction-log-refuse"
-        "+${var.iptables} -w -X reaction-log-refuse"
       ];
       TimeoutStopSec = "3 min";
     };
