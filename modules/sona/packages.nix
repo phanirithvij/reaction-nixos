@@ -15,7 +15,7 @@ in {
     # tealdeer # tldr man pages
     tomb # LUKS wrapper
     pinentry-gnome3 # GUI password prompt (used by gpg-agent, installing it in global path for rbw & tomb)
-    unstable.rbw # unofficial bitwarden CLI
+    rbw # unofficial bitwarden CLI
     pass # password-store
     acpi # battery information
     # libossp_uuid # uuid v4
@@ -124,8 +124,7 @@ in {
     deno
     rustup
     gcc
-    (lib.hiPrio unstable.go)
-    (lib.hiPrio unstable.gopls)
+    go
 
     # Sysadmin
     # tdns-cli # dig alternative
@@ -211,7 +210,7 @@ in {
 
   fonts.packages = with pkgs; with xorg; [
     noto-fonts
-    noto-fonts-cjk
+    noto-fonts-cjk-sans
     noto-fonts-emoji
     liberation_ttf
     fira-code

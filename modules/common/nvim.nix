@@ -72,6 +72,7 @@ in {
         # nodes.typescript-language-server
         # nodes.vls # vue-language-server
         pkgs.ccls
+        pkgs.gopls
         pkgs.jdk11
         pkgs.jdt-language-server
         pkgs.jsonnet
@@ -79,7 +80,7 @@ in {
         pkgs.lua-language-server
         pkgs.ruff
         pkgs.yaml-language-server
-        unstable.vscode-langservers-extracted # requires vscode to build
+        pkgs.vscode-langservers-extracted # requires vscode to build
       ];
     };
 
@@ -128,10 +129,9 @@ in {
                 plugins.vim-markdown
                 plugins.vim-visual-multi # multiple cursors with i_ctrl-n
                 vim-svelte
+                plugins.vim-terraform
                 plugins.vim-jsonnet
                 plugins.nvim-jdtls
-                unstable.vimPlugins.quarto-nvim
-                unstable.vimPlugins.otter-nvim # used by quarto-nvim
               ];
               opt = [ ];
             };

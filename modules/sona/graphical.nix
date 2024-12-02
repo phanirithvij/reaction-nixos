@@ -112,7 +112,6 @@ in lib.mkMerge [
     })
   ];
 
-  sound.enable = true;
   services.pipewire = {
     enable = true;
     alsa.enable = true;
