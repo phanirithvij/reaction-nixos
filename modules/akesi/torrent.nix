@@ -39,7 +39,9 @@ in lib.mkMerge [
         speed-limit-up-enabled = true;
         rpc-bind-address = host.address;
         rpc-username = "ppom";
-        rpc-whitelist = "127.0.0.1,${hosts.sona.address}";
+        # We're already binding the socket to the VPN, so only trusted nodes have access
+        rpc-whitelist-enabled = false;
+        # rpc-whitelist = "127.0.0.1,${hosts.sona.address},${hosts.musi.address}";
         rpc_authentication_required = false;
       };
     };
@@ -47,7 +49,7 @@ in lib.mkMerge [
     services.reaction.settings.patterns.ip.ignore = [ hosts.sona.address ];
 
     networking.firewall.extraCommands = ''
-      iptables -A nixos-fw -p tcp --dport 9091 -s ${hosts.sona.address} -j nixos-fw-accept
+      iptables -A nixos-fw -p tcp --dport 9091 -s ${host.address}/24 -j nixos-fw-accept
     '';
 
     environment.systemPackages = [
