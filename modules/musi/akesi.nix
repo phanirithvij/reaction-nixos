@@ -42,6 +42,25 @@ in {
 
   environment.systemPackages = [ pkgs.stig ];
 
+  systemd.paths.nfs-chown = {
+    wantedBy = [ "multi-user.target" ];
+    description = "Ensure nfs files have right owner";
+    pathConfig = {
+      PathChanged = "/data/akesi/dot.torrents";
+      # Max one time per 4s
+      TriggerLimitIntervalSec = "4s";
+      TriggerLimitBurst = 1;
+    };
+  };
+  systemd.services.nfs-chown = {
+    description = "Ensure nfs files have right owner";
+    serviceConfig = {
+      # We sleep 5s to ensure we chown files changed after TriggerLimit
+      ExecStartPre = [ "${pkgs.coreutils}/bin/sleep 5" ];
+      ExecStart = "${pkgs.coreutils}/bin/chown -R nfsakesi:nfsakesi /data/akesi/dot.torrents";
+    };
+  };
+
   # Only allow akesi to connect to the NFS server via its Wireguard IP
   # Accept both udp and tcp
   # Also allow access to the binary cache
