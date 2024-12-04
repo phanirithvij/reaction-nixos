@@ -29,10 +29,16 @@ in {
           # };
         };
       };
-      shares.directories = [
-        "[music]/data/music-export/music"
-        "[movies]/data/streama/movies"
-      ];
+      shares = {
+        directories = [
+          "[music]/data/music-export/music"
+          "[movies]/data/streama/movies"
+        ];
+        cache = {
+          storage_mode = "memory";
+          workers = 4;
+        };
+      };
       global.upload = {
         slots = 6;
         speed_limit = 5 * 1000;
@@ -72,8 +78,11 @@ in {
   systemd.services.slskd.serviceConfig.UMask = "0002";
   users.users.ppom.extraGroups = [ "slskd" ];
 
-  # Wait a bit before starting on boot
-  systemd.services.slskd.serviceConfig.ExecStartPre = [''${pkgs.runtimeShell} -c "test $(cat /proc/uptime | cut -d. -f1) -le 100 && sleep 8m''];
+  systemd.services.slskd.serviceConfig = {
+    # Less priority
+    CPUWeight = 1;
+    IOWeight = 1;
+  };
 
   environment.systemPackages = with pkgs; [ beets id3v2 ];
 
