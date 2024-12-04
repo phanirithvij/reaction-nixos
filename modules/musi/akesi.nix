@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 let
   hostName = config.networking.hostName;
   hosts = builtins.fromTOML (builtins.readFile ../common/hosts.toml);
@@ -24,11 +24,23 @@ in {
     hostName = host.address;
   };
 
-  users.users.nfsakesi = {
-    uid = 70;
-    group = "nfsakesi";
+  users = {
+    users = let
+      eg = { extraGroups = [ "nfsakesi" ]; };
+    in {
+      ppom = eg;
+      bertille = eg;
+      media = eg;
+
+      nfsakesi = {
+        uid = 70;
+        group = "nfsakesi";
+      };
+    };
+    groups.nfsakesi.gid = 70;
   };
-  users.groups.nfsakesi.gid = 70;
+
+  environment.systemPackages = [ pkgs.stig ];
 
   # Only allow akesi to connect to the NFS server via its Wireguard IP
   # Accept both udp and tcp
