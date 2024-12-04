@@ -46,7 +46,7 @@
       enable = true;
       fromMail = "musi@ppom.me";
     };
-    nvim.enableNixd = false;
+    nvim.enableNixd = true;
     nvim.enableGo = true;
     user.fish = true;
   };
