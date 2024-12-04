@@ -3,8 +3,9 @@
 
 let 
   unstable = import <nixos-unstable> {};
-  f-mpv-with-scripts = super: super.wrapMpv super.mpv-unwrapped {
-    scripts = with super.mpvScripts; [ mpris ];
+  f-mpv-with-scripts = pkgs.mpv-unwrapped.wrapper {
+    mpv = pkgs.mpv-unwrapped;
+    scripts = with pkgs.mpvScripts; [ mpris ];
   };
 in {
   environment.systemPackages = with pkgs; [
@@ -70,7 +71,7 @@ in {
     mpv-no-scripts
     mpv-with-scripts
     # clementine # music player
-    gnome3.cheese # webcam
+    gnome.cheese # webcam
     qpwgraph # play with pipewire streams
     # ocenaudio # test ardour?
     gimp # GNU Image Manipulation Program
@@ -163,6 +164,7 @@ in {
       soweli = super.callPackage ../../pkgs/soweli {};
 
       mpv-no-scripts = pkgs.stdenv.mkDerivation {
+        inherit (pkgs.mpv) meta;
         version = "yay";
         pname = "mpv-no-scripts";
         buildInputs = [ pkgs.mpv ];
@@ -171,32 +173,26 @@ in {
           mkdir -p $out/bin
           ln -s $src/bin/mpv $out/bin/mpvnoscripts
         '';
-        meta = pkgs.mpv.meta;
       };
 
-      mpv-with-scripts = f-mpv-with-scripts super;
+      mpv-with-scripts = f-mpv-with-scripts;
 
-      mpvpaper = super.mpvpaper.overrideAttrs (finalAttrs: previousAttrs: {
-        mpv = pkgs.mpv;
-      });
+      ytfzf = super.ytfzf.override { mpv = f-mpv-with-scripts; };
 
-
-      ytfzf = super.ytfzf.override { mpv = f-mpv-with-scripts super; };
-
-      zola = super.zola.overrideAttrs (final: prev: {
-        patches = [
-          # provides `zola serve --store-html`
-          (pkgs.fetchpatch {
-            url = "https://github.com/getzola/zola/commit/d23eded6bcd95d475340b3bf40d7d4eb17c028e3.diff";
-            sha256 = "sha256-xrxs2Qk3lBTGK7ji7Vxv9WqH6+o0p8EsxvbOqvuDb1c=";
-          })
-          # provides `save_as_file` Tera function
-          # (pkgs.fetchpatch {
-          #   url = "https://github.com/ppom0/zola/commit/404de294ffc3b3e2e15952790c41ade74bb7d935.diff";
-          #   sha256 = "sha256-KZnYxGEiFNF/6dHIbWLcI7I0QI/Uz8v8edd4XXieD2M=";
-          # })
-        ];
-      });
+      # zola = super.zola.overrideAttrs (final: prev: {
+      #   patches = [
+      #     # provides `zola serve --store-html`
+      #     (pkgs.fetchpatch {
+      #       url = "https://github.com/getzola/zola/commit/d23eded6bcd95d475340b3bf40d7d4eb17c028e3.diff";
+      #       sha256 = "sha256-xrxs2Qk3lBTGK7ji7Vxv9WqH6+o0p8EsxvbOqvuDb1c=";
+      #     })
+      #     # provides `save_as_file` Tera function
+      #     # (pkgs.fetchpatch {
+      #     #   url = "https://github.com/ppom0/zola/commit/404de294ffc3b3e2e15952790c41ade74bb7d935.diff";
+      #     #   sha256 = "sha256-KZnYxGEiFNF/6dHIbWLcI7I0QI/Uz8v8edd4XXieD2M=";
+      #     # })
+      #   ];
+      # });
 
     })
     # (import /home/ao/prg/nix/gomod2nix/overlay.nix)

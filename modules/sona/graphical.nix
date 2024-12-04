@@ -73,9 +73,8 @@ in lib.mkMerge [
     # dracula-theme # gtk theme
     # gruvbox-dark-gtk # gtk theme
     # nordic # gtk theme
-    # sweet # gtk theme
     qogir-theme # gtk theme
-    gnome3.adwaita-icon-theme # default gnome cursors
+    gnome.adwaita-icon-theme # default gnome cursors
 
     grim # screenshot functionality
     slurp # screenshot functionality
@@ -85,9 +84,7 @@ in lib.mkMerge [
     wlsunset
     wev
 
-    easyeffects # audio effects
-
-    conky # status bar
+    # easyeffects # audio effects
 
     wlr-randr # manage displays/monitors
 
@@ -101,15 +98,6 @@ in lib.mkMerge [
 
     xfce.thunar # file explorer
     xfce.ristretto # image viewer
-  ];
-
-  nixpkgs.overlays = [
-    (self: super: {
-      conky = super.conky.override { pulseSupport = true; };
-      # sweet = super.sweet.overrideAttrs (oldAttrs: {
-      #   patches = [ ./sweet-theme.patch ];
-      # });
-    })
   ];
 
   services.pipewire = {
