@@ -1,10 +1,10 @@
-{ lib, config, pkgs, ... }:
+{ lib, pkgs, ... }:
 let
   websites = [
     "https://blog.ppom.me"
     "https://cours.ppom.fr"
-    "https://edit.ppom.fr"
-    "https://edit.ppom.me/leborddeleau/admin"
+    "https://edit.ppom.fr/admin"
+    # "https://edit.ppom.me/leborddeleau/admin"
     "https://edit.ppom.me/pompeani.art/admin"
     "https://fesse.cloud"
     "https://file.ppom.me"
@@ -14,7 +14,7 @@ let
     "https://pompeani.art"
     "https://ppom.fr"
     "https://ppom.me"
-    "https://ppom.me/vault"
+    "https://ppom.me/vault/"
     "https://static.ppom.me"
     "https://tokipona.ppom.me"
     "https://u.ppom.me"
