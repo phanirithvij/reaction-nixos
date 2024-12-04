@@ -35,6 +35,7 @@ in lib.mkMerge [
         download-dir = "${mountPath}/upload-here";
         watch-dir = "${mountPath}/dot.torrents";
         watch-dir-enabled = true;
+        watch-dir-force-generic = true; # NFS shares doesn't support inotify
         speed-limit-up = 1024; # KB/s
         speed-limit-up-enabled = true;
         rpc-bind-address = host.address;
@@ -61,14 +62,6 @@ in lib.mkMerge [
       script = "LINES=35 COLUMNS=120 ${pkgs.stig}/bin/stig ls > ${mountPath}/stig-output || true";
       serviceConfig.User = "transmission";
       startAt = "*:*:0,30";
-    };
-
-    systemd.services.new-torrent-watch = {
-      description = "Touch new files not seen by transmission's inotify because ${mountPath} is a network fs";
-      script = ''
-        ${pkgs.fd}/bin/fd . --changed-within 100s ${mountPath}/dot.torrents/ -x touch || true
-      '';
-      startAt = "*:*:0";
     };
   }
 ]
