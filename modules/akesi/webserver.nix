@@ -59,7 +59,7 @@ in {
       "www.ppom.fr" = host { return = "301 https://ppom.fr$request_uri"; };
 
       "cours.ppom.fr" = let
-        src = [ "'self'" "'unsafe-inline'" "clic.ppom.me" ];
+        src = [ "'self'" "'unsafe-inline'" "'wasm-unsafe-eval'" "clic.ppom.me" ];
       in host {
         root = "/var/www/cours.ppom.fr";
         csp = { "script-src" = src; "connect-src" = src; };
