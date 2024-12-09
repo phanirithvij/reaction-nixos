@@ -1,8 +1,17 @@
-{ lib, pkgs, config, ... }:
+{ pkgs, ... }:
 let 
+  unstable = import <nixos-unstable> {};
 in {
   services.peertube = {
     enable = true;
+    package = unstable.peertube.overrideAttrs (final: prev: {
+      patches = (if prev ? patches then prev.patches else []) ++ [
+        (pkgs.fetchpatch {
+          url = "https://github.com/Chocobozzz/PeerTube/commit/d8b3436f687034948964627cce88148daf7fb4eb.diff";
+          sha256 = "sha256-UGoHSS77EgioHw4Fsn62RkHosGfYRJUwAwliC2z0YPM=";
+        })
+      ];
+    });
     enableWebHttps = true;
     configureNginx = true;
     listenWeb = 443;
@@ -23,24 +32,26 @@ in {
     ];
     secrets.secretsFile = "/var/secrets/fesse";
     settings = {
+      federation.enabled = false;
       storage = {
+          avatars = "/data/fesse/avatars/";
+          bin = "/data/fesse/bin/";
+          cache = "/data/fesse/cache/";
+          captions = "/data/fesse/captions/";
+          client_overrides = "/data/fesse/client_overrides/";
+          logs = "/data/fesse/logs/";
+          original_video_files = "/data/fesse/original_video_files/";
+          plugins = "/data/fesse/plugins/";
+          previews = "/data/fesse/previews/";
+          redundancy = "/data/fesse/redundancy/";
+          storyboards = "/data/fesse/storyboards/";
+          streaming_playlists = "/data/fesse/streaming_playlists/";
+          thumbnails = "/data/fesse/thumbnails/";
           tmp = "/data/fesse/tmp/";
           tmp_persistent = "/data/fesse/tmp_persistent/";
-          bin = "/data/fesse/bin/";
-          avatars = "/data/fesse/avatars/";
-          web_videos = "/data/fesse/web_videos/";
-          streaming_playlists = "/data/fesse/streaming_playlists/";
-          redundancy = "/data/fesse/redundancy/";
-          logs = "/data/fesse/logs/";
-          previews = "/data/fesse/previews/";
-          thumbnails = "/data/fesse/thumbnails/";
-          storyboards = "/data/fesse/storyboards/";
           torrents = "/data/fesse/torrents/";
-          captions = "/data/fesse/captions/";
-          cache = "/data/fesse/cache/";
-          plugins = "/data/fesse/plugins/";
+          web_videos = "/data/fesse/web-videos/";
           well_known = "/data/fesse/well_known/";
-          client_overrides = "/data/fesse/client_overrides/";
       };
       smtp = {
         hostname = "mail.girofle.org";
