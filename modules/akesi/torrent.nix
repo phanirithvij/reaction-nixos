@@ -54,14 +54,7 @@ in lib.mkMerge [
     '';
 
     environment.systemPackages = [
-      pkgs.stig # currently broken
+      pkgs.stig
     ];
-
-    systemd.services.stig-status = {
-      description = "Print transmission status to a file available to akesi@anpa";
-      script = "LINES=35 COLUMNS=120 ${pkgs.stig}/bin/stig ls > ${mountPath}/stig-output || true";
-      serviceConfig.User = "transmission";
-      startAt = "*:*:0,30";
-    };
   }
 ]
