@@ -63,6 +63,9 @@ in {
       in host {
         root = "/var/www/cours.ppom.fr";
         csp = { "script-src" = src; "connect-src" = src; };
+      } // {
+        forceSSL = false;
+        addSSL = true;
       };
 
       "lili-bel.com" = host { root = "/var/www/lili-bel.com"; };
