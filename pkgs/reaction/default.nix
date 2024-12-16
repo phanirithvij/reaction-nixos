@@ -17,7 +17,7 @@ let
   };
   reaction = rustPlatform.buildRustPackage {
     inherit pname version src;
-    cargoSha256 = "sha256-LX8lI4GZpH62JCgK7brmI8KpM1aAFEoTxC7sBTiswMk=";
+    cargoHash = "sha256-LX8lI4GZpH62JCgK7brmI8KpM1aAFEoTxC7sBTiswMk=";
   };
   ip46tables = stdenv.mkDerivation {
     inherit version src;
