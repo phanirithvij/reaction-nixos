@@ -74,7 +74,7 @@ in lib.mkMerge [
     # gruvbox-dark-gtk # gtk theme
     # nordic # gtk theme
     qogir-theme # gtk theme
-    gnome.adwaita-icon-theme # default gnome cursors
+    adwaita-icon-theme # default gnome cursors
 
     grim # screenshot functionality
     slurp # screenshot functionality

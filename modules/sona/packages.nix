@@ -64,14 +64,14 @@ in {
     # element-desktop # Matrix heavy client
     # tor-browser-bundle-bin
     # pcmanfm # File Browser
-    gnome.gnome-keyring # for fractal
+    gnome-keyring # for fractal
     fractal # Gnome Matrix desktop client
     evince
     libreoffice
     mpv-no-scripts
     mpv-with-scripts
     # clementine # music player
-    gnome.cheese # webcam
+    cheese # webcam
     qpwgraph # play with pipewire streams
     # ocenaudio # test ardour?
     gimp # GNU Image Manipulation Program
