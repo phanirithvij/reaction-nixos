@@ -22,6 +22,7 @@
     nvim.enableGo = true;
     nvim.steroids = true;
     packages.more = true;
+    packages.xdg = true;
     tmux.desktop = true;
     user.fish = true;
   };

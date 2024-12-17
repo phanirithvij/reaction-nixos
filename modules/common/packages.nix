@@ -3,8 +3,20 @@
   options.ppom.packages = {
     enable = lib.mkEnableOption "install ppom packages";
     more = lib.mkEnableOption "install more utilities";
+    xdg = lib.mkEnableOption "install xdg utilities";
   };
   config = {
+    # no default tools (perl)
+    environment.defaultPackages = lib.mkDefault [];
+
+    # no desktop things
+    xdg = lib.mkIf (!config.ppom.packages.xdg) {
+      autostart.enable = lib.mkDefault false;
+      icons.enable = lib.mkDefault false;
+      mime.enable = lib.mkDefault false;
+      sounds.enable = lib.mkDefault false;
+    };
+
     environment.systemPackages = with pkgs; [
       man-pages # standard man pages
       ## shell environnement
@@ -29,7 +41,8 @@
       # cpulimit # limit process CPU usage
 
       ## network
-      bind # dig
+      rsync
+      # bind # dig
       iftop # connection viewer
       nmap # local network prober
       librespeed-cli # Speedtest
