@@ -58,15 +58,25 @@ in {
 
       "www.ppom.fr" = host { return = "301 https://ppom.fr$request_uri"; };
 
-      "cours.ppom.fr" = let
-        src = [ "'self'" "'unsafe-inline'" "'wasm-unsafe-eval'" "clic.ppom.me" ];
-      in host {
-        root = "/var/www/cours.ppom.fr";
-        csp = { "script-src" = src; "connect-src" = src; };
-      } // {
-        forceSSL = false;
-        addSSL = true;
-      };
+      "cours.ppom.fr" = lib.mkMerge [
+        (host {
+          root = "/var/www/cours.ppom.fr";
+          csp = {
+            "script-src" = [
+              "'self'"
+              "'unsafe-inline'"
+              "'wasm-unsafe-eval'" # asciinema script
+            ];
+          };
+        })
+        {
+          forceSSL = lib.mkForce false;
+          addSSL = true;
+          extraConfig = ''
+            charset utf-8;
+          '';
+        }
+      ];
 
       "lili-bel.com" = host { root = "/var/www/lili-bel.com"; };
 
