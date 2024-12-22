@@ -147,6 +147,7 @@ in {
     # poppler # other PDF manipulations
     # pngquant # png size reducer
 
+    dofus
   ];
 
   nixpkgs.overlays = [
@@ -178,6 +179,15 @@ in {
       mpv-with-scripts = f-mpv-with-scripts;
 
       ytfzf = super.ytfzf.override { mpv = f-mpv-with-scripts; };
+
+      dofus = let
+        url = "https://launcher.cdn.ankama.com/installers/production/Dofus_3.0-x86_64.AppImage";
+      in pkgs.writeShellScriptBin "dofus" ''
+        ${pkgs.appimage-run}/bin/appimage-run ${pkgs.fetchurl {
+          inherit url;
+          sha256 = "sha256-yqdqxD5YfrODX4p0Rh8LqUn5/nrHciyvJfb7WC9BTW4=";
+        }}
+      '';
 
       # zola = super.zola.overrideAttrs (final: prev: {
       #   patches = [
