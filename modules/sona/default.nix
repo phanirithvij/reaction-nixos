@@ -27,6 +27,13 @@
     user.fish = true;
   };
 
+  services.neo4j = {
+    enable = true;
+    bolt.tlsLevel = "DISABLED";
+    https.enable = false;
+    extraServerConfig = "client.allow_telemetry = false";
+  };
+
   boot = {
     loader = {
       systemd-boot = {
