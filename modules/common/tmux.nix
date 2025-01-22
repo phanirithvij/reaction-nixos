@@ -12,7 +12,7 @@
       enable = true;
       clock24 = true;
       customPaneNavigationAndResize = true;
-      historyLimit = 20000;
+      historyLimit = 200000;
       keyMode = "vi";
       newSession = true;
       resizeAmount = 5;
