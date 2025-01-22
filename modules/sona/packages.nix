@@ -125,7 +125,10 @@ in {
     # nodejs cargo
     nushell
     deno
-    rustup
+    cargo
+    rustc
+    rust-analyzer
+    rustfmt
     gcc
     go
 
