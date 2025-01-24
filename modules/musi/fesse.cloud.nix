@@ -59,6 +59,10 @@ in {
         username = "admin@fesse.cloud";
         from_address = "admin@fesse.cloud";
       };
+      csp = {
+        enabled = true;
+        report_only = false;
+      };
     };
     smtp.passwordFile = "/var/secrets/mail/admin@fesse.cloud";
   };
