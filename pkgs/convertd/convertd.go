@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"io/fs"
 	"os"
@@ -60,77 +62,165 @@ func main() {
 }
 
 func handleTask(taskName string) {
+	logPath := path.Join(logDir, taskName) + ".log"
+
+	err := _handleTask(taskName, logPath)
+
+	if err != nil {
+		message := "Error while converting " + taskName + ": " + err.Error()
+
+		println(message)
+		err := os.WriteFile(logPath+".ko", []byte(message), 0644)
+		if err != nil {
+			println("could not write ko file for task: ", taskName)
+			os.Exit(1)
+		}
+	}
+}
+
+func _handleTask(taskName, logPath string) error {
+
+	// Remove task from task directory
+	defer func() {
+		err := os.Rename(path.Join(todoDir, taskName), path.Join(logDir, taskName))
+		if err != nil {
+			println("could not move task: ", taskName)
+			os.Exit(1)
+		}
+	}()
+
+	// Retrieve task
 	taskBytes, err := os.ReadFile(path.Join(todoDir, taskName))
 	if err != nil {
 		println("could not read task file: ", err)
 		os.Exit(1)
 	}
-	inputFile := string(taskBytes)
+	inputFile := strings.TrimSpace(string(taskBytes))
 
 	outBase := path.Base(strings.TrimSuffix(inputFile, path.Ext(inputFile)))
 
-	outPath := path.Join(outDir, outBase)
-	// If file exists
+	outBase = path.Join(outDir, outBase)
+	outPath := outBase
+	// If output file already exists, add a number to it
 	if _, err = os.Stat(outPath + ".mp4"); err == nil {
 		var newOutPath string
 		i := 0
 		for err == nil {
 			i++
-			newOutPath = outPath + "." + string(i) + ".mp4"
-			_, err = os.Stat(newOutPath)
+			newOutPath = fmt.Sprintf("%s.%v", outPath, i)
+			_, err = os.Stat(newOutPath + ".mp4")
 		}
 		outPath = newOutPath
 	}
+	outPath += ".mp4"
 
-	logPath := path.Join(logDir, taskName) + ".log"
-
+	// If input file is unreadable, stop
 	if _, err = os.Stat(inputFile); err != nil {
-		err = os.WriteFile(logPath+".ko", []byte(fmt.Sprintln("Could not access file: ", err)), 0644)
-		if err != nil {
-			println("could not write ko file for task: ", taskName)
-			os.Exit(1)
-		}
-		return
+		return err
 	}
 
+	// Create log file
 	logFile, err := os.Create(logPath)
-
 	if err != nil {
 		println("could not write log file for task: ", taskName)
 		os.Exit(1)
 	}
-
 	defer logFile.Close()
-
 	logFile.WriteString(fmt.Sprintln("Converting", inputFile, " to ", outPath))
 
-	cmd := exec.Command(
-		"HandBrakeCLI",
-		"--preset", PRESET,
-		"--optimize",
-		"--rate", "24", "--pfr",
-		"--quality", "23",
-		"--turbo",
-		"--audio-lang-list", "eng,fra,ita,spa",
-		"--subtitle-lang-list", "fra,eng,ita,spa",
-		"-i", inputFile,
-		"-o", outPath)
+	// Video conversion
+	{
+		cmd := exec.Command(
+			"HandBrakeCLI",
+			"--preset", PRESET,
+			"--optimize",
+			"--rate", "24", "--pfr",
+			"--quality", "23",
+			"--turbo",
+			"--audio-lang-list", "eng,fra,ita,spa",
+			"--subtitle-lang-list", "fra,eng,ita,spa",
+			"-i", inputFile,
+			"-o", outPath)
 
-	cmd.Stdout = logFile
-	cmd.Stderr = logFile
+		cmd.Stdout = logFile
+		cmd.Stderr = logFile
 
-	err = cmd.Run()
-	if err != nil {
-		err = os.WriteFile(logPath+".ko", []byte(fmt.Sprintln("Error converting ", inputFile)), 0644)
+		err = cmd.Run()
 		if err != nil {
-			println("could not write ko file for task: ", taskName)
-			os.Exit(1)
+			return err
 		}
 	}
 
-	err = os.Rename(path.Join(todoDir, taskName), path.Join(logDir, taskName))
-	if err != nil {
-		println("could not move task: ", taskName)
-		os.Exit(1)
+	// Subtitles extraction
+	{
+		ffmpegArgs := []string{"-i", inputFile}
+
+		ffData, err := runFFprobe(inputFile)
+		if err != nil {
+			return err
+		}
+
+		subtitleFound := false
+		for _, stream := range ffData.Streams {
+			if stream.CodecName == "subrip" && stream.Disposition.Forced == 0 {
+				subtitleFound = true
+				ffmpegArgs = append(ffmpegArgs,
+					"-map",
+					"0:"+string(stream.Index),
+					fmt.Sprintf("%s.%v.%s.srt", outBase, stream.Index, stream.Tags.Language),
+				)
+			}
+		}
+
+		if subtitleFound {
+			cmd := exec.Command("ffmpeg", ffmpegArgs...)
+
+			cmd.Stdout = logFile
+			cmd.Stderr = logFile
+
+			err = cmd.Run()
+			if err != nil {
+				return err
+			}
+		}
 	}
+
+	return nil
+}
+
+type FFprobe struct {
+	Streams []Stream
+}
+
+type Stream struct {
+	Index       int
+	CodecName   string
+	Disposition struct {
+		Forced int
+	}
+	Tags struct {
+		Language string
+	}
+}
+
+func runFFprobe(inputFile string) (FFprobe, error) {
+	cmd := exec.Command(
+		"ffprobe",
+		"-v", "quiet",
+		"-print_format", "json",
+		"-show_format",
+		"-show_streams",
+		inputFile)
+
+	var ffprobeData FFprobe
+	var stdout bytes.Buffer
+	cmd.Stdout = &stdout
+
+	err := cmd.Run()
+	if err != nil {
+		return ffprobeData, err
+	}
+
+	err = json.Unmarshal(stdout.Bytes(), &ffprobeData)
+	return ffprobeData, err
 }

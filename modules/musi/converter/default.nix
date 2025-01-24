@@ -15,14 +15,14 @@ in {
     enable = true;
     description = "Queue-controlled video converter";
     wantedBy = [ "multi-user.target" ];
-    path = [ pkgs.handbrake ];
+    path = [ pkgs.handbrake pkgs.ffmpeg ];
     serviceConfig = {
       Type = "simple";
       User = "media";
       Environment = [ runDir ];
       ExecStart = "${convertd}/bin/convertd";
       # Resource Limit
-      CPUQuota = "200%";
+      # CPUQuota = "200%";
       CPUWeight = 1;
       # Security
       NoNewPrivileges = true;
