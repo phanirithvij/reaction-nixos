@@ -1,4 +1,5 @@
 .mode csv
+.headers on
 
 .output ateliers.csv
 SELECT a.id atelier_id, a.nom_anim, a.date, a.duree, a.lieu, a.commentaires
