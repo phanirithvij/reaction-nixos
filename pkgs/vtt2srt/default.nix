@@ -1,3 +1,4 @@
+# TODO change to buildGoModule if possible
 { buildGoPackage, fetchFromGitHub }:
 buildGoPackage rec {
   pname = "vtt2srt";

@@ -116,7 +116,7 @@
 
       ## text
       dos2unix
-      vtt2srt # VTT to SRT converter
+      # vtt2srt # VTT to SRT converter
       # subedit # Subtitle Editor
       subshift # Personal subtitle editor
     ];
