@@ -39,6 +39,7 @@
       glances # system and process viewer
       lsof # list open files
       # cpulimit # limit process CPU usage
+      strace # show syscalls
 
       ## network
       rsync
