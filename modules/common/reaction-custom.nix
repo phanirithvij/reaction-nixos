@@ -32,7 +32,7 @@
     cfg = config.ppom.reaction;
     var = import ./reaction-variables.nix { inherit pkgs; };
 
-    iptablesBanRange = ipRange: "+-${var.iptables} -w -A reaction -s ${ipRange} -j reaction-log-refuse";
+    iptablesBanRange = ipRange: "+-${var.iptables} -w -A reaction -s ${ipRange} -j nixos-fw-log-refuse";
     bannedIpRanges = [
       "46.148.40.0/24"
       "176.111.174.0/24"
