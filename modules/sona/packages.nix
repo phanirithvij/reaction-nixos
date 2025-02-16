@@ -127,8 +127,9 @@ in {
     deno
     cargo
     rustc
-    rust-analyzer
-    rustfmt
+    rust-analyzer # Rust language server
+    rustfmt # Rust formatter
+    clippy # Rust liner
     gcc
     go
 
