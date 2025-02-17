@@ -1,4 +1,4 @@
-{ lib, pkgs, config, ... }:
+{ pkgs, ... }:
 let
   var = import ../../common/reaction-variables.nix { inherit pkgs; };
 in
