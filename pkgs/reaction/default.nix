@@ -1,36 +1,35 @@
-{
-stdenv
-, linkFarm
-, fetchFromGitLab
-, rustPlatform
-}:
-let
+{ lib, fetchFromGitLab, rustPlatform }:
+rustPlatform.buildRustPackage {
   pname = "reaction";
+  version = "unstable-2025-02-17";
   # version = "v2.0.0-rc1";
-  version = "7c3116b7c901ca2b9bd39264faba25128ca6c45e";
+
   src = fetchFromGitLab {
     domain = "framagit.org";
     owner = "ppom";
-    repo = pname;
-    rev = version;
-    sha256 = "sha256-oxVeCss+Y/G2HnDB8teWPe2FNdXbkQBysZbJ1aXH/LU=";
+    repo = "reaction";
+    rev =  "a238c7411f042955b6062b05c6a6bd24d2f682ed";
+    sha256 = "sha256-vb0/qo7mKDKiGI2t8GW3ztk7EgdEV+oia5Hr2vL8fg0=";
   };
-  reaction = rustPlatform.buildRustPackage {
-    inherit pname version src;
-    cargoHash = "sha256-LX8lI4GZpH62JCgK7brmI8KpM1aAFEoTxC7sBTiswMk=";
+
+  cargoHash = "sha256-FVp54abv7+o7t2UkoOdR13uy31AObK8IRAD6Lm/ZZs0=";
+
+  postBuild = ''
+    $CC helpers_c/ip46tables.c -o ip46tables
+    $CC helpers_c/nft46.c -o nft46
+  '';
+
+  postInstall = ''
+    cp ip46tables nft46 $out/bin
+  '';
+
+  meta = with lib; {
+    description = "Scan logs and take action: an alternative to fail2ban";
+    homepage = "https://framagit.org/ppom/reaction";
+    changelog = "https://framagit.org/ppom/reaction/-/releases/v${version}";
+    license = licenses.agpl3Plus;
+    mainProgram = "reaction";
+    maintainers = with maintainers; [ ppom ];
+    platforms = platforms.unix;
   };
-  ip46tables = stdenv.mkDerivation {
-    inherit version src;
-    pname = "ip46tables";
-    buildPhase = ''
-      gcc helpers_c/ip46tables.c -o ip46tables
-    '';
-    installPhase = ''
-      mkdir -p $out/bin
-      cp ip46tables $out/bin
-    '';
-  };
-in linkFarm "reaction" [
-  { name = "bin/reaction"; path = "${reaction}/bin/reaction"; }
-  { name = "bin/ip46tables"; path = "${ip46tables}/bin/ip46tables"; }
-]
+}

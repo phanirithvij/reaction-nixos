@@ -53,7 +53,7 @@
 
   services.reaction = {
     settings.patterns.ip.ignore = [ "192.168.1.253" ];
-    loglevel = "DEBUG";
+    # loglevel = "DEBUG";
   };
 
   boot = {
