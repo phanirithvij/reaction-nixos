@@ -79,6 +79,7 @@ in {
         pkgs.jsonnet-language-server
         pkgs.lua-language-server
         pkgs.ruff
+        pkgs.typescript-language-server
         pkgs.yaml-language-server
         pkgs.vscode-langservers-extracted # requires vscode to build
       ];
