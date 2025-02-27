@@ -150,6 +150,7 @@
   system.autoUpgrade.dates = "13:30";
 
   security.apparmor.enable = true;
+  security.polkit.enable = true;
 
   services.tlp.enable = true;
 
@@ -167,6 +168,8 @@
     npm.enable = true;
     bandwhich.enable = true;
   };
+
+  services.fwupd.enable = true;
 
   # FIXME logind quickfix doesn't build
   # swapDevices = [{
