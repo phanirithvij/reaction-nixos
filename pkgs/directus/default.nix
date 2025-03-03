@@ -8,8 +8,9 @@
   # from https://github.com/lovell/sharp/blob/<VERSION>/package.json → .config.libvips
   # vips,
   writeScriptBin,
-  nodejs,
+  nodejs_22,
 }: let
+  nodejs = nodejs_22;
   vips' = callPackage ./vips.nix {};
   # The original script is just a wrapper to app/cli/run
   # that checks always for the latest version.
@@ -21,7 +22,7 @@
 in
 buildNpmPackage rec {
   pname = "directus";
-  version = "10.12.1";
+  version = "11.5.1";
 
   src = builtins.filterSource (path: _: let
     basename = builtins.baseNameOf path;
@@ -29,9 +30,11 @@ buildNpmPackage rec {
     lib.hasSuffix ".json" basename)
   ./.;
 
-  npmDepsHash = "sha256-Fxhrf7bM0Amjw1iMJJ+ssIMWE6OgMMfJGRCnXgeAdZo=";
+  npmDepsHash = "sha256-Uj33P0K+5+nQhg4cHj5OoXTh+N+2A3XVb9bvj/3IvrA=";
 
   dontNpmBuild = true;
+
+  inherit nodejs;
 
   # Required for sharp dependency
   nativeBuildInputs = [
