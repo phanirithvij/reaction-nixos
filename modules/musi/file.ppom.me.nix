@@ -4,7 +4,7 @@ lib.mkMerge [
   {
     services.nextcloud = {
       enable = true;
-      package = pkgs.nextcloud29;
+      package = pkgs.nextcloud30;
       configureRedis = true;
       autoUpdateApps.enable = true;
       hostName = "file.ppom.me";
@@ -42,6 +42,48 @@ lib.mkMerge [
         enableACME = true;
         forceSSL = true;
       };
+      "board.ppom.me" = {
+        enableACME = true;
+        forceSSL = true;
+        locations."/" = {
+          proxyPass = "http://localhost:3002";
+          proxyWebsockets = true;
+        };
+      };
+      # "edition.ppom.me" = let
+      #   pass = {
+      #     proxyPass = "http://localhost:9980";
+      #   };
+      # in {
+      #   enableACME = true;
+      #   forceSSL = true;
+      #   locations = {
+      #     "/browser" = pass;
+      #     "/hosting/discovery" = pass;
+      #     "/hosting/capabilities" = pass;
+      #     "/cool/adminws" = pass;
+      #     "/cool" = pass;
+      #     "/cool/.*/ws" = pass // {
+      #       proxyWebsockets = true;
+      #     };
+      #   };
+      # };
+    };
+
+    # services.collabora-online = {
+    #   enable = true;
+    #   settings = {
+    #     net.listen = "127.0.0.1";
+    #     storage.wopi.alias_groups.group.host = {
+    #       "@allow" = true;
+    #     };
+    #   };
+    # };
+
+    services.nextcloud-whiteboard-server = {
+      enable = true;
+      secrets = [ "/var/secrets/whiteboard" ];
+      settings.NEXTCLOUD_URL = "https://file.ppom.me";
     };
 
     services.postgresqlBackup.databases = [ "nextcloud" ];
