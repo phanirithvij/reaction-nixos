@@ -13,7 +13,6 @@
     ./syncthing.nix
     ./torrent.nix
     ./virt.nix
-    ./vpnc.nix
   ];
 
   ppom = {
