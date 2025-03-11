@@ -18,6 +18,8 @@ in {
     };
   };
 
+  users.users."directus-5eroue".extraGroups = [ "directus" ];
+
   systemd.services.directus-5eroue-export = {
     enable = true;
     description = "Export data as CSV";
