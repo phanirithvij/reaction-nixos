@@ -96,7 +96,11 @@ in {
     # Development
     git
     gitAndTools.git-filter-repo
+    spr # Make PRs from one commit
+    # git-branchless # git enhancement
+    # jj # git replacement (git compatible)
     # gource
+    so # stack overflow TUI
     gnumake
     # h2 # H2 Database Editor
     # alejandra # Nix formatter
