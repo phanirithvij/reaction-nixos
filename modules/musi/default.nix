@@ -14,6 +14,7 @@
     # ./listmonk.nix
     ./matrix.nix
     ./monitoring.nix
+    ./ntfy.nix
     ./postgresql.nix
     ./photoprism.nix
     ./rssify/default.nix
