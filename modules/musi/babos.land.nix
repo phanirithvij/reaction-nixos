@@ -23,26 +23,4 @@ in {
     "thunes.babos.land" = generalConf;
     "tribulations.babos.land" = generalConf;
   };
-
-  # services.directus.servers."babos" = {
-  #   enable = true;
-  #   settings = (import ./edit.ppom.me/common.nix {}).settings // {
-  #     EMAIL_FROM = "babos.land@ppom.me";
-  #     PORT = 8058;
-  #   };
-  #   nginx = {
-  #     enable = true;
-  #     serverName = "babos.land";
-  #     location = "/repertoire";
-  #   };
-  # };
-
-  # users.users."directus-babos".extraGroups = [ "directus" ];
-  # users.users."bertille".extraGroups = [ "directus-babos" ];
-
-  # security.doas.extraRules = [{
-  #   users = [ "bertille" ];
-  #   runAs = "directus-babos";
-  #   noPass = true;
-  # }];
 }
