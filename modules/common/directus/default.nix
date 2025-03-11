@@ -2,17 +2,15 @@
 let
   json = pkgs.formats.json {};
   settingsJson = settings: json.generate "config.json" (lib.filterAttrs (key: value: value != null) settings);
-  directusName = name: "directus-${name}";
-  varLib = name: "/var/lib/${directusName name}";
   hardcodedDirectusPath = "/nix/store/jkhj6l2dvr6yxr9y3aafv9spjih93v63-directus-10.12.1";
 in {
   options.services.directus = with lib; with types; {
     enable = mkEnableOption "enable Directus";
 
-    allowDirectusLicense = mkEnableOption (''
+    allowDirectusLicense = mkEnableOption ''
       required. Allow-list directus, which has an "unfree but ethical" license.
       See [here](https://github.com/directus/directus/releases/tag/v10.0.0) for more information on the license agreement.
-    '');
+    '';
 
     package = mkOption {
       type = package;
@@ -313,15 +311,15 @@ in {
 
     environment.systemPackages = [ pkgs.nodejs ] ++ (lib.mapAttrsToList (name: conf: (pkgs.writeShellApplication {
       name = "directus-${name}";
-      runtimeInputs = with pkgs; [];
+      # runtimeInputs = with pkgs; [];
       text = ''
         set +o errexit
 
         D="directus-${name}"
         if [[ "$USER" != "$D" ]]
         then
-          echo "not executed as $D, changing permissions with doas"
-          exec doas -u "$D" "$0" "$@"
+          echo "not executed as $D, changing permissions with sudo"
+          exec sudo -u "$D" "$0" "$@"
         fi
         
         export CONFIG_PATH=${settingsJson conf.settings}

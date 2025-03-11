@@ -104,7 +104,7 @@ lib.mkMerge [
     };
   }
 
-  # doas/sudo workaround for nextcloud-occ
+  # sudo workaround for nextcloud-occ
   (let
     execstart = lib.splitString " " config.systemd.services.nextcloud-cron.serviceConfig.ExecStart;
     php = "${lib.head execstart}";
@@ -113,11 +113,13 @@ lib.mkMerge [
     environment.systemPackages = [
       (lib.hiPrio (pkgs.writeShellScriptBin "nextcloud-occ" ''
         cd ${webroot}
-        export NEXTCLOUD_CONFIG_DIR="/var/lib/nextcloud/config"
-        exec /run/wrappers/bin/doas -u nextcloud ${php} occ "$@"
+        exec /run/wrappers/bin/sudo \
+          -u nextcloud \
+          NEXTCLOUD_CONFIG_DIR="/var/lib/nextcloud/config" \
+          ${php} occ "$@"
       ''))
     ];
-    security.doas.extraRules = [ {
+    security.sudo.extraRules = [ {
       cmd = php;
       setEnv = [ "NEXTCLOUD_CONFIG_DIR" ];
       runAs = "nextcloud";

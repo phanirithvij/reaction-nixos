@@ -88,7 +88,7 @@
 
   nix = {
     settings = {
-      # Allow sudo/doas users
+      # Allow sudo users
       allowed-users = [ "@wheel" ];
       experimental-features = "nix-command flakes";
     };

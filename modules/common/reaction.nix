@@ -79,7 +79,7 @@ in {
         {
           users.users.reaction.extraGroups = [ "systemd-journal" ];
 
-          security.doas.extraRules = [{
+          security.sudo.extraRules = [{
             users = [ "reaction" ];
             cmd = "$${pkgs.iptables}/bin/iptables";
             runAs = "root";

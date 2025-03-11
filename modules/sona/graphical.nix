@@ -176,7 +176,7 @@ in lib.mkMerge [
 
   systemd.services.nixos-upgrade = {
     serviceConfig = {
-      ExecStartPre = "/run/wrappers/bin/doas -u ao ${pkgs.writeShellApplication {
+      ExecStartPre = "/run/wrappers/bin/sudo -u ao ${pkgs.writeShellApplication {
         name = "notify-upgrade";
         runtimeInputs = with pkgs; [ libnotify ];
         text = ''

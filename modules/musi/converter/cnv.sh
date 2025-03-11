@@ -1,6 +1,6 @@
 set +o nounset
 
-test "$(id -nu)" = "media" || exec doas -u media "${BASH_SOURCE[0]}" "$@"
+test "$(id -nu)" = "media" || exec sudo -u media "${BASH_SOURCE[0]}" "$@"
 
 # shellcheck disable=SC2016
 test -n "$RUNTIME_DIRECTORY" || die '$RUNTIME_DIRECTORY must be set'

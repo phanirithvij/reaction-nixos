@@ -59,7 +59,7 @@ in {
   };
 
   environment.systemPackages = [ (pkgs.writeShellScriptBin "funkwhale-playlist-python" ''
-    exec /run/wrappers/bin/doas -u funkwhale-playlist-import ${python}/bin/python "$@"
+    exec /run/wrappers/bin/sudo -u funkwhale-playlist-import ${python}/bin/python "$@"
   '') ];
 
   # FunkwhaleLink

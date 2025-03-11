@@ -23,10 +23,13 @@
     };
   };
 
-  security.doas.extraRules = [ {
+  security.sudo-rs.extraRules = [ {
     users = [ "bertille" "ppom" ];
     runAs = "media";
-    noPass = true;
+    commands = [ {
+      command = "ALL";
+      options = [ "NOPASSWD" ];
+    } ];
   } ];
 
   systemd.services.uptime-calc = {

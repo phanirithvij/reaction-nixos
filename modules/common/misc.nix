@@ -107,40 +107,13 @@
     '';
 
     security = {
-      sudo = {
-        enable = false;
+      sudo.enable = false;
+      sudo-rs = {
+        enable = true;
         extraConfig = ''
           Defaults env_keep += "GIT_AUTHOR_DATE GIT_COMMITTER_DATE"
+          Defaults env_keep += "NIX_PATH NIXPKGS_CONFIG NIXPKGS_ALLOW_UNFREE NIXPKGS_ALLOW_INSECURE"
         '';
-      };
-      wrappers.sudo = {
-        setuid = true;
-        owner = "root";
-        group = "root";
-        source = "${pkgs.doas}/bin/doas";
-      };
-      doas = {
-        enable = true;
-        extraRules = [
-          {
-            groups = ["wheel"];
-            persist = true;
-          }
-          {
-            groups = ["wheel"];
-            persist = true;
-            cmd = "git";
-            setEnv = [ "GIT_AUTHOR_DATE" "GIT_COMMITTER_DATE" ];
-          }
-        ] ++ (map
-          (cmd: {
-            inherit cmd;
-            groups = ["wheel"];
-            persist = true;
-            setEnv = [ "NIX_PATH" "NIXPKGS_CONFIG" "NIXPKGS_ALLOW_UNFREE" "NIXPKGS_ALLOW_INSECURE" ];
-          })
-          ["nixos-rebuild" "nix" "nix-shell" "nix-build"]
-        );
       };
     };
   };

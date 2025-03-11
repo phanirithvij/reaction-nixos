@@ -175,7 +175,7 @@
             chown root:funkwhale ${pythonSecretFile}
             chown root:redis-funkwhale ${redisSecretFile}
 
-            /run/wrappers/bin/doas -u postgres \
+            /run/wrappers/bin/sudo -u postgres \
               psql -c "ALTER USER funkwhale WITH PASSWORD '$POSTGRES_PASSWORD';"
 
             echo "$REDIS_PASSWORD" > ${redisSecretFile}
