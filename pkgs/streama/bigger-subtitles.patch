@@ -1,0 +1,21 @@
+diff --git a/grails-app/assets/stylesheets/_player-controls-subtitle-picker.scss b/grails-app/assets/stylesheets/_player-controls-subtitle-picker.scss
+index b9686141..a80e3818 100644
+--- a/grails-app/assets/stylesheets/_player-controls-subtitle-picker.scss
++++ b/grails-app/assets/stylesheets/_player-controls-subtitle-picker.scss
+@@ -46,13 +46,13 @@
+     }
+ 
+     &.subtitle-size-lg{
+-      font-size: 30px;
++      font-size: 50px;
+     }
+     &.subtitle-size-md{
+-      font-size: 22px;
++      font-size: 40px;
+     }
+     &.subtitle-size-sm{
+-      font-size: 16px;
++      font-size: 30px;
+     }
+   }
+ }
