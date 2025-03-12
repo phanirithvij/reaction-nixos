@@ -437,9 +437,9 @@ func (p *Project) mkPath(pData UserPath) bool {
 		var buffer strings.Builder
 
 		buffer.WriteString("+++\n")
-		p.writeHeader(&buffer, pData.Header)
+		p.writeObject(&buffer, pData.Header, false)
 		buffer.WriteString("[extra]\n")
-		p.writeHeader(&buffer, pData.HeaderExtra)
+		p.writeObject(&buffer, pData.HeaderExtra, false)
 		buffer.WriteString("+++\n")
 		buffer.WriteString(pData.Body)
 
@@ -475,18 +475,44 @@ func (p *Project) mkPath(pData UserPath) bool {
 	return true
 }
 
-func (p *Project) writeHeader(w *strings.Builder, header map[string]any) {
-	for key, value := range header {
-		var format string
-		valueType := reflect.TypeOf(value)
-		if valueType != nil {
-			switch valueType.Kind() {
-			case reflect.String:
-				format = "%v = \"\"\"%v\"\"\"\n"
-			default:
-				format = "%v = %v\n"
+func (p *Project) writeObject(w *strings.Builder, object map[string]any, inner bool) {
+	separator := ", "
+	if inner {
+		fmt.Fprintf(w, "{ ")
+	} else {
+		separator = "\n"
+	}
+	for key, value := range object {
+		if reflect.TypeOf(value) != nil {
+			fmt.Fprintf(w, "%v = ", key)
+			writeValue(w, value, inner)
+			fmt.Fprintf(w, separator)
+		}
+	}
+	if inner {
+		fmt.Fprintf(w, " }")
+	}
+}
+
+func writeValue(w *strings.Builder, value any, inner bool) {
+	valueType := reflect.TypeOf(value)
+	if valueType != nil {
+		switch valueType.Kind() {
+		case reflect.String:
+			fmt.Fprintf(w, "\"\"\"%v\"\"\"", value)
+		case reflect.Array:
+			fmt.Fprintf(w, "[")
+			v := reflect.ValueOf(value)
+			for i := 0; i < v.Len(); i++ {
+				writeValue(w, v.Index(i).Interface(), true)
+				fmt.Fprintf(w, ", ")
 			}
-			fmt.Fprintf(w, format, key, value)
+			fmt.Fprintf(w, "]")
+		default:
+			fmt.Fprintf(w, "%v", value)
+		}
+		if !inner {
+			fmt.Fprintf(w, "\n")
 		}
 	}
 }
