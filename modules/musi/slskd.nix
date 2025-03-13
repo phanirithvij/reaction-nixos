@@ -76,6 +76,7 @@ in {
 
   # Allow ppom to edit downloads
   systemd.services.slskd.serviceConfig.UMask = "0002";
+  systemd.services.slskd.serviceConfig.Environment = ["DOTNET_USE_POLLING_FILE_WATCHER=1"];
   users.users.ppom.extraGroups = [ "slskd" ];
 
   systemd.services.slskd.serviceConfig = {

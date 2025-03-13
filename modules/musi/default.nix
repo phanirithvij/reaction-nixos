@@ -104,10 +104,6 @@
   virtualisation.docker.enable = true;
   boot.kernel.sysctl."net.ipv4.ip_forward" = true;
 
-  # I needed that after installing slskd, but I don't see why.
-  boot.kernel.sysctl."fs.inotify.max_user_watches" = 10 * 512 * 1024;
-  boot.kernel.sysctl."fs.inotify.max_user_instances" = 512;
-
   # SMART daemon → disk health check
   services.smartd.enable = true;
 
