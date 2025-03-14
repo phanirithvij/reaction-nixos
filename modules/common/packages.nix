@@ -85,6 +85,7 @@
       unzip
       trash-cli
       # unrar # unfree!
+      pussh
 
       ## protocols
       wget # HTTP client
@@ -122,6 +123,7 @@
     nixpkgs.overlays = [
       (self: super: {
         # go vtt2srt script
+        pussh = super.callPackage ../../pkgs/pussh {};
         vtt2srt = super.callPackage ../../pkgs/vtt2srt {};
         subshift = super.callPackage ../../pkgs/subshift {};
       })
