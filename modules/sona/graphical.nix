@@ -128,6 +128,8 @@ in lib.mkMerge [
     wlr.enable = true;
     # gtk portal needed to make gtk apps happy
     extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    # needed for plex-desktop, but cause the rest to break
+    # xdgOpenUsePortal = true;
   };
 
   # enable sway window manager
