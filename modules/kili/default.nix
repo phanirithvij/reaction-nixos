@@ -15,7 +15,11 @@
       port = 22;
       hardened = true;
     };
-    # reaction.enable = true;
+    reaction = {
+      enable = true;
+      enableNginx = false;
+      enableGPTBot = false;
+    };
     monit = {
       enable = true;
       fromMail = "akesi@ppom.me";
