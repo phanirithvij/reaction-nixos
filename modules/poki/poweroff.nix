@@ -17,6 +17,8 @@
           rm $flag_file
           ${config.systemd.package}/bin/systemctl poweroff
         fi
+      else
+        rm -f $flag_file
       fi
     '';
   };
