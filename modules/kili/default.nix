@@ -22,7 +22,7 @@
     };
     monit = {
       enable = true;
-      fromMail = "akesi@ppom.me";
+      fromMail = "kili@ppom.me";
     };
     musi-cache.enable = true;
   };
