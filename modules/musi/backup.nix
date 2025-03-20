@@ -57,7 +57,7 @@ in {
       RandomizedDelaySec = "30m";
     };
     backupPrepareCommand = "${pkgs.writeShellScript "wake-poki" ''
-      ssh ${kiliHost} -i ${pokiKey} wakeonlan A0:B3:CC:E9:4C:9C || exit 0
+      ssh ${kiliHost} -i ${pokiKey} wakelan A0:B3:CC:E9:4C:9C || exit 0
       for _ in $(seq 60)
       do
         sleep 15
