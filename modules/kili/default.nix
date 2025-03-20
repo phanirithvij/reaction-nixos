@@ -52,7 +52,12 @@
     keyMap = "fr";
   };
 
-  environment.systemPackages = [ pkgs.wakelan ];
+  environment.systemPackages = [
+    pkgs.wakelan
+    (pkgs.writeShellScriptBin "wakepoki" ''
+      exec ${pkgs.wakelan}/bin/wakelan A0:B3:CC:E9:4C:9C
+    '')
+  ];
 
   users.users.musi = {
     isNormalUser = true;
