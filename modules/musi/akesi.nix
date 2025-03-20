@@ -68,12 +68,15 @@ in {
     # Allow NFS for akesi
     iptables -A nixos-fw -p udp --dport 2049 -s ${hosts.akesi.address} -j nixos-fw-accept
     iptables -A nixos-fw -p tcp --dport 2049 -s ${hosts.akesi.address} -j nixos-fw-accept
-    # Allow nix-serve for akesi & poki
-    iptables -A nixos-fw -p tcp --dport ${builtins.toString config.services.nix-serve.port} -s ${hosts.akesi.address} -j nixos-fw-accept
-    iptables -A nixos-fw -p tcp --dport ${builtins.toString config.services.nix-serve.port} -s ${hosts.poki.address} -j nixos-fw-accept
+    # Allow nix-serve for nasin
+    iptables -A nixos-fw -p tcp --dport ${builtins.toString config.services.nix-serve.port} -s ${hosts.akesi.address}/24 -j nixos-fw-accept
   '';
 
-  services.reaction.settings.patterns.ip.ignore = [ hosts.akesi.address hosts.poki.address ];
+  services.reaction.settings.patterns.ip.ignore = [
+    hosts.akesi.address
+    hosts.poki.address
+    hosts.kili.address
+  ];
 
   services.nix-serve = {
     enable = true;

@@ -18,7 +18,7 @@ listenPort = 58234
 
 [kili]
 address = "10.1.1.4"
-publicKey = "24mNU4R5JgsiXRdeCtWSin9UPtgmWKrNMHyLIvexyQA="
+publicKey = "uJe+eUQNQD59DYYTUXnqsqQGen/5W3KmjfjZk5hqR0g="
 listenPort = 58234
 
 [poki]

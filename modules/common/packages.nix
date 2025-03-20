@@ -18,7 +18,6 @@
     };
 
     environment.systemPackages = with pkgs; [
-      man-pages # standard man pages
       ## shell environnement
       (lib.lowPrio moreutils)
       fzf # fuzzy finder
@@ -27,12 +26,6 @@
       nixos-option # print the actual value of a NixOS option
       nvd # print versions and changes of packages across nix closures
       nix-diff # prints differences between two derivations, ex: `nix-diff /nix/var/nix/profiles/system-{n,n+1}-link`
-      (import (fetchFromGitHub {
-        owner = "diamondburned";
-        repo = "nix-search";
-        rev = "v0.3.1";
-        sha256 = "sha256-2N1xy9BK9o7j/vk42Pg/nvDjDt7nZlannCLCcS8Puuk=";
-      }))
 
       ## processus
       htop # process viewer
@@ -46,7 +39,6 @@
       # bind # dig
       iftop # connection viewer
       nmap # local network prober
-      librespeed-cli # Speedtest
       # tcpdump
       (lib.lowPrio inetutils)
 
@@ -64,20 +56,23 @@
       fd # find like
       ripgrep # grep like
       eza # ls like
-      du-dust # du like
-      diskonaut # like dust, but interactive
       pydf # df like
       jq # json swiss-army-knife
 
       ## security
       srm # secure rm
-      gnupg # reference OpenPGP implementation
       # crowdsec # powerfull, go alternative to fail2ban, with community database
 
     ] ++ lib.optionals config.ppom.packages.more [
       fish # Friendly interactive shell
       python3
       bc # basic calculator
+
+      gnupg # reference OpenPGP implementation
+      du-dust # du like
+      librespeed-cli # Speedtest
+      man-pages # standard man pages
+      diskonaut # like dust, but interactive
 
       go # golang
       gopls # go language server
