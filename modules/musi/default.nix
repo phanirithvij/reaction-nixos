@@ -115,6 +115,15 @@
     MaxRetentionSec=1month
   '';
 
+  swapDevices = [ {
+    device = "/swapfile";
+    size = 22 * 1024; # MiB
+    randomEncryption = {
+      enable = true;
+      # default cipher is the fastest here
+    };
+  } ];
+
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It‘s perfectly fine and recommended to leave
