@@ -13,7 +13,7 @@
     ssh = {
       enable = true;
       port = 22;
-      # hardened = true;
+      hardened = true;
     };
     # reaction.enable = true;
     monit = {
@@ -46,8 +46,20 @@
   console = {
     font = "Lat2-Terminus16";
     keyMap = "fr";
-    useXkbConfig = true; # use xkb.options in tty.
   };
+
+  environment.systemPackages = [ pkgs.wakelan ];
+
+  users.users.musi = {
+    isNormalUser = true;
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMejg0vhFiS9vjVYX8IiXgq4kRy8c+XXbkaaio6i4BXP root@musi"
+    ];
+  };
+
+  swapDevices = [ {
+    device = "/swapfile";
+  } ];
 
   # Enable sound.
   # services.pipewire = {
