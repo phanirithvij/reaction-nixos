@@ -21,7 +21,7 @@ let
     "https://video.ppom.me"
   ];
   dns_test = "dns2.proxad.net";
-  log_file = "/home/ao/DOWN";
+  log_file = "/home/ppom/DOWN";
   down_detector = pkgs.writeShellScriptBin "down_detector.sh" ''
     export DISPLAY=${"\$"}{DISPLAY:=":0"}
     export XDG_RUNTIME_DIR=${"\$"}{XDG_RUNTIME_DIR:=/run/user/$(id -u)}
@@ -60,7 +60,7 @@ in
     description = "check if some websites are down";
     serviceConfig = {
       ExecStart = "${down_detector}/bin/down_detector.sh";
-      User = "ao";
+      User = "ppom";
     };
     startAt = "*:0/2";
   };

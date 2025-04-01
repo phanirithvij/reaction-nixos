@@ -171,14 +171,14 @@ in lib.mkMerge [
           fi'';
         }
       }/bin/check_battery";
-      User = "ao";
+      User = "ppom";
     };
     startAt = "*-*-* *:0/2:00";
   };
 
   systemd.services.nixos-upgrade = {
     serviceConfig = {
-      ExecStartPre = "/run/wrappers/bin/sudo -u ao ${pkgs.writeShellApplication {
+      ExecStartPre = "/run/wrappers/bin/sudo -u ppom ${pkgs.writeShellApplication {
         name = "notify-upgrade";
         runtimeInputs = with pkgs; [ libnotify ];
         text = ''
@@ -216,7 +216,7 @@ in lib.mkMerge [
 {
   # # Android
   # programs.adb.enable = true;
-  # users.users.ao.extraGroups = ["adbusers"];
+  # users.users.ppom.extraGroups = ["adbusers"];
   # programs.sway.extraSessionCommands = ''
   #   # Fix for some Java AWT applications (e.g. Android Studio),
   #   # use this if they aren't displayed properly:
