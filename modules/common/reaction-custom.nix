@@ -87,17 +87,18 @@
                   # (?:[^/" ]*/)* is a "non-capturing group" regex that allow for subpath(s)
                   # example: /code/.env should be matched as well as /.env
                   #           ^^^^^
-                  ''^<ip>.*"GET /(?:[^/" ]*/)*wp-login\.php''
-                  ''^<ip>.*"GET /(?:[^/" ]*/)*wp-includes''
-                  ''^<ip>.*"GET /(?:[^/" ]*/)*\.env ''
-                  ''^<ip>.*"GET /(?:[^/" ]*/)*config\.json ''
-                  ''^<ip>.*"GET /(?:[^/" ]*/)*info\.php ''
-                  ''^<ip>.*"GET /(?:[^/" ]*/)*owa/auth/logon.aspx ''
-                  ''^<ip>.*"GET /(?:[^/" ]*/)*auth.html ''
-                  ''^<ip>.*"GET /(?:[^/" ]*/)*auth1.html ''
-                  ''^<ip>.*"GET /(?:[^/" ]*/)*password.txt ''
-                  ''^<ip>.*"GET /(?:[^/" ]*/)*passwords.txt ''
-                  ''^<ip>.*"GET /(?:[^/" ]*/)*dns-query ''
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*wp-login\.php''
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*wp-includes''
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*\.env ''
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*config\.json ''
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*info\.php ''
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*owa/auth/logon.aspx ''
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*auth.html ''
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*auth1.html ''
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*password.txt ''
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*passwords.txt ''
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*dns-query ''
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*\.git/ ''
                 ];
                 actions = var.banFor "${toString (30 * 24)}h";
               };
