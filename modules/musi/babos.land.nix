@@ -20,7 +20,6 @@ in {
     "bureau.babos.land" = generalConf;
     "compta.babos.land" = generalConf;
     "djembe.babos.land" = generalConf;
-    "thunes.babos.land" = generalConf;
     "tribulations.babos.land" = generalConf;
   };
 }
