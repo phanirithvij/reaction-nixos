@@ -36,8 +36,14 @@ in {
         uid = 70;
         group = "nfsakesi";
       };
+
+      nix-serve = {
+        isSystemUser = true;
+        group = "nix-serve";
+      };
     };
     groups.nfsakesi.gid = 70;
+    groups.nix-serve = {};
   };
 
   environment.systemPackages = [ pkgs.stig ];
@@ -84,6 +90,7 @@ in {
     port = 4977;
     secretKeyFile = "/var/secrets/binarycache/key";
   };
+  systemd.services.nix-server.serviceConfig.DynamicUser = false;
 
   nix.settings.allowed-users = [ "nix-serve" ];
 }
