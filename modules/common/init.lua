@@ -210,7 +210,7 @@ if steroids or enableGo or enableNixd then
 		lspconfig.html.setup {}
 		lspconfig.jsonls.setup {}
 		lspconfig.jsonnet_ls.setup {}
-		-- lspconfig.ltex.setup {}
+		lspconfig.ltex.setup {}
 		-- lspconfig.pylizer.setup {}
 		lspconfig.ruff.setup {}
 		lspconfig.rust_analyzer.setup {}
