@@ -216,7 +216,8 @@ if steroids or enableGo or enableNixd then
 		lspconfig.rust_analyzer.setup {}
 		lspconfig.svelte.setup {}
 		lspconfig.tailwindcss.setup {}
-		lspconfig.ts_ls.setup {}
+		lspconfig.denols.setup {}
+		-- lspconfig.ts_ls.setup {}
 		lspconfig.vuels.setup {}
 		lspconfig.yamlls.setup {}
 

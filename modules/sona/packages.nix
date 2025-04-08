@@ -128,7 +128,7 @@ in {
     # python39Packages.pip
     # nodejs cargo
     nushell
-    deno
+    unstable.deno
     cargo
     rustc
     rust-analyzer # Rust language server
