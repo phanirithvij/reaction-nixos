@@ -25,3 +25,8 @@ listenPort = 58234
 address = "10.1.1.5"
 publicKey = "q/pcH81V8mv6NeLaESu9Wbh0E5iEs+/NRu4Ow0/88UI="
 listenPort = 58234
+
+[lipu]
+address = "10.1.1.6"
+publicKey = "/5qQfgqM6GsgmdLFpE+TDzTAqXupoMhSShNAo9kkkRM="
+listenPort = 58234
