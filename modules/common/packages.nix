@@ -30,6 +30,7 @@
 
       ## processus
       htop # process viewer
+      bottom # other process viewer
       glances # system and process viewer
       lsof # list open files
       # cpulimit # limit process CPU usage
