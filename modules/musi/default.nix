@@ -65,7 +65,7 @@
       };
       efi.canTouchEfiVariables = true;
     };
-    tmp.useTmpfs = true;
+    tmp.cleanOnBoot = true;
   };
 
   fileSystems."/data" = {
