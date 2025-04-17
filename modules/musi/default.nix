@@ -107,6 +107,9 @@
   # SMART daemon → disk health check
   services.smartd.enable = true;
 
+  # Firmware upgrade
+  services.fwupd.enable = true;
+
   # Secondary services
   programs.iftop.enable = true;
 
