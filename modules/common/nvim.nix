@@ -77,7 +77,7 @@ in {
         pkgs.jdt-language-server
         pkgs.jsonnet
         pkgs.jsonnet-language-server
-        pkgs.ltex-ls # TODO replace by ltex-plus when packaged
+        # pkgs.ltex-ls # TODO replace by ltex-plus when packaged
         pkgs.lua-language-server
         pkgs.ruff
         pkgs.typescript-language-server
