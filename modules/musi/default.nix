@@ -7,21 +7,15 @@
     ./anpa.nix # container
     ./backup.nix
     ./converter
-    ./dolibarr.nix
     ./dyndns.nix
     ./hardware-configuration.nix
     ./languagetool.nix
-    # ./listmonk.nix
-    ./matrix.nix
     ./monitoring.nix
     ./ntfy.nix
     ./postgresql.nix
-    ./photoprism.nix
-    ./rssify/default.nix
     ./streama.nix
     ./slskd.nix
     ./syncthing.nix
-    ./tor.nix
     ./users.nix
     ./vaultwarden.nix
 
