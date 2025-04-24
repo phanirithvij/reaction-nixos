@@ -5,7 +5,7 @@ let
   host = hosts.${hostName};
 in {
   services.nfs.server = {
-    enable = true;
+    # enable = true;
     # Doc: https://www.man7.org/linux/man-pages/man5/exports.5.html
     exports = ''
       /data/akesi ${hosts.akesi.address}(${lib.concatStringsSep "," [

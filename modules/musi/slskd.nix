@@ -4,7 +4,7 @@ let
   # unstable = import <nixos-unstable> {};
 in {
   services.slskd = {
-    enable = true;
+    # enable = true;
     # package = unstable.slskd;
     openFirewall = true;
     environmentFile = "/var/secrets/slskd";
