@@ -1,4 +1,4 @@
-{ lib, pkgs, ... }:
+{ lib, pkgs, config, ... }:
 # from https://nixos.wiki/wiki/Sway
 let
   # bash script to let dbus know about important env variables and
@@ -153,12 +153,13 @@ in lib.mkMerge [
         name = "check_battery";
         runtimeInputs = with pkgs; [ libnotify pulseaudio mpv-no-scripts ];
         text = ''
+          BAT=${if config.networking.hostName == "sona" then "BAT0" else "BAT1"}
           export DISPLAY=${"\$"}{DISPLAY:=":0"}
           export XDG_RUNTIME_DIR=${"\$"}{XDG_RUNTIME_DIR:=/run/user/$(id -u)}
           export DBUS_SESSION_BUS_ADDRESS=${"\$"}{DBUS_SESSION_BUS_ADDRESS:="unix:path=${"\$"}{XDG_RUNTIME_DIR}/bus"}
 
           AC_ON="cat /sys/class/power_supply/AC/online"
-          BATTERY_PERCENT="$(cat /sys/class/power_supply/BAT0/capacity)"
+          BATTERY_PERCENT="$(cat /sys/class/power_supply/$BAT/capacity)"
           BATTERY_MIN=12
 
           if [ "$($AC_ON)" -eq 0 ] && [ "$BATTERY_PERCENT" -le $BATTERY_MIN ]
