@@ -5,6 +5,7 @@
     ../common
 
     ./hardware-configuration.nix
+    ./android.nix
     ../sona/direnv.nix
     ../sona/down-detector.nix
     ../sona/graphical.nix
