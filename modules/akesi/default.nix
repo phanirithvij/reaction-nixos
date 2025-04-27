@@ -57,6 +57,15 @@
 
   boot.tmp.cleanOnBoot = true;
 
+  swapDevices = [ {
+    device = "/swapfile";
+    size = 3 * 1024; # MiB
+    randomEncryption = {
+      enable = true;
+      # default cipher is the fastest here
+    };
+  } ];
+
   # Only allow paths from /nix/store to be executables
   # fileSystems."/".options = [ "noexec" ];
 }
