@@ -82,6 +82,12 @@ in {
 
       "www.lili-bel.com" = host { return = "301 https://lili-bel.com$request_uri"; };
 
+      "leborddeleau.net" = host { root = "/var/www/leborddeleau.net"; };
+
+      "www.leborddeleau.net" = host { return = "301 https://leborddeleau.net$request_uri"; };
+      "www.lebordeleau.net" =  host { return = "301 https://leborddeleau.net$request_uri"; };
+      "lebordeleau.net" =      host { return = "301 https://leborddeleau.net$request_uri"; };
+
       "paris-loyers.fr" = host {
         root = "/var/www/paris-loyers.fr";
         extra = {
