@@ -104,7 +104,7 @@ in {
     gnumake
     # h2 # H2 Database Editor
     # alejandra # Nix formatter
-    zola # static site generator
+    unstable.zola # static site generator
     tailwindcss # CSS generation framework
     (pkgs.callPackage ../../pkgs/directus2zola {})
     # gcc-wrapper
