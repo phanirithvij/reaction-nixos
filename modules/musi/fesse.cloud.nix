@@ -1,10 +1,10 @@
 { pkgs, ... }:
 let 
-  unstable = import <nixos-unstable> {};
+  # unstable = import <nixos-unstable> {};
 in {
   services.peertube = {
     enable = true;
-    package = unstable.peertube.overrideAttrs (final: prev: {
+    package = pkgs.peertube.overrideAttrs (final: prev: {
       patches = (if prev ? patches then prev.patches else []) ++ [
         (pkgs.fetchpatch {
           url = "https://github.com/Chocobozzz/PeerTube/commit/d8b3436f687034948964627cce88148daf7fb4eb.diff";
