@@ -1,30 +1,11 @@
 { pkgs, ... }:
-let
-  directusPort = 8057;
-  common = import ./common.nix {};
-in {
-  services.directus.servers = {
-    "leborddeleau" = {
-      enable = true;
-      settings = common.settings // {
-        PORT = directusPort;
-      };
-      nginx = {
-        enable = true;
-        serverName = "edit.ppom.me";
-        location = "/leborddeleau";
-      };
-    };
-  };
-
-  users.users."directus-leborddeleau".extraGroups = [ "directus" ];
-
+{
   ppom.directus2zola.settings = {
     projects = [{
       name = "leborddeleau.net";
       script = [ "${pkgs.deno}/bin/deno" "run" "--allow-net" "./content.js" ];
       git_url = "https://framagit.org/ppom/leborddeleau.net.git";
-      push_url = "musi-uploader@akesi.ppom.me:/var/www/static/bdo/";
+      push_url = "musi-uploader@akesi.ppom.me:/var/www/leborddeleau.net/";
     }];
   };
 }
