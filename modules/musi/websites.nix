@@ -132,8 +132,16 @@ in {
         forceSSL = true;
         enableACME = true;
       };
-
     };
+
+    # Proxy to SSH
+    # streamConfig = ''
+    #   server {
+    #     listen 80;
+    #     # server_name musi.ppom.me;
+    #     proxy_pass localhost:22;
+    #   }
+    # '';
   };
 
   # Let's Encrypt config
