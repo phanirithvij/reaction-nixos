@@ -1,4 +1,4 @@
-{ lib, config, pkgs, ... }:
+{ ... }:
 {
   users.users."musi-uploader" = {
     isNormalUser = true;
