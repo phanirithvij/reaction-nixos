@@ -154,15 +154,17 @@ in lib.mkMerge [
         runtimeInputs = with pkgs; [ libnotify pulseaudio mpv-no-scripts ];
         text = ''
           BAT=${if config.networking.hostName == "sona" then "BAT0" else "BAT1"}
+          AC=${if config.networking.hostName == "sona" then "AC" else "ACAD"}
+
           export DISPLAY=${"\$"}{DISPLAY:=":0"}
           export XDG_RUNTIME_DIR=${"\$"}{XDG_RUNTIME_DIR:=/run/user/$(id -u)}
           export DBUS_SESSION_BUS_ADDRESS=${"\$"}{DBUS_SESSION_BUS_ADDRESS:="unix:path=${"\$"}{XDG_RUNTIME_DIR}/bus"}
 
-          AC_ON="cat /sys/class/power_supply/AC/online"
+          AC_ON="$(cat /sys/class/power_supply/$AC/online)"
           BATTERY_PERCENT="$(cat /sys/class/power_supply/$BAT/capacity)"
           BATTERY_MIN=12
 
-          if [ "$($AC_ON)" -eq 0 ] && [ "$BATTERY_PERCENT" -le $BATTERY_MIN ]
+          if [ "$AC_ON" -eq 0 ] && [ "$BATTERY_PERCENT" -le $BATTERY_MIN ]
           then
                 echo "Low battery detected" 1>&2
                 notify-send --urgency=critical --expire-time 3000 "Batterie faible" "$BATTERY_PERCENT% restants"
