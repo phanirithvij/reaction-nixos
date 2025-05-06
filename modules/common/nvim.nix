@@ -73,8 +73,7 @@ in {
         # nodes.vls # vue-language-server
         pkgs.ccls
         pkgs.gopls
-        pkgs.jdk11
-        pkgs.jdt-language-server
+        # pkgs.jdt-language-server # java
         pkgs.jsonnet
         pkgs.jsonnet-language-server
         # pkgs.ltex-ls # TODO replace by ltex-plus when packaged
@@ -133,7 +132,7 @@ in {
                 vim-svelte
                 plugins.vim-terraform
                 plugins.vim-jsonnet
-                plugins.nvim-jdtls
+                # plugins.nvim-jdtls # java
               ];
               opt = [ ];
             };
