@@ -5,11 +5,13 @@
   config = lib.mkIf config.ppom.misc.enable {
 
     nix = {
+      package = pkgs.lix;
       settings = {
         connect-timeout = 5;
         log-lines = 25;
         auto-optimise-store = true;
-        allowed-users = [ "root" ];
+        # Allow sudo users
+        allowed-users = [ "@wheel" ];
       };
       gc = {
         automatic = true;

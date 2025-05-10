@@ -86,8 +86,6 @@
 
   nix = {
     settings = {
-      # Allow sudo users
-      allowed-users = [ "@wheel" ];
       experimental-features = "nix-command flakes";
     };
   };
