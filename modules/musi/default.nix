@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, ... }:
 {
   imports = [
     ../common
@@ -7,6 +7,7 @@
     ./anpa.nix # container
     ./backup.nix
     ./converter
+    ./compote.nix
     ./dyndns.nix
     ./hardware-configuration.nix
     ./languagetool.nix
