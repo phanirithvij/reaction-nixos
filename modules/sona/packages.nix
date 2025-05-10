@@ -1,5 +1,5 @@
 # This configuration file is designed to only contain package-related entries.
-{ lib, pkgs, ... }:
+{ pkgs, ... }:
 
 let 
   unstable = import <nixos-unstable> {};
@@ -145,6 +145,7 @@ in {
 
     # Media
     imagemagick
+    ocrs # OCR tool
     # beets # MP3 tag editor from MusicBrainz
     # kid3 # MP3 tag editor
     # cdparanoia # CD ripper, `cdparanoia -B`
@@ -155,7 +156,7 @@ in {
     # poppler # other PDF manipulations
     # pngquant # png size reducer
 
-    dofus
+    # dofus
   ];
 
   nixpkgs.overlays = [
@@ -171,6 +172,8 @@ in {
       deepl-translate-cli = super.callPackage ../../pkgs/deepl-translate-cli {}; 
 
       soweli = super.callPackage ../../pkgs/soweli {};
+
+      ocrs = super.callPackage ../../pkgs/ocrs {};
 
       mpv-no-scripts = pkgs.stdenv.mkDerivation {
         inherit (pkgs.mpv) meta;
