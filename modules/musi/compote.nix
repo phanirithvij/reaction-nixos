@@ -123,21 +123,24 @@ in {
       serviceConfig = commonSystemd // {
         Type = "oneshot";
         WorkingDirectory = "${state}/tadata";
+        SystemCallFilter = lib.mkForce [];
+        CPUWeight = 1;
+        CPUQuota = "100%";
+        ExecStartPre = [
+          "+${pkgs.fd}/bin/fd -td . ${data} -X chmod 755"
+          "+${pkgs.fd}/bin/fd -tf . ${data} -X chmod 644"
+        ];
         ExecStart = "${pkgs.writeShellApplication {
           name = "compote-cron";
           text = ''
             set -e
             export PATH=${ocrs}/bin:$PATH
+            export HOME=/var/lib/compote
             cd ${state}/tadata
             ${pkgs.git}/bin/git pull
             ${pkgs.tailwindcss}/bin/tailwindcss --watch \
               -i css/input.css -o css/tailwind.css
-            ${unstable.deno}/bin/deno run \
-              --allow-read=${state},${data} \
-              --allow-write=${state},${data} \
-              --allow-run=ocrs \
-              scripts/cron.js
-
+            ${unstable.deno}/bin/deno run -A scripts/cron.js
           '';
         }}/bin/compote-cron";
       };
