@@ -25,6 +25,20 @@
       # daemonNiceLevel =   10;
     };
 
+    # OOM configuration
+    # Create a separate slice for nix-daemon that is
+    # memory-managed by the userspace systemd-oomd killer
+    systemd.slices."nix".sliceConfig = {
+      ManagedOOMMemoryPressure = "kill";
+      ManagedOOMMemoryPressureLimit = "80%";
+    };
+    systemd.services."nix-daemon".serviceConfig.Slice = "nix.slice";
+    systemd.services."nixos-upgrade".serviceConfig.Slice = "nix.slice";
+    # If a kernel-level OOM event does occur anyway,
+    # strongly prefer killing nix-daemon child processes
+    systemd.services."nix-daemon".serviceConfig.OOMScoreAdjust = 1000;
+    systemd.services."nixos-upgrade".serviceConfig.OOMScoreAdjust = 1000;
+
     # Auto upgrade block
     system.autoUpgrade = {
       enable = lib.mkDefault true;
