@@ -1,5 +1,4 @@
-{ config, pkgs, ... }:
-
+{ ... }:
 {
   imports = [
     # For cloud vms. See https://nixos.org/manual/nixos/stable/index.html#sec-profile-headless
@@ -32,6 +31,7 @@
       fromMail = "poki@ppom.me";
     };
     musi-cache.enable = true;
+    remote-build.allow-musi = true;
   };
 
   services.openssh.allowSFTP = true;
