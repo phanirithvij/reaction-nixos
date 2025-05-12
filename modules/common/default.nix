@@ -6,12 +6,12 @@
     ./git.nix
     ./misc.nix
     ./monit.nix
-    ./musi-cache.nix
     ./nasin.nix
     ./nvim.nix
     ./packages.nix
     ./reaction.nix
     ./reaction-custom.nix
+    ./remote-build.nix
     ./ssh.nix
     ./tmux.nix
     ./user.nix

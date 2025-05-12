@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ ... }:
 
 {
   imports = [
@@ -28,7 +28,7 @@
       fromMail = "akesi@ppom.me";
     };
     musi-cache.enable = true;
-    musi-build.enable = true;
+    remote-build.allow-musi = true;
   };
 
   system.stateVersion = "22.05";

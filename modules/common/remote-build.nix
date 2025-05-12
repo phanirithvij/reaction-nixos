@@ -5,8 +5,8 @@ in {
   options.ppom.musi-cache = {
     enable = lib.mkEnableOption "use musi as a Nix cache";
   };
-  options.ppom.musi-build = {
-    enable = lib.mkEnableOption "allow musi to perform remote builds";
+  options.ppom.remote-build = {
+    allow-musi = lib.mkEnableOption "allow musi to perform remote builds";
     hosts = lib.mkOption {
       description = "perform remote builds on those hosts";
       default = [];
@@ -26,7 +26,7 @@ in {
       system.autoUpgrade.dates = "05:10";
     })
 
-    (lib.mkIf config.ppom.musi-build.enable {
+    (lib.mkIf config.ppom.remote-build.allow-musi {
       # Not upgrading by itself anymore
       system.autoUpgrade.enable = lib.mkForce false;
       # Letting musi build and switch the system
@@ -87,7 +87,7 @@ in {
         };
       };
     })
-    config.ppom.musi-build.hosts);
+    config.ppom.remote-build.hosts);
   }
 ];
 }

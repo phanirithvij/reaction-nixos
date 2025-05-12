@@ -45,7 +45,7 @@
     nvim.enableNixd = true;
     nvim.enableGo = true;
     user.fish = true;
-    musi-build.hosts = [
+    remote-build.hosts = [
       "akesi"
     ];
   };
