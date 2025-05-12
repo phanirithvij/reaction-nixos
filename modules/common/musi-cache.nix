@@ -24,8 +24,10 @@ in {
     system.autoUpgrade.enable = lib.mkForce false;
     # Letting musi build and switch the system
     nix.settings.allowed-users = [ "musi-build" ];
+    nix.settings.trusted-users = [ "musi-build" ];
     users.users.musi-build = {
       isSystemUser = true;
+      useDefaultShell = true; # Must be allowed to login
       group = "musi";
       openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPw4sNMQdBpffsmyUwiL/oPsJRs9iqX77BAbMRCtQtai root@musi"
