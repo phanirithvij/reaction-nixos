@@ -1,6 +1,14 @@
 { config, lib, pkgs, ... }:
 let
   unstable = import <nixos-unstable> {};
+  sqlpage = unstable.sqlpage.overrideAttrs (final: prev: {
+    patches = (if prev ? patches then prev.patches else []) ++ [
+      (pkgs.fetchpatch {
+        url = "https://github.com/SQLPage/SQLPage/commit/58c4d05e4e680f770f066fdfaf880c1cf2880067.diff";
+        sha256 = "sha256-E0PSZ/4udjesqRftgF+u0Dk9qIdStbJzcu5/6o5bhNA=";
+      })
+    ];
+  });
   ocrs = pkgs.callPackage ../../pkgs/ocrs {};
   repo = "https://framagit.org/ppom/mememetadata.git";
   state = "/var/lib/compote";
@@ -100,7 +108,7 @@ in {
       serviceConfig = commonSystemd // {
         Type = "simple";
         WorkingDirectory = "${state}/tadata";
-        ExecStart = "${unstable.sqlpage}/bin/sqlpage -c ${configFile}";
+        ExecStart = "${sqlpage}/bin/sqlpage -c ${configFile}";
         RuntimeDirectory = "compote";
         RuntimeDirectoryMode = "0770";
       };
