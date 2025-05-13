@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, lib, ... }:
 {
   imports = [
     ../common
@@ -47,12 +47,18 @@
     user.fish = true;
     remote-build.hosts = [
       "akesi"
+      "poki"
     ];
   };
 
   services.reaction = {
     settings.patterns.ip.ignore = [ "192.168.1.253" ];
     # loglevel = "DEBUG";
+  };
+
+  systemd.services.rebuild-poki = {
+    after = lib.mkForce [ "restic-backups-data2.service" ];
+    wantedBy = lib.mkForce [ "restic-backups-data2.service" ];
   };
 
   boot = {
