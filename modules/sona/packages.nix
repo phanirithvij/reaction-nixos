@@ -2,7 +2,6 @@
 { pkgs, ... }:
 
 let 
-  unstable = import <nixos-unstable> {};
   f-mpv-with-scripts = pkgs.mpv-unwrapped.wrapper {
     mpv = pkgs.mpv-unwrapped;
     scripts = with pkgs.mpvScripts; [ mpris ];
@@ -104,7 +103,7 @@ in {
     gnumake
     # h2 # H2 Database Editor
     # alejandra # Nix formatter
-    unstable.zola # static site generator
+    zola # static site generator
     tailwindcss # CSS generation framework
     (pkgs.callPackage ../../pkgs/directus2zola {})
     # gcc-wrapper
@@ -128,12 +127,13 @@ in {
     # python39Packages.pip
     # nodejs cargo
     nushell
-    unstable.deno
+    deno
     cargo
     rustc
     rust-analyzer # Rust language server
     rustfmt # Rust formatter
     clippy # Rust liner
+    # rustup # Rust upstream packages. Only used for local std doc.
     gcc
     go
 

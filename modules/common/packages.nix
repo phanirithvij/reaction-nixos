@@ -74,7 +74,6 @@
       du-dust # du like
       librespeed-cli # Speedtest
       man-pages # standard man pages
-      diskonaut # like dust, but interactive
 
       go # golang
       gopls # go language server

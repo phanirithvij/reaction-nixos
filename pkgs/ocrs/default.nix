@@ -12,7 +12,7 @@ in rustPlatform.buildRustPackage {
     hash = "sha256-WLzaCWojaa8WPtxg3D47HNjhpQYurU6Tg/Y0WYQJbXs=";
   };
 
-  cargoHash = "sha256-E2VrNF28mfRfLHizRkRZRFPJO503extv8EBq9b1KmKw=";
+  cargoHash = "sha256-8KKkFksp7rgax3ahdEw4xZxqdRTdg4NKZrsO2avvmrg=";
 
   meta = with lib; {
     description = "Rust CLI tool for OCR";

@@ -74,7 +74,6 @@
 
     services.locate = {
       enable = true;
-      localuser = null;
       package = pkgs.plocate;
       prunePaths = lib.mkForce [ "/tmp" "/var/tmp" "/var/cache" "/var/lock" "/var/run" "/var/spool" ];
     };

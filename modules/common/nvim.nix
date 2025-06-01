@@ -60,7 +60,7 @@ in {
       systemPackages = let nodes = pkgs.nodePackages; in [
         pkgs.neovim
       ] ++ lib.optionals cfg.enableNixd [
-        unstable.nixd
+        pkgs.nixd
       ] ++ lib.optionals cfg.enableGo [
         pkgs.gopls
       ] ++ lib.optionals cfg.steroids [
