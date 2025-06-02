@@ -48,6 +48,7 @@
     remote-build.hosts = [
       "akesi"
       "poki"
+      "kili"
     ];
   };
 
