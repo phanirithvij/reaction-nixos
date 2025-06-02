@@ -1,0 +1,172 @@
+diff --git c/client/src/app/+accounts/account-video-channels/account-video-channels.component.ts w/client/src/app/+accounts/account-video-channels/account-video-channels.component.ts
+index f31382ff9..2c2457dc4 100644
+--- c/client/src/app/+accounts/account-video-channels/account-video-channels.component.ts
++++ w/client/src/app/+accounts/account-video-channels/account-video-channels.component.ts
+@@ -43,7 +43,7 @@ export class AccountVideoChannelsComponent implements OnInit, OnDestroy {
+     itemsPerPage: 5,
+     totalItems: null
+   }
+-  videosSort: VideoSortField = '-publishedAt'
++  videosSort: VideoSortField = 'random'
+ 
+   onChannelDataSubject = new Subject<any>()
+ 
+diff --git c/client/src/app/+accounts/account-videos/account-videos.component.ts w/client/src/app/+accounts/account-videos/account-videos.component.ts
+index 55f05b4c8..5464cfa3e 100644
+--- c/client/src/app/+accounts/account-videos/account-videos.component.ts
++++ w/client/src/app/+accounts/account-videos/account-videos.component.ts
+@@ -21,7 +21,7 @@ export class AccountVideosComponent implements OnInit, OnDestroy, DisableForReus
+   getVideosObservableFunction = this.getVideosObservable.bind(this)
+   getSyndicationItemsFunction = this.getSyndicationItems.bind(this)
+ 
+-  defaultSort = '-publishedAt' as VideoSortField
++  defaultSort = 'random' as VideoSortField
+ 
+   account: Account
+   disabled = false
+diff --git c/client/src/app/+video-channels/video-channel-videos/video-channel-videos.component.ts w/client/src/app/+video-channels/video-channel-videos/video-channel-videos.component.ts
+index 391c5fa5b..dd837bdda 100644
+--- c/client/src/app/+video-channels/video-channel-videos/video-channel-videos.component.ts
++++ w/client/src/app/+video-channels/video-channel-videos/video-channel-videos.component.ts
+@@ -22,7 +22,7 @@ export class VideoChannelVideosComponent implements OnInit, AfterViewInit, OnDes
+   getVideosObservableFunction = this.getVideosObservable.bind(this)
+   getSyndicationItemsFunction = this.getSyndicationItems.bind(this)
+ 
+-  defaultSort = '-publishedAt' as VideoSortField
++  defaultSort = 'random' as VideoSortField
+ 
+   displayOptions: MiniatureDisplayOptions = {
+     date: true,
+diff --git c/client/src/app/+videos/video-list/video-user-subscriptions.component.ts w/client/src/app/+videos/video-list/video-user-subscriptions.component.ts
+index ce22a32cd..4d48b5a1c 100644
+--- c/client/src/app/+videos/video-list/video-user-subscriptions.component.ts
++++ w/client/src/app/+videos/video-list/video-user-subscriptions.component.ts
+@@ -19,7 +19,7 @@ export class VideoUserSubscriptionsComponent implements DisableForReuseHook {
+   getVideosObservableFunction = this.getVideosObservable.bind(this)
+   getSyndicationItemsFunction = this.getSyndicationItems.bind(this)
+ 
+-  defaultSort = '-publishedAt' as VideoSortField
++  defaultSort = 'random' as VideoSortField
+ 
+   actions = [
+     {
+diff --git c/client/src/app/+videos/video-list/videos-list-all.component.ts w/client/src/app/+videos/video-list/videos-list-all.component.ts
+index 0be80f608..c7b421ed1 100644
+--- c/client/src/app/+videos/video-list/videos-list-all.component.ts
++++ w/client/src/app/+videos/video-list/videos-list-all.component.ts
+@@ -43,7 +43,7 @@ export class VideosListAllComponent implements OnInit, OnDestroy, DisableForReus
+   }
+ 
+   ngOnInit () {
+-    this.defaultSort = '-publishedAt'
++    this.defaultSort = 'random'
+     this.defaultScope = 'federated'
+ 
+     this.routeSub = this.route.params.subscribe(() => this.update())
+@@ -113,6 +113,11 @@ export class VideosListAllComponent implements OnInit, OnDestroy, DisableForReus
+       return
+     }
+ 
++    if (sanitizedSort === 'random') {
++      this.title = $localize`Random`
++      return
++    }
++
+     if ([ 'hot', 'trending', 'likes', 'views' ].includes(sanitizedSort)) {
+       this.title = $localize`Trending`
+       return
+diff --git c/client/src/app/shared/shared-custom-markup/peertube-custom-tags/channel-miniature-markup.component.ts w/client/src/app/shared/shared-custom-markup/peertube-custom-tags/channel-miniature-markup.component.ts
+index a4b54385b..944abc408 100644
+--- c/client/src/app/shared/shared-custom-markup/peertube-custom-tags/channel-miniature-markup.component.ts
++++ w/client/src/app/shared/shared-custom-markup/peertube-custom-tags/channel-miniature-markup.component.ts
+@@ -85,7 +85,7 @@ export class ChannelMiniatureMarkupComponent implements CustomMarkupComponent, O
+         currentPage: 1,
+         itemsPerPage: 1
+       },
+-      sort: '-publishedAt' as VideoSortField,
++      sort: 'random' as VideoSortField,
+       count: 1
+     }
+ 
+diff --git c/client/src/app/shared/shared-video-miniature/video-filters-header.component.ts w/client/src/app/shared/shared-video-miniature/video-filters-header.component.ts
+index 4c92f027e..04dc8684e 100644
+--- c/client/src/app/shared/shared-video-miniature/video-filters-header.component.ts
++++ w/client/src/app/shared/shared-video-miniature/video-filters-header.component.ts
+@@ -166,6 +166,7 @@ export class VideoFiltersHeaderComponent implements OnInit {
+ 
+   private buildSortItems () {
+     this.sortItems = [
++      { id: 'random', label: $localize`Random` },
+       { id: '-publishedAt', label: $localize`Recently Added` },
+       { id: '-originallyPublishedAt', label: $localize`Original Publication Date` },
+       { id: 'name', label: $localize`Name` }
+diff --git c/client/src/app/shared/shared-video-miniature/video-filters.model.ts w/client/src/app/shared/shared-video-miniature/video-filters.model.ts
+index c746a1047..3971e43df 100644
+--- c/client/src/app/shared/shared-video-miniature/video-filters.model.ts
++++ w/client/src/app/shared/shared-video-miniature/video-filters.model.ts
+@@ -39,7 +39,7 @@ export class VideoFilters {
+   search: string
+ 
+   private defaultValues = new Map<keyof VideoFilters, any>([
+-    [ 'sort', '-publishedAt' ],
++    [ 'sort', 'random' ],
+     [ 'nsfw', 'false' ],
+     [ 'languageOneOf', undefined ],
+     [ 'categoryOneOf', undefined ],
+diff --git c/client/src/app/shared/shared-video-miniature/videos-selection.component.ts w/client/src/app/shared/shared-video-miniature/videos-selection.component.ts
+index 5b42fa318..cac36f16f 100644
+--- c/client/src/app/shared/shared-video-miniature/videos-selection.component.ts
++++ w/client/src/app/shared/shared-video-miniature/videos-selection.component.ts
+@@ -48,7 +48,7 @@ export class VideosSelectionComponent implements AfterContentInit {
+   globalButtonsTemplate: TemplateRef<any>
+ 
+   videos: Video[] = []
+-  sort: VideoSortField = '-publishedAt'
++  sort: VideoSortField = 'random'
+ 
+   onDataSubject = new Subject<any[]>()
+ 
+diff --git c/packages/models/src/videos/video-sort-field.type.ts w/packages/models/src/videos/video-sort-field.type.ts
+index 7fa07fa73..c538e2668 100644
+--- c/packages/models/src/videos/video-sort-field.type.ts
++++ w/packages/models/src/videos/video-sort-field.type.ts
+@@ -7,6 +7,8 @@ export type VideoSortField =
+   'views' | '-views' |
+   'likes' | '-likes' |
+ 
++  'random' |
++
+   // trending sorts
+   'trending' | '-trending' |
+   'hot' | '-hot' |
+diff --git c/server/core/initializers/constants.ts w/server/core/initializers/constants.ts
+index c8e57e771..8cea91558 100644
+--- c/server/core/initializers/constants.ts
++++ w/server/core/initializers/constants.ts
+@@ -112,6 +112,7 @@ export const SORTABLE_COLUMNS = {
+   RUNNER_JOBS: [ 'updatedAt', 'createdAt', 'priority', 'state', 'progress' ],
+ 
+   VIDEOS: [
++    'random',
+     'name',
+     'duration',
+     'createdAt',
+diff --git c/server/core/models/video/sql/video/videos-id-list-query-builder.ts w/server/core/models/video/sql/video/videos-id-list-query-builder.ts
+index 02b3f98e0..863e168d2 100644
+--- c/server/core/models/video/sql/video/videos-id-list-query-builder.ts
++++ w/server/core/models/video/sql/video/videos-id-list-query-builder.ts
+@@ -742,6 +742,14 @@ export class VideosIdListQueryBuilder extends AbstractRunQuery {
+       )
+     }
+ 
++    if (sort === "random") {
++      const now = new Date()
++      this.replacements.seed = "0." +
++        (now.getFullYear() * 365 + now.getMonth() * 31 + now.getDate())
++
++      this.queryConfig = "SELECT setseed(:seed)"
++    }
++
+     this.sort = this.buildOrder(sort)
+   }
+ 
