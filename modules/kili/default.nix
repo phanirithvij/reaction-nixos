@@ -25,6 +25,7 @@
       fromMail = "kili@ppom.me";
     };
     musi-cache.enable = true;
+    remote-build.allow-musi = true;
   };
 
   # Use the extlinux boot loader. (NixOS wants to enable GRUB by default)
