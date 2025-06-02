@@ -1,18 +1,18 @@
 { lib, fetchFromGitLab, rustPlatform }:
 rustPlatform.buildRustPackage {
   pname = "reaction";
-  version = "unstable-2025-02-17";
+  version = "unstable-2025-06-01";
   # version = "v2.0.0-rc1";
 
   src = fetchFromGitLab {
     domain = "framagit.org";
     owner = "ppom";
     repo = "reaction";
-    rev =  "a238c7411f042955b6062b05c6a6bd24d2f682ed";
-    sha256 = "sha256-vb0/qo7mKDKiGI2t8GW3ztk7EgdEV+oia5Hr2vL8fg0=";
+    rev =  "bc078471a93692815f35d96d76a626b1e7ef955d";
+    sha256 = "sha256-sP3Q9O0xoTjh+Pt8M9FT12lgN879LlekqMoA+PbkE1I=";
   };
 
-  cargoHash = "sha256-FVp54abv7+o7t2UkoOdR13uy31AObK8IRAD6Lm/ZZs0=";
+  cargoHash = "sha256-G4Uxr90NnrDu2x0IbMnU2K89cF+wwTnlFTqlrc5+vjA=";
 
   postBuild = ''
     $CC helpers_c/ip46tables.c -o ip46tables
