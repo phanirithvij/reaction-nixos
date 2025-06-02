@@ -12,7 +12,7 @@ rustPlatform.buildRustPackage {
     sha256 = "sha256-sP3Q9O0xoTjh+Pt8M9FT12lgN879LlekqMoA+PbkE1I=";
   };
 
-  cargoHash = "sha256-G4Uxr90NnrDu2x0IbMnU2K89cF+wwTnlFTqlrc5+vjA=";
+  cargoHash = "sha256-bKSi0tnzG7uIWflnlefzd9IoZX6ozHDBAEaA7MI8cdg=";
 
   postBuild = ''
     $CC helpers_c/ip46tables.c -o ip46tables

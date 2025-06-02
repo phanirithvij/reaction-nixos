@@ -1,10 +1,10 @@
-{ lib, pkgs, config, ... }:
+{ lib, pkgs, ... }:
 lib.mkMerge [
   # Nextcloud
   {
     services.nextcloud = {
       enable = true;
-      package = pkgs.nextcloud30;
+      package = pkgs.nextcloud31;
       configureRedis = true;
       autoUpdateApps.enable = true;
       hostName = "file.ppom.me";
@@ -14,14 +14,15 @@ lib.mkMerge [
         dbtype = "pgsql";
         adminpassFile = "/var/secrets/file/admin";
         adminuser = "admin";
-        # Not possible because services.nextcloud.config is not of freeform type
-        # mail_smtpmode = "smtp";
-        # mail_smtphost = "mail.girofle.org";
-        # mail_smtpsecure = "ssl";
-        # mail_smtpauthtype = "LOGIN";
-        # mail_smtpname     = "file@ppom.me";
-        # mail_smtppassword = "' . trim(file_get_contents('/var/secrets/mail/file@ppom.me')) . '";
       };
+      # settings = {
+      #   mail_smtpmode = "smtp";
+      #   mail_smtphost = "mail.girofle.org";
+      #   mail_smtpsecure = "ssl";
+      #   mail_smtpauthtype = "LOGIN";
+      #   mail_smtpname     = "file@ppom.me";
+      #   mail_smtppassword = "' . trim(file_get_contents('/var/secrets/mail/file@ppom.me')) . '";
+      # };
       maxUploadSize = "10G";
       poolSettings = /* config.services.nextcloud.poolSettings.default // */ {
         "pm" = "dynamic";
@@ -105,27 +106,27 @@ lib.mkMerge [
   }
 
   # sudo workaround for nextcloud-occ
-  (let
-    execstart = lib.splitString " " config.systemd.services.nextcloud-cron.serviceConfig.ExecStart;
-    php = "${lib.head execstart}";
-    webroot = builtins.dirOf (lib.elemAt execstart 2);
-  in {
-    environment.systemPackages = [
-      (lib.hiPrio (pkgs.writeShellScriptBin "nextcloud-occ" ''
-        cd ${webroot}
-        exec /run/wrappers/bin/sudo \
-          -u nextcloud \
-          NEXTCLOUD_CONFIG_DIR="/var/lib/nextcloud/config" \
-          ${php} occ "$@"
-      ''))
-    ];
-    security.sudo.extraRules = [ {
-      cmd = php;
-      setEnv = [ "NEXTCLOUD_CONFIG_DIR" ];
-      runAs = "nextcloud";
-      groups = [ "wheel" ];
-    } ];
-  })
+  # (let
+  #   execstart = lib.splitString " " config.systemd.services.nextcloud-cron.serviceConfig.ExecStart;
+  #   php = "${lib.head execstart}";
+  #   webroot = builtins.dirOf (lib.elemAt execstart 2);
+  # in {
+  #   environment.systemPackages = [
+  #     (lib.hiPrio (pkgs.writeShellScriptBin "nextcloud-occ" ''
+  #       cd ${webroot}
+  #       exec /run/wrappers/bin/sudo \
+  #         -u nextcloud \
+  #         NEXTCLOUD_CONFIG_DIR="/var/lib/nextcloud/config" \
+  #         ${php} occ "$@"
+  #     ''))
+  #   ];
+  #   security.sudo.extraRules = [ {
+  #     cmd = php;
+  #     setEnv = [ "NEXTCLOUD_CONFIG_DIR" ];
+  #     runAs = "nextcloud";
+  #     groups = [ "wheel" ];
+  #   } ];
+  # })
 
   # Cospend balance
   {
