@@ -3,6 +3,7 @@
   imports = [
     ./directus
     ./funkwhale
+    ./funkwhale2
     ./git.nix
     ./misc.nix
     ./monit.nix

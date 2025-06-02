@@ -1,11 +1,11 @@
-{ lib, pkgs, config, ... }:
+{ pkgs, config, ... }:
 let 
   fwlink = pkgs.callPackage ../../pkgs/fwlink {};
   python = pkgs.python3.withPackages (ps: with ps; [ requests rapidfuzz ]);
 in {
   services.funkwhale = {
     enable = true;
-    enableLocalTypesense = true;
+    enableLocalTypesense = false;
     funkwhaleVersion = "1.4.0";
     domainName = "music.ppom.me";
     musicDir = "/data/funkwhale/music";
@@ -15,6 +15,15 @@ in {
       passwordFile = "/var/secrets/funkwhale/scanToken";
       startAt = "*-*-02/2 20:00"; # man 5 systemd.time: every 2 days at 20:00
     };
+  };
+
+  services.funkwhale2 = {
+    enable = false;
+    enableLocalTypesense = true;
+    funkwhaleVersion = "2.0.0-alpha.1";
+    domainName = "music2.ppom.me";
+    musicDir = "/data/funkwhale/music";
+    mediaDir = "/data/funkwhale/data/media";
   };
 
   # Don't store typesense logging to disk
