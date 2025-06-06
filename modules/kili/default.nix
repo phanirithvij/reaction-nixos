@@ -15,11 +15,6 @@
       port = 22;
       hardened = true;
     };
-    reaction = {
-      enable = true;
-      enableNginx = false;
-      enableGPTBot = false;
-    };
     monit = {
       fromMail = "kili@ppom.me";
     };
