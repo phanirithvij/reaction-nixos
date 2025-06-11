@@ -1,5 +1,4 @@
-{ lib, pkgs, config, ... }:
-with lib;                      
+{ pkgs, ... }:
 let
   languagetoolPort = "8500";
   languagetoolDomain = "lang.ppom.me";
@@ -10,7 +9,7 @@ in {
   };
   users.groups.languagetool = {};
   systemd.services.languagetool = {
-    enable = true;
+    # enable = true;
     description = "Language Tool self-hosted server";
     after = ["network.target"];
     wantedBy = [ "multi-user.target" ];
