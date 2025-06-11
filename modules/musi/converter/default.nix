@@ -22,7 +22,7 @@ in {
       Environment = [ runDir ];
       ExecStart = "${convertd}/bin/convertd";
       # Resource Limit
-      # CPUQuota = "200%";
+      CPUQuota = "350%";
       CPUWeight = 1;
       # Security
       NoNewPrivileges = true;
