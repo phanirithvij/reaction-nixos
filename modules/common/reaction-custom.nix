@@ -32,12 +32,12 @@
     cfg = config.ppom.reaction;
     var = import ./reaction-variables.nix { inherit pkgs; };
 
-    iptablesBanRange = ipRange: "+-${var.iptables} -w -A reaction -s ${ipRange} -j nixos-fw-log-refuse";
-    bannedIpRanges = [
-      "46.148.40.0/24"
-      "176.111.174.0/24"
-      "94.102.61.0/24"
-    ];
+    # iptablesBanRange = ipRange: "DROP";
+    # bannedIpRanges = [
+    #   "46.148.40.0/24"
+    #   "176.111.174.0/24"
+    #   "94.102.61.0/24"
+    # ];
   in lib.mkIf cfg.enable {
     services.reaction = {
       enable = true;
@@ -149,7 +149,7 @@
         "+${var.iptables} -w -A reaction -s 192.168.1.0/24 -j RETURN"
         "+${var.iptables} -w -I INPUT -p all -j reaction"
         "+${var.iptables} -w -I FORWARD -p all -j reaction"
-      ] ++ builtins.map iptablesBanRange bannedIpRanges;
+      ]; # ++ builtins.map iptablesBanRange bannedIpRanges;
       ExecStopPost = [
         "+${var.iptables} -w -D INPUT -p all -j reaction"
         "+${var.iptables} -w -D FORWARD -p all -j reaction"

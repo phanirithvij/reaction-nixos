@@ -3,8 +3,8 @@ rec {
   journalctl = "${pkgs.systemd}/bin/journalctl";
   systemctl = "${pkgs.systemd}/bin/systemctl";
   iptables = "${pkgs.callPackage ../../pkgs/reaction {}}/bin/ip46tables";
-  iptablesBan = [ iptables "-w" "-A" "reaction" "-s" "<ip>" "-j" "nixos-fw-refuse" ];
-  iptablesUnban = [ iptables "-w" "-D" "reaction" "-s" "<ip>" "-j" "nixos-fw-refuse" ];
+  iptablesBan = [ iptables "-w" "-A" "reaction" "-s" "<ip>" "-j" "DROP" ];
+  iptablesUnban = [ iptables "-w" "-D" "reaction" "-s" "<ip>" "-j" "DROP" ];
   banFor = duration: {
     ban = {
       cmd = iptablesBan;
