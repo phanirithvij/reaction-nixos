@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 let
-  unstable = import <nixos-unstable> {};
-  sqlpage = unstable.sqlpage.overrideAttrs (final: prev: {
+  # unstable = import <nixos-unstable> {};
+  sqlpage = pkgs.sqlpage.overrideAttrs (final: prev: {
     patches = (if prev ? patches then prev.patches else []) ++ [
       (pkgs.fetchpatch {
         url = "https://github.com/SQLPage/SQLPage/commit/58c4d05e4e680f770f066fdfaf880c1cf2880067.diff";
@@ -140,7 +140,7 @@ in {
             ${pkgs.git}/bin/git pull
             ${pkgs.tailwindcss}/bin/tailwindcss --watch \
               -i css/input.css -o css/tailwind.css
-            ${unstable.deno}/bin/deno run -A scripts/cron.js
+            ${pkgs.deno}/bin/deno run -A scripts/cron.js
           '';
         }}/bin/compote-cron";
       };
