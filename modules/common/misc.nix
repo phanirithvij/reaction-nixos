@@ -68,7 +68,10 @@
 
     environment.homeBinInPath = true;
 
-    services.sysstat.enable = true;
+    services.sysstat = {
+      enable = true;
+      collect-frequency = "*:00/2";
+    };
 
     services.fstrim.enable = true;
 
