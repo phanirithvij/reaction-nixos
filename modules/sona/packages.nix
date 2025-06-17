@@ -102,7 +102,7 @@ in {
     so # stack overflow TUI
     gnumake
     # h2 # H2 Database Editor
-    # alejandra # Nix formatter
+    alejandra # Nix formatter
     zola # static site generator
     tailwindcss # CSS generation framework
     (pkgs.callPackage ../../pkgs/directus2zola {})
