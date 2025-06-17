@@ -8,6 +8,7 @@ in {
     group = "languagetool";
   };
   users.groups.languagetool = {};
+
   systemd.services.languagetool = {
     # enable = true;
     description = "Language Tool self-hosted server";
@@ -17,6 +18,10 @@ in {
       Type = "simple";
       User = "languagetool";
       ExecStart = ''${pkgs.languagetool}/bin/languagetool-http-server --port ${languagetoolPort}  --allow-origin "*"'';
+      # If it consumes too much RAM, let's kill it instead of crashing the server
+      ManagedOOMMemoryPressure = "kill";
+
+      # Security-related options
       NoNewPrivileges = true;
       ProtectSystem = "strict";
       ProtectHome = true;
@@ -36,6 +41,7 @@ in {
       PrivateMounts = true;
     };
   };
+
   services.nginx.virtualHosts."${languagetoolDomain}" = {
     forceSSL = true;
     enableACME = true;

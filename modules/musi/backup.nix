@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 let
   hosts = builtins.fromTOML (builtins.readFile ../common/hosts.toml);
 in {
@@ -53,8 +53,8 @@ in {
       "/home/*/.cache"
     ];
     timerConfig = {
-      OnCalendar = [ "04:00" ];
-      RandomizedDelaySec = "30m";
+      OnCalendar = [ "05:00" ];
+      # RandomizedDelaySec = "30m";
     };
     backupPrepareCommand = "${pkgs.writeShellScript "wake-poki" ''
       ssh ${kiliHost} -i ${pokiKey} wakelan A0:B3:CC:E9:4C:9C || exit 0
@@ -64,5 +64,24 @@ in {
         ssh ${pokiHost} -i ${pokiKey} -o ConnectTimeout=10 true && break
       done
     ''}";
+  };
+
+  systemd.services.restic-backups-data2.serviceConfig = let
+    systemctl = "${config.systemd.package}/bin/systemctl";
+  in {
+    # If it consumes too much RAM, let's kill it instead of crashing the server
+    ManagedOOMMemoryPressure = "kill";
+
+    # Stop RAM hungry services before backup
+    ExecStartPre = [
+      "+${systemctl} stop slskd.service"
+      "+${systemctl} stop languagetool.service"
+      "+${systemctl} stop streama.service"
+    ];
+    ExecStartPost = [
+      "+${systemctl} start slskd.service"
+      "+${systemctl} start languagetool.service"
+      "+${systemctl} start streama.service"
+    ];
   };
 }

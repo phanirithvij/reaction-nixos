@@ -4,7 +4,7 @@ let
   # unstable = import <nixos-unstable> {};
 in {
   services.slskd = {
-    # enable = true;
+    enable = true;
     # package = unstable.slskd;
     openFirewall = true;
     environmentFile = "/var/secrets/slskd";
@@ -83,6 +83,10 @@ in {
     # Less priority
     CPUWeight = 1;
     IOWeight = 1;
+    # If it consumes too much RAM, let's kill it instead of crashing the server
+    ManagedOOMMemoryPressure = "kill";
+    # With less priority than others
+    ManagedOOMPreference = "avoid";
   };
 
   environment.systemPackages = with pkgs; [ beets id3v2 ];
