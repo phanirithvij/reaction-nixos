@@ -55,6 +55,9 @@
     '')
   ];
 
+  # Download more RAM
+  zramSwap.enable = true;
+
   swapDevices = [ {
     device = "/swapfile";
   } ];
