@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 
 {
   imports = [
@@ -22,6 +22,9 @@
     user.musi = true;
     user.marvin = true;
   };
+
+  # Delete more aggressively (all non-used)
+  nix.gc.options = lib.mkForce "-d";
 
   # Use the extlinux boot loader. (NixOS wants to enable GRUB by default)
   boot.loader.grub.enable = false;
