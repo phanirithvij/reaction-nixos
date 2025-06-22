@@ -63,6 +63,7 @@
 
   swapDevices = [ {
     device = "/swapfile";
+    size = 2048; # 2 GiB
   } ];
 
   # Copy the NixOS configuration file and link it from the resulting system
