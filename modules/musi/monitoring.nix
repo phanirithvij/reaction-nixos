@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 let
   VARS= ''
@@ -68,4 +68,82 @@ in {
     Storage=volatile
     RuntimeMaxUse=10M
   '';
+
+  services.prometheus.exporters.node = {
+    enable = true;
+    enabledCollectors = ["systemd"];
+  };
+
+  services.victoriametrics = {
+    enable = true;
+    listenAddress = "127.0.0.1:8428";
+    retentionPeriod = "4y";
+    prometheusConfig = {
+      scrape_configs = [
+        {
+          job_name = "node-exporter";
+          metrics_path = "/metrics";
+          static_configs = [
+            {
+              targets = ["localhost:9100"];
+              labels.type = "node";
+              labels.hostname = "musi.ppom.me";
+            }
+          ];
+        }
+      ];
+    };
+  };
+  systemd.services.victoriametrics.serviceConfig = {
+    MemoryMax = "100M";
+  };
+
+  services.grafana = {
+    enable = true;
+    settings = {
+      security = {
+        admin_user = "ppom";
+        admin_password = "$" + "__file{/var/secrets/grafana/admin_password}";
+      };
+      server = {
+        root_url = "https://ppom.me/grafana";
+        serve_from_sub_path = true;
+        protocol = "socket";
+        path = "/run/grafana/grafana.sock";
+        # socket_gid = config.users.groups.grafana.gid;
+        socket_mod = "0660";
+      };
+    };
+    declarativePlugins = [];
+
+    provision = {
+      enable = true;
+      datasources.settings.datasources = [
+        {
+          url = "http://${config.services.victoriametrics.listenAddress}";
+          name = "VictoriaMetrics";
+          type = "victoriametrics";
+          manageAlerts = true;
+        }
+        {
+          url = "http://${config.services.victoriametrics.listenAddress}";
+          name = "Prometheus";
+          type = "prometheus";
+          manageAlerts = true;
+        }
+      ];
+      # dashboards.settings.providers = [
+      #   {
+      #     name = "node-exporter";
+      #   }
+      # ];
+    };
+  };
+
+  users.users.nginx.extraGroups = [ config.users.users.grafana.group ];
+
+  services.nginx.virtualHosts."ppom.me".locations."/grafana/" = {
+    proxyPass = "http://unix:${config.services.grafana.settings.server.path}";
+    proxyWebsockets = true;
+  };
 }
