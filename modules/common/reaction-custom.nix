@@ -56,16 +56,28 @@
 
           ssh = lib.mkIf cfg.enableSSHJail {
             cmd = [ var.journalctl "-fn0" "-u" "sshd.service" ];
-            filters.failedlogin = {
-              regex = [
-                "authentication failure;.*rhost=<ip>"
-                "Connection reset by authenticating user .* <ip>"
-                "Invalid user .* from <ip>"
-                "Received disconnect from <ip> port .*[preauth]"
-              ];
-              retry = 3;
-              retryperiod = "6h";
-              actions = var.banFor "48h";
+            filters = {
+              failedlogin = {
+                regex = [
+                  "authentication failure;.*rhost=<ip>(?: |$)"
+                  "Failed password for .* from <ip> port"
+                  "Invalid user .* from <ip> "
+                  "Connection (?:reset|closed) by invalid user .* <ip> port"
+                ];
+                retry = 3;
+                retryperiod = "6h";
+                actions = var.banFor "48h";
+              };
+              connectionreset = {
+                regex = [
+                  "Connection (?:reset|closed) by(?: authenticating user .*)? <ip> port"
+                  "Received disconnect from <ip> port .*[preauth]"
+                  "Timeout before authentication for connection from <ip> to"
+                ];
+                retry = 4;
+                retryperiod = "6h";
+                actions = var.banFor "48h";
+              };
             };
           };
 
