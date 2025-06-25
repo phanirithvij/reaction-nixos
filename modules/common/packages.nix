@@ -110,7 +110,7 @@
 
       # nix-related
       nurl # nix prefetching (generate src = ... from URL)
-      nix-init # automagically create go,rust,python,zig package
+      # nix-init # automagically create go,rust,python,zig package
 
       ## text
       dos2unix
