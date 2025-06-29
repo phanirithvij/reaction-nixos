@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, pkgs, ... }:
 
 let
   VARS= ''
@@ -69,9 +69,18 @@ in {
     RuntimeMaxUse=10M
   '';
 
-  services.prometheus.exporters.node = {
-    enable = true;
-    enabledCollectors = ["systemd"];
+  services.prometheus.exporters = {
+    node = {
+      enable = true;
+      enabledCollectors = ["systemd"];
+    };
+    systemd = {
+      enable = true;
+      extraFlags = [
+        "--systemd.collector.enable-restart-count"
+        "--systemd.collector.enable-ip-accounting"
+      ];
+    };
   };
 
   services.victoriametrics = {
@@ -86,6 +95,17 @@ in {
           static_configs = [
             {
               targets = ["localhost:9100"];
+              labels.type = "node";
+              labels.hostname = "musi.ppom.me";
+            }
+          ];
+        }
+        {
+          job_name = "systemd-exporter";
+          metrics_path = "/metrics";
+          static_configs = [
+            {
+              targets = ["localhost:9558"];
               labels.type = "node";
               labels.hostname = "musi.ppom.me";
             }
