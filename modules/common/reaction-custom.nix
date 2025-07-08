@@ -92,25 +92,29 @@
           };
 
           nginx = lib.mkIf (cfg.enableNginx || cfg.enableGPTBot) {
-            cmd = [ "tail" "-n0" "-f" "/var/log/nginx/access.log" ];
+            cmd = [ "tail" "-n0" "-F" "/var/log/nginx/access.log" ];
             filters = {
               suspectRequests = lib.mkIf cfg.enableNginx {
                 regex = [
                   # (?:[^/" ]*/)* is a "non-capturing group" regex that allow for subpath(s)
                   # example: /code/.env should be matched as well as /.env
                   #           ^^^^^
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*admin\.php''
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*info\.php ''
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*moon\.php''
                   ''^<ip> .*"GET /(?:[^/" ]*/)*wp-login\.php''
                   ''^<ip> .*"GET /(?:[^/" ]*/)*wp-includes''
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*wp-content''
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*xmlrpc\.php''
                   ''^<ip> .*"GET /(?:[^/" ]*/)*\.env ''
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*\.git/ ''
                   ''^<ip> .*"GET /(?:[^/" ]*/)*config\.json ''
-                  ''^<ip> .*"GET /(?:[^/" ]*/)*info\.php ''
                   ''^<ip> .*"GET /(?:[^/" ]*/)*owa/auth/logon.aspx ''
                   ''^<ip> .*"GET /(?:[^/" ]*/)*auth.html ''
                   ''^<ip> .*"GET /(?:[^/" ]*/)*auth1.html ''
                   ''^<ip> .*"GET /(?:[^/" ]*/)*password.txt ''
                   ''^<ip> .*"GET /(?:[^/" ]*/)*passwords.txt ''
                   ''^<ip> .*"GET /(?:[^/" ]*/)*dns-query ''
-                  ''^<ip> .*"GET /(?:[^/" ]*/)*\.git/ ''
                 ];
                 actions = var.banFor "${toString (30 * 24)}h";
               };
