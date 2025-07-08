@@ -111,6 +111,7 @@
       # nix-related
       nurl # nix prefetching (generate src = ... from URL)
       # nix-init # automagically create go,rust,python,zig package
+      nh # better CLI for nixos-rebuild
 
       ## text
       dos2unix
