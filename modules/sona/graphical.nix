@@ -138,6 +138,9 @@ in lib.mkMerge [
     wrapperFeatures.gtk = true;
   };
 
+  # don't need text-to-speech service
+  services.speechd.enable = false;
+
   # Fix of: Can't shutdown after having suspended the laptop by closing it.
   # Fix found here: https://bugs.launchpad.net/ubuntu/+source/systemd/+bug/1441253
   # Sounds like one of the systemd bugs that has never been fixed...
