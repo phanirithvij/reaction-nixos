@@ -99,15 +99,29 @@
                   # (?:[^/" ]*/)* is a "non-capturing group" regex that allow for subpath(s)
                   # example: /code/.env should be matched as well as /.env
                   #           ^^^^^
+                  ''^<ip> .*"GET /etc/passwd ''
                   ''^<ip> .*"GET /(?:[^/" ]*/)*admin\.php''
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*bypass\.php''
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*classwithtostring\.php''
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*css\.php''
                   ''^<ip> .*"GET /(?:[^/" ]*/)*info\.php ''
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*install\.php ''
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*log\.php''
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*mail\.php''
                   ''^<ip> .*"GET /(?:[^/" ]*/)*moon\.php''
-                  ''^<ip> .*"GET /(?:[^/" ]*/)*wp-login\.php''
-                  ''^<ip> .*"GET /(?:[^/" ]*/)*wp-includes''
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*radio\.php''
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*simple\.php''
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*test\.php''
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*wp-admin''
                   ''^<ip> .*"GET /(?:[^/" ]*/)*wp-content''
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*wp-includes''
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*wp-login\.php''
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*wp-mail\.php''
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*xleet\.php''
                   ''^<ip> .*"GET /(?:[^/" ]*/)*xmlrpc\.php''
-                  ''^<ip> .*"GET /(?:[^/" ]*/)*\.env ''
-                  ''^<ip> .*"GET /(?:[^/" ]*/)*\.git/ ''
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*phpinfo ''
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*\.env(?:\.[^/" ]*) ''
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*\.git/''
                   ''^<ip> .*"GET /(?:[^/" ]*/)*config\.json ''
                   ''^<ip> .*"GET /(?:[^/" ]*/)*owa/auth/logon.aspx ''
                   ''^<ip> .*"GET /(?:[^/" ]*/)*auth.html ''
@@ -115,6 +129,7 @@
                   ''^<ip> .*"GET /(?:[^/" ]*/)*password.txt ''
                   ''^<ip> .*"GET /(?:[^/" ]*/)*passwords.txt ''
                   ''^<ip> .*"GET /(?:[^/" ]*/)*dns-query ''
+                  ''^<ip> .*"POST /(?:[^/" ]*/)*/cgi-bin/''
                 ];
                 actions = var.banFor "${toString (30 * 24)}h";
               };
