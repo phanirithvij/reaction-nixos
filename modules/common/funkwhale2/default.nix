@@ -270,7 +270,7 @@
               # Add this missing conf before when templates are evaluated in 20
               # See https://github.com/nginxinc/docker-nginx/tree/2879b26c7dedf1d958b1894a5c1b1dec3c026369/entrypoint
               /bin/sed \
-                  -e '$ilocation /staticfiles/ { alias ${"$"}{STATIC_ROOT}/; add_header Access-Control-Allow-Origin '"'"'*'"'"'; }' \
+                  -e '$ilocation /staticfiles/ { alias ''${STATIC_ROOT}/; add_header Access-Control-Allow-Origin '"'"'*'"'"'; }' \
                   -i /etc/nginx/templates/default.conf.template
             ''}:/docker-entrypoint.d/19-edit-upstream.sh"
             # FIXME this fix should not be necessary in 1.3.3
