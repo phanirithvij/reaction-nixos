@@ -79,7 +79,7 @@ in {
           Type = "oneshot";
           Slice = "nix.slice";
           ExecStart = lib.concatStringsSep " " [
-            "${pkgs.nixos-rebuild}/bin/nixos-rebuild build"
+            "${pkgs.nixos-rebuild}/bin/nixos-rebuild switch"
             "--target-host musi-build@${host.address}"
             "--use-remote-sudo"
             "-I nixos-config=/etc/nixos/modules/${hostName}/default.nix"
