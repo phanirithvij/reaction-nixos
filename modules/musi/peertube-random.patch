@@ -1,8 +1,8 @@
 diff --git c/client/src/app/+accounts/account-video-channels/account-video-channels.component.ts w/client/src/app/+accounts/account-video-channels/account-video-channels.component.ts
-index f31382ff9..2c2457dc4 100644
+index 46e7b1d7f..c7828fe81 100644
 --- c/client/src/app/+accounts/account-video-channels/account-video-channels.component.ts
 +++ w/client/src/app/+accounts/account-video-channels/account-video-channels.component.ts
-@@ -43,7 +43,7 @@ export class AccountVideoChannelsComponent implements OnInit, OnDestroy {
+@@ -48,7 +48,7 @@ export class AccountVideoChannelsComponent implements OnInit, OnDestroy {
      itemsPerPage: 5,
      totalItems: null
    }
@@ -12,10 +12,10 @@ index f31382ff9..2c2457dc4 100644
    onChannelDataSubject = new Subject<any>()
  
 diff --git c/client/src/app/+accounts/account-videos/account-videos.component.ts w/client/src/app/+accounts/account-videos/account-videos.component.ts
-index 55f05b4c8..5464cfa3e 100644
+index 1503cdf8d..ec653f899 100644
 --- c/client/src/app/+accounts/account-videos/account-videos.component.ts
 +++ w/client/src/app/+accounts/account-videos/account-videos.component.ts
-@@ -21,7 +21,7 @@ export class AccountVideosComponent implements OnInit, OnDestroy, DisableForReus
+@@ -24,7 +24,7 @@ export class AccountVideosComponent implements OnInit, OnDestroy, DisableForReus
    getVideosObservableFunction = this.getVideosObservable.bind(this)
    getSyndicationItemsFunction = this.getSyndicationItems.bind(this)
  
@@ -25,23 +25,23 @@ index 55f05b4c8..5464cfa3e 100644
    account: Account
    disabled = false
 diff --git c/client/src/app/+video-channels/video-channel-videos/video-channel-videos.component.ts w/client/src/app/+video-channels/video-channel-videos/video-channel-videos.component.ts
-index 391c5fa5b..dd837bdda 100644
+index a4134448d..2a813e992 100644
 --- c/client/src/app/+video-channels/video-channel-videos/video-channel-videos.component.ts
 +++ w/client/src/app/+video-channels/video-channel-videos/video-channel-videos.component.ts
-@@ -22,7 +22,7 @@ export class VideoChannelVideosComponent implements OnInit, AfterViewInit, OnDes
+@@ -25,7 +25,7 @@ export class VideoChannelVideosComponent implements OnInit, AfterViewInit, OnDes
    getVideosObservableFunction = this.getVideosObservable.bind(this)
    getSyndicationItemsFunction = this.getSyndicationItems.bind(this)
  
 -  defaultSort = '-publishedAt' as VideoSortField
 +  defaultSort = 'random' as VideoSortField
  
-   displayOptions: MiniatureDisplayOptions = {
-     date: true,
-diff --git c/client/src/app/+videos/video-list/video-user-subscriptions.component.ts w/client/src/app/+videos/video-list/video-user-subscriptions.component.ts
-index ce22a32cd..4d48b5a1c 100644
---- c/client/src/app/+videos/video-list/video-user-subscriptions.component.ts
-+++ w/client/src/app/+videos/video-list/video-user-subscriptions.component.ts
-@@ -19,7 +19,7 @@ export class VideoUserSubscriptionsComponent implements DisableForReuseHook {
+   videoChannel: VideoChannel
+   disabled = false
+diff --git c/client/src/app/+video-list/video-user-subscriptions.component.ts w/client/src/app/+video-list/video-user-subscriptions.component.ts
+index 4c2946b0c..8b6014984 100644
+--- c/client/src/app/+video-list/video-user-subscriptions.component.ts
++++ w/client/src/app/+video-list/video-user-subscriptions.component.ts
+@@ -24,7 +24,7 @@ export class VideoUserSubscriptionsComponent implements DisableForReuseHook {
    getVideosObservableFunction = this.getVideosObservable.bind(this)
    getSyndicationItemsFunction = this.getSyndicationItems.bind(this)
  
@@ -50,12 +50,12 @@ index ce22a32cd..4d48b5a1c 100644
  
    actions = [
      {
-diff --git c/client/src/app/+videos/video-list/videos-list-all.component.ts w/client/src/app/+videos/video-list/videos-list-all.component.ts
-index 0be80f608..c7b421ed1 100644
---- c/client/src/app/+videos/video-list/videos-list-all.component.ts
-+++ w/client/src/app/+videos/video-list/videos-list-all.component.ts
-@@ -43,7 +43,7 @@ export class VideosListAllComponent implements OnInit, OnDestroy, DisableForReus
-   }
+diff --git c/client/src/app/+video-list/videos-list-all.component.ts w/client/src/app/+video-list/videos-list-all.component.ts
+index 57ce15032..bbf9d3dda 100644
+--- c/client/src/app/+video-list/videos-list-all.component.ts
++++ w/client/src/app/+video-list/videos-list-all.component.ts
+@@ -39,7 +39,7 @@ export class VideosListAllComponent implements OnInit, OnDestroy, DisableForReus
+   private routeSub: Subscription
  
    ngOnInit () {
 -    this.defaultSort = '-publishedAt'
@@ -63,7 +63,7 @@ index 0be80f608..c7b421ed1 100644
      this.defaultScope = 'federated'
  
      this.routeSub = this.route.params.subscribe(() => this.update())
-@@ -113,6 +113,11 @@ export class VideosListAllComponent implements OnInit, OnDestroy, DisableForReus
+@@ -112,6 +112,11 @@ export class VideosListAllComponent implements OnInit, OnDestroy, DisableForReus
        return
      }
  
@@ -76,10 +76,10 @@ index 0be80f608..c7b421ed1 100644
        this.title = $localize`Trending`
        return
 diff --git c/client/src/app/shared/shared-custom-markup/peertube-custom-tags/channel-miniature-markup.component.ts w/client/src/app/shared/shared-custom-markup/peertube-custom-tags/channel-miniature-markup.component.ts
-index a4b54385b..944abc408 100644
+index 4c870e9f0..976b7d255 100644
 --- c/client/src/app/shared/shared-custom-markup/peertube-custom-tags/channel-miniature-markup.component.ts
 +++ w/client/src/app/shared/shared-custom-markup/peertube-custom-tags/channel-miniature-markup.component.ts
-@@ -85,7 +85,7 @@ export class ChannelMiniatureMarkupComponent implements CustomMarkupComponent, O
+@@ -84,7 +84,7 @@ export class ChannelMiniatureMarkupComponent implements CustomMarkupComponent, O
          currentPage: 1,
          itemsPerPage: 1
        },
@@ -89,10 +89,10 @@ index a4b54385b..944abc408 100644
      }
  
 diff --git c/client/src/app/shared/shared-video-miniature/video-filters-header.component.ts w/client/src/app/shared/shared-video-miniature/video-filters-header.component.ts
-index 4c92f027e..04dc8684e 100644
+index 667f1bab7..e8830061b 100644
 --- c/client/src/app/shared/shared-video-miniature/video-filters-header.component.ts
 +++ w/client/src/app/shared/shared-video-miniature/video-filters-header.component.ts
-@@ -166,6 +166,7 @@ export class VideoFiltersHeaderComponent implements OnInit {
+@@ -151,6 +151,7 @@ export class VideoFiltersHeaderComponent implements OnInit {
  
    private buildSortItems () {
      this.sortItems = [
@@ -101,38 +101,38 @@ index 4c92f027e..04dc8684e 100644
        { id: '-originallyPublishedAt', label: $localize`Original Publication Date` },
        { id: 'name', label: $localize`Name` }
 diff --git c/client/src/app/shared/shared-video-miniature/video-filters.model.ts w/client/src/app/shared/shared-video-miniature/video-filters.model.ts
-index c746a1047..3971e43df 100644
+index c14503fcc..0f28b97ae 100644
 --- c/client/src/app/shared/shared-video-miniature/video-filters.model.ts
 +++ w/client/src/app/shared/shared-video-miniature/video-filters.model.ts
-@@ -39,7 +39,7 @@ export class VideoFilters {
-   search: string
+@@ -50,7 +50,7 @@ export class VideoFilters {
+   private nsfwFlagsBlurred: number
  
    private defaultValues = new Map<keyof VideoFilters, any>([
 -    [ 'sort', '-publishedAt' ],
 +    [ 'sort', 'random' ],
-     [ 'nsfw', 'false' ],
      [ 'languageOneOf', undefined ],
      [ 'categoryOneOf', undefined ],
+     [ 'scope', 'federated' ],
 diff --git c/client/src/app/shared/shared-video-miniature/videos-selection.component.ts w/client/src/app/shared/shared-video-miniature/videos-selection.component.ts
-index 5b42fa318..cac36f16f 100644
+index 2593d161b..d4c3158e7 100644
 --- c/client/src/app/shared/shared-video-miniature/videos-selection.component.ts
 +++ w/client/src/app/shared/shared-video-miniature/videos-selection.component.ts
-@@ -48,7 +48,7 @@ export class VideosSelectionComponent implements AfterContentInit {
+@@ -45,7 +45,7 @@ export class VideosSelectionComponent implements AfterContentInit {
+   rowButtonsTemplate: TemplateRef<any>
    globalButtonsTemplate: TemplateRef<any>
  
-   videos: Video[] = []
 -  sort: VideoSortField = '-publishedAt'
 +  sort: VideoSortField = 'random'
  
    onDataSubject = new Subject<any[]>()
  
 diff --git c/packages/models/src/videos/video-sort-field.type.ts w/packages/models/src/videos/video-sort-field.type.ts
-index 7fa07fa73..c538e2668 100644
+index 9d2e57dc0..1c48edc93 100644
 --- c/packages/models/src/videos/video-sort-field.type.ts
 +++ w/packages/models/src/videos/video-sort-field.type.ts
-@@ -7,6 +7,8 @@ export type VideoSortField =
-   'views' | '-views' |
-   'likes' | '-likes' |
+@@ -14,6 +14,8 @@ export type VideoSortField =
+ 
+   'localVideoFilesSize' | '-localVideoFilesSize' |
  
 +  'random' |
 +
@@ -140,7 +140,7 @@ index 7fa07fa73..c538e2668 100644
    'trending' | '-trending' |
    'hot' | '-hot' |
 diff --git c/server/core/initializers/constants.ts w/server/core/initializers/constants.ts
-index c8e57e771..8cea91558 100644
+index 9e9dfbf90..6b9633011 100644
 --- c/server/core/initializers/constants.ts
 +++ w/server/core/initializers/constants.ts
 @@ -112,6 +112,7 @@ export const SORTABLE_COLUMNS = {
@@ -152,10 +152,10 @@ index c8e57e771..8cea91558 100644
      'duration',
      'createdAt',
 diff --git c/server/core/models/video/sql/video/videos-id-list-query-builder.ts w/server/core/models/video/sql/video/videos-id-list-query-builder.ts
-index 02b3f98e0..863e168d2 100644
+index 62f2601ec..44e3f8534 100644
 --- c/server/core/models/video/sql/video/videos-id-list-query-builder.ts
 +++ w/server/core/models/video/sql/video/videos-id-list-query-builder.ts
-@@ -742,6 +742,14 @@ export class VideosIdListQueryBuilder extends AbstractRunQuery {
+@@ -773,6 +773,14 @@ export class VideosIdListQueryBuilder extends AbstractRunQuery {
        )
      }
  
