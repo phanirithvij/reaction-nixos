@@ -7,6 +7,7 @@
     nix = {
       package = pkgs.lix;
       settings = {
+        experimental-features = "nix-command flakes";
         connect-timeout = 5;
         log-lines = 25;
         auto-optimise-store = true;

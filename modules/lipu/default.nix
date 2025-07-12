@@ -84,12 +84,7 @@
     options = [ "defaults" "user" "rw" "utf8" "noauto" "umask=000" ];
   };
 
-  nix = {
-    settings = {
-      experimental-features = "nix-command flakes";
-      trusted-users = ["ppom"];
-    };
-  };
+  nix.settings.trusted-users = ["ppom"];
 
   console = {
     font = "Lat2-Terminus16";
