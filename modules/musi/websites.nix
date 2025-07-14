@@ -110,7 +110,7 @@ in {
         };
         extraConfig = ''
           # add_header Strict-Transport-Security "max-age=31536000";
-          add_header Content-Security-Policy "default-src 'self' 'unsafe-inline'; frame-ancestors 'none'";
+          add_header Content-Security-Policy "default-src 'self' 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'none'";
           add_header X-Content-Type-Options "nosniff";
           add_header X-Frame-Options "DENY";
         '';
