@@ -11,6 +11,7 @@ in {
     # CLI
     sshuttle # VPN-over-SSH
     mosh # alternative to SSH that bootstraps over it
+    sshx # SSH-over-Web
     # sysstat # iostat
     # tealdeer # tldr man pages
     tomb # LUKS wrapper
