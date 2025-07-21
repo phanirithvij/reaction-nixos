@@ -1,6 +1,6 @@
 { lib, fetchFromGitLab, rustPlatform }:
 let
-  version = "v2.1.0";
+  version = "v2.1.2";
 in rustPlatform.buildRustPackage {
   pname = "reaction";
   inherit version;
@@ -10,10 +10,10 @@ in rustPlatform.buildRustPackage {
     owner = "ppom";
     repo = "reaction";
     rev = version;
-    sha256 = "sha256-3FJv1n1+cpV4yrBR6PKTAhSkjas/4uTZqn4nW948jAk=";
+    sha256 = "sha256-lcd0yY8o5eGa1bP5WsA9K/K7gtjRVorS/Rm0bno0AOY=";
   };
 
-  cargoHash = "sha256-Is8Mkl7Qfbe2CwYB+Da99NDQZd9+qR4NnT8iU/JMPJ0=";
+  cargoHash = "sha256-ZRTgzVz8ia763cMBx9U1NIy9W6gDUVhwNr6wDqU1Ulo=";
 
   postBuild = ''
     $CC helpers_c/ip46tables.c -o ip46tables
