@@ -71,12 +71,18 @@ in {
   in {
     # If it consumes too much RAM, let's kill it instead of crashing the server
     ManagedOOMMemoryPressure = "kill";
+    # Limit CPU usage, maybe it will make the hardware fail less?
+    CPUQuota = "250%";
+    CPUWeight = 1;
 
     # Stop RAM hungry services before backup
     ExecStartPre = [
       "+${systemctl} stop slskd.service"
+      "+${systemctl} reset-failed slskd.service"
       "+${systemctl} stop languagetool.service"
+      "+${systemctl} reset-failed languagetool.service"
       "+${systemctl} stop streama.service"
+      "+${systemctl} reset-failed streama.service"
     ];
     ExecStartPost = [
       "+${systemctl} start slskd.service"
