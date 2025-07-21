@@ -90,7 +90,7 @@ in {
             test -e memes || \
               ln -sf ${data} memes
 
-            ${pkgs.git}/bin/git pull
+            ${pkgs.git}/bin/git pull -q
 
             ${pkgs.tailwindcss}/bin/tailwindcss \
               -i css/input.css -o css/tailwind.css
