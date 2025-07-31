@@ -114,7 +114,8 @@ in {
     minisign # small utility to sign files
     ansible
     opentofu
-    tokei # SLOC counter
+    # tokei # SLOC counter
+    scc # SLOC counter
     hexyl # pretty hexdump
     reveal-md
 
