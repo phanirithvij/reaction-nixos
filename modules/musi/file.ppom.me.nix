@@ -1,4 +1,4 @@
-{ lib, pkgs, ... }:
+{ lib, config, pkgs, ... }:
 lib.mkMerge [
   # Nextcloud
   {
@@ -90,7 +90,7 @@ lib.mkMerge [
     services.postgresqlBackup.databases = [ "nextcloud" ];
 
     services.reaction.settings.streams.nextcloud = let
-      var = import ../common/reaction-variables.nix { inherit pkgs; };
+      var = import ../common/reaction-variables.nix { inherit config pkgs; };
     in {
       cmd = [ var.journalctl "-fn0" "-u" "phpfpm-nextcloud.service" ];
       filters.failedLogin = {

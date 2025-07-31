@@ -1,6 +1,6 @@
 { lib, fetchFromGitLab, rustPlatform }:
 let
-  version = "v2.1.2";
+  version = "v2.2.0-unstable";
 in rustPlatform.buildRustPackage {
   pname = "reaction";
   inherit version;
@@ -9,8 +9,8 @@ in rustPlatform.buildRustPackage {
     domain = "framagit.org";
     owner = "ppom";
     repo = "reaction";
-    rev = version;
-    sha256 = "sha256-lcd0yY8o5eGa1bP5WsA9K/K7gtjRVorS/Rm0bno0AOY=";
+    rev = "7acd15ac990c86f28f97d399e5805689235cd73c";
+    sha256 = "sha256-bz11j7BltyGeZusfvrK0aIfcLyBOizRVYH+aioVuweI=";
   };
 
   cargoHash = "sha256-ZRTgzVz8ia763cMBx9U1NIy9W6gDUVhwNr6wDqU1Ulo=";

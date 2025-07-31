@@ -1,6 +1,6 @@
-{ lib, config, pkgs, ... }:
+{ config, pkgs, ... }:
 let 
-  var = import ../common/reaction-variables.nix { inherit pkgs; };
+  var = import ../common/reaction-variables.nix { inherit config pkgs; };
   domain = "ppom.me";
   suffix = "/vault";
   rocketPort = 8060;

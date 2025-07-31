@@ -1,7 +1,7 @@
-{ lib, pkgs, config, ... }:
+{ lib, config, pkgs, ... }:
 let
   common = import ./common.nix {};
-    var = import ../../common/reaction-variables.nix { inherit pkgs; };
+    var = import ../../common/reaction-variables.nix { inherit config pkgs; };
   d2zPort = 8100;
   cfg = config.ppom.directus2zola;
 

@@ -30,7 +30,7 @@
 
   config = let
     cfg = config.ppom.reaction;
-    var = import ./reaction-variables.nix { inherit pkgs; };
+    var = import ./reaction-variables.nix { inherit config pkgs; };
 
     # iptablesBanRange = ipRange: "DROP";
     # bannedIpRanges = [
@@ -45,7 +45,8 @@
       settings = {
         patterns = {
           ip = {
-            regex = ''(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}|(?:(?:[0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|(?:[0-9a-fA-F]{1,4}:){1,7}:|(?:[0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|(?:[0-9a-fA-F]{1,4}:){1,5}(?::[0-9a-fA-F]{1,4}){1,2}|(?:[0-9a-fA-F]{1,4}:){1,4}(?::[0-9a-fA-F]{1,4}){1,3}|(?:[0-9a-fA-F]{1,4}:){1,3}(?::[0-9a-fA-F]{1,4}){1,4}|(?:[0-9a-fA-F]{1,4}:){1,2}(?::[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:(?:(?::[0-9a-fA-F]{1,4}){1,6})|:(?:(?::[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(?::[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(?:ffff(?::0{1,4}){0,1}:){0,1}(?:(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])|(?:[0-9a-fA-F]{1,4}:){1,4}:(?:(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9]))'';
+            type = "ip";
+            ipv6mask = 64;
             ignore = [
               "127.0.0.1"
               "::1"
@@ -173,19 +174,22 @@
       };
     };
 
-    systemd.services.reaction.serviceConfig = {
-      ExecStartPre= [
-        "+${var.iptables} -w -N reaction"
-        "+${var.iptables} -w -A reaction -s 127.0.0.1 -j RETURN"
-        "+${var.iptables} -w -A reaction -s 192.168.1.0/24 -j RETURN"
-        "+${var.iptables} -w -I INPUT -p all -j reaction"
-        "+${var.iptables} -w -I FORWARD -p all -j reaction"
-      ]; # ++ builtins.map iptablesBanRange bannedIpRanges;
-      ExecStopPost = [
-        "+${var.iptables} -w -D INPUT -p all -j reaction"
-        "+${var.iptables} -w -D FORWARD -p all -j reaction"
-        "+${var.iptables} -w -F reaction"
-        "+${var.iptables} -w -X reaction"
+    systemd.services.reaction.serviceConfig = let
+      ip46tables = command: [
+        "${var.ip4tables} ${command}"
+        "${var.ip6tables} ${command}"
+      ];
+    in {
+      ExecStartPre = builtins.concatMap ip46tables [
+        "-w -N reaction"
+        "-w -I INPUT -p all -j reaction"
+        "-w -I FORWARD -p all -j reaction"
+      ];
+      ExecStopPost = builtins.concatMap ip46tables [
+        "-w -D INPUT -p all -j reaction"
+        "-w -D FORWARD -p all -j reaction"
+        "-w -F reaction"
+        "-w -X reaction"
       ];
       TimeoutStopSec = "3 min";
     };

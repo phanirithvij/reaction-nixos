@@ -1,6 +1,6 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 let
-  var = import ../common/reaction-variables.nix { inherit pkgs; };
+  var = import ../common/reaction-variables.nix { inherit config pkgs; };
   unstable = import <nixos-unstable> {};
 in {
   services.slskd = {
