@@ -9,8 +9,8 @@ in rustPlatform.buildRustPackage {
     domain = "framagit.org";
     owner = "ppom";
     repo = "reaction";
-    rev = "7acd15ac990c86f28f97d399e5805689235cd73c";
-    sha256 = "sha256-bz11j7BltyGeZusfvrK0aIfcLyBOizRVYH+aioVuweI=";
+    rev = "56e4d778546c17f298fe171c8f9ab37f2210907d";
+    sha256 = "sha256-n6O9Xk5OoAG5ytmXxWfWdg8augkIHHWfWA0D2g0eT6k=";
   };
 
   cargoHash = "sha256-ZRTgzVz8ia763cMBx9U1NIy9W6gDUVhwNr6wDqU1Ulo=";
