@@ -65,7 +65,7 @@
                   "Invalid user .* from <ip> "
                   "Connection (?:reset|closed) by invalid user .* <ip> port"
                 ];
-                retry = 3;
+                retry = 2;
                 retryperiod = "6h";
                 actions = var.banFor "48h";
               };
@@ -75,7 +75,7 @@
                   "Received disconnect from <ip> port .*[preauth]"
                   "Timeout before authentication for connection from <ip> to"
                 ];
-                retry = 4;
+                retry = 2;
                 retryperiod = "6h";
                 actions = var.banFor "48h";
               };
@@ -192,6 +192,31 @@
         "-w -X reaction"
       ];
       TimeoutStopSec = "3 min";
+    };
+
+    systemd.services.reaction-chain = let 
+      iptables = "${config.networking.firewall.package}/bin/iptables";
+      message = chain: "reaction chain has been removed from ${chain} :o";
+      curl = chain: lib.concatStringsSep " " (map (item: ''"${item}"'') (var.freeMsg (message chain)));
+    in {
+      enable = true;
+      startAt = "*:0/10";
+      unitConfig.Requisite = [ "reaction.service" ];
+      script = ''
+        if ! ${iptables} -L INPUT | grep -q reaction
+        then
+          ${iptables} -w -I INPUT -p all -j reaction
+          echo ${message "INPUT"}
+          ${curl "INPUT"}
+        fi
+
+        if ! ${iptables} -L FORWARD | grep -q reaction
+        then
+          ${iptables} -w -I FORWARD -p all -j reaction
+          echo ${message "FORWARD"}
+          ${curl "FORWARD"}
+        fi
+      '';
     };
   };
 }
