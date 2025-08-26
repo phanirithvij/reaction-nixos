@@ -2,6 +2,7 @@
 {
   imports = [
     ./directus
+    ./firewall.nix
     ./funkwhale
     ./funkwhale2
     ./git.nix
