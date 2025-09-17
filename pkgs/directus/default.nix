@@ -22,7 +22,7 @@
 in
 buildNpmPackage rec {
   pname = "directus";
-  version = "11.5.1";
+  version = "11.12.0";
 
   src = builtins.filterSource (path: _: let
     basename = builtins.baseNameOf path;
@@ -30,7 +30,7 @@ buildNpmPackage rec {
     lib.hasSuffix ".json" basename)
   ./.;
 
-  npmDepsHash = "sha256-Uj33P0K+5+nQhg4cHj5OoXTh+N+2A3XVb9bvj/3IvrA=";
+  npmDepsHash = "sha256-7LbRN2/laJBU2R3jvKWj1uF5sNhbg+G0L+fqWF9maGY=";
 
   dontNpmBuild = true;
 

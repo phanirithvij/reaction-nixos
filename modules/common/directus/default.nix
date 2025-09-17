@@ -2,7 +2,6 @@
 let
   json = pkgs.formats.json {};
   settingsJson = settings: json.generate "config.json" (lib.filterAttrs (key: value: value != null) settings);
-  hardcodedDirectusPath = "/nix/store/jkhj6l2dvr6yxr9y3aafv9spjih93v63-directus-10.12.1";
 in {
   options.services.directus = with lib; with types; {
     enable = mkEnableOption "enable Directus";
@@ -324,7 +323,7 @@ in {
         
         export CONFIG_PATH=${settingsJson conf.settings}
         cd /var/lib/"$D"
-        exec ${hardcodedDirectusPath}/bin/directus "$@"
+        exec ${cfg.package}/bin/directus "$@"
       '';
     })) enabledServers);
 
@@ -362,7 +361,7 @@ in {
       localStorageServers = (lib.filterAttrs (name: conf: conf.useLocalStorage) enabledServers);
     in lib.mapAttrsToList (name: conf: "d /var/lib/directus-${name}/secrets   0750 directus-${name} directus-${name} - -") enabledServers
     ++ lib.mapAttrsToList (name: conf: "d ${conf.settings.STORAGE_LOCAL_ROOT} 0750 directus-${name} directus-${name} - -") localStorageServers
-    ++ [ "L /nix/var/nix/gcroots/per-user/root/directus-last - - - - ${hardcodedDirectusPath}" ];
+    ++ [ "L /nix/var/nix/gcroots/per-user/root/directus-last - - - - ${cfg.package}" ];
 
     systemd.services = lib.mapAttrs' (name: conf: let
       settings = settingsJson conf.settings;
@@ -385,10 +384,10 @@ in {
           [[ -e secrets/key ]] || ${pkgs.libossp_uuid}/bin/uuid -v4 > secrets/key
           [[ -e secrets/secret ]] || genPasswd > secrets/secret
           chmod 600 secrets/secret secrets/key
-          ln -sf ${hardcodedDirectusPath}/lib/package.json .
-          # ${hardcodedDirectusPath}/bin/directus bootstrap
+          ln -sf ${cfg.package}/lib/package.json .
+          ${cfg.package}/bin/directus bootstrap
         '';
-        ExecStart = "${hardcodedDirectusPath}/bin/directus start";
+        ExecStart = "${cfg.package}/bin/directus start";
         UMask = "0027";
         Restart = "no";
         WorkingDirectory = "/var/lib/directus-${name}";

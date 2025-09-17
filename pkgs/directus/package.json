@@ -7,8 +7,8 @@
   "author": "ppom",
   "license": "BUSL-1.1",
   "dependencies": {
-    "@directus/sdk": "^19.0.1",
-    "directus": "^11.5.1",
+    "@directus/sdk": "^20.1.0",
+    "directus": "^11.12.0",
     "sqlite3": "^5.1.7"
   }
 }
