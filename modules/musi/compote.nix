@@ -119,7 +119,7 @@ in {
       description = "Meme metadata cron";
       after = [ "compote-pre.service" ];
       requires = [ "compote-pre.service" ];
-      startAt = "*:0/5";
+      startAt = "12:00";
       serviceConfig = commonSystemd // {
         Type = "oneshot";
         WorkingDirectory = "${state}/tadata";
