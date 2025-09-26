@@ -2,6 +2,7 @@
 { pkgs, ... }:
 
 let 
+  unstable = import <nixos-unstable> {};
   f-mpv-with-scripts = pkgs.mpv-unwrapped.wrapper {
     mpv = pkgs.mpv-unwrapped;
     scripts = with pkgs.mpvScripts; [ mpris ];
@@ -65,7 +66,7 @@ in {
     # tor-browser-bundle-bin
     # pcmanfm # File Browser
     gnome-keyring # for fractal
-    fractal # Gnome Matrix desktop client
+    unstable.fractal # Gnome Matrix desktop client
     evince
     libreoffice
     mpv-no-scripts
