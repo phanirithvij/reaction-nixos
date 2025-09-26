@@ -138,6 +138,12 @@ in lib.mkMerge [
     wrapperFeatures.gtk = true;
   };
 
+  # enable river window manager
+  programs.river = {
+    enable = true;
+    extraPackages = lib.mkForce [];
+  };
+
   # don't need text-to-speech service
   services.speechd.enable = false;
 
