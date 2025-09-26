@@ -47,6 +47,8 @@ in {
     };
 
     # Not working, no ExecReloadPre
+    # PartOf ?
+    # ReloadPropagatedFrom ?
     # stopForFirewall = mkOption {
     #   type = bool;
     #   default = false;
