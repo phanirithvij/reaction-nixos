@@ -182,8 +182,7 @@ if steroids or enableGo or enableNixd then
 	})
 
 	if enableNixd then
-		local lspconfig = require 'lspconfig'
-		lspconfig.nixd.setup {}
+		vim.lsp.enable('nixd')
 	end
 
 	if enableGo then
@@ -194,43 +193,44 @@ if steroids or enableGo or enableNixd then
 				command = "set tabstop=4 shiftwidth=4 softtabstop=-1"
 			})
 
-		local lspconfig = require 'lspconfig'
-		lspconfig.gopls.setup {}
+		vim.lsp.enable('gopls')
 	end
 
 	if steroids then
-		local lspconfig = require 'lspconfig'
 		vim.g.vim_markdown_folding_disabled = 1
 		vim.g.vim_markdown_toc_autofit = 1
 
 		-- LSP config
-		lspconfig.bashls.setup {}
-		lspconfig.ccls.setup {}
-		lspconfig.cssls.setup {}
-		lspconfig.html.setup {}
-		lspconfig.jsonls.setup {}
-		lspconfig.jsonnet_ls.setup {}
-		-- lspconfig.ltex.setup {}
-		-- lspconfig.pylizer.setup {}
-		lspconfig.ruff.setup {}
-		lspconfig.rust_analyzer.setup {}
-		lspconfig.svelte.setup {}
-		lspconfig.tailwindcss.setup {}
-		lspconfig.denols.setup {}
-		-- lspconfig.ts_ls.setup {}
-		lspconfig.vuels.setup {}
-		lspconfig.yamlls.setup {}
+		vim.lsp.enable('bashls')
+		vim.lsp.enable('ccls')
+		vim.lsp.enable('cssls')
+		vim.lsp.enable('html')
+		vim.lsp.enable('jsonls')
+		vim.lsp.enable('jsonnet_ls')
+		-- vim.lsp.enable('ltex')
+		-- vim.lsp.enable('pylizer')
+		vim.lsp.enable('ruff')
+		vim.lsp.enable('rust_analyzer')
+		vim.lsp.enable('svelte')
+		vim.lsp.enable('tailwindcss')
+		vim.lsp.enable('denols')
+		-- vim.lsp.enable('ts_ls')
+		vim.lsp.enable('vuels')
+		vim.lsp.enable('yamlls')
 
-		lspconfig.lua_ls.setup { settings = {
-			Lua = {
-				runtime = { version = 'LuaJIT' },
-				diagnostics = { globals = { 'vim' } }, -- recognize the `vim` global
-				workspace = { -- aware of Neovim runtime files (long)
-					library = vim.api.nvim_get_runtime_file("", true)
-				},
-				telemetry = { enable = false },
+		vim.lsp.config('lua_ls', {
+			settings = {
+				Lua = {
+					runtime = { version = 'LuaJIT' },
+					diagnostics = { globals = { 'vim' } }, -- recognize the `vim` global
+					workspace = { -- aware of Neovim runtime files (long)
+						library = vim.api.nvim_get_runtime_file("", true)
+					},
+					telemetry = { enable = false },
+				}
 			}
-		} }
+		})
+		vim.lsp.enable('lua_ls')
 	end
 end
 
