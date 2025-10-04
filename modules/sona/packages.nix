@@ -32,7 +32,7 @@ in {
     # languagetool # Proofreading program
     # deepl-translate-cli # CLI to use deepl. With a shell wrapper around it, it's fast to use
     # signalbackup-tools # Manipulate Signal smartphone backups.
-    restic # Backup
+    rustic # Backup
 
     # TUI
     # w3m # web browser
@@ -131,11 +131,11 @@ in {
     # nodejs cargo
     nushell
     deno
-    cargo
-    rustc
-    rust-analyzer # Rust language server
-    rustfmt # Rust formatter
-    clippy # Rust liner
+    unstable.cargo
+    unstable.rustc
+    unstable.rust-analyzer # Rust language server
+    unstable.rustfmt # Rust formatter
+    unstable.clippy # Rust liner
     # rustup # Rust upstream packages. Only used for local std doc.
     gcc
     go
@@ -197,7 +197,7 @@ in {
       dofus = let
         url = "https://launcher.cdn.ankama.com/installers/production/Dofus_3.0-x86_64.AppImage";
       in pkgs.writeShellScriptBin "dofus" ''
-        ${pkgs.appimage-run}/bin/appimage-run ${pkgs.fetchurl {
+        exec ${pkgs.appimage-run}/bin/appimage-run ${pkgs.fetchurl {
           inherit url;
           sha256 = "sha256-yqdqxD5YfrODX4p0Rh8LqUn5/nrHciyvJfb7WC9BTW4=";
         }}
