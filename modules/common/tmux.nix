@@ -1,4 +1,4 @@
-{ lib, config, pkgs, ... }:
+{ lib, config, ... }:
 {
   options.ppom.tmux = {
     enable = lib.mkEnableOption "enable tmux with ppom config";
@@ -16,7 +16,7 @@
       keyMode = "vi";
       newSession = true;
       resizeAmount = 5;
-      terminal = "screen-256color";
+      terminal = "tmux-256color";
       escapeTime = if cfg.desktop then 20 else 500;
       shortcut = if cfg.desktop then "q" else "b";
 
