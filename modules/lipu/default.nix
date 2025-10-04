@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 {
   imports = [
     <nixos-hardware/framework/13-inch/7040-amd>
@@ -134,11 +134,14 @@
     variables = rec {
       LANG = "en_US.UTF-8";
       LC_ALL = LANG;
+      EDITOR = lib.mkForce "hx";
+      VISUAL = lib.mkForce "hx";
     };
   };
 
   # Programs
   programs = {
+    git.config.core.editor = "hx";
     gnupg.agent.enable = true;
     # kdeconnect.enable = true;
     npm.enable = true;
