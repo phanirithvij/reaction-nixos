@@ -10,9 +10,6 @@
     ./poweroff.nix
   ];
 
-  # Cherry-picked from the headless profile
-  boot.loader.grub.splashImage = null;
-
   ppom = {
     enable = true;
     git.email = "poki@ppom.me";
@@ -47,7 +44,9 @@
 
   boot.loader.grub = {
     enable = true;
-    device = "/dev/disk/by-id/ata-ST1000LM024_HN-M101MBB_S31LJ9AG907492";
+    device = "/dev/disk/by-id/ata-ST2000DM008-2FR102_ZFL1V5Y2";
+    # Cherry-picked from the headless profile
+    splashImage = null;
   };
   boot.kernelParams = [ "panic=1" "boot.panic_on_fail" ];
   boot.tmp.cleanOnBoot = true;
