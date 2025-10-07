@@ -52,6 +52,7 @@
       git
       # python3
       shellcheck # bash linter
+      helix # neovim alternative
 
       ## files
       file # file types
