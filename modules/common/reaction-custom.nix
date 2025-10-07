@@ -87,8 +87,8 @@
             filters.portscan = {
               regex = [ "refused connection: .*SRC=<ip>" ];
               retry = 4;
-              retryperiod = "1h";
-              actions = var.banFor "${toString (30 * 24)}h";
+              retryperiod = "2h";
+              actions = var.banFor "30d";
             };
           };
 
