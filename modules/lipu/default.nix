@@ -6,13 +6,12 @@
 
     ./hardware-configuration.nix
     ./android.nix
-    ../sona/direnv.nix
-    ../sona/down-detector.nix
-    ../sona/graphical.nix
-    ../sona/packages.nix
-    ../sona/syncthing.nix
-    # ../sona/torrent.nix # No wireguard setup right now
-    ../sona/virt.nix
+    ./direnv.nix
+    ./down-detector.nix
+    ./graphical.nix
+    ./packages.nix
+    ./syncthing.nix
+    ./virt.nix
   ];
 
   ppom = {
