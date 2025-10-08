@@ -39,7 +39,6 @@
     };
     reaction.enable = true;
     monit = {
-      enable = true;
       fromMail = "musi@ppom.me";
     };
     nvim.enableNixd = true;

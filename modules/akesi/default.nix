@@ -24,7 +24,6 @@
     };
     reaction.enable = true;
     monit = {
-      enable = true;
       fromMail = "akesi@ppom.me";
     };
     musi-cache.enable = true;

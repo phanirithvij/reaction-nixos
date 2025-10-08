@@ -21,7 +21,6 @@
       enableGPTBot = false;
     };
     monit = {
-      enable = true;
       fromMail = "kili@ppom.me";
     };
     musi-cache.enable = true;

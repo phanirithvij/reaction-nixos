@@ -19,7 +19,6 @@
     };
     reaction.enable = true;
     monit = {
-      enable = true;
       fromMail = "selo@ppom.me";
     };
   };

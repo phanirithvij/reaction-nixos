@@ -31,6 +31,26 @@ rec {
     };
   };
 
+  mailMe = msg: cfg: {
+    cmd = [
+      "${pkgs.curl}/bin/curl"
+      "--ssl-reqd"
+      "--fail"
+      "--silent"
+      "--show-error"
+      "--mail-from" cfg.fromMail
+      "--mail-rcpt" cfg.destinationMail
+      "--variable" "PASS@${cfg.mailAccountPasswordFile}"
+      "--expand-user" "${cfg.mailAccount}:{{PASS:trim}}"
+      "--header" "from: reaction <${cfg.fromMail}>"
+      "--header" "subject: ${msg}"
+      "--form" "=(;type=multipart/mixed"
+      "--form" "=${msg};type=text/plain"
+      "--form" "=)"
+      "--url" "smtps://${cfg.mailServer}:465"
+    ];
+  };
+
   freeMsg = msg: [
     "${pkgs.curl}/bin/curl"
     "--fail"

@@ -24,7 +24,6 @@
       enableNginx = false;
     };
     monit = {
-      enable = true;
       fromMail = "poki@ppom.me";
     };
     musi-cache.enable = true;

@@ -9,6 +9,12 @@
       description = "enable SSH jail";
     };
 
+    enableSystemd = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "enable light systemd unit monitoring";
+    };
+
     enableNginx = lib.mkOption {
       type = lib.types.bool;
       default = true;
@@ -51,6 +57,9 @@
               "127.0.0.1"
               "::1"
             ];
+          };
+          unit = lib.mkIf cfg.enableSystemd {
+            regex = ''[a-zA-Z0-9\-_]+\.(:?automount|mount|scope|service|slice|socket|path|target|timer)\b'';
           };
         };
         streams = {
@@ -168,6 +177,34 @@
               # retry = 40;
               # retryperiod = "1m";
               # TODO make a filter for failed http basic auth
+            };
+          };
+
+          systemd = lib.mkIf cfg.enableSystemd {
+            cmd = [pkgs.runtimeShell "-c" ''
+              while true
+              do
+                ${config.systemd.package}/bin/systemctl --failed
+                sleep 2
+                done
+            ''];
+            filters = {
+              unit = {
+                regex = [
+                  "<unit> .* failed"
+                ];
+                # As long as it fails we won't send alerts again in the following hour
+                duplicate = "extend";
+                actions =  {
+                  mail = var.mailMe
+                    "${config.networking.hostName}: unit <unit> failed"
+                    config.ppom.monit;
+                  dummy = {
+                    cmd = ["true"];
+                    after = "1h";
+                  };
+                };
+              };
             };
           };
         };
