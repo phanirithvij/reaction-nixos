@@ -17,7 +17,7 @@
       newSession = true;
       resizeAmount = 5;
       terminal = "tmux-256color";
-      escapeTime = if cfg.desktop then 20 else 500;
+      escapeTime = if cfg.desktop then 20 else 50;
       shortcut = if cfg.desktop then "q" else "b";
 
       extraConfig = ''
