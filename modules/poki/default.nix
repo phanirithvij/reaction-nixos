@@ -28,6 +28,8 @@
     };
     musi-cache.enable = true;
     remote-build.allow-musi = true;
+    user.musi = true;
+    user.marvin = true;
   };
 
   services.openssh.allowSFTP = true;
@@ -66,17 +68,10 @@
   # prevent some potentials CVECs
   security.sudo.execWheelOnly = true;
 
-  users.users = {
-    musi = {
-      isNormalUser = true;
-      extraGroups = [ "users" ];
-      openssh.authorizedKeys.keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMejg0vhFiS9vjVYX8IiXgq4kRy8c+XXbkaaio6i4BXP root@musi" ];
-    };
-  };
-
   systemd.tmpfiles.rules = [
     "d /backup/musi     0700 musi     root - -"
     "d /backup/ppom     0700 ppom     root - -"
     "d /backup/bertille 0700 bertille root - -"
+    "d /backup/marvin   0700 marvin   root - -"
   ];
 }

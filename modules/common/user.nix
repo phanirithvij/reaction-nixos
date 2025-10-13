@@ -3,6 +3,8 @@
   options.ppom.user = {
     enable = lib.mkEnableOption "enable ppom user";
     fish = lib.mkEnableOption "use fish as shell";
+    musi = lib.mkEnableOption "enable musi user";
+    marvin = lib.mkEnableOption "enable marvin user";
   };
 
   config = lib.mkIf config.ppom.user.enable (lib.mkMerge [
@@ -22,6 +24,20 @@
       users.groups.users = {};
       programs.fish.enable = true;
       environment.pathsToLink = [ "/share/fish" ];
+    })
+    (lib.mkIf config.ppom.user.musi {
+      users.users.musi = {
+        isNormalUser = true;
+        extraGroups = [ "users" ];
+        openssh.authorizedKeys.keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMejg0vhFiS9vjVYX8IiXgq4kRy8c+XXbkaaio6i4BXP root@musi" ];
+      };
+    })
+    (lib.mkIf config.ppom.user.marvin {
+      users.users.marvin = {
+        isNormalUser = true;
+        extraGroups = [ "users" ];
+        openssh.authorizedKeys.keys = [];
+      };
     })
   ]);
 }

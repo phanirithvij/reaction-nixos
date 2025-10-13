@@ -24,6 +24,8 @@
       fromMail = "kili@ppom.me";
     };
     musi-cache.enable = true;
+    user.musi = true;
+    user.marvin = true;
   };
 
   # Use the extlinux boot loader. (NixOS wants to enable GRUB by default)
@@ -58,22 +60,9 @@
     '')
   ];
 
-  users.users.musi = {
-    isNormalUser = true;
-    openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMejg0vhFiS9vjVYX8IiXgq4kRy8c+XXbkaaio6i4BXP root@musi"
-    ];
-  };
-
   swapDevices = [ {
     device = "/swapfile";
   } ];
-
-  # Enable sound.
-  # services.pipewire = {
-  #   enable = true;
-  #   pulse.enable = true;
-  # };
 
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you

@@ -30,3 +30,7 @@ listenPort = 58234
 address = "10.1.1.6"
 publicKey = "/5qQfgqM6GsgmdLFpE+TDzTAqXupoMhSShNAo9kkkRM="
 listenPort = 58234
+
+[marvin]
+address = "10.1.1.7"
+publicKey = "KtYzUxAsqkx3hR3oPl0s+MSYm1jJgcqBnuWvknFx9kI="
