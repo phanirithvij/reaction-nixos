@@ -1,14 +1,13 @@
-{ config, pkgs, ... }:
+{ config, ... }:
 {
   systemd.services.auto-poweroff = {
     enable = true;
     startAt = "*:0/5"; # every 5 minutes
     script = ''
-      musi_processes="$(${pkgs.procps}/bin/pgrep -u musi | wc -l)"
-      connected_users="$(who | wc -l)"
+      sshd_sessions="$(pgrep -u root sshd-session | wc -l)"
       flag_file=/tmp/no_remote_activity
-      echo "musi_processes=$musi_processes connected_users=$connected_users"
-      if test "$musi_processes" -eq 0 && test "$connected_users" -eq 0
+      echo "sshd_sessions=$sshd_sessions"
+      if test "$sshd_sessions" -eq 0
       then
         if test ! -e $flag_file
         then
