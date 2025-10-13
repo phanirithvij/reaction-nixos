@@ -18,8 +18,8 @@
   ppom = {
     enable = true;
     git.email = "sona@ppom.me";
-    nvim.enableGo = true;
-    nvim.steroids = true;
+    helix.enableGo = true;
+    helix.steroids = true;
     packages.more = true;
     packages.xdg = true;
     tmux.desktop = true;

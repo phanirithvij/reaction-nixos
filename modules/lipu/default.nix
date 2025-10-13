@@ -17,8 +17,8 @@
   ppom = {
     enable = true;
     git.email = "lipu@ppom.me";
-    nvim.enableGo = true;
-    nvim.steroids = true;
+    helix.enableGo = true;
+    helix.steroids = true;
     packages.more = true;
     packages.xdg = true;
     tmux.desktop = true;

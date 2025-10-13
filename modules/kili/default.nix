@@ -9,7 +9,7 @@
   ppom = {
     enable = true;
     git.email = "kili@ppom.me";
-    nvim.enableNixd = false;
+    helix.enableNixd = false;
     ssh = {
       enable = true;
       port = 22;

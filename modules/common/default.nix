@@ -9,7 +9,7 @@
     ./misc.nix
     ./monit.nix
     ./nasin.nix
-    ./nvim.nix
+    ./helix.nix
     ./packages.nix
     ./reaction.nix
     ./reaction-custom.nix
@@ -25,7 +25,7 @@
     ppom.misc.enable = true;
     ppom.packages.enable = true;
     ppom.tmux.enable = true;
-    ppom.nvim.enable = true;
+    ppom.helix.enable = true;
     ppom.git.enable = true;
     ppom.user.enable = true;
     # server-side

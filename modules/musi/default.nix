@@ -41,8 +41,8 @@
     monit = {
       fromMail = "musi@ppom.me";
     };
-    nvim.enableNixd = true;
-    nvim.enableGo = true;
+    helix.enableNixd = true;
+    helix.enableGo = true;
     user.fish = true;
     remote-build.hosts = [
       "akesi"
