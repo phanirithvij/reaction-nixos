@@ -49,6 +49,7 @@ rec {
       "--form" "=)"
       "--url" "smtps://${cfg.mailServer}:465"
     ];
+    oneshot = true;
   };
 
   freeMsg = msg: [

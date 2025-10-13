@@ -185,7 +185,7 @@
               while true
               do
                 ${config.systemd.package}/bin/systemctl --failed
-                sleep 2
+                sleep 10
                 done
             ''];
             filters = {

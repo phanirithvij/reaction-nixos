@@ -97,10 +97,17 @@ in {
     generatedSettings = settingsFormat.generate "reaction.yml" cfg.settings;
     settingsFile = if cfg.settingsFile != null then cfg.settingsFile else generatedSettings;
   in lib.mkIf cfg.enable {
-    assertions = [{
-      assertion = (cfg.settings == {} && cfg.settingsFile != null) || (cfg.settings != {} && cfg.settingsFile == null);
+    assertions = [
+      {
+        assertion = (cfg.settings == {} && cfg.settingsFile != null) || (cfg.settings != {} && cfg.settingsFile == null);
         message = "You must choose between settings and settingsFile options";
-    }];
+      }
+      # FIXME doesn't prevent invalid configs as intended
+      {
+        assertion = (pkgs.runCommand "reaction-test-config" {} "${cfg.package}/bin/reaction test-config -c ${settingsFile}") != null;
+        message = "reaction test-config failed";
+      }
+  ];
 
     users = lib.mkIf (!cfg.runAsRoot) {
       users.reaction = {
