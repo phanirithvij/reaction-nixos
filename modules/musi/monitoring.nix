@@ -69,10 +69,10 @@ in {
     RuntimeMaxUse=10M
   '';
 
-  services.cadvisor = {
-    enable = true;
-    port = 8495;
-  };
+  # services.cadvisor = {
+  #   enable = true;
+  #   port = 8495;
+  # };
 
   services.prometheus.exporters = {
     node = {
@@ -116,16 +116,16 @@ in {
             }
           ];
         }
-        {
-          job_name = "cadvisor";
-          static_configs = [
-            {
-              targets = ["localhost:${builtins.toString config.services.cadvisor.port}"];
-              labels.type = "cadvisor";
-              labels.hostname = "musi.ppom.me";
-            }
-          ];
-        }
+        # {
+        #   job_name = "cadvisor";
+        #   static_configs = [
+        #     {
+        #       targets = ["localhost:${builtins.toString config.services.cadvisor.port}"];
+        #       labels.type = "cadvisor";
+        #       labels.hostname = "musi.ppom.me";
+        #     }
+        #   ];
+        # }
       ];
     };
   };
