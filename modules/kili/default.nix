@@ -15,6 +15,14 @@
       port = 22;
       hardened = true;
     };
+    reaction = {
+      enable = true;
+      # systemd only
+      enableSSHJail = false;
+      enableNginx = false;
+      enableGPTBot = false;
+      enablePortScan = false;
+    };
     monit = {
       fromMail = "kili@ppom.me";
     };
