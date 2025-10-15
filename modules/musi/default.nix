@@ -10,6 +10,7 @@
     ./compote.nix
     ./dyndns.nix
     ./hardware-configuration.nix
+    ./immich.nix
     ./languagetool.nix
     ./monitoring.nix
     ./ntfy.nix
