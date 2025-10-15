@@ -37,6 +37,7 @@ def getIp():
             if address['scope'] == "global"
             and address['family'] == "inet6"
             and not ('deprecated' in address and address['deprecated'])
+            and not ('mngtmpaddr' in address and address['mngtmpaddr'])
         ],
         key=lambda a: a['preferred_life_time']
     )['local']
