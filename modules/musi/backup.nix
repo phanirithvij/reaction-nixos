@@ -39,7 +39,7 @@ in {
     script = ''
       ssh ${kiliHost} -i ${pokiKey} wakelan A0:B3:CC:E9:4C:9C || exit 0
       i=0
-      while not ssh ${pokiHost} -i ${pokiKey} -o ConnectTimeout=10 true
+      while ! ssh ${pokiHost} -i ${pokiKey} -o ConnectTimeout=10 true
       do
         i=$(($i + 1))
         test $i -lt 600 || exit 1
