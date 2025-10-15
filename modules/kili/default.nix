@@ -31,6 +31,8 @@
     user.bertille = true;
   };
 
+  services.reaction.package = (import <nixos-unstable> {}).reaction;
+
   # Delete more aggressively (all non-used)
   nix.gc.options = lib.mkForce "-d";
 
