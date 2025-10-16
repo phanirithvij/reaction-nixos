@@ -1,13 +1,13 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 {
   systemd.services.auto-poweroff = {
     enable = true;
     startAt = "*:0/5"; # every 5 minutes
     script = ''
-      sshd_sessions="$(pgrep -u root sshd-session | wc -l)"
+      user_processes="$(${pkgs.procps}/bin/pgrep -G users | wc -l)"
       flag_file=/tmp/no_remote_activity
-      echo "sshd_sessions=$sshd_sessions"
-      if test "$sshd_sessions" -eq 0
+      echo "user_processes=$user_processes"
+      if test "$user_processes" -eq 0
       then
         if test ! -e $flag_file
         then
