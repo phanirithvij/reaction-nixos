@@ -29,7 +29,7 @@
     musi-cache.enable = true;
     remote-build.allow-musi = true;
     user.musi = true;
-    user.marvin = true;
+    user.bertille = true;
   };
 
   services.openssh.allowSFTP = true;
@@ -72,6 +72,6 @@
     "d /backup/musi     0700 musi     root - -"
     "d /backup/ppom     0700 ppom     root - -"
     "d /backup/bertille 0700 bertille root - -"
-    "d /backup/marvin   0700 marvin   root - -"
+    "d /backup/bertille 0700 bertille root - -"
   ];
 }

@@ -34,3 +34,7 @@ listenPort = 58234
 [marvin]
 address = "10.1.1.7"
 publicKey = "KtYzUxAsqkx3hR3oPl0s+MSYm1jJgcqBnuWvknFx9kI="
+
+[bertille]
+address = "10.1.1.8"
+publicKey = "GbvQaLseRh26thUT5XJmfHnfcSImWd4rYh8b3gC/4mg="

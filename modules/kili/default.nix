@@ -20,7 +20,7 @@
     };
     musi-cache.enable = true;
     user.musi = true;
-    user.marvin = true;
+    user.bertille = true;
   };
 
   # Delete more aggressively (all non-used)
