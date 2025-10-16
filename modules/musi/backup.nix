@@ -36,6 +36,7 @@ in {
 
   systemd.services.wakepoki = {
     path = [ config.services.openssh.package ];
+    serviceConfig.Type = "oneshot";
     script = ''
       ssh ${kiliHost} -i ${pokiKey} wakelan A0:B3:CC:E9:4C:9C || exit 0
       i=0
