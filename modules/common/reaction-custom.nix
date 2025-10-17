@@ -57,6 +57,9 @@
               "127.0.0.1"
               "::1"
             ];
+            ignorecidr = [
+              "2a01:e0a:b3a:1dd0::/64"
+            ];
           };
           unit = lib.mkIf cfg.enableSystemd {
             regex = ''[a-zA-Z0-9\-_]+\.(:?automount|mount|scope|service|slice|socket|path|target|timer)\b'';
