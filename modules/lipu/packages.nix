@@ -66,7 +66,8 @@ in {
     # tor-browser-bundle-bin
     # pcmanfm # File Browser
     gnome-keyring # for fractal
-    unstable.fractal # Gnome Matrix desktop client
+    nheko # Matrix desktop client
+    # unstable.fractal # Gnome Matrix desktop client (no thread support)
     evince
     libreoffice
     mpv-no-scripts
@@ -234,4 +235,6 @@ in {
     proggyfonts
     libertinus
   ];
+
+  nixpkgs.config.permittedInsecurePackages = [ "olm-3.2.16" ]; # library for Nheko
 }
