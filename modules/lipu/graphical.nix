@@ -218,7 +218,10 @@ in lib.mkMerge [
 {
   # # Android
   # programs.adb.enable = true;
-  # users.users.ppom.extraGroups = ["adbusers"];
+  # users.users.ppom.extraGroups = [
+  #   "adbusers" # for adb & fastboot to work as ppom
+  #   "dialout" # for webusb to work on chromium
+  # ];
   # programs.sway.extraSessionCommands = ''
   #   # Fix for some Java AWT applications (e.g. Android Studio),
   #   # use this if they aren't displayed properly:
