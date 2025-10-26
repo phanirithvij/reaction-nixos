@@ -39,20 +39,6 @@ let
     rbw unlock
     rbw ls --fields folder,name,user | sed 's@\t@/@g' | sort | ${pkgs.wofi}/bin/wofi --dmenu | sed -e 's@.*/\(.*\)/\(.*\)@"\1" "\2"@' -e 's@""@@' | xargs -r rbw get | wl-copy -o
   '');
-  passwofi = (pkgs.writeShellScriptBin "passwofi" ''
-    shopt -s nullglob globstar
-
-    prefix=$\{PASSWORD_STORE_DIR-~/.password-store}
-    password_files=( "$prefix"/**/*.gpg )
-    password_files=( "${"\$"}{password_files[@]#"$prefix"/}" )
-    password_files=( "${"\$"}{password_files[@]%.gpg}" )
-
-    password=$(printf '%s\n' "${"\$"}{password_files[@]}" | ${pkgs.wofi}/bin/wofi --dmenu "$@")
-
-    [[ -n $password ]] || exit
-
-    ${pkgs.pass}/bin/pass show | wl-copy -o
-  '');
 
 in lib.mkMerge [
 {
@@ -94,7 +80,6 @@ in lib.mkMerge [
     wofi-emoji # wrapper for emoji mode
     wtype # needed by wofi-emoji
     rbw-wofi
-    passwofi
 
     xfce.thunar # file explorer
     xfce.ristretto # image viewer
