@@ -137,6 +137,11 @@ in lib.mkMerge [
   # Sounds like one of the systemd bugs that has never been fixed...
   services.logind.lidSwitch = "suspend-then-hibernate";
 
+  # Try to fix the gnome settings issue
+  # Override GSettings schemas
+  environment.sessionVariables.NIX_GSETTINGS_OVERRIDES_DIR = "${pkgs.gnome.nixos-gsettings-overrides}/share/gsettings-schemas/nixos-gsettings-overrides/glib-2.0/schemas";
+
+
   # This specialisation allows to close the lid without actually suspending the computer
   # specialisation.closeLid.configuration.services.logind.lidSwitch = lib.mkOverride 98 "lock";
 
