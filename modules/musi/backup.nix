@@ -72,13 +72,13 @@ in {
         "+${systemctl} reset-failed slskd.service"
         "+${systemctl} stop languagetool.service"
         "+${systemctl} reset-failed languagetool.service"
-        "+${systemctl} stop streama.service"
-        "+${systemctl} reset-failed streama.service"
+        # "+${systemctl} stop streama.service"
+        # "+${systemctl} reset-failed streama.service"
       ];
       ExecStartPost = [
         "+${systemctl} start slskd.service"
         "+${systemctl} start languagetool.service"
-        "+${systemctl} start streama.service"
+        # "+${systemctl} start streama.service"
       ];
     };
   };
