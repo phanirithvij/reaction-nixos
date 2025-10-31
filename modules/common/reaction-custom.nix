@@ -62,13 +62,13 @@
             ];
           };
           unit = lib.mkIf cfg.enableSystemd {
-            regex = ''[a-zA-Z0-9\-_]+\.(:?automount|mount|scope|service|slice|socket|path|target|timer)\b'';
+            regex = ''[a-zA-Z0-9\-_@]+\.(:?automount|mount|scope|service|slice|socket|path|target|timer)\b'';
           };
         };
         streams = {
 
           ssh = lib.mkIf cfg.enableSSHJail {
-            cmd = [ var.journalctl "-fn0" "-u" "sshd.service" ];
+            cmd = [ var.journalctl "-fn0" "-o" "cat" "-u" "sshd.service" ];
             filters = {
               failedlogin = {
                 regex = [
@@ -95,7 +95,7 @@
           };
 
           kernel = lib.mkIf cfg.enablePortScan {
-            cmd = [ var.journalctl "-fn0" "-k" ];
+            cmd = [ var.journalctl "-fn0" "-o" "cat" "-k" ];
             filters.portscan = {
               regex = [ "refused connection: .*SRC=<ip>" ];
               retry = 4;
@@ -184,28 +184,16 @@
           };
 
           systemd = lib.mkIf cfg.enableSystemd {
-            cmd = [pkgs.runtimeShell "-c" ''
-              while true
-              do
-                ${config.systemd.package}/bin/systemctl --failed
-                sleep 10
-                done
-            ''];
+            cmd = [ var.journalctl "-fn0" "-o" "cat" "-t" "systemd" ];
             filters = {
               unit = {
                 regex = [
-                  "<unit> .* failed"
+                  "^<unit>: Failed with result"
                 ];
-                # As long as it fails we won't send alerts again in the following hour
-                duplicate = "extend";
                 actions =  {
                   mail = var.mailMe
                     "${config.networking.hostName}: unit <unit> failed"
                     config.ppom.monit;
-                  dummy = {
-                    cmd = ["true"];
-                    after = "1h";
-                  };
                 };
               };
             };

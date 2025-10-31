@@ -43,6 +43,7 @@ rec {
       "--variable" "PASS@${cfg.mailAccountPasswordFile}"
       "--expand-user" "${cfg.mailAccount}:{{PASS:trim}}"
       "--header" "from: reaction <${cfg.fromMail}>"
+      "--header" "to: ${cfg.destinationMail}"
       "--header" "subject: ${msg}"
       "--form" "=(;type=multipart/mixed"
       "--form" "=${msg};type=text/plain"
