@@ -190,10 +190,16 @@
                 regex = [
                   "^<unit>: Failed with result"
                 ];
+                # No more than one alert each 6h
+                duplicate = "ignore";
                 actions =  {
                   mail = var.mailMe
                     "${config.networking.hostName}: unit <unit> failed"
                     config.ppom.monit;
+                  dummy = {
+                    cmd = ["true"];
+                    after = "6h";
+                  };
                 };
               };
             };
