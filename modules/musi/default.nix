@@ -52,7 +52,12 @@
   };
 
   services.reaction = {
-    settings.patterns.ip.ignore = [ "192.168.1.253" ];
+    settings = {
+      patterns = {
+        ip.ignore = [ "192.168.1.253" ];
+        unit.ignore = [ "languagetool.service" ];
+      };
+    };
     # loglevel = "DEBUG";
   };
 
