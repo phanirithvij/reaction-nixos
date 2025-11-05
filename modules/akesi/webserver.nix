@@ -6,7 +6,7 @@ let
       "img-src" = [ "'self'" ];
       "script-src" = [ "'self'" "'unsafe-inline'" ];
       "style-src" = [ "'self'" "'unsafe-inline'" ];
-      "frame-ancestors" = [ "'none'" ];
+      "frame-ancestors" = [ "'self'" ];
       "base-uri" = [ "'none'" ];
       "form-action" = [ "'none'" ];
     } // csp;
@@ -27,7 +27,6 @@ let
       }) // extra;
     };
     extraConfig = ''
-      add_header X-Frame-Options "DENY";
       add_header Referrer-Policy "strict-origin";
       add_header X-Content-Type-Options "nosniff";
       add_header Content-Security-Policy "${builtins.concatStringsSep " " (lib.mapAttrsToList (name: values: "${name} ${builtins.concatStringsSep " " values};") csp')}";
