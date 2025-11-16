@@ -69,7 +69,7 @@
   ];
 
   # No auto-upgrade
-  system.autoUpgrade = false;
+  system.autoUpgrade.enable = false;
 
   # Download more RAM
   zramSwap.enable = true;
