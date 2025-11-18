@@ -45,6 +45,11 @@ let
       ssh = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDU6aCD3LJM7KtMPT3xyn8vpuT3X8JrCWCnhD3jaTRRQmN4ZH8ofmqRh3/Czcp9ofhU50mIjmhmwx46bxr+sZI1TmY1EDsx0fClS7zUp1H1vE2zCKz4gRcKdbYFVtakj/3qQE4oKnnNeDTQm9wTlHuT3TE/SyvsI+0xA8VtgeX3lNeqODgyMhOTpoM5hnGlGF4CXIY9HvArl6wwMu/Ii4V5CgMSH/ldCDdRE8/SHOIHZ6IVpJeYjmsBaGYbrphNxNXVuaq9qEtV4o8YXHl8G701OCxIUi1QV0eEQCTCC2AA+Hf88mJCQh5zQ8tthbiO/cnbNrjvXyTZlQAIyvpyGaI/ stc@hal9017" ];
       uid = 2008;
     }
+    {
+      name = "lila";
+      ssh = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEMXgMuXchZK0bJSWSLZl+n3YWuX4DoCDRYv5rC1reYc lila" ];
+      uid = 2009;
+    }
   ];
   transitDir   = user: "/data/user-uploads/${user.name}";
   containerDir = user: "/home/${user.name}/upload-here";
