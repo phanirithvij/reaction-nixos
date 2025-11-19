@@ -128,13 +128,4 @@ in {
       '';
     };
   };
-
-  services.nginx.virtualHosts."meelo.ppom.me" = {
-    forceSSL = true;
-    enableACME = true;
-    locations."/" = {
-      proxyPass = "http://localhost:8942";
-      proxyWebsockets = true;
-    };
-  };
 }
