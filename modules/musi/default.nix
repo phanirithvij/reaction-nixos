@@ -16,6 +16,7 @@
     ./ntfy.nix
     ./postgresql.nix
     ./streama.nix
+    ./signal.nix
     ./slskd.nix
     ./syncthing.nix
     ./users.nix
