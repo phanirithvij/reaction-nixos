@@ -11,6 +11,7 @@ let
     ];
     StateDirectory = "pombot";
     RuntimeDirectory = "pombot";
+    RuntimeDirectoryPreserve = true;
     StateDirectoryMode = 0700;
     RuntimeDirectoryMode = 0700;
     LockPersonality = true;
@@ -69,6 +70,7 @@ in {
     after = [ "signal-daemon.service" ];
     serviceConfig = serviceConfig // {
       ExecStart = "${unstable.callPackage ../../pkgs/pombot {}}/bin/pombot";
+      EnvironmentFile = ["/var/secrets/pombot"];
     };
   };
 }

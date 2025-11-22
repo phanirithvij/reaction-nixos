@@ -7,8 +7,8 @@ rustPlatform.buildRustPackage {
     domain = "framagit.org";
     owner = "ppom";
     repo = "pombot";
-    rev = "b6c273cf63ebe70c7d1ddab6e40ec6e349136336";
-    sha256 = "sha256-CNwb+Dhc02lyfYDC3zbzr8LmNM42lsp95BKQwrceLf8=";
+    rev = "b6853d0e54b25af50d1258530ea480287bf276b6";
+    sha256 = "sha256-GYLtUSbuzJWLDQkyaaPnZEYvOSQs1FRlfVgrsNLaqEk=";
   };
 
   cargoHash = "sha256-hM1Y5ITY7ijugghRw6HkacvzO6Y4VwwLG57w+RfhjKk=";
