@@ -44,6 +44,16 @@
     cfg = config.ppom.reaction;
     var = import ./reaction-variables.nix { inherit config pkgs; };
 
+    replaceActions = { name, file, actions }: "${(pkgs.writeTextFile {
+      inherit name;
+      destination = "/${name}";
+      # Horrible hack because reaction doesn't merge filters
+      # So we manually insert an actions object in the jsonnet file
+      text = builtins.replaceStrings
+        ["'ACTIONS'"]
+        [(builtins.readFile ((pkgs.formats.json {}).generate "ban.json" actions))]
+        (builtins.readFile file);
+    })}/${name}";
     # iptablesBanRange = ipRange: "DROP";
     # bannedIpRanges = [
     #   "46.148.40.0/24"
@@ -54,16 +64,10 @@
     services.reaction = {
       enable = true;
       runAsRoot = true;
-      settingsFiles = lib.optional cfg.enableGoogleImpersonator "${(pkgs.writeTextFile {
-        name = "googlebot.jsonnet";
-        destination = "/googlebot.jsonnet";
-        # Horrible hack because reaction doesn't merge filters
-        # So we manually insert an actions object in the jsonnet file
-        text = builtins.replaceStrings
-          ["'ACTIONS'"]
-          [(builtins.readFile ((pkgs.formats.json {}).generate "ban.json" (var.banFor "30d")))]
-          (builtins.readFile ./googlebot.jsonnet);
-      })}/googlebot.jsonnet";
+      settingsFiles = lib.optional cfg.enableGoogleImpersonator
+        (replaceActions { name = "googlebot.jsonnet"; file = ./googlebot.jsonnet; actions = (var.banFor "30d"); })
+        ++ lib.optional cfg.enableGPTBot
+        (replaceActions { name = "ai-robots.jsonnet"; file = ./ai-robots.jsonnet; actions = (var.banFor "30d"); });
       settings = {
         patterns = {
           ip = {
@@ -170,35 +174,7 @@
                   ''^<ip> .*"GET /(?:[^/" ]*/)*dns-query ''
                   ''^<ip> .*"POST /(?:[^/" ]*/)*/cgi-bin/''
                 ];
-                actions = var.banFor "${toString (30 * 24)}h";
-              };
-              gptbot = lib.mkIf cfg.enableGPTBot {
-                regex = (builtins.map (bot: ''^<ip>.*"[^"]*${bot}[^"]*"$'') [
-                  # Based on https://darkvisitors.com/agents
-                  "AI2Bot"
-                  "Amazonbot"
-                  "Applebot"
-                  "Applebot-Extended"
-                  "Bytespider"
-                  "CCBot"
-                  "ChatGPT-User"
-                  "ClaudeBot"
-                  "Diffbot"
-                  "DuckAssistBot"
-                  "FacebookBot"
-                  "GPTBot"
-                  "Google-Extended"
-                  "Kangaroo Bot"
-                  "Meta-ExternalAgent"
-                  "Meta-ExternalFetcher"
-                  "OAI-SearchBot"
-                  "PerplexityBot"
-                  "Timpibot"
-                  "Webzio-Extended"
-                  "YouBot"
-                  "omgili"
-                ]);
-                actions = var.banFor "${toString (30 * 24)}h";
+                actions = var.banFor "30d";
               };
 
               # TODO make a filter for too much failed requests
