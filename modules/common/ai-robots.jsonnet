@@ -2,9 +2,8 @@
 local aiRobots = import "/var/lib/reaction/ai-robots.json";
 local names = std.objectFields(aiRobots);
 
-local nameToRegex(agent) =  @'^<ip>.*"[^"]*' + agent + '[^"]*"$';
-
-local regex = std.map(nameToRegex, names);
+local joined = std.join("|", names);
+local regex =  @'^<ip>.*"[^"]*(' + joined + ')[^"]*"$';
 
 local actions = 'ACTIONS';
 
@@ -13,7 +12,7 @@ local actions = 'ACTIONS';
     nginx: {
       filters: {
         gptbot: {
-          regex: regex,
+          regex: [ regex ],
           actions: actions,
         }
       }
