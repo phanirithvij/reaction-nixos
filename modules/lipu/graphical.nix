@@ -117,11 +117,7 @@ in lib.mkMerge [
     # xdgOpenUsePortal = true;
   };
 
-  # enable sway window manager
-  programs.sway = {
-    enable = true;
-    wrapperFeatures.gtk = true;
-  };
+  programs.kdeconnect.enable = true;
 
   # enable river window manager
   programs.river = {

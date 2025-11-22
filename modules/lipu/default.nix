@@ -74,6 +74,8 @@
     '';
   };
 
+  services.avahi.enable = true;
+
   # disable wait online
   systemd.services.NetworkManager-wait-online.enable = false;
 

@@ -28,6 +28,7 @@ in {
     # figlet
     # espeak-ng
     # cowsay
+    asciinema # Terminal recorder
     inotify-tools # Linux filesystem watchdog
     # languagetool # Proofreading program
     # deepl-translate-cli # CLI to use deepl. With a shell wrapper around it, it's fast to use
@@ -70,6 +71,7 @@ in {
     # unstable.fractal # Gnome Matrix desktop client (no thread support)
     evince
     libreoffice
+    signal-cli
     mpv-no-scripts
     mpv-with-scripts
     # clementine # music player
