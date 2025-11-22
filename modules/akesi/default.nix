@@ -59,7 +59,7 @@
 
   swapDevices = [ {
     device = "/swapfile";
-    size = 3 * 1024; # MiB
+    size = 2 * 1024; # MiB
     randomEncryption = {
       enable = true;
       # default cipher is the fastest here
