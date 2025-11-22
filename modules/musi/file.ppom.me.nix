@@ -42,6 +42,7 @@ lib.mkMerge [
       "file.ppom.me" = {
         enableACME = true;
         forceSSL = true;
+        bomb = false;
       };
       "board.ppom.me" = {
         enableACME = true;

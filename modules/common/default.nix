@@ -1,6 +1,7 @@
 { config, lib, ... }:
 {
   imports = [
+    ./bomb.nix
     ./directus
     ./firewall.nix
     ./funkwhale

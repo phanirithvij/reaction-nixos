@@ -50,6 +50,11 @@
       "akesi"
       "poki"
     ];
+    bomb = {
+      default = true;
+      root = "/data/bomb";
+      file = "20GB.php";
+    };
   };
 
   services.reaction = {
