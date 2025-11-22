@@ -112,7 +112,15 @@
                   # (?:[^/" ]*/)* is a "non-capturing group" regex that allow for subpath(s)
                   # example: /code/.env should be matched as well as /.env
                   #           ^^^^^
+                  ''^<ip> .*"GET /.DS_Store ''
+                  ''^<ip> .*"GET /.vscode/sftp.json ''
+                  ''^<ip> .*"GET /?rest_route=/wp/v2/users/ ''
+                  ''^<ip> .*"GET /_all_dbs ''
+                  ''^<ip> .*"GET /debug/default/view?panel=config ''
                   ''^<ip> .*"GET /etc/passwd ''
+                  ''^<ip> .*"GET /server-status ''
+                  ''^<ip> .*"GET /telescope/requests ''
+                  ''^<ip> .*"GET /v2/catalog ''
                   ''^<ip> .*"GET /(?:[^/" ]*/)*admin\.php''
                   ''^<ip> .*"GET /(?:[^/" ]*/)*bypass\.php''
                   ''^<ip> .*"GET /(?:[^/" ]*/)*classwithtostring\.php''
@@ -121,7 +129,9 @@
                   ''^<ip> .*"GET /(?:[^/" ]*/)*install\.php ''
                   ''^<ip> .*"GET /(?:[^/" ]*/)*log\.php''
                   ''^<ip> .*"GET /(?:[^/" ]*/)*mail\.php''
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*microsoft.exchange.ediscovery.exporttool.application ''
                   ''^<ip> .*"GET /(?:[^/" ]*/)*moon\.php''
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*pom.properties ''
                   ''^<ip> .*"GET /(?:[^/" ]*/)*radio\.php''
                   ''^<ip> .*"GET /(?:[^/" ]*/)*simple\.php''
                   ''^<ip> .*"GET /(?:[^/" ]*/)*test\.php''
