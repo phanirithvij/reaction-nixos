@@ -15,9 +15,9 @@ in {
       description = ''
         Configuration for reaction. See the [wiki](https://framagit.org/ppom/reaction-wiki)
 
-        The settings are compiled into a YAML file.
+        The settings are written as a YAML file.
 
-        Mutually exclusive option `settingsFile`.
+        Can be used in combination with `settingsFiles` option, both will be present in the configuration directory.
       '';
       default = {};
       type = submodule {
@@ -26,21 +26,21 @@ in {
       };
     };
 
-    settingsFile = mkOption {
+    settingsFiles = mkOption {
       description = ''
         Configuration for reaction, see the [wiki](https://framagit.org/ppom/reaction-wiki)
 
         reaction supports JSON, YAML and JSONnet. For those who prefer to take advantage of JSONnet rather than Nix.
 
-        Mutually exclusive with `settings`
+        Can be used in combination with `settings` option, both will be present in the configuration directory.
       '';
-      default = null;
-      type = nullOr path;
+      default = [];
+      type = listOf path;
     };
 
     loglevel = mkOption {
       description = ''
-        Daemon's loglevel, one of DEBUG, INFO, WARN, ERROR
+        reaction's loglevel. One of DEBUG, INFO, WARN, ERROR.
       '';
       default = null;
       type = nullOr (enum ["DEBUG" "INFO" "WARN" "ERROR"]);
@@ -94,17 +94,27 @@ in {
 
   config = let
     cfg = config.services.reaction;
+
     generatedSettings = settingsFormat.generate "reaction.yml" cfg.settings;
-    settingsFile = if cfg.settingsFile != null then cfg.settingsFile else generatedSettings;
+    namedGeneratedSettings = lib.optional (cfg.settings != {}) { name = "reaction.yml"; path = generatedSettings; };
+
+    # SAFETY: We can discard the dependencies of "file" in the name attribute because we keep them in the path attribute
+    # See https://nix.dev/manual/nix/2.32/language/string-context
+    namedSettingsFiles = builtins.map (file: {
+      name = builtins.unsafeDiscardStringContext (builtins.baseNameOf file);
+      path = file;
+    }) cfg.settingsFiles;
+
+    settingsDir = pkgs.linkFarm "reaction.d" (namedSettingsFiles ++ namedGeneratedSettings);
   in lib.mkIf cfg.enable {
     assertions = [
       {
-        assertion = (cfg.settings == {} && cfg.settingsFile != null) || (cfg.settings != {} && cfg.settingsFile == null);
-        message = "You must choose between settings and settingsFile options";
+        assertion = cfg.settings != {} || (builtins.length cfg.settingsFile) != 0;
+        message = "You must specify settings and/or settingsFile options";
       }
       # FIXME doesn't prevent invalid configs as intended
       {
-        assertion = (pkgs.runCommand "reaction-test-config" {} "${cfg.package}/bin/reaction test-config -c ${settingsFile}") != null;
+        assertion = (pkgs.runCommand "reaction-test-config" {} "${cfg.package}/bin/reaction test-config -c ${settingsDir}") != null;
         message = "reaction test-config failed";
       }
   ];
@@ -117,17 +127,21 @@ in {
       groups.reaction = {};
     };
 
+    # Easier to debug conf when we have direct access to it,
+    # rather than having to look for it in the systemd service file.
+    environment.etc."reaction".source = settingsDir;
+
     systemd.services.reaction = {
       enable = true;
-      description = "Daemon to ban hosts that cause multiple authentication errors";
+      description = "Scan logs and take action";
       after = [ "network.target" ];
       wantedBy = [ "multi-user.target" ];
       path = [ pkgs.iptables ];
       serviceConfig = {
         Type = "simple";
         User = lib.mkIf (!cfg.runAsRoot) "reaction";
-        ExecStart = ''${cfg.package}/bin/reaction start -c ${settingsFile} ${
-          lib.optionalString (cfg.loglevel != null) "-l ${cfg.loglevel}"
+        ExecStart = ''${cfg.package}/bin/reaction start -c ${settingsDir}${
+          lib.optionalString (cfg.loglevel != null) " -l ${cfg.loglevel}"
         }'';
         StateDirectory = "reaction";
         RuntimeDirectory = "reaction";
