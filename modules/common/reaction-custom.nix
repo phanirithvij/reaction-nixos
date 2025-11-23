@@ -82,7 +82,7 @@
             ];
           };
           unit = lib.mkIf cfg.enableSystemd {
-            regex = ''[a-zA-Z0-9\-_@]+\.(:?automount|mount|scope|service|slice|socket|path|target|timer)\b'';
+            regex = ''[a-zA-Z0-9\-_@]+\.(?:automount|mount|scope|service|slice|socket|path|target|timer)\b'';
           };
         };
         streams = {
@@ -126,52 +126,75 @@
 
           nginx = lib.mkIf (cfg.enableNginx || cfg.enableGPTBot) {
             cmd = [ "tail" "-n0" "-F" "/var/log/nginx/access.log" ];
-            filters = {
+            filters = let
+                rootPaths = [
+                  ''\.DS_Store''
+                  ''\.vscode/sftp\.json''
+                  ''\?rest_route=/wp/v2/users/''
+                  ''_all_dbs''
+                  ''containers/json''
+                  ''\+CSCO(?:L|E)\+''
+                  ''debug/default/view\?panel=config''
+                  ''etc/passwd''
+                  ''geoserver/web/''
+                  ''graphql''
+                  ''api/graphql''
+                  ''llms\.txt''
+                  ''server-status''
+                  ''sftp-config\.json''
+                  ''telescope/requests''
+                  ''v2/catalog''
+                ];
+                relativePaths = [
+                  ''\.env''
+                  ''auth1?\.html''
+                  ''config\.json''
+                  ''dns-query''
+                  ''microsoft\.exchange\.ediscovery\.exporttool\.application''
+                  ''owa/auth/logon\.aspx''
+                  ''passwords?\.txt''
+                  ''phpinfo''
+                  ''pom\.properties''
+                ];
+                relativePathsNoSpace = [
+                  ''\.env\.''
+                  ''\.git/''
+                  ''wp''
+                  ''meta\.json''
+                ];
+                phpPaths = [
+                  "abcd"
+                  "admin"
+                  "bypass"
+                  "classwithtostring"
+                  "css"
+                  "eval-stdin"
+                  "info"
+                  "install"
+                  "log"
+                  "mail"
+                  "moon"
+                  "phpunit"
+                  "radio"
+                  "simple"
+                  "test"
+                  "wp-login"
+                  "wp-mail"
+                  "xleet"
+                  "xmlrpc"
+                ];
+              in {
               suspectRequests = lib.mkIf cfg.enableNginx {
                 regex = [
+                  # All absolute paths that end with space
+                  # 
+                  ''^<ip> .*"GET /(?:${lib.concatStringsSep "|" rootPaths}) ''
                   # (?:[^/" ]*/)* is a "non-capturing group" regex that allow for subpath(s)
                   # example: /code/.env should be matched as well as /.env
                   #           ^^^^^
-                  ''^<ip> .*"GET /.DS_Store ''
-                  ''^<ip> .*"GET /.vscode/sftp.json ''
-                  ''^<ip> .*"GET /?rest_route=/wp/v2/users/ ''
-                  ''^<ip> .*"GET /_all_dbs ''
-                  ''^<ip> .*"GET /debug/default/view?panel=config ''
-                  ''^<ip> .*"GET /etc/passwd ''
-                  ''^<ip> .*"GET /server-status ''
-                  ''^<ip> .*"GET /telescope/requests ''
-                  ''^<ip> .*"GET /v2/catalog ''
-                  ''^<ip> .*"GET /(?:[^/" ]*/)*admin\.php''
-                  ''^<ip> .*"GET /(?:[^/" ]*/)*bypass\.php''
-                  ''^<ip> .*"GET /(?:[^/" ]*/)*classwithtostring\.php''
-                  ''^<ip> .*"GET /(?:[^/" ]*/)*css\.php''
-                  ''^<ip> .*"GET /(?:[^/" ]*/)*info\.php ''
-                  ''^<ip> .*"GET /(?:[^/" ]*/)*install\.php ''
-                  ''^<ip> .*"GET /(?:[^/" ]*/)*log\.php''
-                  ''^<ip> .*"GET /(?:[^/" ]*/)*mail\.php''
-                  ''^<ip> .*"GET /(?:[^/" ]*/)*microsoft.exchange.ediscovery.exporttool.application ''
-                  ''^<ip> .*"GET /(?:[^/" ]*/)*moon\.php''
-                  ''^<ip> .*"GET /(?:[^/" ]*/)*pom.properties ''
-                  ''^<ip> .*"GET /(?:[^/" ]*/)*radio\.php''
-                  ''^<ip> .*"GET /(?:[^/" ]*/)*simple\.php''
-                  ''^<ip> .*"GET /(?:[^/" ]*/)*test\.php''
-                  ''^<ip> .*"GET /(?:[^/" ]*/)*wp-admin''
-                  ''^<ip> .*"GET /(?:[^/" ]*/)*wp-content''
-                  ''^<ip> .*"GET /(?:[^/" ]*/)*wp-includes''
-                  ''^<ip> .*"GET /(?:[^/" ]*/)*wp-login\.php''
-                  ''^<ip> .*"GET /(?:[^/" ]*/)*wp-mail\.php''
-                  ''^<ip> .*"GET /(?:[^/" ]*/)*xleet\.php''
-                  ''^<ip> .*"GET /(?:[^/" ]*/)*xmlrpc\.php''
-                  ''^<ip> .*"GET /(?:[^/" ]*/)*phpinfo ''
-                  ''^<ip> .*"GET /(?:[^/" ]*/)*\.env(?:\.[^/" ]*) ''
-                  ''^<ip> .*"GET /(?:[^/" ]*/)*\.git/''
-                  ''^<ip> .*"GET /(?:[^/" ]*/)*config\.json ''
-                  ''^<ip> .*"GET /(?:[^/" ]*/)*owa/auth/logon.aspx ''
-                  ''^<ip> .*"GET /(?:[^/" ]*/)*auth.html ''
-                  ''^<ip> .*"GET /(?:[^/" ]*/)*auth1.html ''
-                  ''^<ip> .*"GET /(?:[^/" ]*/)*password.txt ''
-                  ''^<ip> .*"GET /(?:[^/" ]*/)*passwords.txt ''
-                  ''^<ip> .*"GET /(?:[^/" ]*/)*dns-query ''
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*(?:${lib.concatStringsSep "|" phpPaths})\.php''
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*(?:${lib.concatStringsSep "|" relativePaths}) ''
+                  ''^<ip> .*"GET /(?:[^/" ]*/)*(?:${lib.concatStringsSep "|" relativePathsNoSpace})''
                   ''^<ip> .*"POST /(?:[^/" ]*/)*/cgi-bin/''
                 ];
                 actions = var.banFor "30d";
