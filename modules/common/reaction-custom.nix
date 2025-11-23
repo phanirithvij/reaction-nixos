@@ -32,6 +32,12 @@
       default = true;
       description = "enable jail for bots hiting closed ports";
     };
+
+    enableGoogleImpersonator = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "enable jail for bots hiding behind google's User-Agent";
+    };
   };
 
   config = let
@@ -48,6 +54,16 @@
     services.reaction = {
       enable = true;
       runAsRoot = true;
+      settingsFiles = lib.optional cfg.enableGoogleImpersonator "${(pkgs.writeTextFile {
+        name = "googlebot.jsonnet";
+        destination = "/googlebot.jsonnet";
+        # Horrible hack because reaction doesn't merge filters
+        # So we manually insert an actions object in the jsonnet file
+        text = builtins.replaceStrings
+          ["'ACTIONS'"]
+          [(builtins.readFile ((pkgs.formats.json {}).generate "ban.json" (var.banFor "30d")))]
+          (builtins.readFile ./googlebot.jsonnet);
+      })}/googlebot.jsonnet";
       settings = {
         patterns = {
           ip = {
@@ -224,11 +240,14 @@
         "${var.ip6tables} ${command}"
       ];
     in {
-      ExecStartPre = builtins.concatMap ip46tables [
+      ExecStartPre = (builtins.concatMap ip46tables [
         "-w -N reaction"
         "-w -I INPUT -p all -j reaction"
         "-w -I FORWARD -p all -j reaction"
-      ];
+      ]
+        ++ lib.optional cfg.enableGoogleImpersonator "${pkgs.curl}/bin/curl -o /var/lib/reaction/googlebot.json https://developers.google.com/search/apis/ipranges/googlebot.json"
+        ++ lib.optional cfg.enableGPTBot "${pkgs.curl}/bin/curl -o /var/lib/reaction/ai-robots.json https://raw.githubusercontent.com/ai-robots-txt/ai.robots.txt/refs/heads/main/robots.json"
+      );
       ExecStopPost = builtins.concatMap ip46tables [
         "-w -D INPUT -p all -j reaction"
         "-w -D FORWARD -p all -j reaction"
