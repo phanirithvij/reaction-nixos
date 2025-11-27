@@ -1,5 +1,5 @@
 // https://reaction.ppom.me/filters/useragent-impersonators.html
-local googlebot = (import "/var/lib/reaction/googlebot.json").prefixes;
+local googlebot = (import "@googlebot_json@").prefixes;
 
 local isIpv6(obj) =  std.objectHas(obj, "ipv6Prefix");
 local isIpv4(obj) =  std.objectHas(obj, "ipv4Prefix");
@@ -12,7 +12,7 @@ local ipv4Adresses = std.filterMap(isIpv4, toIpv4, googlebot);
 
 local allAdresses = std.flattenArrays([ipv4Adresses, ipv6Adresses]);
 
-local actions = 'ACTIONS';
+local actions = @actions@;
 
 {
   patterns: {

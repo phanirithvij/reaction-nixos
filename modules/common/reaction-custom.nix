@@ -43,17 +43,6 @@
   config = let
     cfg = config.ppom.reaction;
     var = import ./reaction-variables.nix { inherit config pkgs; };
-
-    replaceActions = { name, file, actions }: "${(pkgs.writeTextFile {
-      inherit name;
-      destination = "/${name}";
-      # Horrible hack because reaction doesn't merge filters
-      # So we manually insert an actions object in the jsonnet file
-      text = builtins.replaceStrings
-        ["'ACTIONS'"]
-        [(builtins.readFile ((pkgs.formats.json {}).generate "ban.json" actions))]
-        (builtins.readFile file);
-    })}/${name}";
     # iptablesBanRange = ipRange: "DROP";
     # bannedIpRanges = [
     #   "46.148.40.0/24"
@@ -65,9 +54,15 @@
       enable = true;
       runAsRoot = true;
       settingsFiles = lib.optional cfg.enableGoogleImpersonator
-        (replaceActions { name = "googlebot.jsonnet"; file = ./googlebot.jsonnet; actions = (var.banFor "30d"); })
+        (pkgs.replaceVars ./googlebot.jsonnet {
+          actions = builtins.toJSON (var.banFor "30d");
+          googlebot_json = null;
+        })
         ++ lib.optional cfg.enableGPTBot
-        (replaceActions { name = "ai-robots.jsonnet"; file = ./ai-robots.jsonnet; actions = (var.banFor "30d"); });
+        (pkgs.replaceVars ./ai-robots.jsonnet {
+          actions = builtins.toJSON (var.banFor "30d");
+          ai_robots_json = null;
+        });
       settings = {
         patterns = {
           ip = {

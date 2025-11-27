@@ -1,11 +1,11 @@
 // https://reaction.ppom.me/filters/ai-crawlers.html
-local aiRobots = import "/var/lib/reaction/ai-robots.json";
+local aiRobots = import "@ai_robots_json@";
 local names = std.objectFields(aiRobots);
 
 local joined = std.join("|", names);
 local regex =  @'^<ip>.*"[^"]*(' + joined + ')[^"]*"$';
 
-local actions = 'ACTIONS';
+local actions = @actions@;
 
 {
   streams: {
