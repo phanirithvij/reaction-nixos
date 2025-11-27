@@ -29,10 +29,17 @@ let
           - ^(?<Name>.+)[._ ][Ss](?<Season>\d{2})[Ee](?<Episode>\d{2,3}).*
   '';
   workingDir = pkgs.linkFarm "streama-pwd" [
-    { name = "application.yml"; path = config; }
-    { name = "streama.jar"; path = jarFile; }
+    {
+      name = "application.yml";
+      path = config;
+    }
+    {
+      name = "streama.jar";
+      path = jarFile;
+    }
   ];
-in {
+in
+{
 
   services.nginx.enable = true;
   services.nginx.virtualHosts."video.ppom.me" = {
@@ -57,7 +64,7 @@ in {
     isSystemUser = true;
     group = "streama";
   };
-  users.groups.streama = {};
+  users.groups.streama = { };
 
   systemd.services.streama = {
     enable = true;
@@ -74,7 +81,10 @@ in {
       StateDirectory = "streama";
       StateDirectoryMode = 0700;
       Restart = "on-success"; # If oom-killed
-      ReadWritePaths = [ "/var/lib/streama" "/data/streama/uploads" ];
+      ReadWritePaths = [
+        "/var/lib/streama"
+        "/data/streama/uploads"
+      ];
       CapabilityBoundingSet = [ "" ];
       LockPersonality = true;
       NoNewPrivileges = true;
@@ -93,11 +103,18 @@ in {
       ProtectProc = "invisible";
       ProtectSystem = "strict";
       RemoveIPC = true;
-      RestrictAddressFamilies = [ "AF_INET" "AF_INET6" "AF_UNIX" ];
+      RestrictAddressFamilies = [
+        "AF_INET"
+        "AF_INET6"
+        "AF_UNIX"
+      ];
       RestrictNamespaces = true;
       RestrictSUIDSGID = true;
       SystemCallArchitectures = "native";
-      SystemCallFilter = [ "@system-service" "~@privileged" ];
+      SystemCallFilter = [
+        "@system-service"
+        "~@privileged"
+      ];
       UMask = "0077";
     };
   };
@@ -106,7 +123,7 @@ in {
 
   nixpkgs.overlays = [
     (self: super: {
-      h2 = super.callPackage ../../pkgs/h2 {};
+      h2 = super.callPackage ../../pkgs/h2 { };
     })
   ];
 
@@ -124,17 +141,14 @@ in {
     description = "Clean duplicate viewing statuses on Streama";
     # Additional parenthesis added in the nested SELECT because of this: https://groups.google.com/g/h2-database/c/dBeNlTTXz-U
     script = ''
-      ${pkgs.h2}/bin/h2tool.sh org.h2.tools.RunScript -url "${dbPath}" -user root -password "" -script ${
-        pkgs.writeScript "streama-clean-updates-script"
-        ''
-          DELETE FROM viewing_status
-          WHERE (user_id, video_id, last_updated) NOT IN (
-            SELECT (user_id, video_id, MAX(last_updated))
-            FROM viewing_status
-            GROUP BY (video_id, user_id)
-          );
-        ''
-      }
+      ${pkgs.h2}/bin/h2tool.sh org.h2.tools.RunScript -url "${dbPath}" -user root -password "" -script ${pkgs.writeScript "streama-clean-updates-script" ''
+        DELETE FROM viewing_status
+        WHERE (user_id, video_id, last_updated) NOT IN (
+          SELECT (user_id, video_id, MAX(last_updated))
+          FROM viewing_status
+          GROUP BY (video_id, user_id)
+        );
+      ''}
     '';
     serviceConfig.User = "streama";
     startAt = "daily";

@@ -20,9 +20,9 @@ let
     "2602:80d:1004::/112"
   ];
   ban = iptables: iprange: "${iptables} -I INPUT -s ${iprange} -j DROP\n";
-in {
+in
+{
   networking.firewall.extraCommands = lib.concatStringsSep "\n" (
-    (builtins.map (ban "iptables") bannedRanges4) ++
-    (builtins.map (ban "ip6tables") bannedRanges6)
+    (builtins.map (ban "iptables") bannedRanges4) ++ (builtins.map (ban "ip6tables") bannedRanges6)
   );
 }

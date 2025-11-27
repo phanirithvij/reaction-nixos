@@ -15,8 +15,7 @@ in
   services.directus.allowDirectusLicense = true;
 
   programs.ssh.knownHostsFiles = [
-    (pkgs.writeText "akesi"
-    "akesi.ppom.me ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOrvqULNbWvvsOKt0pSoEMfpK6ototDyU3bncfGCkj6C")
+    (pkgs.writeText "akesi" "akesi.ppom.me ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOrvqULNbWvvsOKt0pSoEMfpK6ototDyU3bncfGCkj6C")
   ];
 
   services.nginx.virtualHosts."edit.ppom.me".root = pkgs.writeTextDir "index.html" ''
@@ -54,6 +53,6 @@ in
     actions = var.banFor "4h";
   };
 
-  users.groups.directus2zola = {};
-  users.groups.directus = {};
+  users.groups.directus2zola = { };
+  users.groups.directus = { };
 }

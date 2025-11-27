@@ -31,7 +31,7 @@
     user.bertille = true;
   };
 
-  services.reaction.package = (import <nixos-unstable> {}).reaction;
+  services.reaction.package = (import <nixos-unstable> { }).reaction;
 
   # Delete more aggressively (all non-used)
   nix.gc.options = lib.mkForce "-d";
@@ -74,10 +74,12 @@
   # Download more RAM
   zramSwap.enable = true;
 
-  swapDevices = [ {
-    device = "/swapfile";
-    size = 2048; # 2 GiB
-  } ];
+  swapDevices = [
+    {
+      device = "/swapfile";
+      size = 2048; # 2 GiB
+    }
+  ];
 
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you
@@ -86,4 +88,3 @@
 
   system.stateVersion = "24.11";
 }
-

@@ -1,7 +1,12 @@
-{ lib, fetchFromGitLab, rustPlatform }:
+{
+  lib,
+  fetchFromGitLab,
+  rustPlatform,
+}:
 let
   version = "v2.2.1";
-in rustPlatform.buildRustPackage {
+in
+rustPlatform.buildRustPackage {
   pname = "reaction";
   inherit version;
 

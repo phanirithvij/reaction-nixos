@@ -38,10 +38,12 @@
     };
     defaultGateway.address = "192.168.1.1";
     defaultGateway6.address = "2001:41d0:701:1100::1";
-    interfaces.ens3.ipv6.addresses = [{
-      address = "2001:41d0:701:1100::2";
-      prefixLength = 64;
-    }];
+    interfaces.ens3.ipv6.addresses = [
+      {
+        address = "2001:41d0:701:1100::2";
+        prefixLength = 64;
+      }
+    ];
   };
 
   # TODO https://wiki.arn-fai.net/documentation:hosting:resal_vps
@@ -61,5 +63,8 @@
   # Hardware configuration
   boot.loader.grub.device = "/dev/sda";
   boot.initrd.kernelModules = [ "nvme" ];
-  fileSystems."/" = { device = "/dev/sda1"; fsType = "ext4"; };
+  fileSystems."/" = {
+    device = "/dev/sda1";
+    fsType = "ext4";
+  };
 }

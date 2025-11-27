@@ -1,20 +1,30 @@
-{ config, pkgs, stdenv, lib, ... }:
+{
+  config,
+  pkgs,
+  stdenv,
+  lib,
+  ...
+}:
 
 let
-  nginxPackage = (pkgs.nginx.override {
-    modules = with pkgs.nginxModules; [
-      # Add fancy index module
-      fancyindex
-      # subsFilter # doesn't compile on 22.05
-    ];
-  });
+  nginxPackage = (
+    pkgs.nginx.override {
+      modules = with pkgs.nginxModules; [
+        # Add fancy index module
+        fancyindex
+        # subsFilter # doesn't compile on 22.05
+      ];
+    }
+  );
   nginxLogPath = "/var/log/nginx/access.log";
 
   nginxRealPath = "/etc/static/nginx/nginx.conf";
   nginxConfPath = "/etc/nginx/nginx.conf";
-in {
+in
+{
   networking.firewall.allowedTCPPorts = [
-    80 443 # web
+    80
+    443 # web
   ];
 
   # Nginx
@@ -188,7 +198,7 @@ in {
 
   systemd.services."uploader-auto-delete" = {
     serviceConfig = {
-      ExecStart = "${pkgs.callPackage ../../pkgs/older.go {}}/bin/older /data/uploader/d";
+      ExecStart = "${pkgs.callPackage ../../pkgs/older.go { }}/bin/older /data/uploader/d";
       User = "uploader";
     };
     startAt = "1:00";

@@ -1,4 +1,9 @@
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 {
   options.ppom.misc.enable = lib.mkEnableOption "enable ppom misc";
 
@@ -79,7 +84,14 @@
     services.locate = {
       enable = true;
       package = pkgs.plocate;
-      prunePaths = lib.mkForce [ "/tmp" "/var/tmp" "/var/cache" "/var/lock" "/var/run" "/var/spool" ];
+      prunePaths = lib.mkForce [
+        "/tmp"
+        "/var/tmp"
+        "/var/cache"
+        "/var/lock"
+        "/var/run"
+        "/var/spool"
+      ];
     };
 
     environment.systemPackages = with pkgs; [

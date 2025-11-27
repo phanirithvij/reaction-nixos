@@ -1,4 +1,9 @@
-{ lib, modulesPath, pkgs, ... }:
+{
+  lib,
+  modulesPath,
+  pkgs,
+  ...
+}:
 {
   imports = [
     # For cloud vms. See https://nixos.org/manual/nixos/stable/index.html#sec-profile-headless
@@ -65,7 +70,6 @@
     vm
   '';
 
-
   system.stateVersion = "24.05";
 
   systemd = {
@@ -79,7 +83,7 @@
 
   # Remove nscd
   services.nscd.enable = false;
-  system.nssModules = lib.mkForce [];
+  system.nssModules = lib.mkForce [ ];
 
   # remove dbus
   services.dbus.enable = lib.mkForce false;

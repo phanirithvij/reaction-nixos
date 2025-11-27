@@ -1,4 +1,9 @@
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 {
 
   # virtualisation.libvirtd.enable = true;
@@ -8,7 +13,7 @@
 
   virtualisation.docker.enable = true;
   virtualisation.docker.enableOnBoot = false;
-  systemd.services.docker.wantedBy = lib.mkForce [];
+  systemd.services.docker.wantedBy = lib.mkForce [ ];
 
   # virtualisation.lxd.enable = true;
   # systemd.services.lxd.wantedBy = lib.mkForce [];

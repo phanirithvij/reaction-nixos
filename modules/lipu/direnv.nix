@@ -2,7 +2,7 @@
 
 # It permits to autoload shell.nix files without the need to execute nix-shell,
 # and saves this derivations to gcroots, so that output derivations are not garbage collected.
-# Also 
+# Also
 # echo 'source /run/current-system/sw/share/nix-direnv/direnvrc' >> ~/.direnvrc
 
 { config, pkgs, ... }:

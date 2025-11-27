@@ -46,10 +46,12 @@
     defaultGateway6 = {
       address = "2001:41d0:701:1100::1";
     };
-    interfaces.ens3.ipv6.addresses = [{
-      address = "2001:41d0:701:1100::194";
-      prefixLength = 64;
-    }];
+    interfaces.ens3.ipv6.addresses = [
+      {
+        address = "2001:41d0:701:1100::194";
+        prefixLength = 64;
+      }
+    ];
   };
 
   time.timeZone = "Europe/Paris";
@@ -57,14 +59,16 @@
 
   boot.tmp.cleanOnBoot = true;
 
-  swapDevices = [ {
-    device = "/swapfile";
-    size = 2 * 1024; # MiB
-    randomEncryption = {
-      enable = true;
-      # default cipher is the fastest here
-    };
-  } ];
+  swapDevices = [
+    {
+      device = "/swapfile";
+      size = 2 * 1024; # MiB
+      randomEncryption = {
+        enable = true;
+        # default cipher is the fastest here
+      };
+    }
+  ];
 
   # Only allow paths from /nix/store to be executables
   # fileSystems."/".options = [ "noexec" ];

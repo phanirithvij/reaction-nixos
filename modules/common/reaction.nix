@@ -1,154 +1,176 @@
-{ lib, pkgs, config, ... }:
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}:
 let
-  settingsFormat = pkgs.formats.yaml {};
-in {
-  options.services.reaction = with lib; with types; {
-    enable = mkEnableOption "enable reaction";
+  settingsFormat = pkgs.formats.yaml { };
+in
+{
+  options.services.reaction =
+    with lib;
+    with types;
+    {
+      enable = mkEnableOption "enable reaction";
 
-    package = mkOption {
-      type = package;
-      description = "The reaction package to use";
-      default = pkgs.callPackage ../../pkgs/reaction {};
-    };
+      package = mkOption {
+        type = package;
+        description = "The reaction package to use";
+        default = pkgs.callPackage ../../pkgs/reaction { };
+      };
 
-    settings = mkOption {
-      description = ''
-        Configuration for reaction. See the [wiki](https://framagit.org/ppom/reaction-wiki)
+      settings = mkOption {
+        description = ''
+          Configuration for reaction. See the [wiki](https://framagit.org/ppom/reaction-wiki)
 
-        The settings are written as a YAML file.
+          The settings are written as a YAML file.
 
-        Can be used in combination with `settingsFiles` option, both will be present in the configuration directory.
-      '';
-      default = {};
-      type = submodule {
-        freeformType = settingsFormat.type;
-        options = {};
+          Can be used in combination with `settingsFiles` option, both will be present in the configuration directory.
+        '';
+        default = { };
+        type = submodule {
+          freeformType = settingsFormat.type;
+          options = { };
+        };
+      };
+
+      settingsFiles = mkOption {
+        description = ''
+          Configuration for reaction, see the [wiki](https://framagit.org/ppom/reaction-wiki)
+
+          reaction supports JSON, YAML and JSONnet. For those who prefer to take advantage of JSONnet rather than Nix.
+
+          Can be used in combination with `settings` option, both will be present in the configuration directory.
+        '';
+        default = [ ];
+        type = listOf path;
+      };
+
+      loglevel = mkOption {
+        description = ''
+          reaction's loglevel. One of DEBUG, INFO, WARN, ERROR.
+        '';
+        default = null;
+        type = nullOr (enum [
+          "DEBUG"
+          "INFO"
+          "WARN"
+          "ERROR"
+        ]);
+      };
+
+      # Not working, no ExecReloadPre
+      # PartOf ?
+      # ReloadPropagatedFrom ?
+      # stopForFirewall = mkOption {
+      #   type = bool;
+      #   default = false;
+      #   description = lib.mdDoc ''
+      #     Whether to stop reaction when reloading the firewall
+
+      #     The presence of a reaction chain in the INPUT table may cause the firewall
+      #     reload to fail.
+      #     One can alternatively cherry-pick the right iptables commands to execute before and after the firewall
+      #     ```nix
+      #     {
+      #       systemd.services.firewall.serviceConfig = {
+      #         ExecStopPre = [ "${pkgs.iptables}/bin/iptables -w -D INPUT -p all -j reaction" ];
+      #         ExecStartPost = [ "${pkgs.iptables}/bin/iptables -w -I INPUT -p all -j reaction" ];
+      #       };
+      #     }
+      #     ```
+      #   '';
+      # };
+
+      runAsRoot = mkOption {
+        type = bool;
+        default = false;
+        description = lib.mdDoc ''
+          Whether to run reaction as root.
+          Defaults to false, where an unprivileged reaction user is created.
+          Be sure to give it sufficient permissions.
+          Example config permitting `iptables` and `journalctl` use
+          ```nix
+          {
+            users.users.reaction.extraGroups = [ "systemd-journal" ];
+
+            security.sudo.extraRules = [{
+              users = [ "reaction" ];
+              cmd = "$${pkgs.iptables}/bin/iptables";
+              runAs = "root";
+            }];
+          }
+          ```
+        '';
       };
     };
 
-    settingsFiles = mkOption {
-      description = ''
-        Configuration for reaction, see the [wiki](https://framagit.org/ppom/reaction-wiki)
+  config =
+    let
+      cfg = config.services.reaction;
 
-        reaction supports JSON, YAML and JSONnet. For those who prefer to take advantage of JSONnet rather than Nix.
+      generatedSettings = settingsFormat.generate "reaction.yml" cfg.settings;
+      namedGeneratedSettings = lib.optional (cfg.settings != { }) {
+        name = "reaction.yml";
+        path = generatedSettings;
+      };
 
-        Can be used in combination with `settings` option, both will be present in the configuration directory.
-      '';
-      default = [];
-      type = listOf path;
-    };
+      # SAFETY: We can discard the dependencies of "file" in the name attribute because we keep them in the path attribute
+      # See https://nix.dev/manual/nix/2.32/language/string-context
+      namedSettingsFiles = builtins.map (file: {
+        name = builtins.unsafeDiscardStringContext (builtins.baseNameOf file);
+        path = file;
+      }) cfg.settingsFiles;
 
-    loglevel = mkOption {
-      description = ''
-        reaction's loglevel. One of DEBUG, INFO, WARN, ERROR.
-      '';
-      default = null;
-      type = nullOr (enum ["DEBUG" "INFO" "WARN" "ERROR"]);
-    };
-
-    # Not working, no ExecReloadPre
-    # PartOf ?
-    # ReloadPropagatedFrom ?
-    # stopForFirewall = mkOption {
-    #   type = bool;
-    #   default = false;
-    #   description = lib.mdDoc ''
-    #     Whether to stop reaction when reloading the firewall
-        
-    #     The presence of a reaction chain in the INPUT table may cause the firewall
-    #     reload to fail.
-    #     One can alternatively cherry-pick the right iptables commands to execute before and after the firewall
-    #     ```nix
-    #     {
-    #       systemd.services.firewall.serviceConfig = {
-    #         ExecStopPre = [ "${pkgs.iptables}/bin/iptables -w -D INPUT -p all -j reaction" ];
-    #         ExecStartPost = [ "${pkgs.iptables}/bin/iptables -w -I INPUT -p all -j reaction" ];
-    #       };
-    #     }
-    #     ```
-    #   '';
-    # };
-
-    runAsRoot = mkOption {
-      type = bool;
-      default = false;
-      description = lib.mdDoc ''
-        Whether to run reaction as root.
-        Defaults to false, where an unprivileged reaction user is created.
-        Be sure to give it sufficient permissions.
-        Example config permitting `iptables` and `journalctl` use
-        ```nix
+      settingsDir = pkgs.linkFarm "reaction.d" (namedSettingsFiles ++ namedGeneratedSettings);
+    in
+    lib.mkIf cfg.enable {
+      assertions = [
         {
-          users.users.reaction.extraGroups = [ "systemd-journal" ];
-
-          security.sudo.extraRules = [{
-            users = [ "reaction" ];
-            cmd = "$${pkgs.iptables}/bin/iptables";
-            runAs = "root";
-          }];
+          assertion = cfg.settings != { } || (builtins.length cfg.settingsFile) != 0;
+          message = "You must specify settings and/or settingsFile options";
         }
-        ```
-      '';
-    };
-  };
+        # FIXME doesn't prevent invalid configs as intended
+        {
+          assertion =
+            (pkgs.runCommand "reaction-test-config" { }
+              "${cfg.package}/bin/reaction test-config -c ${settingsDir}"
+            ) != null;
+          message = "reaction test-config failed";
+        }
+      ];
 
-  config = let
-    cfg = config.services.reaction;
-
-    generatedSettings = settingsFormat.generate "reaction.yml" cfg.settings;
-    namedGeneratedSettings = lib.optional (cfg.settings != {}) { name = "reaction.yml"; path = generatedSettings; };
-
-    # SAFETY: We can discard the dependencies of "file" in the name attribute because we keep them in the path attribute
-    # See https://nix.dev/manual/nix/2.32/language/string-context
-    namedSettingsFiles = builtins.map (file: {
-      name = builtins.unsafeDiscardStringContext (builtins.baseNameOf file);
-      path = file;
-    }) cfg.settingsFiles;
-
-    settingsDir = pkgs.linkFarm "reaction.d" (namedSettingsFiles ++ namedGeneratedSettings);
-  in lib.mkIf cfg.enable {
-    assertions = [
-      {
-        assertion = cfg.settings != {} || (builtins.length cfg.settingsFile) != 0;
-        message = "You must specify settings and/or settingsFile options";
-      }
-      # FIXME doesn't prevent invalid configs as intended
-      {
-        assertion = (pkgs.runCommand "reaction-test-config" {} "${cfg.package}/bin/reaction test-config -c ${settingsDir}") != null;
-        message = "reaction test-config failed";
-      }
-  ];
-
-    users = lib.mkIf (!cfg.runAsRoot) {
-      users.reaction = {
-        isSystemUser = true;
-        group = "reaction";
+      users = lib.mkIf (!cfg.runAsRoot) {
+        users.reaction = {
+          isSystemUser = true;
+          group = "reaction";
+        };
+        groups.reaction = { };
       };
-      groups.reaction = {};
-    };
 
-    # Easier to debug conf when we have direct access to it,
-    # rather than having to look for it in the systemd service file.
-    environment.etc."reaction".source = settingsDir;
+      # Easier to debug conf when we have direct access to it,
+      # rather than having to look for it in the systemd service file.
+      environment.etc."reaction".source = settingsDir;
 
-    systemd.services.reaction = {
-      enable = true;
-      description = "Scan logs and take action";
-      after = [ "network.target" ];
-      wantedBy = [ "multi-user.target" ];
-      path = [ pkgs.iptables ];
-      serviceConfig = {
-        Type = "simple";
-        User = lib.mkIf (!cfg.runAsRoot) "reaction";
-        ExecStart = ''${cfg.package}/bin/reaction start -c ${settingsDir}${
-          lib.optionalString (cfg.loglevel != null) " -l ${cfg.loglevel}"
-        }'';
-        StateDirectory = "reaction";
-        RuntimeDirectory = "reaction";
-        WorkingDirectory = "/var/lib/reaction";
+      systemd.services.reaction = {
+        enable = true;
+        description = "Scan logs and take action";
+        after = [ "network.target" ];
+        wantedBy = [ "multi-user.target" ];
+        path = [ pkgs.iptables ];
+        serviceConfig = {
+          Type = "simple";
+          User = lib.mkIf (!cfg.runAsRoot) "reaction";
+          ExecStart = ''${cfg.package}/bin/reaction start -c ${settingsDir}${
+            lib.optionalString (cfg.loglevel != null) " -l ${cfg.loglevel}"
+          }'';
+          StateDirectory = "reaction";
+          RuntimeDirectory = "reaction";
+          WorkingDirectory = "/var/lib/reaction";
+        };
       };
-    };
 
-    environment.systemPackages = [ cfg.package ];
-  };
+      environment.systemPackages = [ cfg.package ];
+    };
 }

@@ -1,8 +1,9 @@
 { config, pkgs, ... }:
 let
   var = import ../common/reaction-variables.nix { inherit config pkgs; };
-  unstable = import <nixos-unstable> {};
-in {
+  unstable = import <nixos-unstable> { };
+in
+{
   services.slskd = {
     enable = true;
     package = unstable.slskd;
@@ -43,40 +44,42 @@ in {
         slots = 6;
         speed_limit = 5 * 1000;
       };
-      groups = let
-        groupSettings = {
-          upload = {
-            priority = 1;
-            strategy = "roundrobin";
-            slots = 10;
+      groups =
+        let
+          groupSettings = {
+            upload = {
+              priority = 1;
+              strategy = "roundrobin";
+              slots = 10;
+            };
+            limits = {
+              queued = {
+                files = 2147483647;
+                megabytes = 2147483647;
+              };
+              daily = {
+                files = 2147483647;
+                megabytes = 2147483647;
+                failures = 2147483647;
+              };
+              weekly = {
+                files = 2147483647;
+                megabytes = 2147483647;
+                failures = 2147483647;
+              };
+            };
           };
-          limits = {
-            queued = {
-              files = 2147483647;
-              megabytes = 2147483647;
-            };
-            daily = {
-              files = 2147483647;
-              megabytes = 2147483647;
-              failures = 2147483647;
-            };
-            weekly = {
-              files = 2147483647;
-              megabytes = 2147483647;
-              failures = 2147483647;
-            };
-          };
+        in
+        {
+          leechers = groupSettings;
+          default = groupSettings;
         };
-      in {
-        leechers = groupSettings;
-        default = groupSettings;
-      };
     };
   };
 
   # Allow ppom to edit downloads
   systemd.services.slskd.serviceConfig.UMask = "0002";
-  systemd.services.slskd.serviceConfig.Environment = ["DOTNET_USE_POLLING_FILE_WATCHER=1"];
+  systemd.services.slskd.serviceConfig.Environment = [ "DOTNET_USE_POLLING_FILE_WATCHER=1" ];
   users.users.ppom.extraGroups = [ "slskd" ];
 
   systemd.services.slskd.serviceConfig = {
@@ -89,7 +92,10 @@ in {
     ManagedOOMPreference = "avoid";
   };
 
-  environment.systemPackages = with pkgs; [ beets id3v2 ];
+  environment.systemPackages = with pkgs; [
+    beets
+    id3v2
+  ];
 
   services.reaction.settings.streams.nginx.filters."slskd-failedLogin" = {
     regex = [

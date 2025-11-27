@@ -1,4 +1,9 @@
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 
 {
   networking.wg-quick.interfaces.wg0 = {
@@ -9,7 +14,8 @@
     privateKeyFile = "/var/secrets/wireguard/privatekey";
 
     peers = [
-      { # akesi
+      {
+        # akesi
         publicKey = "D7GuVBDF77tp369G5Mcvo8MBmHOvUAEGN6Ii3XgqXnc=";
         allowedIPs = [ "0.0.0.0" ];
         persistentKeepalive = 25;
@@ -18,5 +24,5 @@
     ];
   };
 
-  systemd.services.wg-quick-wg0.wantedBy = lib.mkForce [];
+  systemd.services.wg-quick-wg0.wantedBy = lib.mkForce [ ];
 }

@@ -1,49 +1,61 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   hostName = config.networking.hostName;
   hosts = builtins.fromTOML (builtins.readFile ../common/hosts.toml);
   host = hosts.${hostName};
-in {
+in
+{
   services.nfs.server = {
     enable = true;
     # Doc: https://www.man7.org/linux/man-pages/man5/exports.5.html
     exports = ''
-      /data/akesi ${hosts.akesi.address}(${lib.concatStringsSep "," [
-        # Allow writes
-        "rw"
-        # Strong consistency
-        "sync"
-        # Docs says it causes more problems than solutions
-        "no_subtree_check"
-        # All requests are set to the following UID/GID
-        "all_squash"
-        "anonuid=${toString config.users.users."nfsakesi".uid}"
-        "anongid=${toString config.users.groups."nfsakesi".gid}"
-      ]})
+      /data/akesi ${hosts.akesi.address}(${
+        lib.concatStringsSep "," [
+          # Allow writes
+          "rw"
+          # Strong consistency
+          "sync"
+          # Docs says it causes more problems than solutions
+          "no_subtree_check"
+          # All requests are set to the following UID/GID
+          "all_squash"
+          "anonuid=${toString config.users.users."nfsakesi".uid}"
+          "anongid=${toString config.users.groups."nfsakesi".gid}"
+        ]
+      })
     '';
     hostName = host.address;
   };
 
   users = {
-    users = let
-      eg = { extraGroups = [ "nfsakesi" ]; };
-    in {
-      ppom = eg;
-      bertille = eg;
-      media = eg;
+    users =
+      let
+        eg = {
+          extraGroups = [ "nfsakesi" ];
+        };
+      in
+      {
+        ppom = eg;
+        bertille = eg;
+        media = eg;
 
-      nfsakesi = {
-        uid = 70;
-        group = "nfsakesi";
-      };
+        nfsakesi = {
+          uid = 70;
+          group = "nfsakesi";
+        };
 
-      nix-serve = {
-        isSystemUser = true;
-        group = "nix-serve";
+        nix-serve = {
+          isSystemUser = true;
+          group = "nix-serve";
+        };
       };
-    };
     groups.nfsakesi.gid = 70;
-    groups.nix-serve = {};
+    groups.nix-serve = { };
   };
 
   environment.systemPackages = [ pkgs.stig ];

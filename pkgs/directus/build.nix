@@ -1,7 +1,7 @@
 {
-  pkgs ? import <nixpkgs-unstable> {},
+  pkgs ? import <nixpkgs-unstable> { },
   system ? builtins.currentSystem,
-} :
+}:
 {
-  directus = pkgs.callPackage ./default.nix {};
+  directus = pkgs.callPackage ./default.nix { };
 }

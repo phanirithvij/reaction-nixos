@@ -1,8 +1,9 @@
 { pkgs, ... }:
 let
   directusPort = 8063;
-  common = import ./common.nix {};
-in {
+  common = import ./common.nix { };
+in
+{
   services.directus.servers = {
     "5eroue" = {
       enable = true;
@@ -24,7 +25,10 @@ in {
     enable = true;
     description = "Export data as CSV";
     wantedBy = [ "multi-user.target" ];
-    path = [ pkgs.coreutils pkgs.sqlite ];
+    path = [
+      pkgs.coreutils
+      pkgs.sqlite
+    ];
     serviceConfig = {
       Type = "oneshot";
       User = "directus-5eroue";

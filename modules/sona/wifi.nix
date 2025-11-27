@@ -1,4 +1,9 @@
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
   wifiInterfaceName = "wlp3s0";
   ethernetInterfaceName = "eno1";

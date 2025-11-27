@@ -1,9 +1,15 @@
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 
 let
   name = "sona.local";
   rootDirectory = "/home/hdd/ao/vid/";
-in {
+in
+{
   networking.firewall.allowedTCPPorts = [ 80 ];
 
   users.users.nginx.extraGroups = [ "users" ];
@@ -16,8 +22,8 @@ in {
   systemd.services.nginx.serviceConfig.ProtectHome = "read-only";
 
   # Start only on demand
-  systemd.services.nginx.wantedBy = lib.mkForce [];
-  systemd.services.nginx-config-reload.wantedBy = lib.mkForce [];
+  systemd.services.nginx.wantedBy = lib.mkForce [ ];
+  systemd.services.nginx-config-reload.wantedBy = lib.mkForce [ ];
 
   # Nginx
   services.nginx = {

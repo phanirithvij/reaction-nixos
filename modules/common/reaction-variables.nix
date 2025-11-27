@@ -1,4 +1,4 @@
-{ config, pkgs, ...}:
+{ config, pkgs, ... }:
 rec {
   journalctl = "${config.systemd.package}/bin/journalctl";
   systemctl = "${config.systemd.package}/bin/systemctl";
@@ -6,8 +6,26 @@ rec {
   ip4tables = "${config.networking.firewall.package}/bin/iptables";
   ip6tables = "${config.networking.firewall.package}/bin/ip6tables";
 
-  iptablesBan   = cmd: [ cmd "-w" "-A" "reaction" "-s" "<ip>" "-j" "DROP" ];
-  iptablesUnban = cmd: [ cmd "-w" "-D" "reaction" "-s" "<ip>" "-j" "DROP" ];
+  iptablesBan = cmd: [
+    cmd
+    "-w"
+    "-A"
+    "reaction"
+    "-s"
+    "<ip>"
+    "-j"
+    "DROP"
+  ];
+  iptablesUnban = cmd: [
+    cmd
+    "-w"
+    "-D"
+    "reaction"
+    "-s"
+    "<ip>"
+    "-j"
+    "DROP"
+  ];
 
   banFor = duration: {
     ban4 = {
@@ -38,17 +56,28 @@ rec {
       "--fail"
       "--silent"
       "--show-error"
-      "--mail-from" cfg.fromMail
-      "--mail-rcpt" cfg.destinationMail
-      "--variable" "PASS@${cfg.mailAccountPasswordFile}"
-      "--expand-user" "${cfg.mailAccount}:{{PASS:trim}}"
-      "--header" "from: reaction <${cfg.fromMail}>"
-      "--header" "to: ${cfg.destinationMail}"
-      "--header" "subject: ${msg}"
-      "--form" "=(;type=multipart/mixed"
-      "--form" "=${msg};type=text/plain"
-      "--form" "=)"
-      "--url" "smtps://${cfg.mailServer}:465"
+      "--mail-from"
+      cfg.fromMail
+      "--mail-rcpt"
+      cfg.destinationMail
+      "--variable"
+      "PASS@${cfg.mailAccountPasswordFile}"
+      "--expand-user"
+      "${cfg.mailAccount}:{{PASS:trim}}"
+      "--header"
+      "from: reaction <${cfg.fromMail}>"
+      "--header"
+      "to: ${cfg.destinationMail}"
+      "--header"
+      "subject: ${msg}"
+      "--form"
+      "=(;type=multipart/mixed"
+      "--form"
+      "=${msg};type=text/plain"
+      "--form"
+      "=)"
+      "--url"
+      "smtps://${cfg.mailServer}:465"
     ];
     oneshot = true;
   };
@@ -58,9 +87,12 @@ rec {
     "--fail"
     "--silent"
     "--show-error"
-    "--variable" "USER@/var/secrets/mobileapi-user"
-    "--variable" "PASS@/var/secrets/mobileapi-pass"
-    "--variable" "MSG=${msg}"
+    "--variable"
+    "USER@/var/secrets/mobileapi-user"
+    "--variable"
+    "PASS@/var/secrets/mobileapi-pass"
+    "--variable"
+    "MSG=${msg}"
     "--expand-url"
     "https://smsapi.free-mobile.fr/sendmsg?user={{USER:trim}}&pass={{PASS:trim}}&msg={{MSG:trim:url}}"
   ];

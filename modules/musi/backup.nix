@@ -4,7 +4,8 @@ let
   kiliHost = "musi@${hosts.kili.address}";
   pokiHost = "musi@${hosts.poki.address}";
   pokiKey = "/var/secrets/backups/data2/sshkey";
-in {
+in
+{
   services.postgresqlBackup = {
     enable = true;
     # every 6 hours, it only costs 2s of CPU time for now
@@ -12,7 +13,14 @@ in {
   };
 
   services.restic.backups.data2 = {
-    paths = [ "/data/" "/var/" "/etc/nixos/" "/home/" "/root/" "/nix/var/nix/" ];
+    paths = [
+      "/data/"
+      "/var/"
+      "/etc/nixos/"
+      "/home/"
+      "/root/"
+      "/nix/var/nix/"
+    ];
     passwordFile = "/var/secrets/backups/data2/pass";
     extraOptions = [
       "sftp.command='ssh ${pokiHost} -i ${pokiKey} -s sftp'"
@@ -50,36 +58,38 @@ in {
   };
 
   systemd.services.rebuild-poki = {
-    requires = ["wakepoki.service"];
-    after = ["wakepoki.service"];
+    requires = [ "wakepoki.service" ];
+    after = [ "wakepoki.service" ];
   };
-  
-  systemd.services.restic-backups-data2 = {
-    requires = ["wakepoki.service"];
-    after = ["wakepoki.service"];
 
-    serviceConfig = let
-      systemctl = "${config.systemd.package}/bin/systemctl";
-    in {
-      # If it consumes too much RAM, let's kill it instead of crashing the server
-      ManagedOOMMemoryPressure = "kill";
-      # Limit CPU usage, maybe it will make the hardware fail less?
-      CPUQuota = "250%";
-      CPUWeight = 1;
-      # Stop RAM hungry services before backup
-      ExecStartPre = [
-        "+${systemctl} stop slskd.service"
-        "+${systemctl} reset-failed slskd.service"
-        "+${systemctl} stop languagetool.service"
-        "+${systemctl} reset-failed languagetool.service"
-        # "+${systemctl} stop streama.service"
-        # "+${systemctl} reset-failed streama.service"
-      ];
-      ExecStartPost = [
-        "+${systemctl} start slskd.service"
-        "+${systemctl} start languagetool.service"
-        # "+${systemctl} start streama.service"
-      ];
-    };
+  systemd.services.restic-backups-data2 = {
+    requires = [ "wakepoki.service" ];
+    after = [ "wakepoki.service" ];
+
+    serviceConfig =
+      let
+        systemctl = "${config.systemd.package}/bin/systemctl";
+      in
+      {
+        # If it consumes too much RAM, let's kill it instead of crashing the server
+        ManagedOOMMemoryPressure = "kill";
+        # Limit CPU usage, maybe it will make the hardware fail less?
+        CPUQuota = "250%";
+        CPUWeight = 1;
+        # Stop RAM hungry services before backup
+        ExecStartPre = [
+          "+${systemctl} stop slskd.service"
+          "+${systemctl} reset-failed slskd.service"
+          "+${systemctl} stop languagetool.service"
+          "+${systemctl} reset-failed languagetool.service"
+          # "+${systemctl} stop streama.service"
+          # "+${systemctl} reset-failed streama.service"
+        ];
+        ExecStartPost = [
+          "+${systemctl} start slskd.service"
+          "+${systemctl} start languagetool.service"
+          # "+${systemctl} start streama.service"
+        ];
+      };
   };
 }

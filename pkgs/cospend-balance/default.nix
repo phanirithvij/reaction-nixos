@@ -2,7 +2,8 @@
 let
   pname = "cospend-balance";
   version = "v1.3";
-in buildGoModule {
+in
+buildGoModule {
   inherit pname version;
 
   src = fetchFromGitLab {

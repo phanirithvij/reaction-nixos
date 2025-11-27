@@ -54,7 +54,10 @@ let
   '';
 in
 {
-  environment.systemPackages = [ pkgs.inetutils down_detector ];
+  environment.systemPackages = [
+    pkgs.inetutils
+    down_detector
+  ];
 
   systemd.services.down_detector = {
     description = "check if some websites are down";

@@ -2,17 +2,18 @@
 let
   languagetoolPort = "8500";
   languagetoolDomain = "lang.ppom.me";
-in {
+in
+{
   users.users.languagetool = {
     isSystemUser = true;
     group = "languagetool";
   };
-  users.groups.languagetool = {};
+  users.groups.languagetool = { };
 
   systemd.services.languagetool = {
     # enable = true;
     description = "Language Tool self-hosted server";
-    after = ["network.target"];
+    after = [ "network.target" ];
     wantedBy = [ "multi-user.target" ];
     serviceConfig = {
       Type = "simple";
@@ -33,7 +34,11 @@ in {
       ProtectKernelModules = true;
       ProtectKernelLogs = true;
       ProtectControlGroups = true;
-      RestrictAddressFamilies = [ "AF_UNIX" "AF_INET" "AF_INET6" ];
+      RestrictAddressFamilies = [
+        "AF_UNIX"
+        "AF_INET"
+        "AF_INET6"
+      ];
       RestrictNamespaces = true;
       LockPersonality = true;
       RestrictSUIDSGID = true;

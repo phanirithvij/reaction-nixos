@@ -1,6 +1,8 @@
-{ ... }: let
+{ ... }:
+let
   base = "/var/lib/ntfy-sh";
-in {
+in
+{
   services.ntfy-sh = {
     enable = true;
     settings = {

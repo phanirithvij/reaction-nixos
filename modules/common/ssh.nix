@@ -1,7 +1,8 @@
 { lib, config, ... }:
 let
   cfg = config.ppom.ssh;
-in {
+in
+{
   options.ppom.ssh = {
     enable = lib.mkEnableOption "enable sshd config";
 
@@ -19,15 +20,17 @@ in {
       ports = cfg.port;
       settings = {
         PermitRootLogin = "no";
-      } // lib.optionalAttrs cfg.hardened {
+      }
+      // lib.optionalAttrs cfg.hardened {
         PasswordAuthentication = false;
       };
-    } // lib.optionalAttrs cfg.hardened {
+    }
+    // lib.optionalAttrs cfg.hardened {
       allowSFTP = lib.mkDefault false;
     };
 
     programs.mosh.enable = true;
-    environment.variables.MOSH_SERVER_NETWORK_TMOUT = builtins.toString (60*60*4);
+    environment.variables.MOSH_SERVER_NETWORK_TMOUT = builtins.toString (60 * 60 * 4);
 
     networking.firewall.allowedTCPPorts = cfg.port;
   };

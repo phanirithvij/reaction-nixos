@@ -1,4 +1,9 @@
-{ lib, stdenv, go, makeWrapper }:
+{
+  lib,
+  stdenv,
+  go,
+  makeWrapper,
+}:
 stdenv.mkDerivation {
   pname = "older.go";
   version = "unstable-2023-09-04";

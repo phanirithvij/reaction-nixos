@@ -1,4 +1,9 @@
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 {
   options.ppom.packages = {
     enable = lib.mkEnableOption "install ppom packages";
@@ -7,7 +12,7 @@
   };
   config = {
     # no default tools (perl)
-    environment.defaultPackages = lib.mkDefault [];
+    environment.defaultPackages = lib.mkDefault [ ];
 
     # no desktop things
     xdg = lib.mkIf (!config.ppom.packages.xdg) {
@@ -17,117 +22,119 @@
       sounds.enable = lib.mkDefault false;
     };
 
-    environment.systemPackages = with pkgs; [
-      ## shell environnement
-      (lib.lowPrio moreutils)
-      fzf # fuzzy finder
+    environment.systemPackages =
+      with pkgs;
+      [
+        ## shell environnement
+        (lib.lowPrio moreutils)
+        fzf # fuzzy finder
 
-      ## nix
-      nixos-option # print the actual value of a NixOS option
-      nvd # print versions and changes of packages across nix closures
-      nix-diff # prints differences between two derivations, ex: `nix-diff /nix/var/nix/profiles/system-{n,n+1}-link`
-      nix-search
+        ## nix
+        nixos-option # print the actual value of a NixOS option
+        nvd # print versions and changes of packages across nix closures
+        nix-diff # prints differences between two derivations, ex: `nix-diff /nix/var/nix/profiles/system-{n,n+1}-link`
+        nix-search
 
-      ## processus
-      htop # process viewer
-      bottom # other process viewer
-      glances # system and process viewer
-      lsof # list open files
-      # cpulimit # limit process CPU usage
-      strace # show syscalls
+        ## processus
+        htop # process viewer
+        bottom # other process viewer
+        glances # system and process viewer
+        lsof # list open files
+        # cpulimit # limit process CPU usage
+        strace # show syscalls
 
-      ## network
-      rsync
-      # bind # dig
-      iftop # connection viewer
-      nmap # local network prober
-      # tcpdump
-      (lib.lowPrio inetutils)
+        ## network
+        rsync
+        # bind # dig
+        iftop # connection viewer
+        nmap # local network prober
+        # tcpdump
+        (lib.lowPrio inetutils)
 
-      ## protocols
-      curl # HTTP client
-      # goaccess # HTTP Log parser
+        ## protocols
+        curl # HTTP client
+        # goaccess # HTTP Log parser
 
-      ## developpement
-      git
-      # python3
-      shellcheck # bash linter
-      helix # neovim alternative
+        ## developpement
+        git
+        # python3
+        shellcheck # bash linter
+        helix # neovim alternative
 
-      ## files
-      file # file types
-      fd # find like
-      ripgrep # grep like
-      eza # ls like
-      pydf # df like
-      jq # json swiss-army-knife
+        ## files
+        file # file types
+        fd # find like
+        ripgrep # grep like
+        eza # ls like
+        pydf # df like
+        jq # json swiss-army-knife
 
-      ## security
-      srm # secure rm
-      # crowdsec # powerfull, go alternative to fail2ban, with community database
+        ## security
+        srm # secure rm
+        # crowdsec # powerfull, go alternative to fail2ban, with community database
 
-    ] ++ lib.optionals config.ppom.packages.more [
-      fish # Friendly interactive shell
-      python3
-      bc # basic calculator
+      ]
+      ++ lib.optionals config.ppom.packages.more [
+        fish # Friendly interactive shell
+        python3
+        bc # basic calculator
 
-      gnupg # reference OpenPGP implementation
-      du-dust # du like
-      librespeed-cli # Speedtest
-      man-pages # standard man pages
+        gnupg # reference OpenPGP implementation
+        du-dust # du like
+        librespeed-cli # Speedtest
+        man-pages # standard man pages
 
-      go # golang
-      gopls # go language server
+        go # golang
+        gopls # go language server
 
-      # asciinema # Terminal JSON recorder & player. Check asciinema.org
-      # tiv # terminal image viewer
-      # rdfind # find duplicates
-      zip
-      unzip
-      trash-cli
-      # unrar # unfree!
-      pussh
+        # asciinema # Terminal JSON recorder & player. Check asciinema.org
+        # tiv # terminal image viewer
+        # rdfind # find duplicates
+        zip
+        unzip
+        trash-cli
+        # unrar # unfree!
+        pussh
 
-      ## protocols
-      wget # HTTP client
-      # lftp # FTP client
-      # httping # ping an URL.
-      # simple-http-server
+        ## protocols
+        wget # HTTP client
+        # lftp # FTP client
+        # httping # ping an URL.
+        # simple-http-server
 
-      ## database
-      sqlite-interactive # Heavy version with readline and completion support.
+        ## database
+        sqlite-interactive # Heavy version with readline and completion support.
 
-      ## hardware
-      # lm_sensors # CPU temp
-      parted # disk partition manager
-      testdisk # file & disc recovery
+        ## hardware
+        # lm_sensors # CPU temp
+        parted # disk partition manager
+        testdisk # file & disc recovery
 
-      ## video
-      ffmpeg-full
-      # mkvtoolnix
-      yt-dlp
-      # handbrake
-      # gpac # MP4Box
+        ## video
+        ffmpeg-full
+        # mkvtoolnix
+        yt-dlp
+        # handbrake
+        # gpac # MP4Box
 
-      # nix-related
-      nurl # nix prefetching (generate src = ... from URL)
-      # nix-init # automagically create go,rust,python,zig package
-      nh # better CLI for nixos-rebuild
+        # nix-related
+        nurl # nix prefetching (generate src = ... from URL)
+        # nix-init # automagically create go,rust,python,zig package
+        nh # better CLI for nixos-rebuild
 
-      ## text
-      dos2unix
-      # vtt2srt # VTT to SRT converter
-      # subedit # Subtitle Editor
-      subshift # Personal subtitle editor
-    ];
-
+        ## text
+        dos2unix
+        # vtt2srt # VTT to SRT converter
+        # subedit # Subtitle Editor
+        subshift # Personal subtitle editor
+      ];
 
     nixpkgs.overlays = [
       (self: super: {
         # go vtt2srt script
-        pussh = super.callPackage ../../pkgs/pussh {};
-        vtt2srt = super.callPackage ../../pkgs/vtt2srt {};
-        subshift = super.callPackage ../../pkgs/subshift {};
+        pussh = super.callPackage ../../pkgs/pussh { };
+        vtt2srt = super.callPackage ../../pkgs/vtt2srt { };
+        subshift = super.callPackage ../../pkgs/subshift { };
       })
     ];
   };

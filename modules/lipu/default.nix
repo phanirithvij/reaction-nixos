@@ -80,10 +80,17 @@
   fileSystems."/mnt/sdc1" = {
     device = "/dev/sdc1";
     fsType = "auto";
-    options = [ "defaults" "user" "rw" "utf8" "noauto" "umask=000" ];
+    options = [
+      "defaults"
+      "user"
+      "rw"
+      "utf8"
+      "noauto"
+      "umask=000"
+    ];
   };
 
-  nix.settings.trusted-users = ["ppom"];
+  nix.settings.trusted-users = [ "ppom" ];
 
   console = {
     font = "Lat2-Terminus16";
@@ -112,7 +119,10 @@
   # From /nix/var/nix/profiles/per-user/root/nixos/nixos/modules/services/ttys/getty.nix
   # From /etc/systemd/system/getty@.service
   systemd.services."getty@tty1" = {
-    serviceConfig.ExecStart = [ "" "@${pkgs.util-linux}/sbin/agetty agetty '--login-program' '${pkgs.shadow}/bin/login' '--autologin' 'ppom' %I --keep-baud $TERM" ];
+    serviceConfig.ExecStart = [
+      ""
+      "@${pkgs.util-linux}/sbin/agetty agetty '--login-program' '${pkgs.shadow}/bin/login' '--autologin' 'ppom' %I --keep-baud $TERM"
+    ];
     overrideStrategy = "asDropin";
   };
 

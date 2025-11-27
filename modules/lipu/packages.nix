@@ -1,13 +1,14 @@
 # This configuration file is designed to only contain package-related entries.
 { pkgs, ... }:
 
-let 
-  unstable = import <nixos-unstable> {};
+let
+  unstable = import <nixos-unstable> { };
   f-mpv-with-scripts = pkgs.mpv-unwrapped.wrapper {
     mpv = pkgs.mpv-unwrapped;
     scripts = with pkgs.mpvScripts; [ mpris ];
   };
-in {
+in
+{
   environment.systemPackages = with pkgs; [
     # CLI
     sshuttle # VPN-over-SSH
@@ -57,7 +58,7 @@ in {
     wl-mirror
 
     # GUI apps
-    (wrapFirefox (firefox-unwrapped.override { pipewireSupport = true;}) {}) # Best browser ever
+    (wrapFirefox (firefox-unwrapped.override { pipewireSupport = true; }) { }) # Best browser ever
     thunderbird # Mail, CalDav, XMPP & Matrix client
     ungoogled-chromium # Alternative browser
     signal-desktop # Signal Messaging client
@@ -108,7 +109,7 @@ in {
     alejandra # Nix formatter
     zola # static site generator
     tailwindcss # CSS generation framework
-    (pkgs.callPackage ../../pkgs/directus2zola {})
+    (pkgs.callPackage ../../pkgs/directus2zola { })
     # gcc-wrapper
     # sqlitebrowser
     mmctl # mattermost control (for Picasoft's server management)
@@ -166,18 +167,20 @@ in {
   nixpkgs.overlays = [
     (self: super: {
       # add rofi-emoji plugin
-      rofi = super.rofi.override { plugins = [
-        super.rofi-emoji
-        super.rofi-mpd
-      ]; };
+      rofi = super.rofi.override {
+        plugins = [
+          super.rofi-emoji
+          super.rofi-mpd
+        ];
+      };
 
-      # soude_au_cou = super.callPackage /home/ao/prg/rust/sudoku {}; 
+      # soude_au_cou = super.callPackage /home/ao/prg/rust/sudoku {};
 
-      deepl-translate-cli = super.callPackage ../../pkgs/deepl-translate-cli {}; 
+      deepl-translate-cli = super.callPackage ../../pkgs/deepl-translate-cli { };
 
-      soweli = super.callPackage ../../pkgs/soweli {};
+      soweli = super.callPackage ../../pkgs/soweli { };
 
-      ocrs = super.callPackage ../../pkgs/ocrs {};
+      ocrs = super.callPackage ../../pkgs/ocrs { };
 
       mpv-no-scripts = pkgs.stdenv.mkDerivation {
         inherit (pkgs.mpv) meta;
@@ -195,14 +198,18 @@ in {
 
       ytfzf = super.ytfzf.override { mpv = f-mpv-with-scripts; };
 
-      dofus = let
-        url = "https://launcher.cdn.ankama.com/installers/production/Dofus_3.0-x86_64.AppImage";
-      in pkgs.writeShellScriptBin "dofus" ''
-        exec ${pkgs.appimage-run}/bin/appimage-run ${pkgs.fetchurl {
-          inherit url;
-          sha256 = "sha256-yqdqxD5YfrODX4p0Rh8LqUn5/nrHciyvJfb7WC9BTW4=";
-        }}
-      '';
+      dofus =
+        let
+          url = "https://launcher.cdn.ankama.com/installers/production/Dofus_3.0-x86_64.AppImage";
+        in
+        pkgs.writeShellScriptBin "dofus" ''
+          exec ${pkgs.appimage-run}/bin/appimage-run ${
+            pkgs.fetchurl {
+              inherit url;
+              sha256 = "sha256-yqdqxD5YfrODX4p0Rh8LqUn5/nrHciyvJfb7WC9BTW4=";
+            }
+          }
+        '';
 
       # zola = super.zola.overrideAttrs (final: prev: {
       #   patches = [
@@ -223,18 +230,21 @@ in {
     # (import /home/ao/prg/nix/gomod2nix/overlay.nix)
   ];
 
-  fonts.packages = with pkgs; with xorg; [
-    noto-fonts
-    noto-fonts-cjk-sans
-    noto-fonts-emoji
-    liberation_ttf
-    fira-code
-    fira-code-symbols
-    # mplus-outline-fonts
-    dina-font
-    proggyfonts
-    libertinus
-  ];
+  fonts.packages =
+    with pkgs;
+    with xorg;
+    [
+      noto-fonts
+      noto-fonts-cjk-sans
+      noto-fonts-emoji
+      liberation_ttf
+      fira-code
+      fira-code-symbols
+      # mplus-outline-fonts
+      dina-font
+      proggyfonts
+      libertinus
+    ];
 
   nixpkgs.config.permittedInsecurePackages = [ "olm-3.2.16" ]; # library for Nheko
 }

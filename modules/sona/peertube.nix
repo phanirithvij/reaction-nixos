@@ -1,4 +1,9 @@
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 {
   # services.postgresql = {
   #   enable = true;
@@ -20,4 +25,3 @@
   #   serviceConfig.RuntimeDirectoryMode = lib.mkForce 0777;
   # };
 }
-

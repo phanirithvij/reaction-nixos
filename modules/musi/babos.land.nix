@@ -12,7 +12,8 @@ let
       };
     };
   };
-in {
+in
+{
 
   services.nginx.virtualHosts = {
     "accueil.babos.land" = generalConf;

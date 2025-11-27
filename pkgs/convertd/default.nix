@@ -1,4 +1,8 @@
-{ lib, stdenv, go }:
+{
+  lib,
+  stdenv,
+  go,
+}:
 stdenv.mkDerivation {
 
   pname = "convertd";
@@ -16,7 +20,7 @@ stdenv.mkDerivation {
     GOCACHE=$(pwd)/tmp go build ./convertd.go
 
     runHook postBuild
-    '';
+  '';
 
   installPhase = ''
     runHook preInstall

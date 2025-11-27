@@ -23,14 +23,21 @@
     };
   };
 
-  security.sudo-rs.extraRules = [ {
-    users = [ "bertille" "ppom" ];
-    runAs = "media";
-    commands = [ {
-      command = "ALL";
-      options = [ "NOPASSWD" ];
-    } ];
-  } ];
+  security.sudo-rs.extraRules = [
+    {
+      users = [
+        "bertille"
+        "ppom"
+      ];
+      runAs = "media";
+      commands = [
+        {
+          command = "ALL";
+          options = [ "NOPASSWD" ];
+        }
+      ];
+    }
+  ];
 
   systemd.services.uptime-calc = {
     description = "Saves uptime";

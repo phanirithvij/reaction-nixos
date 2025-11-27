@@ -49,7 +49,10 @@
     # Cherry-picked from the headless profile
     splashImage = null;
   };
-  boot.kernelParams = [ "panic=1" "boot.panic_on_fail" ];
+  boot.kernelParams = [
+    "panic=1"
+    "boot.panic_on_fail"
+  ];
   boot.tmp.cleanOnBoot = true;
 
   fileSystems."/backup" = {

@@ -1,23 +1,29 @@
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
-  common = import ./common.nix {};
-    var = import ../../common/reaction-variables.nix { inherit config pkgs; };
+  common = import ./common.nix { };
+  var = import ../../common/reaction-variables.nix { inherit config pkgs; };
   d2zPort = 8100;
   cfg = config.ppom.directus2zola;
 
-  settingsFormat = pkgs.formats.json {};
+  settingsFormat = pkgs.formats.json { };
   settingsFile = settingsFormat.generate "directus2zola.json" cfg.settings;
 
-  package = pkgs.callPackage ../../../pkgs/directus2zola {};
-in {
+  package = pkgs.callPackage ../../../pkgs/directus2zola { };
+in
+{
 
   options.ppom.directus2zola = {
     settings = lib.mkOption {
-      default = {};
+      default = { };
       description = "directus2zola settings";
       type = lib.types.submodule {
         freeformType = settingsFormat.type;
-        options = {};
+        options = { };
       };
     };
   };
@@ -38,7 +44,12 @@ in {
     systemd.services.directus2zola = {
       enable = true;
       wantedBy = [ "multi-user.target" ];
-      path = with pkgs; [ git zola rsync openssh ];
+      path = with pkgs; [
+        git
+        zola
+        rsync
+        openssh
+      ];
       serviceConfig = {
         Slice = "system-directus.slice";
         User = "directus2zola";
@@ -72,7 +83,12 @@ in {
         regex = ''.*$'';
       };
       streams.directus2zola = {
-        cmd = [ var.journalctl "-fn0" "-u" "directus2zola.service" ];
+        cmd = [
+          var.journalctl
+          "-fn0"
+          "-u"
+          "directus2zola.service"
+        ];
         filters.error = {
           regex = [
             "ERROR <untilEOL>"

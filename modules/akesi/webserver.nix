@@ -1,39 +1,79 @@
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
-  host = { root ? null, return ? null, extra ? {}, csp ? {} }: let
-    csp' = {
-      "default-src" = [ "'self'" "u.ppom.me" "static.ppom.me" ];
-      "img-src" = [ "'self'" ];
-      "script-src" = [ "'self'" "'unsafe-inline'" ];
-      "style-src" = [ "'self'" "'unsafe-inline'" ];
-      "frame-ancestors" = [ "'self'" ];
-      "base-uri" = [ "'none'" ];
-      "form-action" = [ "'none'" ];
-    } // csp;
-  in assert (root == null && return != null) || (return == null && root != null); {
-    enableACME = true;
-    forceSSL = true;
-    locations = {
-      "/" = (if root != null then {
-        root = root;
-        index = "index.html";
-        tryFiles = "$uri $uri.html $uri/ =404";
-        extraConfig = ''
-          proxy_intercept_errors on;
-          error_page 404 /404.html;
-        '';
-      } else {
-        inherit return;
-      }) // extra;
+  host =
+    {
+      root ? null,
+      return ? null,
+      extra ? { },
+      csp ? { },
+    }:
+    let
+      csp' = {
+        "default-src" = [
+          "'self'"
+          "u.ppom.me"
+          "static.ppom.me"
+        ];
+        "img-src" = [ "'self'" ];
+        "script-src" = [
+          "'self'"
+          "'unsafe-inline'"
+        ];
+        "style-src" = [
+          "'self'"
+          "'unsafe-inline'"
+        ];
+        "frame-ancestors" = [ "'self'" ];
+        "base-uri" = [ "'none'" ];
+        "form-action" = [ "'none'" ];
+      }
+      // csp;
+    in
+    assert (root == null && return != null) || (return == null && root != null);
+    {
+      enableACME = true;
+      forceSSL = true;
+      locations = {
+        "/" =
+          (
+            if root != null then
+              {
+                root = root;
+                index = "index.html";
+                tryFiles = "$uri $uri.html $uri/ =404";
+                extraConfig = ''
+                  proxy_intercept_errors on;
+                  error_page 404 /404.html;
+                '';
+              }
+            else
+              {
+                inherit return;
+              }
+          )
+          // extra;
+      };
+      extraConfig = ''
+        add_header Referrer-Policy "strict-origin";
+        add_header X-Content-Type-Options "nosniff";
+        add_header Content-Security-Policy "${
+          builtins.concatStringsSep " " (
+            lib.mapAttrsToList (name: values: "${name} ${builtins.concatStringsSep " " values};") csp'
+          )
+        }";
+      '';
     };
-    extraConfig = ''
-      add_header Referrer-Policy "strict-origin";
-      add_header X-Content-Type-Options "nosniff";
-      add_header Content-Security-Policy "${builtins.concatStringsSep " " (lib.mapAttrsToList (name: values: "${name} ${builtins.concatStringsSep " " values};") csp')}";
-    '';
-  };
-in {
-  networking.firewall.allowedTCPPorts = [ 80 443 ];
+in
+{
+  networking.firewall.allowedTCPPorts = [
+    80
+    443
+  ];
 
   services.nginx = {
     enable = true;
@@ -43,11 +83,13 @@ in {
     recommendedOptimisation = true;
     recommendedProxySettings = true;
 
-    package = (pkgs.nginx.override {
-      modules = with pkgs.nginxModules; [
-        fancyindex
-      ];
-    });
+    package = (
+      pkgs.nginx.override {
+        modules = with pkgs.nginxModules; [
+          fancyindex
+        ];
+      }
+    );
 
     virtualHosts = {
 
@@ -84,8 +126,8 @@ in {
       "leborddeleau.net" = host { root = "/var/www/leborddeleau.net"; };
 
       "www.leborddeleau.net" = host { return = "301 https://leborddeleau.net$request_uri"; };
-      "www.lebordeleau.net" =  host { return = "301 https://leborddeleau.net$request_uri"; };
-      "lebordeleau.net" =      host { return = "301 https://leborddeleau.net$request_uri"; };
+      "www.lebordeleau.net" = host { return = "301 https://leborddeleau.net$request_uri"; };
+      "lebordeleau.net" = host { return = "301 https://leborddeleau.net$request_uri"; };
 
       "paris-loyers.fr" = host {
         root = "/var/www/paris-loyers.fr";

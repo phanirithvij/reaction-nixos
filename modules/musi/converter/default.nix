@@ -1,6 +1,6 @@
 { pkgs, ... }:
 let
-  convertd = pkgs.callPackage ../../../pkgs/convertd {};
+  convertd = pkgs.callPackage ../../../pkgs/convertd { };
 
   runDir = "RUNTIME_DIRECTORY=/data/convertd";
   cnv = pkgs.writeShellApplication {
@@ -10,12 +10,16 @@ let
       ${builtins.readFile ./cnv.sh}
     '';
   };
-in {
+in
+{
   systemd.services.convertd = {
     enable = true;
     description = "Queue-controlled video converter";
     wantedBy = [ "multi-user.target" ];
-    path = [ pkgs.handbrake pkgs.ffmpeg ];
+    path = [
+      pkgs.handbrake
+      pkgs.ffmpeg
+    ];
     serviceConfig = {
       Type = "simple";
       User = "media";
@@ -28,7 +32,10 @@ in {
       NoNewPrivileges = true;
       CapabilityBoundingSet = "";
       ProtectSystem = "strict";
-      ReadOnlyPaths = [ "/data/transit" "/data/user-uploads" ];
+      ReadOnlyPaths = [
+        "/data/transit"
+        "/data/user-uploads"
+      ];
       ReadWritePaths = [ "/data/convertd" ];
       ProtectHome = true;
       PrivateTmp = true;
@@ -39,7 +46,11 @@ in {
       ProtectKernelModules = true;
       ProtectKernelLogs = true;
       ProtectControlGroups = true;
-      RestrictAddressFamilies = [ "AF_UNIX" "AF_INET" "AF_INET6" ];
+      RestrictAddressFamilies = [
+        "AF_UNIX"
+        "AF_INET"
+        "AF_INET6"
+      ];
       RestrictNamespaces = true;
       LockPersonality = true;
       RestrictSUIDSGID = true;
@@ -48,5 +59,8 @@ in {
     };
   };
 
-  environment.systemPackages = [ cnv pkgs.handbrake ];
+  environment.systemPackages = [
+    cnv
+    pkgs.handbrake
+  ];
 }

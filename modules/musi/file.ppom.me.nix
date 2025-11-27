@@ -1,4 +1,9 @@
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 lib.mkMerge [
   # Nextcloud
   {
@@ -24,14 +29,15 @@ lib.mkMerge [
       #   mail_smtppassword = "' . trim(file_get_contents('/var/secrets/mail/file@ppom.me')) . '";
       # };
       maxUploadSize = "10G";
-      poolSettings = /* config.services.nextcloud.poolSettings.default // */ {
-        "pm" = "dynamic";
-        "pm.max_children" = "32";
-        "pm.start_servers" = "4";
-        "pm.min_spare_servers" = "2";
-        "pm.max_spare_servers" = "4";
-        "pm.max_requests" = "500";
-      };
+      poolSettings = # config.services.nextcloud.poolSettings.default //
+        {
+          "pm" = "dynamic";
+          "pm.max_children" = "32";
+          "pm.start_servers" = "4";
+          "pm.min_spare_servers" = "2";
+          "pm.max_spare_servers" = "4";
+          "pm.max_requests" = "500";
+        };
       phpOptions = {
         "opcache.interned_strings_buffer" = "12";
       };
@@ -90,20 +96,27 @@ lib.mkMerge [
 
     services.postgresqlBackup.databases = [ "nextcloud" ];
 
-    services.reaction.settings.streams.nextcloud = let
-      var = import ../common/reaction-variables.nix { inherit config pkgs; };
-    in {
-      cmd = [ var.journalctl "-fn0" "-u" "phpfpm-nextcloud.service" ];
-      filters.failedLogin = {
-        regex = [
-          ''"remoteAddr":"<ip>".*"message":"Login failed:''
-          ''"remoteAddr":"<ip>".*"message":"Trusted domain error.''
+    services.reaction.settings.streams.nextcloud =
+      let
+        var = import ../common/reaction-variables.nix { inherit config pkgs; };
+      in
+      {
+        cmd = [
+          var.journalctl
+          "-fn0"
+          "-u"
+          "phpfpm-nextcloud.service"
         ];
-        retry = 3;
-        retryperiod = "1h";
-        actions = var.banFor "1h";
+        filters.failedLogin = {
+          regex = [
+            ''"remoteAddr":"<ip>".*"message":"Login failed:''
+            ''"remoteAddr":"<ip>".*"message":"Trusted domain error.''
+          ];
+          retry = 3;
+          retryperiod = "1h";
+          actions = var.banFor "1h";
+        };
       };
-    };
   }
 
   # sudo workaround for nextcloud-occ
@@ -135,22 +148,24 @@ lib.mkMerge [
       isSystemUser = true;
       group = "cospend-balance";
     };
-    users.groups.cospend-balance = {};
+    users.groups.cospend-balance = { };
 
-    systemd.services.cospend-balance = let
-      package = pkgs.callPackage ../../pkgs/cospend-balance {};
-      settings = ./cospend-balance.yml;
-    in {
-      enable = true;
-      description = "Sync Nextcloud Cospend bills";
-      requires = ["phpfpm-nextcloud.service"];
-      after = ["phpfpm-nextcloud.service"];
-      startAt = "02:55";
-      serviceConfig = {
-        User = "cospend-balance";
-        Group = "cospend-balance";
-        ExecStart = "${package}/bin/cospend-balance -y ${settings}";
+    systemd.services.cospend-balance =
+      let
+        package = pkgs.callPackage ../../pkgs/cospend-balance { };
+        settings = ./cospend-balance.yml;
+      in
+      {
+        enable = true;
+        description = "Sync Nextcloud Cospend bills";
+        requires = [ "phpfpm-nextcloud.service" ];
+        after = [ "phpfpm-nextcloud.service" ];
+        startAt = "02:55";
+        serviceConfig = {
+          User = "cospend-balance";
+          Group = "cospend-balance";
+          ExecStart = "${package}/bin/cospend-balance -y ${settings}";
+        };
       };
-    };
   }
 ]

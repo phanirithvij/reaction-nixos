@@ -1,4 +1,11 @@
-{ lib, stdenv, fetchFromGitLab, jdk11, makeDesktopItem, makeWrapper }:
+{
+  lib,
+  stdenv,
+  fetchFromGitLab,
+  jdk11,
+  makeDesktopItem,
+  makeWrapper,
+}:
 let
   pname = "soweli";
   version = "unstable-2022-06-22";
@@ -17,14 +24,22 @@ let
     icon = "soweli";
     comment = "A Zelda-like game";
     desktopName = "Soweli";
-    mimeTypes = [ "application/java" "application/java-vm" "application/java-archive" ];
+    mimeTypes = [
+      "application/java"
+      "application/java-vm"
+      "application/java-archive"
+    ];
     categories = [ "Game" ];
   };
 
-in stdenv.mkDerivation rec {
+in
+stdenv.mkDerivation rec {
   inherit pname src version;
 
-  nativeBuildInputs = [ jdk11 makeWrapper ];
+  nativeBuildInputs = [
+    jdk11
+    makeWrapper
+  ];
 
   buildPhase = ''
     runHook preBuild
@@ -34,7 +49,7 @@ in stdenv.mkDerivation rec {
     javac -encoding utf8 -d $out/lib $(find ./src -name "*.java")
 
     runHook postBuild
-    '';
+  '';
 
   installPhase = ''
     runHook preInstall
@@ -50,7 +65,7 @@ in stdenv.mkDerivation rec {
   postFixup = ''
     mkdir -p $out/bin
     makeWrapper ${jdk11}/bin/java $out/bin/${pname} --add-flags "-cp $out/lib application.Main" --chdir $out
-    '';
+  '';
 
   desktopItems = [ desktopItem ];
 

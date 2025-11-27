@@ -1,6 +1,6 @@
 { pkgs, ... }:
 let
-  unstable = import <nixos-unstable> {};
+  unstable = import <nixos-unstable> { };
   serviceConfig = {
     Type = "simple";
     User = "pombot";
@@ -31,20 +31,28 @@ let
     ProtectProc = "invisible";
     ProtectSystem = "strict";
     RemoveIPC = true;
-    RestrictAddressFamilies = [ "AF_INET" "AF_INET6" "AF_UNIX" ];
+    RestrictAddressFamilies = [
+      "AF_INET"
+      "AF_INET6"
+      "AF_UNIX"
+    ];
     RestrictNamespaces = true;
     RestrictSUIDSGID = true;
     SystemCallArchitectures = "native";
-    SystemCallFilter = [ "@system-service" "~@privileged" ];
+    SystemCallFilter = [
+      "@system-service"
+      "~@privileged"
+    ];
     UMask = "0077";
   };
-in {
+in
+{
 
   users.users.pombot = {
     isSystemUser = true;
     group = "pombot";
   };
-  users.groups.pombot = {};
+  users.groups.pombot = { };
 
   systemd.services.signal-daemon = {
     enable = true;
@@ -65,12 +73,12 @@ in {
   systemd.services.pombot = {
     enable = true;
     description = "Pombot, view-once resender";
-    wantedBy = ["multi-user.target"];
+    wantedBy = [ "multi-user.target" ];
     requires = [ "signal-daemon.service" ];
     after = [ "signal-daemon.service" ];
     serviceConfig = serviceConfig // {
-      ExecStart = "${unstable.callPackage ../../pkgs/pombot {}}/bin/pombot";
-      EnvironmentFile = ["/var/secrets/pombot"];
+      ExecStart = "${unstable.callPackage ../../pkgs/pombot { }}/bin/pombot";
+      EnvironmentFile = [ "/var/secrets/pombot" ];
     };
   };
 }

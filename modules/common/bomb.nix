@@ -36,13 +36,17 @@ let
   addedConfig = cfg: {
     locations = lib.optionalAttrs cfg.bomb vilainLocations;
   };
-  hostOptions = {name, ...}: let
-    hostCfg = config.services.nginx.virtualHosts.${name};
-  in {
-    options = addedOptions hostCfg;
-    config = addedConfig hostCfg;
-  };
-in {
+  hostOptions =
+    { name, ... }:
+    let
+      hostCfg = config.services.nginx.virtualHosts.${name};
+    in
+    {
+      options = addedOptions hostCfg;
+      config = addedConfig hostCfg;
+    };
+in
+{
   options = {
     ppom.bomb = {
       default = lib.mkEnableOption "bomb php requests";
@@ -61,4 +65,3 @@ in {
     };
   };
 }
-

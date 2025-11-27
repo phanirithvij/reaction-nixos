@@ -1,8 +1,17 @@
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
   myPort = 8476;
   myUsers = [
-    { name = "anpa"; ssh = [ "anpaSSH" ]; uid = 2000; }
+    {
+      name = "anpa";
+      ssh = [ "anpaSSH" ];
+      uid = 2000;
+    }
     # {
     #   name = "tanina";
     #   ssh = [ "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAntIo1HtgaMr8Z1UqqUeUurXd/TRXLJY+ecCqO7MFzmg7Nhjm7JTrW4hi6Tzje61HRWnSKClBwkoB6xowEp7xSx2tYXSZ6IoAdKjHHSfR+oWO7EkEsOBY+L1wBTkKqpXoPXE+D1Vq2AfAcaBvHOg/k2yuXFlsrqraK76Wrm1R+x1jMR/5IzpPneCl96xLPakwivuqTOzdx/4Zrpm7bHa52ayuuUJnWZJ9pDCc4lUblNiYDK7P2W/AdHEW+CTm+/v0lbjazBRaElkzrSxw+q/LegxhwE4y8M/NcKN8kqm7GDvv/uE7a6RU5JBw8MC5y/++/s4B2rPjGkq1vzA8xYGCFQ== rsa-key-20220220" ];
@@ -19,7 +28,8 @@ let
         "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC08+b5KB8zco6O2AwJNXCgrq1tnECP5ySkTBG4GCyg0+OLa/j/TWDr3EqWvOKcY7cH9Mlc7bwLVCPgYrdjYkmwK/6DLYm129utEZx3g3jkIE53xicD3VEv6ahh/ElTm/wqrPtpCPL8GDL8+nMEJw1w7kVQPdFRVt50570AtFSN8zKapyyOJx2L0F+ek/i4reYdZrSrLv0GOovWEz3+vUesiqsB3y8AlMwTOdgevhaCmM/7cdLMTHoYjqs5dOo8nvDKqaqYjOd3OpckRYUmmgK4+cR35DB8QF9Rrt+GEh8uqYApA7BcFNDnttUQPUU+I2HcHtFoY/QQMj/E5sfImcSiI1TlAwgV6J0kjXWbkydxojr4YXCyVFRYm6t9kcJQsO7A/82VzQgRLKNWw9OwEIMzhNXyt/z0DaQ7wf2kXG96Ms80DAZj8DfLuBMiQauEidj/0Jfv0ERIWUz0i6RyTnZIvRJIjZPTgvk8Vm6rJ0QX3HubGG+zOMB+ql8TB0CSLhU= root@akesi"
         "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCcoJI8MHBEmMrvs/eFMVoG6N9wvdej+qJIx2NGOTRrIraNvU+yAIgdvfVvMror26E98NCQK0SMhS2aO4P8bSO6G/duUF7OgzxMecfLhPY1aQxNLgTIzcm+6jf+HkCqKZc6jZV8TnyqsebUkkDrVmiAy5SszvkqiuTppvOoUJE/rFHcoN4HKlOat5eF+aPmbdwut5rMjOW/PJh1f/Td2fKbzRsaDYQxo/00BH9h7tsaK+hb60iia0fZIAy5HPIBbvtmEnw+0PYary47AYQ0Pp6FWqkxj+YB4gFkJxOQxyeQiPIUa9iucuLRv2gGr2pU8E6zGHclg3MkeHnU97yf1svna1AdkTpBcYbRRNdsO2jr1LKdtcqLAqwtpE3M8s+xbEEsq5FmkpIctD48vDWVL01QCWSrHHm+m19b4MVs2omUDsGa1SrO+7XouGHazs0l4DMwqffo+0wHWxz3kRhXKTjFOYHF1OnsFDsmhmoGouIrla7fL73bEwK1dS1Ii0+ASv7qjo9YSSqBK2J5gz5E/a3SBLSxI1EoaVvvAazMo4TpAY1QAvOYeuOIC+hSRDEb0qM2HKN8rfOyrXqGZ7lBRpvzeLrPHnQBKGtz/TVTUlAVfWOxfePmI6mToeEmlNyDj6Fp+pXN/+BZzUgQMXTB60BlUB8h3SAxoIgGpxkzS7A1gQ== corentin@corentin-desktop-1"
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBrSvK7feOr37nP0hdOylZG1GzYBssHtVrWGs3/0zFha bertille@ordi"
-      ] ++ config.users.users.ppom.openssh.authorizedKeys.keys;
+      ]
+      ++ config.users.users.ppom.openssh.authorizedKeys.keys;
       uid = 2003;
     }
     {
@@ -42,7 +52,9 @@ let
     # }
     {
       name = "stph";
-      ssh = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDU6aCD3LJM7KtMPT3xyn8vpuT3X8JrCWCnhD3jaTRRQmN4ZH8ofmqRh3/Czcp9ofhU50mIjmhmwx46bxr+sZI1TmY1EDsx0fClS7zUp1H1vE2zCKz4gRcKdbYFVtakj/3qQE4oKnnNeDTQm9wTlHuT3TE/SyvsI+0xA8VtgeX3lNeqODgyMhOTpoM5hnGlGF4CXIY9HvArl6wwMu/Ii4V5CgMSH/ldCDdRE8/SHOIHZ6IVpJeYjmsBaGYbrphNxNXVuaq9qEtV4o8YXHl8G701OCxIUi1QV0eEQCTCC2AA+Hf88mJCQh5zQ8tthbiO/cnbNrjvXyTZlQAIyvpyGaI/ stc@hal9017" ];
+      ssh = [
+        "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDU6aCD3LJM7KtMPT3xyn8vpuT3X8JrCWCnhD3jaTRRQmN4ZH8ofmqRh3/Czcp9ofhU50mIjmhmwx46bxr+sZI1TmY1EDsx0fClS7zUp1H1vE2zCKz4gRcKdbYFVtakj/3qQE4oKnnNeDTQm9wTlHuT3TE/SyvsI+0xA8VtgeX3lNeqODgyMhOTpoM5hnGlGF4CXIY9HvArl6wwMu/Ii4V5CgMSH/ldCDdRE8/SHOIHZ6IVpJeYjmsBaGYbrphNxNXVuaq9qEtV4o8YXHl8G701OCxIUi1QV0eEQCTCC2AA+Hf88mJCQh5zQ8tthbiO/cnbNrjvXyTZlQAIyvpyGaI/ stc@hal9017"
+      ];
       uid = 2008;
     }
     {
@@ -51,9 +63,10 @@ let
       uid = 2009;
     }
   ];
-  transitDir   = user: "/data/user-uploads/${user.name}";
+  transitDir = user: "/data/user-uploads/${user.name}";
   containerDir = user: "/home/${user.name}/upload-here";
-in {
+in
+{
   networking.firewall.allowedTCPPorts = [ myPort ];
 
   # Permits private networking
@@ -61,9 +74,8 @@ in {
 
   # Ensure permissions on host
   # FIXME must launch `systemd-tmpfiles --create` from time to time to fix permissions
-  systemd.tmpfiles.rules = (builtins.map
-    (user: "d ${transitDir user} 750 ${builtins.toString user.uid} users - -")
-    myUsers
+  systemd.tmpfiles.rules = (
+    builtins.map (user: "d ${transitDir user} 750 ${builtins.toString user.uid} users - -") myUsers
   );
   systemd.services.systemd-tmpfiles-create = {
     description = "FIXME must launch `systemd-tmpfiles --create` from time to time to fix permissions";
@@ -90,15 +102,15 @@ in {
         hostPath = "/data/streama/movies";
         isReadOnly = true;
       };
-    } // builtins.listToAttrs (map
-      (user: lib.nameValuePair
-        (containerDir user)
-        {
+    }
+    // builtins.listToAttrs (
+      map (
+        user:
+        lib.nameValuePair (containerDir user) {
           hostPath = (transitDir user);
           isReadOnly = false;
         }
-      )
-      myUsers
+      ) myUsers
     );
     forwardPorts = [
       {
@@ -119,19 +131,20 @@ in {
 
       system.stateVersion = "21.11";
 
-      users.users = builtins.listToAttrs (map (user: lib.nameValuePair
-        "${user.name}"
-        {
-          isNormalUser = true;
-          openssh.authorizedKeys.keys = user.ssh;
-          uid = user.uid;
-        }
-      ) myUsers);
+      users.users = builtins.listToAttrs (
+        map (
+          user:
+          lib.nameValuePair "${user.name}" {
+            isNormalUser = true;
+            openssh.authorizedKeys.keys = user.ssh;
+            uid = user.uid;
+          }
+        ) myUsers
+      );
 
       # Ensure permissions on container
-      systemd.tmpfiles.rules = (builtins.map
-        (user: "d ${containerDir user} 700 ${user.name} nobody -")
-        myUsers
+      systemd.tmpfiles.rules = (
+        builtins.map (user: "d ${containerDir user} 700 ${user.name} nobody -") myUsers
       );
 
       documentation.enable = false;

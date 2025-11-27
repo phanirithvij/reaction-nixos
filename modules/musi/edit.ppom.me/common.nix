@@ -1,4 +1,4 @@
-{}:
+{ }:
 {
   settings = {
     EMAIL_FROM = "edit@ppom.fr";

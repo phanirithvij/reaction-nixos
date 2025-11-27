@@ -1,4 +1,9 @@
-{ lib, stdenv, go, makeWrapper }:
+{
+  lib,
+  stdenv,
+  go,
+  makeWrapper,
+}:
 stdenv.mkDerivation rec {
 
   pname = "fwlink";
@@ -16,7 +21,7 @@ stdenv.mkDerivation rec {
     GOCACHE=$(pwd)/tmp go build ./fwlink.go
 
     runHook postBuild
-    '';
+  '';
 
   installPhase = ''
     runHook preInstall

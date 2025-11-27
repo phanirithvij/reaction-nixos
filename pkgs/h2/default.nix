@@ -1,6 +1,12 @@
 # git show e03c068af5c9ca950214cd6c3b5cfe67f595da88:pkgs/servers/h2/default.nix
 
-{ lib, stdenv, fetchzip, jre, makeWrapper }:
+{
+  lib,
+  stdenv,
+  fetchzip,
+  jre,
+  makeWrapper,
+}:
 stdenv.mkDerivation rec {
   pname = "h2";
 
@@ -25,7 +31,8 @@ stdenv.mkDerivation rec {
           echo "You have to provide the full java class path for the h2 tool you want to run. E.g. 'org.h2.tools.Server'"
         fi
       '';
-    in ''
+    in
+    ''
       mkdir -p $out
       cp -R * $out
 

@@ -3,7 +3,7 @@
 buildGoPackage rec {
   pname = "vtt2srt";
   version = "2016-11-07";
-  goPackagePath =  "github.com/rzumer/VTT2SRT";
+  goPackagePath = "github.com/rzumer/VTT2SRT";
   src = fetchFromGitHub {
     owner = "rzumer";
     repo = "VTT2SRT";

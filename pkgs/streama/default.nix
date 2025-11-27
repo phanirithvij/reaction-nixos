@@ -1,4 +1,11 @@
-{ stdenv, lib, jre8, bash, makeWrapper, fetchurl }:
+{
+  stdenv,
+  lib,
+  jre8,
+  bash,
+  makeWrapper,
+  fetchurl,
+}:
 
 # Maintainer's note: waiting for an easy solution to
 # [this issue](https://github.com/NixOS/nixpkgs/issues/17342)
@@ -17,7 +24,10 @@ stdenv.mkDerivation {
     sha256 = "0pb1mg5x2vpv6s5bxpzwkpssq6f2623iwnjdc3irpqw3b2ssr6cx";
   };
 
-  buildInputs = [ jre8 makeWrapper ];
+  buildInputs = [
+    jre8
+    makeWrapper
+  ];
 
   dontUnpack = true;
 

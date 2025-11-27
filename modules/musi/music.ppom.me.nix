@@ -1,8 +1,14 @@
 { pkgs, config, ... }:
-let 
-  fwlink = pkgs.callPackage ../../pkgs/fwlink {};
-  python = pkgs.python3.withPackages (ps: with ps; [ requests rapidfuzz ]);
-in {
+let
+  fwlink = pkgs.callPackage ../../pkgs/fwlink { };
+  python = pkgs.python3.withPackages (
+    ps: with ps; [
+      requests
+      rapidfuzz
+    ]
+  );
+in
+{
   services.funkwhale = {
     enable = true;
     enableLocalTypesense = false;
@@ -48,18 +54,18 @@ in {
       ];
       EnvironmentFile = "/var/secrets/funkwhale/playlistImportToken";
       ExecStart = pkgs.writeShellScript "funkwhale-playlist-import" ''
-          set -e
-          cd /var/lib/funkwhale-playlist-import
-          [ -e ./funkwhale-playlist-import ] || ${pkgs.git}/bin/git clone https://framagit.org/ppom/funkwhale-playlist-import funkwhale-playlist-import
-          cd ./funkwhale-playlist-import
-          ${pkgs.git}/bin/git pull
-          mkdir -p ./secrets
-          echo "$INSTANCE_URL" > ./secrets/instance_url
-          echo "$TOKEN" > ./secrets/token
-          for file in $(ls lists/* | grep -v '/paco-' | grep -v '/pomme-' | grep -v '/tan-' )
-          do
-            ${python}/bin/python import-from-txt.py "$file"
-          done
+        set -e
+        cd /var/lib/funkwhale-playlist-import
+        [ -e ./funkwhale-playlist-import ] || ${pkgs.git}/bin/git clone https://framagit.org/ppom/funkwhale-playlist-import funkwhale-playlist-import
+        cd ./funkwhale-playlist-import
+        ${pkgs.git}/bin/git pull
+        mkdir -p ./secrets
+        echo "$INSTANCE_URL" > ./secrets/instance_url
+        echo "$TOKEN" > ./secrets/token
+        for file in $(ls lists/* | grep -v '/paco-' | grep -v '/pomme-' | grep -v '/tan-' )
+        do
+          ${python}/bin/python import-from-txt.py "$file"
+        done
       '';
       User = "funkwhale-playlist-import";
       StateDirectory = "funkwhale-playlist-import";
@@ -67,9 +73,11 @@ in {
     startAt = "*-*-02/2 21:00"; # man 5 systemd.time: every 2 days at 20:00
   };
 
-  environment.systemPackages = [ (pkgs.writeShellScriptBin "funkwhale-playlist-python" ''
-    exec /run/wrappers/bin/sudo -u funkwhale-playlist-import ${python}/bin/python "$@"
-  '') ];
+  environment.systemPackages = [
+    (pkgs.writeShellScriptBin "funkwhale-playlist-python" ''
+      exec /run/wrappers/bin/sudo -u funkwhale-playlist-import ${python}/bin/python "$@"
+    '')
+  ];
 
   # FunkwhaleLink
 

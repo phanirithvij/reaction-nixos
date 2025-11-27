@@ -1,4 +1,9 @@
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 {
   options.ppom.git = {
     enable = lib.mkEnableOption "enable ppom git";

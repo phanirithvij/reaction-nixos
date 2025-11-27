@@ -1,7 +1,13 @@
-{ lib, config, pkgs, ... }:
-let 
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
+let
   hosts = builtins.fromTOML (builtins.readFile ../common/hosts.toml);
-in {
+in
+{
   options.ppom.musi-cache = {
     enable = lib.mkEnableOption "use musi as a Nix cache";
   };
@@ -9,7 +15,7 @@ in {
     allow-musi = lib.mkEnableOption "allow musi to perform remote builds";
     hosts = lib.mkOption {
       description = "perform remote builds on those hosts";
-      default = [];
+      default = [ ];
       type = lib.types.listOf lib.types.str;
     };
   };
@@ -40,7 +46,7 @@ in {
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPw4sNMQdBpffsmyUwiL/oPsJRs9iqX77BAbMRCtQtai root@musi"
         ];
       };
-      users.groups.musi = {};
+      users.groups.musi = { };
       security.sudo-rs.extraRules = [
         {
           users = [ "musi-build" ];
@@ -55,39 +61,44 @@ in {
     })
 
     {
-      systemd.services = lib.mkMerge (map (hostName: let
-        host = hosts.${hostName};
-      in {
-      "rebuild-${hostName}" = {
-        enable = true;
-        wantedBy = [ "nixos-upgrade.service" ];
-        after = [ "nixos-upgrade.service" ];
-        environment = {
-          NIX_SSHOPTS = lib.concatStringsSep " " [
-            "-i /var/secrets/remote-build/key"
-            "-o StrictHostKeyChecking=accept-new"
-          ];
-          NIX_PATH = lib.concatStringsSep ":" [
-            "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
-            "/nix/var/nix/profiles/per-user/root/channels"
-          ];
-        };
-        path = [
-          config.services.openssh.package
-        ];
-        serviceConfig = {
-          Type = "oneshot";
-          Slice = "nix.slice";
-          ExecStart = lib.concatStringsSep " " [
-            "${pkgs.nixos-rebuild}/bin/nixos-rebuild switch"
-            "--target-host musi-build@${host.address}"
-            "--use-remote-sudo"
-            "-I nixos-config=/etc/nixos/modules/${hostName}/default.nix"
-          ];
-        };
-      };
-    })
-    config.ppom.remote-build.hosts);
-  }
-];
+      systemd.services = lib.mkMerge (
+        map (
+          hostName:
+          let
+            host = hosts.${hostName};
+          in
+          {
+            "rebuild-${hostName}" = {
+              enable = true;
+              wantedBy = [ "nixos-upgrade.service" ];
+              after = [ "nixos-upgrade.service" ];
+              environment = {
+                NIX_SSHOPTS = lib.concatStringsSep " " [
+                  "-i /var/secrets/remote-build/key"
+                  "-o StrictHostKeyChecking=accept-new"
+                ];
+                NIX_PATH = lib.concatStringsSep ":" [
+                  "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
+                  "/nix/var/nix/profiles/per-user/root/channels"
+                ];
+              };
+              path = [
+                config.services.openssh.package
+              ];
+              serviceConfig = {
+                Type = "oneshot";
+                Slice = "nix.slice";
+                ExecStart = lib.concatStringsSep " " [
+                  "${pkgs.nixos-rebuild}/bin/nixos-rebuild switch"
+                  "--target-host musi-build@${host.address}"
+                  "--use-remote-sudo"
+                  "-I nixos-config=/etc/nixos/modules/${hostName}/default.nix"
+                ];
+              };
+            };
+          }
+        ) config.ppom.remote-build.hosts
+      );
+    }
+  ];
 }

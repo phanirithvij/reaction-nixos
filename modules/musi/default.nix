@@ -36,7 +36,10 @@
     git.email = "musi@ppom.me";
     ssh = {
       enable = true;
-      port = [ 22 123 ];
+      port = [
+        22
+        123
+      ];
       hardened = false;
     };
     reaction.enable = true;
@@ -114,7 +117,9 @@
   };
 
   # Update all channels on upgrade, not only the default one.
-  systemd.services.nixos-upgrade.serviceConfig.ExecStartPre = [ "${config.nix.package}/bin/nix-channel --update" ];
+  systemd.services.nixos-upgrade.serviceConfig.ExecStartPre = [
+    "${config.nix.package}/bin/nix-channel --update"
+  ];
 
   virtualisation.docker.enable = true;
   boot.kernel.sysctl."net.ipv4.ip_forward" = true;
@@ -133,14 +138,16 @@
     MaxRetentionSec=1month
   '';
 
-  swapDevices = [ {
-    device = "/swapfile";
-    size = 22 * 1024; # MiB
-    randomEncryption = {
-      enable = true;
-      # default cipher is the fastest here
-    };
-  } ];
+  swapDevices = [
+    {
+      device = "/swapfile";
+      size = 22 * 1024; # MiB
+      randomEncryption = {
+        enable = true;
+        # default cipher is the fastest here
+      };
+    }
+  ];
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
@@ -150,4 +157,3 @@
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "20.09"; # Did you read the comment?
 }
-

@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 let
-  VARS= ''
+  VARS = ''
     DATA_DIR="$HOME/.check_co/"
     DATA_FILE="$DATA_DIR/log"
     TEST_HOST="google.fr"
@@ -27,7 +27,8 @@ let
     ${pkgs.gawk}/bin/awk '! / 0$/ { print $1 }' $DATA_FILE | \
     ${pkgs.findutils}/bin/xargs -d'\n' -I'{}' date -d'@{}'
   '';
-in {
+in
+{
   services.vnstat.enable = true;
 
   environment.etc."vnstat.conf".text = ''
@@ -51,7 +52,10 @@ in {
     # Output
   '';
 
-  environment.systemPackages = [ check print ];
+  environment.systemPackages = [
+    check
+    print
+  ];
 
   systemd.services.check-co = {
     description = "Check if internet connection is up";
@@ -77,7 +81,7 @@ in {
   services.prometheus.exporters = {
     node = {
       enable = true;
-      enabledCollectors = ["systemd"];
+      enabledCollectors = [ "systemd" ];
     };
     systemd = {
       enable = true;
@@ -99,7 +103,7 @@ in {
           metrics_path = "/metrics";
           static_configs = [
             {
-              targets = ["localhost:${builtins.toString config.services.prometheus.exporters.node.port}"];
+              targets = [ "localhost:${builtins.toString config.services.prometheus.exporters.node.port}" ];
               labels.type = "node";
               labels.hostname = "musi.ppom.me";
             }
@@ -110,7 +114,7 @@ in {
           metrics_path = "/metrics";
           static_configs = [
             {
-              targets = ["localhost:${builtins.toString config.services.prometheus.exporters.systemd.port}"];
+              targets = [ "localhost:${builtins.toString config.services.prometheus.exporters.systemd.port}" ];
               labels.type = "systemd";
               labels.hostname = "musi.ppom.me";
             }
@@ -149,7 +153,7 @@ in {
         socket_mod = "0660";
       };
     };
-    declarativePlugins = [];
+    declarativePlugins = [ ];
 
     provision = {
       enable = true;

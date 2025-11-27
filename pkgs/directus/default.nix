@@ -9,9 +9,10 @@
   # vips,
   writeScriptBin,
   nodejs_22,
-}: let
+}:
+let
   nodejs = nodejs_22;
-  vips' = callPackage ./vips.nix {};
+  vips' = callPackage ./vips.nix { };
   # The original script is just a wrapper to app/cli/run
   # that checks always for the latest version.
   # We don't want to be constantly remminded we are some version behind
@@ -24,11 +25,13 @@ buildNpmPackage rec {
   pname = "directus";
   version = "11.12.0";
 
-  src = builtins.filterSource (path: _: let
-    basename = builtins.baseNameOf path;
-  in
-    lib.hasSuffix ".json" basename)
-  ./.;
+  src = builtins.filterSource (
+    path: _:
+    let
+      basename = builtins.baseNameOf path;
+    in
+    lib.hasSuffix ".json" basename
+  ) ./.;
 
   npmDepsHash = "sha256-7LbRN2/laJBU2R3jvKWj1uF5sNhbg+G0L+fqWF9maGY=";
 
@@ -62,6 +65,6 @@ buildNpmPackage rec {
     changelog = "https://github.com/directus/directus/releases/tag/v${version}";
     license = licenses.bsl11;
     mainProgram = "directus";
-    maintainers = with maintainers; [ppom];
+    maintainers = with maintainers; [ ppom ];
   };
 }

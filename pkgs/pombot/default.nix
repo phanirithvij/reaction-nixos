@@ -1,4 +1,8 @@
-{ lib, fetchFromGitLab, rustPlatform }:
+{
+  lib,
+  fetchFromGitLab,
+  rustPlatform,
+}:
 rustPlatform.buildRustPackage {
   pname = "reaction";
   version = "unstable-2025-11-21";
