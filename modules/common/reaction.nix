@@ -69,6 +69,12 @@ in {
     #   '';
     # };
 
+    checkConfig = mkOption {
+      type = types.bool;
+      default = true;
+      description = "Check the syntax of the configuration file at build time";
+    };
+
     runAsRoot = mkOption {
       type = bool;
       default = false;
@@ -112,12 +118,7 @@ in {
         assertion = cfg.settings != {} || (builtins.length cfg.settingsFile) != 0;
         message = "You must specify settings and/or settingsFile options";
       }
-      # FIXME doesn't prevent invalid configs as intended
-      {
-        assertion = (pkgs.runCommand "reaction-test-config" {} "${cfg.package}/bin/reaction test-config -c ${settingsDir}") != null;
-        message = "reaction test-config failed";
-      }
-  ];
+    ];
 
     users = lib.mkIf (!cfg.runAsRoot) {
       users.reaction = {
@@ -126,6 +127,15 @@ in {
       };
       groups.reaction = {};
     };
+
+    system.checks =
+      lib.optional (cfg.checkConfig && pkgs.stdenv.hostPlatform == pkgs.stdenv.buildPlatform)
+        (
+          pkgs.runCommand "reaction-config-validation" { } ''
+            ${cfg.package}/bin/reaction test-config -c ${settingsDir}
+            touch $out
+          ''
+        );
 
     # Easier to debug conf when we have direct access to it,
     # rather than having to look for it in the systemd service file.
