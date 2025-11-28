@@ -115,7 +115,7 @@ in {
   in lib.mkIf cfg.enable {
     assertions = [
       {
-        assertion = cfg.settings != {} || (builtins.length cfg.settingsFile) != 0;
+        assertion = cfg.settings != {} || (builtins.length cfg.settingsFiles) != 0;
         message = "You must specify settings and/or settingsFile options";
       }
     ];
