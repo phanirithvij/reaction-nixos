@@ -89,7 +89,11 @@ in {
 
           security.sudo.extraRules = [{
             users = [ "reaction" ];
-            cmd = "$${pkgs.iptables}/bin/iptables";
+            commands = [{
+              command = "${pkgs.iptables}/bin/iptables";
+            } {
+              command = "${pkgs.iptables}/bin/ip6tables";
+            }];
             runAs = "root";
           }];
         }
@@ -147,15 +151,23 @@ in {
       after = [ "network.target" ];
       wantedBy = [ "multi-user.target" ];
       path = [ pkgs.iptables ];
+      unitConfig.ConditionCapability = "CAP_NET_ADMIN";
       serviceConfig = {
         Type = "simple";
         User = lib.mkIf (!cfg.runAsRoot) "reaction";
-        ExecStart = ''${cfg.package}/bin/reaction start -c ${settingsDir}${
-          lib.optionalString (cfg.loglevel != null) " -l ${cfg.loglevel}"
-        }'';
+        ExecStart = ''
+          ${cfg.package}/bin/reaction start -c ${settingsDir}${
+            lib.optionalString (cfg.loglevel != null) " -l ${cfg.loglevel}"
+          }
+        '';
         StateDirectory = "reaction";
         RuntimeDirectory = "reaction";
         WorkingDirectory = "/var/lib/reaction";
+
+        AmbientCapabilities = [ "CAP_NET_ADMIN" ];
+        CapabilityBoundingSet = lib.optionals (!cfg.runAsRoot) [
+          "CAP_NET_ADMIN"
+        ];
       };
     };
 
