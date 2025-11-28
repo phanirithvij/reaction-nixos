@@ -154,7 +154,7 @@ in {
       unitConfig.ConditionCapability = "CAP_NET_ADMIN";
       serviceConfig = {
         Type = "simple";
-        User = lib.mkIf (!cfg.runAsRoot) "reaction";
+        User = if (!cfg.runAsRoot) then "reaction" else "root";
         ExecStart = ''
           ${cfg.package}/bin/reaction start -c ${settingsDir}${
             lib.optionalString (cfg.loglevel != null) " -l ${cfg.loglevel}"
