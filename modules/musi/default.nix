@@ -88,19 +88,21 @@
     fsType = "ext4";
   };
 
-  networking.hostName = "musi"; # Define your hostname.
-  networking.useDHCP = false;
-  networking.interfaces.enp6s0 = {
-    useDHCP = true;
-    # I have connectivity issues that way and I don't know why.
-    # ipv4.addresses = [{
-    #   address = "192.168.1.35";
-    #   prefixLength = 24;
-    # }];
-    # ipv6.addresses = [{
-    #   address = "2a01:e0a:b3a:1dd0::2";
-    #   prefixLength = 64;
-    # }];
+  networking = {
+    hostName = "musi"; # Define your hostname.
+    useDHCP = false;
+    interfaces.enp6s0 = {
+      useDHCP = true;
+      # I have connectivity issues that way and I don't know why.
+      # ipv4.addresses = [{
+      #   address = "192.168.1.35";
+      #   prefixLength = 24;
+      # }];
+      # ipv6.addresses = [{
+      #   address = "2a01:e0a:b3a:1dd0::acab";
+      #   prefixLength = 64;
+      # }];
+    };
   };
 
   # Set your time zone.
