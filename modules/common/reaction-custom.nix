@@ -233,25 +233,28 @@
       };
     };
 
+    environment.systemPackages = [ pkgs.ipset ];
+
     systemd.services.reaction.serviceConfig = let
-      ip46tables = command: [
-        "${var.ip4tables} ${command}"
-        "${var.ip6tables} ${command}"
-      ];
     in {
-      ExecStartPre = (builtins.concatMap ip46tables [
-        "-w -N reaction"
-        "-w -I INPUT -p all -j reaction"
-        "-w -I FORWARD -p all -j reaction"
+      ExecStartPre = [
+        "${var.ipset} create reaction-4 hash:net family inet hashsize 65536 maxelem 3000000 timeout 0"
+        "${var.ipset} create reaction-6 hash:net family inet6 hashsize 65536 maxelem 3000000 timeout 0"
+        "${var.ip4tables} -w -I INPUT   -m set --match-set reaction-4 src -j DROP"
+        "${var.ip6tables} -w -I INPUT   -m set --match-set reaction-6 src -j DROP"
+        "${var.ip4tables} -w -I FORWARD -m set --match-set reaction-4 src -j DROP"
+        "${var.ip6tables} -w -I FORWARD -m set --match-set reaction-6 src -j DROP"
       ]
         ++ lib.optional cfg.enableGoogleImpersonator "${pkgs.curl}/bin/curl -o /var/lib/reaction/googlebot.json https://developers.google.com/search/apis/ipranges/googlebot.json"
         ++ lib.optional cfg.enableGPTBot "${pkgs.curl}/bin/curl -o /var/lib/reaction/ai-robots.json https://raw.githubusercontent.com/ai-robots-txt/ai.robots.txt/refs/heads/main/robots.json"
-      );
-      ExecStopPost = builtins.concatMap ip46tables [
-        "-w -D INPUT -p all -j reaction"
-        "-w -D FORWARD -p all -j reaction"
-        "-w -F reaction"
-        "-w -X reaction"
+      ;
+      ExecStopPost = [
+        "${var.ip4tables} -w -D INPUT   -m set --match-set reaction-4 src -j DROP"
+        "${var.ip6tables} -w -D INPUT   -m set --match-set reaction-6 src -j DROP"
+        "${var.ip4tables} -w -D FORWARD -m set --match-set reaction-4 src -j DROP"
+        "${var.ip6tables} -w -D FORWARD -m set --match-set reaction-6 src -j DROP"
+        "${var.ipset} destroy reaction-4"
+        "${var.ipset} destroy reaction-6"
       ];
       TimeoutStopSec = "3 min";
     };

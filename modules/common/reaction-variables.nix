@@ -6,26 +6,28 @@ rec {
   ip4tables = "${config.networking.firewall.package}/bin/iptables";
   ip6tables = "${config.networking.firewall.package}/bin/ip6tables";
 
-  iptablesBan   = cmd: [ cmd "-w" "-A" "reaction" "-s" "<ip>" "-j" "DROP" ];
-  iptablesUnban = cmd: [ cmd "-w" "-D" "reaction" "-s" "<ip>" "-j" "DROP" ];
+  ipset = "${pkgs.ipset}/bin/ipset";
+
+  iptablesBan   = set: [ ipset "-exist" "add" set "<ip>" ];
+  iptablesUnban = set: [ ipset "-exist" "del" set "<ip>" ];
 
   banFor = duration: {
     ban4 = {
-      cmd = iptablesBan ip4tables;
+      cmd = iptablesBan "reaction-4";
       ipv4only = true;
     };
     ban6 = {
-      cmd = iptablesBan ip6tables;
+      cmd = iptablesBan "reaction-6";
       ipv6only = true;
     };
 
     unban4 = {
-      cmd = iptablesUnban ip4tables;
+      cmd = iptablesUnban "reaction-4";
       ipv4only = true;
       after = duration;
     };
     unban6 = {
-      cmd = iptablesUnban ip6tables;
+      cmd = iptablesUnban "reaction-6";
       ipv6only = true;
       after = duration;
     };
