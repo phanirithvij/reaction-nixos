@@ -250,7 +250,8 @@
             "${./merge-funkwhale-albums.py}:/app/merge-funkwhale-albums.py:ro"
             "${./merge-funkwhale-artists.py}:/app/merge-funkwhale-artists.py:ro"
             "${./merge-funkwhale-tracks.py}:/app/merge-funkwhale-tracks.py:ro"
-            "${pkgs.writeShellScript "merge.sh" ''
+            "${pkgs.writeScript "merge.sh" ''
+              #!/usr/bin/env bash
               case "$1" in
                 tracks|track)
                   TRACK1="$2" TRACK2="$3" python merge-funkwhale-tracks.py ;;
