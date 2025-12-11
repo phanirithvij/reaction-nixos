@@ -10,12 +10,12 @@ let
 in {
   environment.systemPackages = with pkgs; [
     # CLI
-    sshuttle # VPN-over-SSH
+    # sshuttle # VPN-over-SSH
     mosh # alternative to SSH that bootstraps over it
-    sshx # SSH-over-Web
+    # sshx # SSH-over-Web
     # sysstat # iostat
     # tealdeer # tldr man pages
-    tomb # LUKS wrapper
+    # tomb # LUKS wrapper
     pinentry-gnome3 # GUI password prompt (used by gpg-agent, installing it in global path for rbw & tomb)
     rbw # unofficial bitwarden CLI
     pass # password-store
@@ -23,7 +23,7 @@ in {
     # libossp_uuid # uuid v4
     # pup # jq for HTML
     # xsv # jq for CSV
-    openvpn
+    # openvpn
     # lolcat
     # figlet
     # espeak-ng
@@ -41,7 +41,7 @@ in {
     # ytfzf # Youtube scrapper ⨯ fzf
     khal # calendar
     vdirsyncer # caldav syncer
-    toot # CLI/TUI for Mastodon
+    # toot # CLI/TUI for Mastodon
     helix # neovim alternative
 
     # Desktop environment
@@ -71,7 +71,7 @@ in {
     # unstable.fractal # Gnome Matrix desktop client (no thread support)
     evince
     libreoffice
-    signal-cli
+    # signal-cli
     mpv-no-scripts
     mpv-with-scripts
     # clementine # music player
@@ -79,7 +79,7 @@ in {
     qpwgraph # play with pipewire streams
     # ocenaudio # test ardour?
     gimp # GNU Image Manipulation Program
-    inkscape # Vector Image Editor
+    # inkscape # Vector Image Editor
     deluge # BitTorrent peer
     gparted
     # syncthing # ± P2P file synchronization
@@ -89,7 +89,7 @@ in {
 
     # Games
     # superTux superTuxKart
-    vitetris
+    # vitetris
     # wine lutris
     # _2048-in-terminal
     # blobby
@@ -99,15 +99,15 @@ in {
 
     # Development
     git
-    gitAndTools.git-filter-repo
+    # git-filter-repo
     spr # Make PRs from one commit
     # git-branchless # git enhancement
     # jj # git replacement (git compatible)
     # gource
-    so # stack overflow TUI
+    # so # stack overflow TUI
     gnumake
     # h2 # H2 Database Editor
-    alejandra # Nix formatter
+    # alejandra # Nix formatter
     zola # static site generator
     tailwindcss # CSS generation framework
     (pkgs.callPackage ../../pkgs/directus2zola {})
@@ -117,7 +117,7 @@ in {
     # (quarto.override { rWrapper = null; python3 = null; }) # Markdown environment based on pandoc
     minisign # small utility to sign files
     ansible
-    opentofu
+    # opentofu
     # tokei # SLOC counter
     scc # SLOC counter
     hexyl # pretty hexdump
