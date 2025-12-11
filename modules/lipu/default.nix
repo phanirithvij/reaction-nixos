@@ -145,11 +145,22 @@
     git.config.core.editor = "hx";
     gnupg.agent.enable = true;
     # kdeconnect.enable = true;
-    npm.enable = true;
-    bandwhich.enable = true;
+    # npm.enable = true;
+    # bandwhich.enable = true;
+    pmount.enable = true;
   };
 
-  services.fwupd.enable = true;
+  services = {
+    fwupd.enable = true;
+
+    angrr = {
+      enable = true;
+      package = (import <nixos-unstable> {}).angrr;
+      period = "2weeks";
+    };
+  };
+
+  hardware.fw-fanctrl.enable = true;
 
   # FIXME logind quickfix doesn't build
   # # Make swap visible to logind, to be able to hibernate
