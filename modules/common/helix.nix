@@ -40,7 +40,7 @@ in {
         #     makeWrapper ''$out/bin/vi ${pkgs.helix}
         #   '';
         # })
-        (pkgs.runCommandNoCCLocal "vi-helix-alias" {} ''
+        (pkgs.runCommandLocal "vi-helix-alias" {} ''
           mkdir -p $out/bin
           ln -s ${pkgs.helix}/bin/hx $out/bin/vi
         '')

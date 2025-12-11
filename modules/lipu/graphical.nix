@@ -120,7 +120,7 @@ in lib.mkMerge [
   programs.kdeconnect.enable = true;
 
   # enable river window manager
-  programs.river = {
+  programs.river-classic = {
     enable = true;
     extraPackages = lib.mkForce [];
   };
@@ -131,7 +131,7 @@ in lib.mkMerge [
   # Fix of: Can't shutdown after having suspended the laptop by closing it.
   # Fix found here: https://bugs.launchpad.net/ubuntu/+source/systemd/+bug/1441253
   # Sounds like one of the systemd bugs that has never been fixed...
-  services.logind.lidSwitch = "suspend-then-hibernate";
+  services.logind.settings.Login.HandleLidSwitch = "suspend-then-hibernate";
 
   # Try to fix the gnome settings issue
   # Override GSettings schemas

@@ -72,7 +72,7 @@
       bc # basic calculator
 
       gnupg # reference OpenPGP implementation
-      du-dust # du like
+      dust # du like
       librespeed-cli # Speedtest
       man-pages # standard man pages
 
