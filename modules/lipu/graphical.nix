@@ -33,13 +33,6 @@ let
     gsettings set org.gnome.desktop.interface gtk-theme 'Qogir-Light'
   '';
 
-  rbw-wofi = (pkgs.writeShellScriptBin "rbw-wofi" ''
-    set -eu
-    set -o pipefail
-    rbw unlock
-    rbw ls --fields folder,name,user | sed 's@\t@/@g' | sort | ${pkgs.wofi}/bin/wofi --dmenu | sed -e 's@.*/\(.*\)/\(.*\)@"\1" "\2"@' -e 's@""@@' | xargs -r rbw get | wl-copy -o
-  '');
-
 in lib.mkMerge [
 {
   environment.systemPackages = with pkgs; [
@@ -76,10 +69,16 @@ in lib.mkMerge [
 
     wl-clipboard # wl-copy and wl-paste for copy/paste from stdin / stdout
 
-    wofi # wayland clone of rofi
-    wofi-emoji # wrapper for emoji mode
-    wtype # needed by wofi-emoji
-    rbw-wofi
+    (rofi.override {
+      plugins = [
+        rofi-calc
+        rofi-games
+        rofi-emoji
+      ];
+    })
+    rofi-rbw
+    rofi-bluetooth
+    wtype # needed by rofi-rbw
 
     xfce.thunar # file explorer
     xfce.ristretto # image viewer
